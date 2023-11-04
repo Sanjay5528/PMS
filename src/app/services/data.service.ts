@@ -43,6 +43,7 @@ public getChidData(collectionName:any, id:any, data?:any){
   public getDataId(path: any, id: any) {
     return this.http.get(this.getWsBaseUrl() + path + '/' + id);
   }
+  
   // public getDataId1(path: any, id: any) {
   //   return this.http.get(this.getWsBaseUrl() + path + '/'+"projectid"+ '/'+ id);
   // }
