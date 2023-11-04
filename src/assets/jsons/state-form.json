@@ -1,0 +1,50 @@
+{
+	"pageHeading": "State",
+	"formType": "simple",
+  "editMode": "popup",
+  "keyField":"_id",
+	"form": {
+	  "collectionName": "state",
+	  "fields": [
+	
+      {
+        "type": "input",
+        "key": "statecode",
+        "props": {
+        "label": "Code",
+        "pattern": "^[A-Z]{2}",
+        "placeholder": "Code",
+        "required": true
+        }
+      },
+
+      {
+        "type": "input",
+        "key": "statename",
+        "props": {
+        "label": "Name",
+        "placeholder": "Name",
+        "pattern": "^[a-zA-Z_]+( [a-zA-Z_]+)*$",
+        "required": true
+        }
+      },
+      {
+        "type": "select-input",
+        "key": "countrycode",
+        "props": {
+          "label": "Country Name",
+          "labelPropTemplate": " {{countryname}}",
+          "optionsDataSource": {
+            "collectionName": "country"
+          },
+          "labelProp": "countryname",
+          "valueProp": "countrycode",
+          "required": true
+        }
+      }
+    
+      ]
+     
+	},
+	"onCancelRoute": "/list/state"
+  }

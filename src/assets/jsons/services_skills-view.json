@@ -1,0 +1,56 @@
+{
+	"pageHeading": "Services",
+	"formType": "simple",
+  "editMode": "popup",
+  "keyField":"id",
+	"form": {
+	  "collectionName": "services_skills",
+	  "fields": [
+        {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+      {
+        "type": "label-view",
+        "key": "id",
+        "props": {
+        "label": "Id"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "name",
+        "props": {
+        "label": "Name"
+        }
+      }
+    ]
+},  {
+    "fieldGroupClassName": "display-flex",
+    "fieldGroup": [
+      {
+        "type": "label-view",
+        "key": "type",
+        "props": {
+          "label": "Type"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "skill",
+        "props": {
+          "label": "Skill"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "price",
+        "props": {
+        "label": "Price"
+        }
+      }
+    ]
+}
+      ]
+	},
+	"onCancelRoute": "/list/services_skills"
+  }

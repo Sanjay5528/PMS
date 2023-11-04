@@ -1,0 +1,61 @@
+{
+    "pageHeading": "City",
+    "collectionName": "filter/get/city",
+    "editMode": "popup",
+    "showbutton":true,
+    "screenWidth":"40%",
+    "actions": [
+      {
+        "label":"Edit",
+        "icon":"edit",
+        "formName":"city"
+      },
+      {
+        "label": "Delete",
+        "icon": "delete",
+        "formName":"city"
+      }
+    ],
+    "addRoute": "add/city",
+    "editRoute": "edit/city",
+    "columnDefs": [
+          
+          {
+            "headerName": "City Code",
+            "field": "citycode",
+            "sortable": true,
+            "filter": "agTextColumnFilter"
+          },
+      {
+        "headerName": "City Name",
+        "field": "cityname",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },{
+        "headerName": "Country Name",
+        "field": "countryname",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "headerName": "State Name",
+        "field": "statename",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      
+ 
+     
+      {
+        "type": "rightAligned",
+        "headerName": "Actions",
+        "cellRenderer": "buttonRenderer",
+        "lockPosition": "right",
+        "cellRendererParams": {
+          "onClick": "this.onBtnClick1.bind(this)",
+          "label": "Click 1"
+        }
+      }
+    ]
+  }
+  

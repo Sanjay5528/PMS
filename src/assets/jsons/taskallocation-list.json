@@ -1,0 +1,90 @@
+{
+    "pageHeading": "Task Allocation",
+    "collectionName": "taskallocation",
+    "editMode": "page",
+    "keyField": "_id",
+    "showbutton": true,
+    "screenWidth": "50%",
+    "actions": [
+        {
+            "label": "Edit",
+            "icon": "edit",
+            "formName": "taskallocation"
+        },
+        {
+            "label": "Delete",
+            "icon": "delete",
+            "formName": "entities/taskallocation"
+        }
+    ],
+    "addRoute": "add/taskallocation",
+    "editRoute": "edit/taskallocation",
+    "columnDefs": [
+        {
+            "headerName": "Task Allocation Id",
+            "field": "taskid",
+            "sortable": true,
+            "filter": "agTextColumnFilter"
+        },
+        {
+            "headerName": "Task Id",
+            "field": "taskid",
+            "sortable": true,
+            "filter": "agTextColumnFilter"
+        },
+        {
+            "headerName": "Project Id",
+            "field": "projectid",
+            "sortable": true,
+            "filter": "agTextColumnFilter"
+        },
+        {
+            "headerName": "Project Module Id",
+            "field": "projectmoduleid",
+            "sortable": true,
+            "filter": "agTextColumnFilter"
+        },
+        {
+            "headerName": "Employee Id",
+            "field": "employeeid",
+            "sortable": true,
+            "filter": "agTextColumnFilter"
+        },
+        {
+            "headerName": "Schedule Start Date ",
+            "field": "schedulestartdate",
+            "sortable": true,
+            "filter": "agTextColumnFilter",
+            "type": "date"
+        },
+        {
+            "headerName": "Schedule End Date ",
+            "field": "scheduleenddate",
+            "sortable": true,
+            "filter": "agTextColumnFilter",
+            "type": "date"
+        },
+        {
+            "headerName": "Allocated Hours",
+            "field": "allocatedhours",
+            "sortable": true,
+            "filter": "agTextColumnFilter"
+        },
+        {
+            "headerName": "Allocated Remark",
+            "field": "allocatedremark",
+            "sortable": true,
+            "filter": "agTextColumnFilter"
+        },
+        {
+            "type": "rightAligned",
+            "headerName": "Actions",
+            "cellRenderer": "buttonRenderer",
+            "lockPosition": "right",
+            "cellRendererParams": {
+                "onClick": "this.onBtnClick1.bind(this)",
+                "label": "Click 1"
+            }
+        }
+    ]
+}

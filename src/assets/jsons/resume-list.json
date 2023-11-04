@@ -1,0 +1,64 @@
+{
+    "pageHeading": "Resume",
+    "collectionName": "resume",
+    "editMode": "popup",
+    "showbutton":true,
+    "screenWidth":"40%",
+    "actions": [
+      {
+        "label":"Edit",
+        "icon":"edit",
+        "formName":"resume"
+      },
+      {
+        "label": "Delete",
+        "icon": "delete",
+        "formName":"resume"
+      }
+    ],
+    "addRoute": "add/resume",
+    "editRoute": "edit/resume",
+    "columnDefs": [
+      {
+        "headerName": "Name",
+        "field": "name",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "headerName": "Email",
+        "field": "email",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "headerName": "Mobile Number",
+        "field": "mobilenumber",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "headerName": "Address",
+        "field": "address",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "headerName": "LinkedIn",
+        "field": "linkedin",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "type": "rightAligned",
+        "headerName": "Actions",
+        "cellRenderer": "buttonRenderer",
+        "lockPosition": "right",
+        "cellRendererParams": {
+          "onClick": "this.onBtnClick1.bind(this)",
+          "label": "Click 1"
+        }
+      }
+    ]
+  }
+  

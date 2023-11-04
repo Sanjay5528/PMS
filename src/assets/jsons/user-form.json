@@ -1,0 +1,1184 @@
+{
+  "pageHeading": "User",
+  "formType": "simple",
+  "editMode": "page",
+  "keyField": "_id",
+  "form": {
+    "collectionName": "user",
+    "fields": [
+      
+      {
+        "type": "select",
+        "key": "usertype",
+        "props": {
+          "label": "User Type",
+          "options": [
+            {
+              "label": "Corporate Customer",
+              "value": "Corporate Customer"
+            },
+            {
+              "label": "SAAS",
+              "value": "SAAS"
+            }
+          ],
+          "required": true
+        }
+      },
+          {
+            "type": "select",
+            "key": "status",
+            "props": {
+              "label": "Status",
+              "options": [
+                {
+                  "label": "Active",
+                  "value": "Active"
+                },
+                {
+                  "label": "InActive",
+                  "value": "InActive"
+                }
+              ],
+              "required": true
+            },
+            "expressions": {
+              "hide": "!model.isshow"
+            }
+          },
+       
+
+      {
+        "type": "tab-input",
+        "fieldGroup": [
+         
+          {
+            "props": { "label": "Contact Details" },
+            "fieldGroup": [ 
+          {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+              {
+                "key": "firstname",
+                "type": "input",
+                  "className": "flex-6",
+                "props": {
+                  "label": "First Name",
+                  "placeholder":  "First Name",
+                  "pattern": "^[a-zA-Z]+$",
+                  "required": true
+                }
+              },
+              {
+                "key": "lastname",
+                "type": "input",
+                "className": "flex-6",
+                "props": {
+                  "label": "Last Name",
+                  "placeholder":  "Last Name",
+                  "pattern": "^[a-zA-Z]+$",
+                  "required": true
+                }
+              }
+            ]
+          },
+          {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+              {
+                "key": "emailid",
+                "type": "input",
+                  "className": "flex-6",
+                "props": {
+                  "label": "Email Id",
+                  "placeholder":  "Email Id",
+                  "pattern": "[a-z0-9._%+-]+@[a-z.-]+\\.[a-z]{2,4}$",
+                  "required": true
+                }
+              },
+              {
+                "key": "mobilenumber",
+                "type": "number",
+                "className": "flex-6",
+                "props": {
+                  "label": "Mobile Number",
+                  "placeholder":"Mobile Number",
+                  "pattern":"[0-9]{10}",
+                  "required": true
+                }
+              }
+             
+            ]
+          },
+          {
+            "type": "input",
+            "key": "password",
+            "props": {
+              "type": "password",
+              "label": "Password",
+              "placeholder": "Password",
+              "required": true
+            },
+            "hideExpression": "model.isEdit"
+          }
+          ],
+          "expressions": {
+            "hide": "(model.usertype=='Corporate Customer')"
+          }
+          },
+          {
+            "props": { "label": "Address" },
+            "fieldGroup": [
+            
+              {
+                "key": "address.street",
+                "type": "input",
+                "className": "flex-6",
+                "props": {
+                  "label": "Street",
+                  "pattern": "^([A-Za-z0-9()#,.-/]+ )+[A-Za-z0-9()#,.-]+$|^[A-Za-z0-9#(),.-]+$",
+                  "placeholder": "Street",
+                  "required": true
+                }
+              },
+            
+            
+           
+          {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+          {
+            "key": "address.areaname",
+            "className": "flex-6",
+            "type": "input",
+            "props": {
+              "label": "Area Name",
+              "placeholder": "Area Name"
+            }
+          },
+          {
+            "type": "select-input",
+            "key": "address.country",
+            "className": "flex-6",
+            "props": {
+              "label": "Country",
+              "attribute":"array_of_object",
+              "labelPropTemplate": "{{countryname}}",
+              "optionsDataSource": {
+                "collectionName": "country"
+              },
+              "labelProp": "countryname",
+              "valueProp": "countrycode",
+              "required": true
+            }
+          }
+        ]
+      },
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          
+          {
+            "type": "select-input",
+            "key": "address.state",
+            "className": "flex-6",
+            "parentKey":"address.country",
+            "props": {
+              "attribute":"array_of_object",
+              "label": "State",
+              "labelPropTemplate": "{{statename}}",
+              "optionsDataSource": {
+                "ParentcollectionName": "state/filter"
+              },
+              "labelProp": "statename",
+              "valueProp": "statecode",
+              "required": true
+            }
+          },
+          {
+            "key": "address.city",
+            "type": "select-input",
+            "className": "flex-6",
+            "parentKey":"address.state",
+            "props": {
+              "label": "City",
+              "attribute":"array_of_object",
+              "labelPropTemplate": "{{cityname}}",
+              "optionsDataSource": {
+                "ParentcollectionName": "city/filter"
+              },
+              "labelProp": "cityname",
+              "valueProp": "citycode",
+              "required": true
+            }
+          }
+        ]
+      },
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+        
+          {
+            "key": "address.landmark",
+            "className": "flex-6",
+            "type": "input",
+            "props": {
+              "label": "Landmark",
+              "placeholder": "Landmark"
+            }
+          },
+          {
+            "key": "address.zipcode",
+            "type": "number",
+            "className": "flex-6",
+            "props": {
+              "maxLength": 6,
+              "label": "Zip code",
+              "pattern": "[0-9]{6}",
+              "required": true
+            }
+          }
+        ]
+      }
+            ],
+            "expressions": {
+              "hide": "(model.usertype=='Corporate Customer')"
+            }
+          },
+          {
+            "props": { "label": "Company Bio-data" },
+            "fieldGroup": [
+              {
+                "type": "html-input",
+                "key": "biodata",
+                "props": {
+                "label": "Bio-data"
+                }
+              },
+              {
+                "type": "datepicker",
+                "key": "establisheddate",
+                "props": {
+                  "label": "Established Date",
+                  "placeholder": "Established Date",
+                  "required": true
+                }
+              },
+              {
+                "type": "input",
+                "key": "password",
+                "props": {
+                  "type": "password",
+                  "label": "Password",
+                  "placeholder": "Password",
+                  "required": true
+                },
+                "hideExpression": "model.isEdit"
+              }
+       
+        
+           
+          ],
+          "expressions": {
+            "hide": "(model.usertype=='SAAS')"
+          }
+        },
+          {
+            "props": { "label": "Corporate Customer Details" },
+            "fieldGroup": [
+              {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+              {
+                "key": "_id",
+                "type": "input",
+                "className": "flex-6",
+                "props": {
+                  "label": "Company Id",
+                  "pattern": "^[a-zA-Z0-9-]*$",
+                  "placeholder": "Company Id",
+                  "required": true
+                }
+              },
+              {
+                "type": "select",
+                "key": "type",
+                "className": "flex-6",
+                "props": {
+                  "label": "Company Type",
+                  "options": [
+                    {
+                      "label": "Product Based",
+                      "value": "Product Based"
+                    },
+                    {
+                      "label": "Service Based",
+                      "value": "Service Based"
+                    }
+                  ],
+                  "required": true
+                }
+              }
+              
+            
+            ]
+          },
+          {
+            "key": "companyname",
+            "type": "input",
+            "props": {
+              "label": "Company Name",
+              "placeholder": "Company Name",
+              "pattern": "^([A-Za-z&(),-]+ )+[A-Za-z(),-]+$|^[A-Za-z(),-]+$",
+              "required": true
+            }
+          },
+             
+         
+             
+            
+           
+              {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+              {
+                "type": "datepicker",
+                "key": "contractstartdate",
+                "className": "flex-6",
+                "props": {
+                  "label": "Contract Start Date",
+                  "placeholder": "Contract Start Date",
+                  "required": true
+                }
+              },
+              {
+                "type": "datepicker",
+                "key": "contractenddate",
+                "className": "flex-6",
+                "props": {
+                  "label": "Contract End Date",
+                  "placeholder": "Contract End Date",
+                  "required": true
+                }
+              }
+            ]
+        }
+        
+       
+             
+             
+            ],
+            "expressions": {
+              "hide": "(model.usertype=='SAAS')"
+            }
+          },
+          
+          {
+            "props": { "label": "Company Register Address" },
+            "fieldGroup": [
+              {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+              {
+                  "type": "input",
+                  "key": "registeredaddress.street",
+                  "className": "flex-5",
+                  "props": {
+                    "label": "Street",
+                    "placeholder": "Street",
+                    "required": true
+                  }
+                }
+              ]
+            },
+                {
+                  "fieldGroupClassName": "display-flex",
+                  "fieldGroup": [
+            {
+              "key": "registeredaddress.areaname",
+              "className": "flex-6",
+              "type": "input",
+              "props": {
+                "label": "Area Name",
+                "placeholder": "Area Name"
+              }
+            },
+            {
+              "type": "select-input",
+              "key": "registeredaddress.country",
+              "className": "flex-6",
+              "props": {
+                "label": "Country",
+                "attribute":"array_of_object",
+                "onValueChangeUpdate":{
+                  "key":"currencycode"
+                },
+                "labelPropTemplate": "{{countryname}}",
+                "optionsDataSource": {
+                  "collectionName": "country"
+                },
+                "labelProp": "countryname",
+                "valueProp": "countrycode",
+                "required": true
+              }
+            }
+         
+          ]
+      },
+            {
+              "fieldGroupClassName": "display-flex",
+              "fieldGroup": [
+                {
+                  "type": "input",
+                  "key": "currencycode",
+                  "className": "flex-6",
+                  "props": {
+                    "label": "Currency Code",
+                    "placeholder": "Currency Code",
+                    "required": true
+                  }
+                },
+               
+                
+                {
+                  "type": "select-input",
+                  "key": "registeredaddress.state",
+                  "parentKey":"registeredaddress.country",
+                  "className": "flex-6",
+                  "props": {
+                    "attribute":"array_of_object",
+                    "label": "State",
+                    "labelPropTemplate": "{{statename}}",
+                    "optionsDataSource": {
+                      "ParentcollectionName": "state/filter"
+                    },
+                    "labelProp": "statename",
+                    "valueProp": "statecode",
+                    "required": true
+                  }
+                },
+                {
+                  "key": "registeredaddress.city",
+                  "type": "select-input",
+                  "className": "flex-6",
+                  "parentKey":"registeredaddress.state",
+                  "props": {
+                    "label": "City",
+                    "attribute":"array_of_object",
+                    "labelPropTemplate": "{{cityname}}",
+                    "optionsDataSource": {
+                      "ParentcollectionName": "city/filter"
+                    },
+                    "labelProp": "cityname",
+                    "valueProp": "citycode",
+                    "required": true
+                  }
+                }
+              ]
+            },
+            {
+              "fieldGroupClassName": "display-flex",
+              "fieldGroup": [
+              
+                {
+                  "key": "registeredaddress.landmark",
+                  "className": "flex-6",
+                  "type": "input",
+                  "props": {
+                    "label": "Landmark",
+                    "placeholder": "Landmark"
+                  }
+                },
+                {
+                  "key": "registeredaddress.zipcode",
+                  "type": "number",
+                  "className": "flex-6",
+                  "props": {
+                    "maxLength": 6,
+                    "label": "Zip code",
+                    "pattern": "[0-9]{6}",
+                    "required": true
+                  }
+                }
+              ]
+            }
+          ],
+          "expressions": {
+            "hide": "(model.usertype=='SAAS')"
+          }
+          },
+          {
+            "props": { "label": "Company Operational Address" },
+            "fieldGroup": [
+              {
+                  "type": "input",
+                  "key": "operationaladdress.street",
+                  "props": {
+                    "label": "Street",
+                    "pattern": "^([A-Za-z0-9()#,.-/]+ )+[A-Za-z0-9()#,.-]+$|^[A-Za-z0-9#(),.-]+$",
+                    "placeholder": "Street",
+                    "required": true
+                  }
+                },
+                {
+                  "fieldGroupClassName": "display-flex",
+                  "fieldGroup": [
+            {
+              "key": "operationaladdress.areaname",
+              "className": "flex-6",
+              "type": "input",
+              "props": {
+                "label": "Area Name",
+                "placeholder": "Area Name"
+              }
+            },
+            {
+              "type": "select-input",
+              "key": "operationaladdress.country",
+              "className": "flex-6",
+              "props": {
+                "label": "Country",
+                "attribute":"array_of_object",
+                "labelPropTemplate": "{{countryname}}",
+                "optionsDataSource": {
+                  "collectionName": "country"
+                },
+                "labelProp": "countryname",
+                "valueProp": "countrycode",
+                "required": true
+              }
+            }
+            
+          ]
+      },
+            {
+              "fieldGroupClassName": "display-flex",
+              "fieldGroup": [
+              
+                {
+                  "type": "select-input",
+                  "key": "operationaladdress.state",
+                  "parentKey":"operationaladdress.country",
+                  "className": "flex-6",
+                  "props": {
+                    "attribute":"array_of_object",
+                    "label": "State",
+                    "labelPropTemplate": "{{statename}}",
+                    "optionsDataSource": {
+                      "ParentcollectionName": "state/filter"
+                    },
+                    "labelProp": "statename",
+                    "valueProp": "statecode",
+                    "required": true
+                  }
+                },
+                {
+                  "key": "operationaladdress.city",
+                  "type": "select-input",
+                  "className": "flex-6",
+                  "parentKey":"operationaladdress.state",
+                  "props": {
+                    "label": "City",
+                    "attribute":"array_of_object",
+                    "labelPropTemplate": "{{cityname}}",
+                    "optionsDataSource": {
+                      "ParentcollectionName": "city/filter"
+                    },
+                    "labelProp": "cityname",
+                    "valueProp": "citycode",
+                    "required": true
+                  }
+                }
+              ]
+            },
+            {
+              "fieldGroupClassName": "display-flex",
+              "fieldGroup": [
+                {
+                  "key": "operationaladdress.landmark",
+                  "className": "flex-6",
+                  "type": "input",
+                  "props": {
+                    "label": "Landmark",
+                    "placeholder": "Landmark"
+                  }
+                },
+                
+                {
+                  "key": "operationaladdress.zipcode",
+                  "type": "number",
+                  "className": "flex-6",
+                  "props": {
+                    "maxLength": 6,
+                    "label": "Zip code",
+                    "pattern": "[0-9]{6}",
+                    "required": true
+                  }
+                }
+              ]
+            }
+          ],
+          "expressions": {
+            "hide": "(model.usertype=='SAAS')"
+          }
+          },
+          {
+            "props": { "label": "Budget" },
+            "fieldGroup": [
+              {
+                "key": "budgetwarningamount",
+                "type": "number",
+                "props": {
+                  "maxLength": 6,
+                  "label": "Budget Warning Amount",
+                  "placeholder":  "Budget Warning Amount",
+                  "required": true
+                }
+              },
+              {
+                "key": "remainingbudget",
+                "type": "number",
+                "props": {
+                  "maxLength": 6,
+                  "label": "Remaining Budget",
+                  "placeholder":  "Remaining Budget",
+                  "required": true
+                }
+              },
+              {
+                "key": "overallapprovedbudget",
+                "type": "number",
+                "props": {
+                  "maxLength": 6,
+                  "label": "Over all Approved Budget",
+                  "placeholder": "Over all Approved Budget",
+                  "required": true
+                }
+              }
+       
+           
+          ],
+          "expressions": {
+            "hide": "(model.usertype=='SAAS')"
+          }
+          },
+          {
+            "props": { "label": "Primary Contact Details" },
+            "fieldGroup": [
+              {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+              {
+                "key": "primarycontact.empid",
+                "type": "input",
+                  "className": "flex-6",
+                "props": {
+                  "label": "Emp Id",
+                  "placeholder":  "Emp Id",
+                  "pattern": "^[a-zA-Z0-9-]*$",
+                  "required": true
+                }
+              },
+              {
+                "key": "primarycontact.contact.emailid",
+                "type": "input",
+                  "className": "flex-6",
+                "props": {
+                  "label": "Email Id",
+                  "placeholder":  "Email Id",
+                  "pattern": "[a-z0-9._%+-]+@[a-z.-]+\\.[a-z]{2,4}$",
+                  "required": true
+                }
+              }
+            ]
+          },
+            
+            
+          {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+              {
+                "key": "primarycontact.contact.firstname",
+                "type": "input",
+                  "className": "flex-6",
+                "props": {
+                  "label": "First Name",
+                  "placeholder":  "First Name",
+                  "pattern": "^[a-zA-Z]+$",
+                  "required": true
+                }
+              },
+              {
+                "key": "primarycontact.contact.lastname",
+                "type": "input",
+                "className": "flex-6",
+                "props": {
+                  "label": "Last Name",
+                  "placeholder":  "Last Name",
+                  "pattern": "^[a-zA-Z]+$",
+                  "required": true
+                }
+              }
+            ]
+          },
+          {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+              {
+                "type": "select-input",
+                "key": "primarycontact.contact.country",
+                "className": "flex-6",
+                "props": {
+                  "label": "Country",
+                  "attribute":"array_of_object",
+                  "labelPropTemplate": "{{countryname}}",
+                  "optionsDataSource": {
+                    "collectionName": "country"
+                  },
+                  "labelProp": "countryname",
+                  "valueProp": "countrycode",
+                  "required": true
+                }
+              },
+             
+              {
+                "key": "primarycontact.contact.mobilenumber",
+                "type": "number",
+                "ParentCollectionName":"country/filter",
+                "className": "flex-6",
+                "props": {
+                  "label": "Mobile Number",
+                  "placeholder":"Mobile Number",
+                  "pattern":"[0-9]{10}",
+                  "addonLeft": {
+                    "text":"callingcode" 
+                  },
+                  "required": true
+                }
+              },
+          
+              {
+                "type": "select-input",
+                "key": "primarycontact.role",
+                "className": "flex-6",
+                "props": {
+                  "label": "Role",
+                  "attribute":"array_of_object",
+                  "labelPropTemplate": "{{name}}",
+                  "optionsDataSource": {
+                    "collectionName": "role"
+                  },
+                  "labelProp": "name",
+                  "valueProp": "_id",
+                  "required": true
+                }
+              }
+            ]
+          },
+              {
+                "type": "select",
+                "key": "primarycontact.status",
+                "props": {
+                  "label": "Status",
+                  "options": [
+                    {
+                      "label": "Active",
+                      "value": "Active"
+                    },
+                    {
+                      "label": "InActive",
+                      "value": "InActive"
+                    }
+                  ],
+                  "required": true
+                }
+              }
+          ],
+          "expressions": {
+            "hide": "(model.usertype=='SAAS')"
+          }
+          },
+          {
+            "props": { "label": "Primary Contact Address" },
+            "fieldGroup": [
+              {
+                  "type": "input",
+                  "key": "primarycontact.contact.primaryaddress.street",
+                  "props": {
+                    "label": "Street",
+                    "pattern": "^([A-Za-z0-9()#,.-/]+ )+[A-Za-z0-9()#,.-]+$|^[A-Za-z0-9#(),.-]+$",
+                    "placeholder": "Street",
+                    "required": true
+                  }
+                },
+                {
+                  "fieldGroupClassName": "display-flex",
+                  "fieldGroup": [
+            {
+              "key": "primarycontact.contact.primaryaddress.areaname",
+              "className": "flex-6",
+              "type": "input",
+              "props": {
+                "label": "Area Name",
+                "placeholder": "Area Name"
+              }
+            },
+            {
+              "type": "select-input",
+              "key": "primarycontact.contact.primaryaddress.country",
+              "className": "flex-6",
+              "props": {
+                "label": "Country",
+                "attribute":"array_of_object",
+                "labelPropTemplate": "{{countryname}}",
+                "optionsDataSource": {
+                  "collectionName": "country"
+                },
+                "labelProp": "countryname",
+                "valueProp": "countrycode",
+                "required": true
+              }
+            }
+          ]
+      },
+            {
+              "fieldGroupClassName": "display-flex",
+              "fieldGroup": [
+                
+                {
+                  "type": "select-input",
+                  "key": "primarycontact.contact.primaryaddress.state",
+                  "parentKey":"primarycontact.contact.primaryaddress.country",
+                  "className": "flex-6",
+                  "props": {
+                    "attribute":"array_of_object",
+                    "label": "State",
+                    "labelPropTemplate": "{{statename}}",
+                    "optionsDataSource": {
+                      "ParentcollectionName": "state/filter"
+                    },
+                    "labelProp": "statename",
+                    "valueProp": "statecode",
+                    "required": true
+                  }
+                },
+                {
+                  "key": "primarycontact.contact.primaryaddress.city",
+                  "type": "select-input",
+                  "parentKey":"primarycontact.contact.primaryaddress.state",
+                  "className": "flex-6",
+                  "props": {
+                    "label": "City",
+                    "attribute":"array_of_object",
+                    "labelPropTemplate": "{{cityname}}",
+                    "optionsDataSource": {
+                      "ParentcollectionName": "city/filter"
+                    },
+                    "labelProp": "cityname",
+                    "valueProp": "citycode",
+                    "required": true
+                  }
+                }
+              ]
+            },
+            {
+              "fieldGroupClassName": "display-flex",
+              "fieldGroup": [
+               
+
+                {
+                  "key": "primarycontact.contact.primaryaddress.landmark",
+                  "className": "flex-6",
+                  "type": "input",
+                  "props": {
+                    "label": "Landmark",
+                    "placeholder": "Landmark"
+                  }
+                },
+                {
+                  "key": "primarycontact.contact.primaryaddress.zipcode",
+                  "type": "number",
+                  "className": "flex-6",
+                  "props": {
+                    "maxLength": 6,
+                    "label": "Zip code",
+                    "pattern": "[0-9]{6}",
+                    "required": true
+                  }
+                }
+              ]
+            }
+          ],
+          "expressions": {
+            "hide": "(model.usertype=='SAAS')"
+          }
+          },
+          {
+            "props": { "label": "Secondary Contact Details" },
+            "fieldGroup": [
+              {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+              {
+                "key": "secondarycontact.empid",
+                "type": "input",
+                  "className": "flex-6",
+                "props": {
+                  "label": "Emp Id",
+                  "placeholder":  "Emp Id",
+                  "pattern": "^[a-zA-Z0-9-]*$",
+                  "required": true
+                }
+              },
+              {
+                "key": "secondarycontact.contact.emailid",
+                "type": "input",
+                  "className": "flex-6",
+                "props": {
+                  "label": "Email Id",
+                  "placeholder":  "Email Id",
+                  "pattern": "[a-z0-9._%+-]+@[a-z.-]+\\.[a-z]{2,4}$",
+                  "required": true
+                }
+              }
+            ]
+          },
+            
+            
+          {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+              {
+                "key": "secondarycontact.contact.firstname",
+                "type": "input",
+                  "className": "flex-6",
+                "props": {
+                  "label": "First Name",
+                  "placeholder":  "First Name",
+                  "pattern": "^[a-zA-Z]+$",
+                  "required": true
+                }
+              },
+              {
+                "key": "secondarycontact.contact.lastname",
+                "type": "input",
+                "className": "flex-6",
+                "props": {
+                  "label": "Last Name",
+                  "placeholder":  "Last Name",
+                  "pattern": "^[a-zA-Z]+$",
+                  "required": true
+                }
+              }
+            ]
+          },
+          {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+              {
+                "type": "select-input",
+                "key": "secondarycontact.contact.country",
+                "className": "flex-6",
+                "props": {
+                  "label": "Country",
+                  "attribute":"array_of_object",
+                  "labelPropTemplate": "{{countryname}}",
+                  "optionsDataSource": {
+                    "collectionName": "country"
+                  },
+                  "labelProp": "countryname",
+                  "valueProp": "countrycode",
+                  "required": true
+                }
+              },
+             
+              {
+                "key": "secondarycontact.contact.mobilenumber",
+                "type": "number",
+                "ParentCollectionName":"country/filter",
+                "parentKey":"secondarycontact.contact.country",
+                "className": "flex-6",
+                "props": {
+                  "label": "Mobile Number",
+                  "placeholder":"Mobile Number",
+                  "pattern":"[0-9]{10}",
+                  "addonLeft": {
+                    "text":"callingcode" 
+                  },
+                  "required": true
+                }
+              },
+              {
+                "type": "select-input",
+                "key": "secondarycontact.role",
+                "className": "flex-6",
+                "props": {
+                  "label": "Role",
+                  "attribute":"array_of_object",
+                  "labelPropTemplate": "{{name}}",
+                  "optionsDataSource": {
+                    "collectionName": "role"
+                  },
+                  "labelProp": "name",
+                  "valueProp": "_id",
+                  "required": true
+                }
+              }
+            ]
+          },
+              {
+                "type": "select",
+                "key": "secondarycontact.status",
+                "props": {
+                  "label": "Status",
+                  "options": [
+                    {
+                      "label": "Active",
+                      "value": "Active"
+                    },
+                    {
+                      "label": "InActive",
+                      "value": "InActive"
+                    }
+                  ],
+                  "required": true
+                }
+              }
+          ],
+          "expressions": {
+            "hide": "(model.usertype=='SAAS')"
+          }
+          },
+          {
+            "props": { "label": "Secondary Contact Address" },
+            "fieldGroup": [
+              {
+                  "type": "input",
+                  "key": "secondarycontact.contact.primaryaddress.street",
+                  "props": {
+                    "label": "Street",
+                    "pattern": "^([A-Za-z0-9()#,.-/]+ )+[A-Za-z0-9()#,.-]+$|^[A-Za-z0-9#(),.-]+$",
+                    "placeholder": "Street",
+                    "required": true
+                  }
+                },
+                {
+                  "fieldGroupClassName": "display-flex",
+                  "fieldGroup": [
+            {
+              "key": "secondarycontact.contact.primaryaddress.areaname",
+              "className": "flex-6",
+              "type": "input",
+              "props": {
+                "label": "Area Name",
+                "pattern": "^([A-Za-z0-9()#,.-/]+ )+[A-Za-z0-9()#,.-]+$|^[A-Za-z0-9#(),.-]+$",
+                "placeholder": "Area Name"
+              }
+            },
+            {
+              "type": "select-input",
+              "key": "secondarycontact.contact.primaryaddress.country",
+              "className": "flex-6",
+              "props": {
+                "label": "Country",
+                "attribute":"array_of_object",
+                "labelPropTemplate": "{{countryname}}",
+                "optionsDataSource": {
+                  "collectionName": "country"
+                },
+                "labelProp": "countryname",
+                "valueProp": "countrycode",
+                "required": true
+              }
+            }
+           
+          ]
+      },
+            {
+              "fieldGroupClassName": "display-flex",
+              "fieldGroup": [
+          
+                {
+                  "type": "select-input",
+                  "key": "secondarycontact.contact.primaryaddress.state",
+                  "parentKey":"secondarycontact.contact.primaryaddress.country",
+                  "className": "flex-6",
+                  "props": {
+                    "attribute":"array_of_object",
+                    "label": "State",
+                    "labelPropTemplate": "{{statename}}",
+                    "optionsDataSource": {
+                      "ParentcollectionName": "state/filter"
+                    },
+                    "labelProp": "statename",
+                    "valueProp": "statecode",
+                    "required": true
+                  }
+                },
+                {
+                  "key": "secondarycontact.contact.primaryaddress.city",
+                  "type": "select-input",
+                  "parentKey":"secondarycontact.contact.primaryaddress.state",
+                  "className": "flex-6",
+                  "props": {
+                    "label": "City",
+                    "attribute":"array_of_object",
+                    "labelPropTemplate": "{{cityname}}",
+                    "optionsDataSource": {
+                      "ParentcollectionName": "city/filter"
+                    },
+                    "labelProp": "cityname",
+                    "valueProp": "citycode",
+                    "required": true
+                  }
+                }
+              ]
+            },
+            {
+              "fieldGroupClassName": "display-flex",
+              "fieldGroup": [
+              
+                {
+                  "key": "secondarycontact.contact.primaryaddress.landmark",
+                  "className": "flex-6",
+                  "type": "input",
+                  "props": {
+                    "label": "Landmark",
+                    "placeholder": "Landmark",
+                    "pattern": "^([A-Za-z0-9()#,.-/]+ )+[A-Za-z0-9()#,.-]+$|^[A-Za-z0-9#(),.-]+$"
+                  }
+                },
+                {
+                  "key": "secondarycontact.contact.primaryaddress.zipcode",
+                  "type": "number",
+                  "className": "flex-6",
+                  "props": {
+                    "maxLength": 6,
+                    "label": "Zip code",
+                    "pattern": "[0-9]{6}",
+                    "required": true
+                  }
+                }
+              ]
+            }
+          ],
+          "expressions": {
+            "hide": "(model.usertype=='SAAS')"
+          }
+          }
+        ],
+        "expressions": {
+          "hide": "!model.usertype"
+        }
+      }
+    ],
+    "defaultValues": [
+      {
+        "colName": "status",
+        "type": "string",
+        "value": "Active"
+      }
+      ]
+  },
+  "onCancelRoute": "/list/user"
+}

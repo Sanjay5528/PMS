@@ -1,0 +1,74 @@
+{
+    "pageHeading": "Sub Modules",
+    "formType": "simple",
+    "editMode": "popup",
+    "keyField": "_id",
+  
+    "form": {
+      "collectionName": "modules",
+      "fields": [
+        {
+          "type": "input",
+          "key": "moduleid",
+          "props": {
+            "label": "Module Id",
+            "placeholder": "Module Id",
+            "pattern": "^[a-zA-Z0-9-_]*$",
+            "required": true
+          }
+        },
+        {
+          "type": "input",
+          "key": "modulename",
+          "props": {
+            "label": "Module Name",
+            "placeholder": "Module Name",
+            "pattern": "^[a-zA-Z0-9>;,:_-]+([a-zA-Z0-9>;,:_-]+)*$",
+            "required": true
+          }
+        },
+        {
+          "type": "select-input",
+          "key": "parentmodulename",
+          "props": {
+            "label": "Parent Module Name",
+            "placeholder": "Parent Module Name",
+            "labelPropTemplate": " {{parentmodulename}}",
+            "optionsDataSource": {
+              "collectionName": "modules"
+            },
+            "labelProp": "parentmodulename",
+            "valueProp": "parentmodulename",
+            "required": true
+          },
+          "expressions": {
+            "hide": "!model.isshow"
+          }
+        },
+        {
+          "key": "startdate",
+          "type": "datetime-input",
+         
+          "props": {
+            "label": "Start Date",
+            "placeholder": "Start Date",
+            "type": "date",
+            "required": true
+          }
+        },
+        {
+          "key": "enddate",
+          "type": "datetime-input",
+          "parentKey": "startdate",
+          "parentCollectionName": "modules",
+          "props": {
+            "label": "End Date",
+            "placeholder": "End Date",
+            "type": "date",
+            "required": true
+          }
+        }
+      ]
+    },
+    "onCancelRoute": "/module"
+  }

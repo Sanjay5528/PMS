@@ -1,0 +1,87 @@
+{
+	"pageHeading": "Country",
+	"formType": "simple",
+  "editMode": "popup",
+  "keyField":"_id",
+	"form": {
+	  "collectionName": "country",
+	  "fields": [
+    
+      {
+        "type": "input",
+        "key": "countrycode",
+        "props": {
+        "label": "Code",
+        "pattern": "^[A-Z]{2,3}",
+        "placeholder": "Code",
+        "required": true
+        }
+      },
+
+      {
+        "type": "input",
+        "key": "countryname",
+        "props": {
+        "label": "Name",
+        "placeholder": "Name",
+        "pattern": "^[a-zA-Z_]+( [a-zA-Z_]+)*$",
+        "required": true
+        }
+      },
+   
+  {
+    "fieldGroupClassName": "display-flex",
+    "fieldGroup": [
+      {
+        "type": "input",
+        "key": "currencycode",
+        "className": "flex-1",
+        "props": {
+        "label": "Currency Code",
+        "pattern": "^[A-Z]{3}",
+        "placeholder": "Currency Code",
+        "required": true
+        }
+      },
+      {
+        "type": "input",
+        "key": "currencydecimal",
+        "className": "flex-1",
+        "props": {
+          "label": "Decimal Value",
+          "type": "number",
+          "placeholder": "Decimal Value",
+          "required": true
+        }
+      }
+    ]
+  },
+       {
+        "type": "input",
+        "key": "callingcode",
+        "props": {
+          "label": "Calling Code",
+          "placeholder": "Calling Code",
+          "required": true
+        }
+      },
+      {
+        "key": "languages",
+        "type": "multiselect-input",
+        "props": {
+            "label": "Language",
+            "placeholder": "Language",
+            "labelPropTemplate": " {{name}}",
+            "optionsDataSource": {
+                "collectionName": "language"
+            },
+            "labelProp": "name",
+            "valueProp": "id",
+            "required": true
+        }
+    }
+      ]
+     
+	},
+	"onCancelRoute": "/list/country"
+  }

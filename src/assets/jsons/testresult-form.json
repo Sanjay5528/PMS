@@ -1,0 +1,159 @@
+{
+  "pageHeading": "TestResult",
+  "formType": "simple",
+  "editMode": "popup",
+  "keyField": "_id",
+  "form": {
+    "collectionName": "testresult",
+    "fields": [
+      {
+        "type": "input",
+        "key": "testresultid",
+        "props": {
+          "label": "Test Result Id",
+          "placeholder": "Test Result Id",
+          "pattern": "^[a-zA-Z0-9-_]*$",
+          "required": true
+        }
+      },
+      {
+        "type": "input",
+        "key": "expectedresult",
+        "props": {
+          "type": "string",
+          "label": "Expected Result",
+          "placeholder": "Expected Result",
+          "pattern": "^[a-zA-Z0-9-_ ]*$",
+          "required": true
+        }
+      },
+      {
+        "type": "input",
+        "key": "actualresult",
+        "props": {
+          "type": "string",
+          "label": "Actual Result",
+          "placeholder": "Actual Result",
+          "pattern": "^[a-zA-Z0-9-_]*$",
+          "required": true
+        }
+      },
+    
+     
+       
+      
+    {
+      "key": "status",
+      "type": "select",
+      "props": {
+        "label": "Status",
+        "placeholder": "Status",
+         
+        "required": true,
+        "options": [
+          { "value": "Pass", "label": "Pass" },
+          { "value": "Fail", "label": "Fail"  }
+         
+                      
+        ]
+     
+      } 
+    },
+    {
+      "type": "input",
+      "key": "issuename",
+      "props": {
+        "type": "string",
+      "label": "Issue Name",
+      "placeholder": "Issue Name",
+      "required": true
+      },
+      
+    
+      "expressions": {
+        "hide": "!(model.status == 'Fail')"
+      }
+        
+    },
+    {
+      "key": "issuetype",
+      "type": "select",
+      "props": {
+        "label": "Issue Type",
+        "placeholder": "Issue Type",
+        "required": true,
+       
+        "options": [
+          { "value": "Alignment Issue", "label": "Alignment Issue" },
+          { "value": "Logical Issue", "label": "Logical Issue"  }
+         
+                      
+        ]
+     
+      } ,
+      
+    
+      "expressions": {
+        "hide": "!(model.status == 'Fail')"
+      }
+    },
+    {
+      "type": "image-input",
+      "key": "image",
+      "required": true,
+      "props": {
+          "label": "Attachments screenshot"
+      },
+      
+        "expressions": {
+          "hide": "!(model.status == 'Fail')"
+        }
+      },
+      {
+        "key": "status",
+        "type": "select",
+        "props": {
+          "label": "Status",
+          "placeholder": "Status",
+          "required": true,
+          "options": [
+            {
+              "value": "Pass",
+              "label": "Pass"
+            },
+            {
+              "value": "Fail",
+              "label": "Fail"
+            }
+          ]
+        }
+      },
+      {
+        "type": "image-input",
+        "key": "image",
+        "props": {
+          "label": "Attachments screenshot",
+          "required": true
+        },
+        "expressions": {
+          "hide": "!(model.status == 'Fail')"
+        }
+      },
+      {
+        "type": "input",
+        "key": "comment",
+        "props": {
+          "type": "string",
+          "label": "Comment",
+          "placeholder": "Comment",
+          "required": true,
+          "pattern": "^[a-zA-Z0-9-_]*$"
+        },
+        "expressions": {
+          "hide": "!(model.status == 'Fail')"
+        }
+      }
+    ]
+  },
+  "onCancelRoute": "/list/testresult"
+}

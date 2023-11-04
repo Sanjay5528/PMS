@@ -1,0 +1,35 @@
+{
+	"pageHeading": "Role",
+	"formType": "simple",
+  "editMode": "popup",
+  "keyField":"_id",
+	"form": {
+	  "collectionName": "role",
+	  "fields": [
+		
+      {
+        "type": "input",
+        "key": "_id",
+        "props": {
+        "label": "Id",
+        "pattern": "^[a-zA-Z0-9-]*$",
+        "placeholder": "Id",
+        "required": true
+        }
+      },
+
+      {
+        "type": "input",
+        "key": "name",
+        "props": {
+        "label": "Name",
+        "placeholder": "Name",
+        "pattern": "^[a-zA-Z]+( [a-zA-Z]+)*$",
+        "required": true
+        }
+      }
+      ]
+     
+	},
+	"onCancelRoute": "/list/role"
+  }

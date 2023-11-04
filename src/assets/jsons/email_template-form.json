@@ -1,0 +1,62 @@
+{
+    "pageHeading": "Email Template",
+    "formType": "simple",
+    "editMode": "popup",
+    "keyField":"_id",
+    "form": {
+      "collectionName": "email_template",
+      "fields": [
+        {
+          "fieldGroupClassName": "display-flex",
+          "fieldGroup": [
+  
+            {
+              "type": "select-input",
+              "key": "emaileventid",
+              "className":"flex-6",
+              "props": {
+                "label": "Event",
+                "labelPropTemplate": "{{eventname}}",
+                "optionsDataSource": {
+                "collectionName": "email_event"
+                },
+                "labelProp": "eventname",
+                "valueProp": "eventid",
+                "required": true
+              }
+              }
+          ]
+        },
+       
+        
+            {
+              "type": "input",
+              "key": "subject",
+              "props": {
+                "label": "Subject",
+                "placeholder": "Subject",
+                "required": true
+              }
+            },
+        {
+          "type": "html-input",
+          "key": "message",
+          "props": {
+            "label": "Message",
+              "required": true
+          }
+      },
+      {
+        "type": "label_view",
+        "className": "flex-1",
+        "props": {
+          "label": "Available Parameters:{{SUPPLIER_NAME}},{{PROGRAM_NAME}},{{PART_NAME}},{{ELEMENT_NAME}},{{SENDER_NAME}}",
+          "inputType": "html"
+        }
+      } 
+      ]
+      
+    },
+    "onCancelRoute": "/list/email-template"
+  }
+  

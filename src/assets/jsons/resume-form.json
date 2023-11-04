@@ -1,0 +1,96 @@
+{
+    "pageHeading": "Resume",
+    "formType": "simple",
+    "editMode": "page",
+    "keyField": "_id",
+    "form": {
+      "collectionName": "resume",
+      "fields": [
+        {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+        {
+            "type": "input",
+            "key": "fullname",
+            "props": {
+            "label": "Full Name",
+            "placeholder": "Full Name",
+            "required": true
+            }
+        },
+        {
+            "type": "input",
+            "key": "jobtitle",
+            "props": {
+            "label": "Job Title",
+            "placeholder": "Job Title",
+            "required": true
+            }
+        },
+        {
+            "type": "input",
+            "key": "email",
+            "props": {
+            "label": "Email",
+            "placeholder": "Email",
+            "required": true
+            }
+        },
+        {
+            "type": "input",
+            "key": "phonenumber",
+            "props": {
+            "label": "Phone Number",
+            "placeholder": "Phone Number",
+            "required": true
+            }
+        },
+        {
+            "type": "html-input",
+            "key": "address",
+            "props": {
+            "label": "Address",
+            "placeholder": "Address",
+            "required": true
+            }
+        }
+
+    ]
+},
+        {
+            "type": "input",
+            "key": "email",
+            "props": {
+            "label": "Email",
+            "placeholder": "Email",
+            "required": true
+            }
+        },
+        {
+            "type": "input",
+            "key": "mobilenumber",
+            "props": {
+            "label": "Mobile Number",
+            "placeholder": "Mobile Number",
+            "required": true
+            }
+        },
+        {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+        {
+            "type": "input",
+            "key": "linkedin",
+            "props": {
+            "label": "LinkedIn",
+            "placeholder": "LinkedIn",
+            "required": true
+            }
+        }
+    ]
+}
+      ]
+    },
+  "onCancelRoute": "/list/resume"
+}
+  

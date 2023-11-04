@@ -1,0 +1,120 @@
+{
+    "pageHeading": "Team Members",
+    "formType": "simple",
+    "editMode": "popup",
+    "keyField": "roleid",
+    "form": {
+        "collectionName": "projectteam",
+        "fields": [
+            {
+                "type": "input",
+                "key": "roleid",
+                "props": {
+                    "label": "Project Role Id",
+                    "placeholder": "Project Role Id",
+                    "pattern": "^[a-zA-Z0-9-_]*$",
+                    "required":"true"
+                }
+            },
+            {
+              "type": "autocomplete-input",
+              "key": "employeename",
+            
+              "templateOptions": {
+               "label": "Employee Name",
+              "attributes":"firstname",
+               "allCaps": true,
+               "onEnterSubmit": false,
+               "tabindex": 1,
+             "nextTabIndex": 3,
+             "placeholder": "Employee Name",
+             "labelPropTemplate": "{{firstname}}",
+               "optionsDataSource": {
+                "methodName": "getdata",
+                 "collectionName": "employee"
+               },
+               "labelProp": "firstname",
+              "valueProp": "firstname",
+              "required": true
+             }
+            },
+            
+            {
+                "key": "teamname",
+                "type": "select",
+                
+                "props": {
+                  "label": "Team Name",
+                 
+                  "placeholder": "Team Name",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "UI/UX Designer",
+                      "label": "UI/UX Designer"
+                    },
+                    {
+                      "value": "UI Development",
+                      "label": "UI Development"
+                    },
+                    {
+                        "value": "API Development",
+                        "label": "API Development"
+                      },
+                      {
+                        "value": "DB Designer",
+                        "label": "DB Designer"
+                      },
+                      {
+                        "value": "Testing",
+                        "label": "Testing"
+                      }
+                       
+
+                  ]
+                }
+            },
+            {
+                "key": "rolename",
+                "type": "select",
+                
+                "props": {
+                  "label": "Role Name",
+                 
+                  "placeholder": "Role Name",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "Project Manager",
+                      "label": "Project Manager"
+                    },
+                    {
+                      "value": "Project Lead",
+                      "label": "Project Lead"
+                    },
+                    {
+                        "value": "Team Lead",
+                        "label": "Team Lead"
+                      },
+                      {
+                        "value": "Software Developer",
+                        "label": "Software Developer"
+                      },
+                      {
+                        "value": "Tester",
+                        "label": "Tester"
+                      },
+                      {
+                        "value": "DB Admin",
+                        "label": "DB Admin"
+                      }
+                       
+
+                  ]
+                }
+            }
+           
+        ]
+    },
+    "onCancelRoute": "/list/teammembers"
+}

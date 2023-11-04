@@ -1,0 +1,171 @@
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 80px;
+  /* padding: 20px; */
+}
+
+.example-card {
+  /* width: 300px;
+  margin-bottom: 20px; */
+  width: 100%;
+  /* Set the card width to 100% */
+  max-width: 300px;
+  /* Set the maximum width for the card */
+  margin: 10px;
+  /* Add some margin to create spacing between cards */
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+
+}
+
+.title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-icon {
+  position: static;
+  width: 53.96px;
+  height: 53.96px;
+  left: 8px;
+  position: absolute;
+  position: absolute;
+  border-radius: 8px;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  margin: 10px;
+  top: 5px;
+}
+
+.mat-title {
+  margin-inline: 65px;
+  padding: 10px;
+  color: #8A92A6;
+  font-weight: 600;
+}
+
+.mat-subtitle {
+  color: #232D42;
+  margin-inline: 65px;
+  padding: 10px;
+  font-size: x-large;
+  font-weight: 500;
+}
+
+.mat-icons0 {
+  background-color: #3A57E8;
+  font-size: xx-large;
+}
+
+.mat-icons1 {
+  background-color: #F16A1B;
+  font-size: xx-large;
+}
+
+.mat-icons2 {
+  background-color: #079AA2;
+  font-size: xx-large;
+}
+
+.mat-icons3 {
+  background-color: #C03221;
+  font-size: xx-large;
+}
+
+canvas {
+  display: block;
+  box-sizing: border-box;
+  height: 360px !important;
+  width: 360px !important;
+  margin: auto;
+  padding-bottom: 5px;
+  margin-top: -25px;
+}
+
+.chart-card {
+  padding: 15px;
+  border-top: 1px solid #e7e7e7;
+}
+
+.container {
+  display: flex;
+  margin: 15px;
+  /* border: 3px solid #fff; */
+}
+
+.item {
+  flex-basis: 50%;
+  margin-right: 10px;
+  width: 50%;
+  float: left;
+}
+
+.grid-card {
+  max-height: 375px;
+  /* width: 735px; */
+}
+
+.chart-card1 {
+  height: 290px;
+}
+
+p {
+  color: #1B1E25;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 20px;
+  display: flex;
+  align-items: flex-end;
+  color: #1B1E25;
+}
+
+.mat-container {
+  height: 100vh;
+}
+
+@media (max-width: 767px) {
+
+  /* CSS rules for smart mobile screens */
+  /* Example styles */
+  .mat-container {
+    overflow-y: scroll;
+  }
+
+  /* Add your custom styles here */
+}
+
+@media only screen and (min-width: 600px) {
+  .example-card {
+    max-width: 600px;
+    /* Increase the maximum width for larger screens */
+  }
+}
+
+@media only screen and (min-width: 960px) {
+  .example-card {
+    max-width: 800px;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .example-card {
+    max-width: 300px;
+    /* Adjust the max-width value as needed */
+  }
+}
+
+.chartjs-legend .box {
+  border-radius: 50% !important;
+  /* Set the border-radius to 50% for a round shape */
+  padding: 6px;
+  width: 10px;
+  /* Set the width and height to define the size of the circle */
+  height: 10px;
+  /* Adjust the padding as needed */
+}
+
+.mat-stats {
+  padding: 10px;
+}

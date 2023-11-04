@@ -1,0 +1,272 @@
+{
+	"pageHeading": "Job",
+	"formType": "simple",
+    
+    "editMode": "page",
+	"form": {
+	  "collectionName": "joblist",
+	  "fields": [
+        {
+            "key": "name",
+            "type": "input",
+            "props": {
+                "label": "Job Name",
+                "placeholder": "Job Name",
+                "required": true,
+                "maxLength": "25"
+            }
+        },
+        {
+            "key": "categorycode",
+            "type": "input",
+            "props": {
+                "label": "Job Category",
+                "placeholder": "Job Category",
+                "required": true
+            }
+        },
+        {
+            "key": "description",
+            "type": "html-input",
+            "props": {
+                "label": "Job Description",
+                "placeholder": "Job Description",
+                "required": true,
+                "maxLength": 100
+            }
+        },
+        {
+            "key": "numberofengineersrequired",
+            "type": "number",
+            "props": {
+                "label": "Number of engineers required",
+                "placeholder": "Number of engineers required",
+                "required": true
+            }
+        },
+        {
+            "key": "workmode",
+            "type": "radio",
+            "props": {
+                "label": "Job Type",
+                "placeholder": "Job Type",
+                "required": true,
+                "options": [
+                    {
+                        "value": "On-site",
+                        "label": "On-site"
+                    },
+                    {
+                        "value": "Remote",
+                        "label": "Remote"
+                    }
+                ]
+            }
+        },
+        {
+            "key": "tools",
+            "type": "multiselect-input",
+            "props": {
+                "label": "Tools",
+                "placeholder": "Tools",
+                "labelPropTemplate": " {{name}}",
+                "optionsDataSource": {
+                    "collectionName": "tools"
+                },
+                "labelProp": "name",
+                "valueProp": "name",
+                "required": true
+            }
+        },
+        {
+            "key": "skills",
+            "type": "multiselect-input",
+            "props": {
+                "label": "Skills",
+                "placeholder": "Skills",
+                "labelPropTemplate": " {{name}}",
+                "optionsDataSource": {
+                    "collectionName": "skills"
+                },
+                "labelProp": "name",
+                "valueProp": "id",
+                "required": true
+            }
+        },
+        {
+            "key": "tasks",
+            "type": "multiselect-input",
+            "props": {
+                "label": "Tasks",
+                "placeholder": "Tasks",
+                "labelPropTemplate": " {{name}}",
+                "optionsDataSource": {
+                    "collectionName": "tasks"
+                },
+                "labelProp": "name",
+                "valueProp": "id",
+                "required": true
+            }
+        },
+        {
+            "key": "project.projectname",
+            "type": "input",
+            "props": {
+                "label": "Project Name",
+                "placeholder": "Project Name",
+                "required": true
+            }
+        },
+        {
+            "key": "project.projecttype",
+            "type": "input",
+            "props": {
+                "label": "Project Type",
+                "placeholder": "Project Type",
+                "required": true
+            }
+        },
+        {
+            "key": "targetdatetime",
+            "type": "datetime-input",
+            "props": {
+                "label": "Target Date & Time",
+                "placeholder": "Target Date & Time",
+                "required": true
+            }
+        },
+        {
+            "key": "clientserviceaddress.country",
+            "type": "select-input",
+            "props": {
+                "label": "Country",
+                "placeholder": "Country",
+                "required": true,
+                "labelPropTemplate": " {{countryname}}",
+                "optionsDataSource": {
+                    "collectionName": "country"
+                },
+                "labelProp": "countryname",
+                "valueProp": "countryname"
+            }
+        },
+        {
+            "key": "clientserviceaddress.city",
+            "type": "select-input",
+            "props": {
+                "label": "City",
+                "placeholder": "City",
+                "required": true,
+                "labelPropTemplate": " {{cityname}}",
+                "optionsDataSource": {
+                    "collectionName": "city"
+                },
+                "labelProp": "cityname",
+                "valueProp": "cityname"
+            }
+        },
+        {
+            "key": "clientserviceaddress.street",
+            "type": "textarea",
+            "props": {
+                "label": "Street",
+                "placeholder": "Street",
+                "required": true,
+                "maxLength": 25
+            }
+        },
+        {
+            "key": "clientserviceaddress.landmark",
+            "type": "textarea",
+            "props": {
+                "label": "Landmark",
+                "placeholder": "Landmark",
+                "required": true
+            }
+        },
+        {
+            "key": "weekendavailability",
+            "type": "toggle",
+            "props": {
+                "label": "Weekend availability"
+            }
+        },
+        {
+            "key": "weekendworkdatetime",
+            "type": "datetime-input",
+            "props": {
+                "label": "Date & Time",
+                "placeholder": "Date & Time",
+                "required": true
+            },
+            "expressions": {
+                "hide": "!model.weekendavailability"
+            }
+        },
+        {
+            "key": "weekendadditionworkhours",
+            "type": "number",
+            "props": {
+                "label": "Additional Hours",
+                "placeholder": "Additional Hours",
+                "required": true
+            },
+            "expressions": {
+                "hide": "!model.weekendavailability"
+            }
+        },
+        {
+            "key": "numberofengineersrequired",
+            "type": "number",
+            "props": {
+                "label": "Number of engineers required",
+                "placeholder": "Number of engineers required",
+                "required": true
+            },
+            "expressions": {
+                "hide": "!model.weekendavailability"
+            }
+        },
+        {
+            "key": "pointofcontact",
+            "type": "button-input",
+            "templateOptions": {
+                "label": "Point of contact:",
+                "labelPropTemplate": "{{pointofcontact}}",
+                "attributes": "pointofcontact"
+            }
+        },
+        {
+            "key": "primarylanguage",
+            "type": "input",
+            "props": {
+                "label": "Primary Language",
+                "placeholder": "Primary Language",
+                "required": true
+            }
+        },
+        {
+            "key": "secondarylanguage",
+            "type": "input",
+            "props": {
+                "label": "Secondary Language",
+                "placeholder": "English",
+                "required": true
+            }
+        },
+        {
+            "key": "additionaldetails",
+            "type": "html-input",
+            "props": {
+                "placeholder": "Additonal Details",
+                "required": true,
+                "label": "Additonal Details",
+               
+                "maxLength": 150
+            }
+        }
+      ]
+     
+	},
+	"onCancelRoute": "/list/joblist"
+  }

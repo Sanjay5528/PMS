@@ -1,0 +1,99 @@
+{
+  "pageHeading": "Task",
+  "collectionName": "task",
+  "editMode": "page",
+  "showbutton": false,
+  "flag":true,
+   
+  "keyField": "_id",
+  "screenWidth": "50%",
+  "actions": [
+    {
+      "label": "Edit",
+      "icon": "edit",
+      "formName": "task"
+    },
+    {
+      "label": "Delete",
+      "icon": "delete",
+      "formName": "entities/task"
+    }
+  ],
+  "addRoute": "add/task",
+  "editRoute": "edit/task",
+  "columnDefs": [
+    {
+      "headerName": "Task Id",
+      "field": "taskid",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Task Name",
+      "field": "taskname",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Scheduled Start Date",
+      "field": "scheduledstartdate",
+      "sortable": true,
+      "filter": "agTextColumnFilter",
+      "type": "date"
+    },
+    {
+      "headerName": "Scheduled End Date",
+      "field": "scheduledenddate",
+      "sortable": true,
+      "filter": "agTextColumnFilter",
+      "type": "date"
+    },
+    {
+      "headerName": "Allocated Hours",
+      "field": "allocatedhours",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Assigned To",
+      "field": "assignedto",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+     
+    {
+      "headerName": "TotalWorked Hours",
+      "field": "totalworkedhours",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Status",
+      "field": "status",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Approval Status",
+      "field": "Approval Status",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Remarks",
+      "field": "remarks",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "type": "rightAligned",
+      "headerName": "Actions",
+      "cellRenderer": "buttonRenderer",
+      "lockPosition": "right",
+      "cellRendererParams": {
+        "onClick": "this.onBtnClick1.bind(this)",
+        "label": "Click 1"
+      }
+    }
+  ]
+}

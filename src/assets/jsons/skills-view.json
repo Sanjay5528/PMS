@@ -1,0 +1,43 @@
+{
+  "pageHeading": "Skills",
+  "formType": "simple",
+  "editMode": "popup",
+  "keyField": "_id",
+  "screenWidth": "50%",
+  "form": {
+    "collectionName": "skills",
+    "fields": [
+      {
+        "type": "label-view",
+        "key": "categoryname",
+        "props": {
+          "label": "Category Name"
+        }
+      },
+
+      {
+        "type": "label-view",
+        "key": "id",
+        "props": {
+          "label": "Id"
+        }
+      },
+
+      {
+        "type": "label-view",
+        "key": "name",
+        "props": {
+          "label": "Name"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "status",
+        "props": {
+          "label": "Status"
+        }
+      }
+    ]
+  },
+  "onCancelRoute": "/list/skills"
+}

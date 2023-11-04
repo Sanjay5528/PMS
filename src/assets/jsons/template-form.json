@@ -1,0 +1,78 @@
+{
+    "pageHeading": "Template",
+    "formType": "simple",
+
+    "form": {
+      "collectionName": "template",
+      "fields": [
+        
+        {
+         "fieldGroupClassName":"display-flex",
+          "fieldGroup": [
+            {
+              "type": "input",
+              "key": "id",
+              "className": "flex-6",
+              "props": {
+                "label": "Template ID",
+                "pattern": "^[a-zA-Z0-9-]*$",
+                "placeholder": "Template ID",
+                "required": true
+              }
+            },
+            {
+              "type": "input",
+              "key": "name",
+              "className": "flex-6",
+              "props": {
+                "label": "Template Name",
+                "pattern": "^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$",
+                "placeholder": "Template Name",
+                "required": true
+              }
+            }
+          ]
+        },
+        {
+          "fieldGroupClassName":"display-flex",
+          "fieldGroup": [
+          {
+          "type": "select",
+          "key": "status",
+          "className": "flex-6",
+          "props": {
+            "label": "Status",
+            "options": [
+            {
+              "label": "Active",
+              "value": "Active"
+            },
+            {
+              "label": "InActive",
+              "value": "InActive"
+            }
+            ],
+            "required": true
+          },
+          "expressions": {
+            "hide": "!model.isshow"
+          }
+          }
+          
+          ]
+          },
+        {
+          "type": "html",
+          "key": "desc",
+          "props": {
+              "label": "Description",
+              "placeholder": "Description",
+              "required": true
+          }
+      }
+
+     
+      ]
+    },
+    "onCancelRoute": "/list/unit"
+  }

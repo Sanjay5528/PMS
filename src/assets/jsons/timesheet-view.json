@@ -1,0 +1,61 @@
+{
+	"pageHeading": "TimeSheet",
+	"formType": "simple",
+  "editMode": "popup",
+  "keyField":"_id",
+	"form": {
+	  "collectionName": "timesheet",
+	  "fields": [
+        {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+      {
+        "type": "label-view",
+        "key": "timesheetid",
+        "props": {
+        "label": "Timesheet Id"
+        }
+      },
+     
+      {
+        "type": "label-view",
+        "key": "employeeid",
+        "props": {
+        "label": "Employee Id"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "tasksallocationid",
+        "props": {
+        "label": "Tasks Allocation Id"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "timesheetdate",
+        "props": {
+        "label": "Timesheet Date"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "workedhours",
+        "props": {
+        "label": "Worked Hours"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "remark",
+        "props": {
+        "label": "Remark"
+        }
+      }
+       
+    ]
+}   
+   ]
+	},
+	"onCancelRoute": "/list/timesheet"
+  }

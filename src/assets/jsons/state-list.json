@@ -1,0 +1,53 @@
+{
+    "pageHeading": "State",
+    "collectionName": "filter/get/state",
+    "editMode": "popup",
+    "showbutton":true,
+    "screenWidth":"40%",
+    "actions": [
+      {
+        "label":"Edit",
+        "icon":"edit",
+        "formName":"state"
+      },
+      {
+        "label": "Delete",
+        "icon": "delete",
+        "formName":"state"
+      }
+    ],
+    "addRoute": "add/state",
+    "editRoute": "edit/state",
+    "columnDefs": [
+        
+      {
+        "headerName": "State code",
+        "field": "statecode",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "headerName": "State Name",
+        "field": "statename",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "headerName": "Country Name",
+        "field": "countryname",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "type": "rightAligned",
+        "headerName": "Actions",
+        "cellRenderer": "buttonRenderer",
+        "lockPosition": "right",
+        "cellRendererParams": {
+          "onClick": "this.onBtnClick1.bind(this)",
+          "label": "Click 1"
+        }
+      }
+    ]
+  }
+  

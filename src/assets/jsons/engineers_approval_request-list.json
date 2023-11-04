@@ -1,0 +1,60 @@
+{
+    "pageHeading": "Engineers Approval Request",
+    "collectionName": "engineer",
+    "editMode": "page",
+    "showbutton":false,
+    "keyField":"_id",
+    "screenWidth":"40%",
+    "addRoute": "data/engineer",
+    "actions": [
+      {
+        "label":"add"
+      }
+    ],
+    "columnDefs": [
+        {
+            "headerName": "First Name",
+            "field": "contact.firstname",
+            "sortable": true,
+            "filter": "agTextColumnFilter"
+        },
+        {
+            "headerName": "Last Name",
+            "field": "contact.lastname",
+            "sortable": true,
+            "filter": "agTextColumnFilter"
+          },
+      {
+        "headerName": "Email Id",
+        "field": "contact.emailid",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "headerName": "Mobile No",
+        "field": "contact.mobilenumber",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "headerName": "Status",
+        "field": "status",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      
+    
+      {
+        "type": "rightAligned",
+        "headerName": "Actions",
+        "cellRenderer": "buttonRenderer",
+        "lockPosition": "right",
+        "cellRendererParams": {
+          "onClick": "this.onBtnClick1.bind(this)",
+          "icon": "account_circle",
+          "label":"route"
+        }
+      }
+    ]
+  }
+  

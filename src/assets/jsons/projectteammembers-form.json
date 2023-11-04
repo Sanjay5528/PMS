@@ -1,0 +1,98 @@
+{
+  "pageHeading": "Project Team Members",
+  "formType": "simple",
+  "editMode": "page",
+  "keyField": "_id",
+  "form": {
+    "collectionName": "projectteammembers",
+    "fields": [
+      {
+        "type": "input",
+        "key": "teammemberid",
+        "props": {
+          "label": "Team Member Id",
+          "placeholder": "Team Member Id",
+          "pattern": "^[a-zA-Z0-9-_]*$",
+          "required": true
+        },
+        
+           "expressions": {
+                       
+             "props.readonly": "model.isEdit"
+          }
+      },
+     
+      {
+        "type": "multiselect-input",
+        "key": "firstname",
+        "props": {
+          "label": "Team Member Name",
+          "placeholder": "Team Member Name",
+          "labelPropTemplate": " {{firstname}}",
+          "optionsDataSource": {
+            "collectionName": "employee"
+          },
+          "labelProp": "firstname",
+          "valueProp": "firstname",
+          "required": true
+          }
+         
+       
+      },
+ 
+      
+      {
+        "type": "select-input",
+        "key": "projectname",
+        "props": {
+          "label": "Project Name",
+          "placeholder": "Project Name",
+          "labelPropTemplate": " {{projectname}}",
+          "optionsDataSource": {
+            "collectionName": "clients/project"
+          },
+          "labelProp": "projectname",
+          "valueProp": "projectname",
+          "required": true
+        }
+      },
+      {
+        
+        "key": "startdate",
+        "type": "datepicker-input",
+        
+        "props": {
+          "label": "Start Date",
+          "placeholder": "Start Date",
+           
+          "required": true
+        }
+      },
+      {
+        
+        "key": "enddate",
+        "type": "datepicker-input",
+        "parentKey": "startdate",
+        "parentCollectionName": "projecteammembers",
+        "props": {
+          "label": "End Date",
+          "placeholder": "End Date",
+           
+          "required": true
+        }
+      },
+      {
+        "type": "button-input",
+        "key": "projectrole",
+        "props": {
+            "label": "Project Role",
+            "labelPropTemplate": "{{projectrole}}",
+            "attributes": "projectrole"
+            
+        }
+    }
+       
+    ]
+  },
+  "onCancelRoute": "/list/projectteammembers"
+}

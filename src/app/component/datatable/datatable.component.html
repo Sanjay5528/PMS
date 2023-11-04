@@ -1,0 +1,71 @@
+<div class="example-sidenav-content">
+  <div style="
+      height: 50px;
+      margin: 30px;
+      text-align: center;
+      display: flex;
+      flex-direction: row;
+    ">
+    <div *ngIf="this.ById" class="head">
+      <div style="display: flex; margin-right: 30px">
+        <span>Client Id :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: bold; margin-right: 105px">{{this.clientData?.clientid}}</span></span>
+      </div>
+      <div style="display: flex; margin-right: 30px">
+        <span>Client Name :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+          style="font-weight: bold; margin-right: 30px">{{this.clientData?.clientname}}</span></span>
+      </div>
+      <div style="display: flex; margin-right: 30px">
+        <span>Industry Type :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+          style="font-weight: bold;">{{this.clientData?.industrytype_name}}</span></span>
+      </div>
+      <div style="display: flex; margin-right: 30px">
+        <span>Email :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: bold; margin-right: 30px">{{this.clientData?.email}}</span></span>
+      </div>
+    </div>
+
+    <div *ngIf="this.byModule" class="head">
+      <div style="display: flex; margin-right: 30px">
+        <span>Module Id :&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: bold; margin-right: 105px">{{this.moduleData?.moduleid}}</span></span>
+      </div>
+      <div style="display: flex; margin-right: 30px">
+        <span>Module Name :&nbsp;&nbsp;&nbsp;&nbsp;<span
+          style="font-weight: bold; margin-right: 30px">{{this.moduleData?.modulename}}</span></span>
+      </div>
+      <div style="display: flex; margin-right: 30px">
+        <span>Parent Module Name :&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: bold; margin-right: 22px">{{this.moduleData?.parentmodulename}}</span></span>
+      </div>
+      <div style="display: flex; margin-right: 30px">
+        <span>Project Id :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: bold; padding-right: 200px">{{this.moduleData?.projectid}}</span></span>
+      </div>
+    </div>
+    <!-- <p *ngIf="this.ById" class="head"><b> {{this.ById}}</b></p> -->
+    <span *ngIf="!this.ById && !this.byModule" class="head2">{{ pageHeading }} List</span>
+    <div *ngIf="this.showbutton==true">
+      <button class="icon" matTooltip="Add" mat-mini-fab (click)="onAddButonClick()"
+        style="margin-right: 20px; background: #90c0e5;   color: #080201;">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
+  <ag-grid-angular #agGrid style="width: 100%; height: 65vh; flex: 1 1 auto; margin-top: 80px;" class="ag-theme-alpine"
+    [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [rowData]="listData" [rowSelection]="'single'"
+    [pagination]="true" [paginationPageSize]="10" [context]="context" (firstDataRendered)="onFirstDataRendered($event)"
+    [frameworkComponents]="frameworkComponents" (selectionChanged)="onSelectionChanged($event)"
+    (cellvalueChanged)="onCellValueChanged($event)" (gridReady)="onGridReady($event)"></ag-grid-angular>
+</div>
+<!-- <app-timesheet></app-timesheet> -->
+<ng-template #editViewPopup class="example-sidenav" mode="over" style="height: auto">
+  <div style="text-align-last: end" *ngIf="formAction == 'view'">
+    <mat-icon (click)=this.dialogService.closeModal()>close</mat-icon>
+  </div>
+  <div class="page">
+    <div *ngIf="formAction != 'view'" class="page-content">
+      <app-dynamic-form [formName]="formName" [model]="selectedModel" [mode]="'popup'"
+        (onClose)="close($event)"></app-dynamic-form>
+    </div>
+  </div>
+  <div class="center" style="width: 100%; margin: 5px" *ngIf="formAction == 'view'">
+    <h2 style="text-align: center;" class="page-title">{{ pageHeading }}</h2>
+    <formly-form [model]="selectedModel" [fields]="fields"></formly-form>
+  </div>
+</ng-template>

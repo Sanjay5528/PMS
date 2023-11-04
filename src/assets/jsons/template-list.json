@@ -1,0 +1,58 @@
+{
+	"pageHeading": "Template(s)",
+	"collectionName": "template",
+	"edit_mode":"slider",
+	"show":true,
+	"actions":[
+		{
+			"label":"Edit",
+			"icon":"edit",
+			"method":"edit()"
+		},
+		{
+			"label":"View",
+			"icon":"visibility",
+			"method":"view()"
+		},
+		{
+			"label":"Delete",
+			"icon":"delete",
+			"method":"delete()"
+		},
+		{
+			"label":"Element Mapping",
+			"icon":"mapping",
+			"endpoint":"template-element",
+			"method":"element_mapping()"
+		}
+		],
+	"addRoute": "/data/add/template",
+	"editRoute": "/data/edit/template",
+	"columnDefs": [
+	
+		{
+			"headerName": "Template ID",
+			"field": "id",
+			"sortable":true,
+			"filter": "agTextColumnFilter"
+			
+		},
+		{
+			"headerName": "Template Name",
+			"field": "name",
+			"sortable":true,
+			"filter": "agTextColumnFilter"
+		},
+		
+		{
+          "type":"rightAligned",
+			"headerName": "Actions",
+			"cellRenderer": "buttonRenderer",
+			"lockPosition": "right",
+			"cellRendererParams": {
+			  "onClick": "this.onBtnClick1.bind(this)",
+			  "label": "Click 1"
+			}        
+		  }
+	]
+}

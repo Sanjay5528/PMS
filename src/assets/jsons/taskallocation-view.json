@@ -1,0 +1,117 @@
+{
+	"pageHeading": "Task Allocation",
+	"formType": "simple",
+  "editMode": "page",
+  "keyField":"_id",
+	"form": {
+	  "collectionName": "taskAllocation",
+	  "fields": [
+        {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+      {
+        "type": "label-view",
+        "key": "taskallocationid",
+        "props": {
+        "label": "Task Allocation Id"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "projectid",
+        "props": {
+        "label": "Project Id"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "projectmoduleid",
+        "props": {
+        "label": "Project Module Id"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "employeeid",
+        "props": {
+        "label": "Employee Id"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "taskid",
+        "props": {
+        "label": "Task Id"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "scheduledstartdate",
+        "props": {
+        "label": "Scheduled Start Date"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "scheduledenddate",
+        "props": {
+        "label": "Scheduled End Date"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "allocatedhours",
+        "props": {
+        "label": "Allocated Hours"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "actualstartdate",
+        "props": {
+        "label": "Actual Start Date"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "actualenddate",
+        "props": {
+        "label": "Actual End Date"
+        }
+      },
+       
+      {
+        "type": "label-view",
+        "key": "actualhours",
+        "props": {
+        "label": "Actual Hours"
+        }
+      },
+      
+      {
+        "type": "label-view",
+        "key": "allocatedby",
+        "props": {
+        "label": "Allocated By"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "allocatedon",
+        "props": {
+        "label": "Allocated On"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "allocationremark",
+        "props": {
+        "label": "Allocation Remark"
+        }
+      }
+    ]
+}   
+   ]
+	},
+	"onCancelRoute": "/list/task"
+  }

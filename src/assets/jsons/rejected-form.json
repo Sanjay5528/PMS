@@ -1,0 +1,20 @@
+{
+    "pageHeading": "Timesheet",
+    "formType": "simple",
+    "editMode": "popup",
+    "keyField": "_id",
+    "form": {
+        "collectionName": "timesheet",
+        "fields": [
+            {
+                "type": "input",
+                "key": "remarks",
+                "props": {
+                    "label": "Remarks",
+                    "placeholder": "Remark"
+                }
+            }
+        ]
+    },
+    "onCancelRoute": "/list/timesheet"
+}

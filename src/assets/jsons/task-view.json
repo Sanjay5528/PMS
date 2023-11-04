@@ -1,0 +1,88 @@
+{
+	"pageHeading": "Task",
+	"formType": "simple",
+  "editMode": "popup",
+  "keyField":"_id",
+	"form": {
+	  "collectionName": "task",
+	  "fields": [
+        {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+      {
+        "type": "label-view",
+        "key": "taskid",
+        "props": {
+        "label": "Task Id"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "taskname",
+        "props": {
+        "label": "Task Name"
+        }
+      },
+     
+      {
+        "type": "label-view",
+        "key": "scheduledstartdate",
+        "props": {
+        "label": "Scheduled Start Date"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "scheduledenddate",
+        "props": {
+        "label": "Scheduled End Date"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "allocatedhours",
+        "props": {
+        "label": "Allocated Hours"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "actualstartdate",
+        "props": {
+        "label": "Actual Start Date"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "actualenddate",
+        "props": {
+        "label": "Actual End Date"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "actualhours",
+        "props": {
+        "label": "Actual Hours"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "status",
+        "props": {
+        "label": "Status"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "allocatedby",
+        "props": {
+        "label": "Allocated By"
+        }
+      }
+    ]
+}   
+   ]
+	},
+	"onCancelRoute": "/list/task"
+  }

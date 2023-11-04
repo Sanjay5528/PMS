@@ -1,0 +1,187 @@
+import { ChangeDetectorRef, Component, OnInit, SimpleChanges } from '@angular/core';
+import { FieldType } from '@ngx-formly/core';
+
+import { DataService } from '../services/data.service';
+import { DialogService } from '../services/dialog.service';
+import { ActivatedRoute, Router } from '@angular/router';
+
+@Component({
+ selector: 'image-input',
+ template: `
+
+<style>
+.mat-mdc-raised-button{
+ color: white;
+}
+.mat-raised-button{
+ color:white
+}
+
+.delete-icon {
+ position: absolute;
+ top: 4px;
+ right: 4px;
+ color: #ffffff;
+ background-color: rgba(0, 0, 0, 0.6);
+ border-radius: 50%;
+ padding: 2px;
+ cursor: pointer;
+}
+
+</style>
+
+<mat-label>{{field.props!['label']}}</mat-label>
+<div>
+<input
+ #myInput
+type="file"
+accept="image/*"
+name="myfile"
+(change)="onSelectFile($event)"
+style="margin-top: 30px;"
+ 
+/>
+<button style="margin-left:2px;margin-right:10px" type="button" color="warn" mat-raised-button (click)="reset(myInput)">
+
+ <span class="glyphicon glyphicon-trash"></span> Reset
+ </button>
+
+ <button
+ type="button"
+ (click)="upload()"
+ 
+ mat-raised-button
+ style="color: white;"
+ >
+ Upload
+ </button>
+</div>
+
+<div *ngIf="this.multiples"
+style="margin-top: 40px;
+ display: flex; gap: 12px;" >
+  <img width="200" height="133"
+ [src]="multiples" 
+ />
+</div>
+<div *ngIf="imageUrl" style="margin-top: 40px; display: flex; gap: 12px;">
+ <div *ngFor="let image of [imageUrl]; let index = index">
+ <img width="200" height="133" [src]="image" />
+ </div>
+</div>
+`,
+})
+export class ImageInput extends FieldType<any> implements OnInit {
+    
+ public file: any;
+ multiples:any;
+ urls: any[] = [];
+ // override id: any
+ // id:any
+ imageUrl :any
+ response: any
+ 
+ constructor(
+ public dataService: DataService,
+ private cf: ChangeDetectorRef,
+ public dialogService: DialogService,
+ private route: ActivatedRoute
+ ) {
+ super();
+ }
+
+
+ ngOnInit(): void {
+ // this.route.params.subscribe((params: any) => {
+ // this.id = params['id'];
+ // });
+console.log(this.id);
+
+ // });
+ // if (typeof this.model[this.field.key] === 'string') {
+ this.imageUrl=this.model[this.field.key]
+ // It's a string
+ // } else {
+ // It's not a string (possibly an array or another type)
+ // this.multiples=this.model[this.field.key]
+ // }
+
+ this.dataService.getDataById("employee", this.id).subscribe((res: any) => {
+ console.log(res);
+ this.response = res.data
+
+ })
+
+ 
+ this.dataService.getDataById("client", this.id).subscribe((res: any) => {
+console.log(res);
+    this.response = res.data
+   
+    
+    })
+
+
+ }
+
+ onSelectFile(event: any) {
+ this.file = event.target.files[0]
+console.log(this.file);
+
+ 
+ let i: number = 0;
+ for (const singlefile of event.target.files) {
+ var reader = new FileReader();
+ reader.readAsDataURL(singlefile);
+ this.urls.push(singlefile);
+ this.cf.detectChanges();
+ i++;
+ console.log(this.urls);
+ reader.onload = (event) => {
+ const url = (<FileReader>event.target).result as string;
+ this.multiples=url;
+ console.log(url);
+ 
+ this.cf.detectChanges();
+ };
+ }
+ }
+
+
+ reset(file: any) {
+debugger
+ file.value = ""
+ this.multiples =null
+ this.imageUrl = null
+  
+  
+ }
+ 
+ refId: any
+ upload() {
+ debugger
+ //const name = sessionStorage.getItem('employeeid')
+let ref=this.field.props.refId
+ this.refId=this.model[ref]
+ const formData = new FormData();
+ if(this.field.bind_key){
+ if(this.model[this.field.bind_key]==undefined){
+ return this.dialogService.openSnackBar(`${this.field.error_msg}`,"OK")
+ }
+ debugger
+ formData.append('file',this.file);
+ formData.append(this.field.refId,this.model[this.field.bind_key]);
+ formData.append("details_type",this.field.details_type);
+ formData.append("role",this.field.role);
+ 
+ }
+ 
+  
+ this.dataService.imageupload(formData).subscribe((res: any) => {
+ if (res.data) {
+ this.formControl.setValue(res.data[0])
+ this.dialogService.openSnackBar("File Uploaded successfully", "OK")
+ }
+ })
+ }
+
+}

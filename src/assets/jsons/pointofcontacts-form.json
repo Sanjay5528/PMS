@@ -1,0 +1,103 @@
+{
+	"pageHeading": "Point of contact",
+	"formType": "simple",
+    "editMode": "popup",
+    "keyField":"emailid",
+	"form": {
+	  "collectionName": "pointofcontacts",
+	  "fields": [
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+      
+      {
+        "className": "flex-1",
+        "type": "input",
+        "key": "firstname",
+        "props": {
+        "label": "First Name",
+        
+        "placeholder":"First Name",
+        "required": true,
+        "maxLength": "25",
+        "pattern":"[a-zA-Z]+$"
+        }
+      },
+
+      {
+        "className": "flex-1",
+        "type": "input",
+        "key": "lastname",
+        "props": {
+        "label": "Last Name",
+        "placeholder": "Last Name",
+        "required": true,
+        "maxLength": "25",
+        "pattern":"[a-zA-Z]+$"
+        }
+      }]},
+      {
+        "type": "input",
+        "key": "designation",
+        "props": {
+        "label": "Designation",
+        "placeholder": "Designation",
+        "required": true,
+        "maxLength": "25"
+        }
+      },
+       {
+        "type": "input",
+        "key": "emailid",
+        "props": {
+          "label": "Email Id",
+          
+          "pattern": "[a-z0-9._%+-]+@[a-z.-]+\\.[a-z]{2,4}$",
+        
+           "required": true
+          
+        }
+        
+      },
+      {
+        "type": "number",
+        "key": "mobilenumber",
+        "props": {
+          "label": "Mobile Number",
+        
+          "required": true,
+          "pattern": "^[0-9]{10}$"
+        }
+      },
+      {
+        "key": "contacttype",
+        "type": "select",
+        "props": {
+        "label": "Contact Type",
+          "placeholder": "Placeholder",
+        
+          "required": true,
+          "options": [
+            {
+                "value": "Primary Contact",
+                "label": "Primary Contact"
+            },
+            {
+                "value": "Secondary Contact",
+                "label": "Secondary Contact"
+            },
+            {
+              "value": "Others",
+              "label": "Others"
+          }
+        ]
+        }
+        
+        
+        
+      }
+      ]
+     
+	},
+	"onCancelRoute": "/list/pointofcontacts"
+  }

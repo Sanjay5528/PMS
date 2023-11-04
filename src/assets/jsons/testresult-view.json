@@ -1,0 +1,45 @@
+{
+	"pageHeading": "TestResult",
+	"formType": "simple",
+  "editMode": "popup",
+  "keyField":"_id",
+	"form": {
+	  "collectionName": "testresult",
+	  "fields": [
+        {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+      {
+        "type": "label-view",
+        "key": "testcaseid",
+        "props": {
+        "label": "Testcase Id"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "issueid",
+        "props": {
+        "label": "Issue Id"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "projectid",
+        "props": {
+        "label": "Project Id"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "testcycle",
+        "props": {
+        "label": "Test Cycle"
+        }
+      }
+    ]
+}   
+   ]
+	},
+	"onCancelRoute": "/list/testcase"
+  }

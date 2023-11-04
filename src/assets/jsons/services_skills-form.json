@@ -1,0 +1,57 @@
+{
+	"pageHeading": "Service and Skill",
+	"formType": "simple",
+  "editMode": "popup",
+  "keyField":"_id",
+	"form": {
+	  "collectionName": "services_skills",
+	  "fields": [
+      
+     
+      {
+        "type": "select-input",
+        "key": "parentid",
+        "props": {
+          "label": "Service Name",
+          "labelPropTemplate": "{{name}}",
+          "optionsDataSource": {
+            "collectionName": "services"
+          },
+          "labelProp": "name",
+          "valueProp": "id",
+          "required": true
+        }
+      },
+      {
+        "type": "select",
+        "key": "type",
+
+        "props": {
+          "label": "Service Type",
+          "options": [
+            {
+              "label": "Hardware Service",
+              "value": "Hardware Service"
+            },
+            {
+              "label": "Software Service",
+              "value": "Software Service"
+            }
+          ],
+          "required": true
+        }
+      },
+      {
+        "type": "input",
+        "key": "skill",
+        "props": {
+        "label": "Skill Name",
+        "placeholder": "Skill Name",
+        "pattern": "^([A-Za-z&(),-]+ )+[A-Za-z(),-]+$|^[A-Za-z(),-]+$",
+        "required": true
+        }
+      }
+      ]
+	},
+	"onCancelRoute": "/list/services_skills"
+  }

@@ -1,0 +1,79 @@
+{
+	"pageHeading": "Client View",
+	"form": {
+	  "fields": [
+      {
+        "type": "label-view",
+        "key": "client.firstname",
+        "props": {
+        "label": "First Name",
+        "width":"250px",
+        "height":"20px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "client.lastname",
+        "props": {
+        "label": "Last Name",
+        "width":"250px",
+        "height":"20px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "client.mobilenumber",
+        "props": {
+          "label": "Mobile Number",
+          "width":"250px",
+          "height":"20px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "client.primaryaddress",
+        "props": {
+        "label": "Primary Address",
+        "width":"250px",
+        "height":"20px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "client.secondaryaddress",
+        "props": {
+        "label": "Secondary Address",
+        "width":"250px",
+        "height":"20px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "address.budget",
+        "props": {
+        "label": "Landmark",
+        "width":"250px",
+        "height":"20px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "address.registeraddress",
+        "props": {
+        "label": "Register Address",
+        "width":"250px",
+        "height":"20px"
+        } 
+      },
+      {
+        "type": "label-view",
+        "key": "address.operationaladdress",
+        "props": {
+        "label": "Operational Address",
+        "width":"250px",
+        "height":"20px"
+        } 
+      }
+      ]
+	}
+  }

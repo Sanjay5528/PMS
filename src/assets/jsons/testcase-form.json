@@ -1,0 +1,101 @@
+{
+  "pageHeading": "Testcase",
+  "formType": "simple",
+  "editMode": "popup",
+  "keyField": "_id",
+  "form": {
+    "collectionName": "testcase",
+    "fields": [
+      {
+        "type": "input",
+        "key": "testcaseid",
+        "props": {
+          "label": "Testcase Id",
+          "placeholder": "Testcase Id",
+          "pattern": "^[a-zA-Z0-9-_]*$",
+          "required": true
+        }
+      },
+      {
+        "type": "input",
+        "key": "testcasename",
+        "props": {
+          "label": "Testcase Name",
+          "placeholder": "Testcase Name",
+          "pattern": "^[a-zA-Z0-9-_ ]*$",
+          "required": true
+        }
+      },
+      {
+        "type": "input",
+        "key": "prerequest",
+        "props": {
+          "label": "Pre Request",
+          "type": "string",
+          "placeholder": "Per Request",
+          "pattern": "^[a-zA-Z0-9-_ ]*$",
+          "required": true
+        }
+      },
+       
+      {
+        "type": "input",
+        "key": "precondition",
+        "props": {
+          "type": "string",
+          "label": "Pre Condition",
+          "placeholder": "Pre Condition",
+          "pattern": "^[a-zA-Z0-9-_]*$",
+          "required": true
+        }
+      },
+      {
+        "type": "input",
+        "key": "testdata",
+        "props": {
+          "type": "string",
+          "label": "Test Data",
+          "placeholder": "Test Data",
+          "pattern": "^[a-zA-Z0-9-_]*$",
+          "required": true
+        }
+      },
+      {
+        "type": "html-input",
+        "key": "teststep",
+        "props": {
+          "type": "string",
+        "label": " Test Step",
+        "placeholder": "Test Step",
+        "required": true
+        
+        }
+      },
+  
+      
+       
+       
+       
+      {
+        "key": "type",
+        "type": "select",
+        "props": {
+          "label": "Type",
+          "placeholder": "Type",
+          "required": true,
+          "options": [
+            {
+              "value": "Positive",
+              "label": "Positive"
+            },
+            {
+              "value": "Negative",
+              "label": "Negative"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "onCancelRoute": "/list/testcase"
+}

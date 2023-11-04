@@ -1,0 +1,52 @@
+{
+	"pageHeading": "Tool",
+	"formType": "simple",
+  "keyField":"_id",
+  "editMode": "popup",
+	"form": {
+	  "collectionName": "tools",
+	  "fields": [
+      {
+        "type": "input",
+        "key": "toolid",
+        "props": {
+        "label": "Id",
+        "pattern": "^[a-zA-Z0-9-]*$",
+        "placeholder": "Id",
+        "required": true
+        }, "expressions": {
+          "hide": "model.isshow"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "toolid",
+        "props": {
+        "label": "Id"
+        }, "expressions": {
+          "hide": "!model.isshow"
+        }
+      },
+      {
+        "type": "input",
+        "key": "name",
+        "props": {
+        "label": "Name",
+        "placeholder": "Name",
+        "pattern": "^([A-Za-z0-9&,-]+ )+[A-Za-z0-9,-]+$|^[A-Za-z0-9,-]+$",
+        "required": true
+        }
+      },
+      {
+        "type": "html-input",
+        "key": "description",
+        "props": {
+        "label": "Description",
+        "placeholder": "Description"
+     
+        }
+      }
+      ]
+	},
+	"onCancelRoute": "/list/tools"
+  }

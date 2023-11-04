@@ -1,0 +1,94 @@
+{
+	"pageHeading": "Project",
+	"formType": "simple",
+  "editMode": "page",
+  "keyField":"_id",
+	"form": {
+	  "collectionName": "project",
+	  "fields": [
+        {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+      {
+        "type": "label-view",
+        "key": "Projectid",
+        "props": {
+        "label": "Project Id"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "projectname",
+        "props": {
+        "label": "Project Name"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "projectdetails",
+        "props": {
+        "label": "Project Details"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "clientid",
+        "props": {
+        "label": "Client Id"
+        }
+      },
+      
+      {
+        "type": "label-view",
+        "key": "projecttype",
+        "props": {
+        "label": "Project Type"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "projectstatus",
+        "props": {
+        "label": "Project status"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "scheduledstartdate",
+        "props": {
+        "label": "Scheduled Start Date"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "scheduledenddate",
+        "props": {
+        "label": "Scheduled End Date"
+        }
+      },
+      
+      {
+        "type": "label-view",
+        "key": "actualstartdate",
+        "props": {
+        "label": "Actual Start Date"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "actualenddate",
+        "props": {
+        "label": "Actual End Date"
+        }
+      }
+       
+      
+      
+       
+      
+    ]
+}   
+   ]
+	},
+	"onCancelRoute": "/list/task"
+  }

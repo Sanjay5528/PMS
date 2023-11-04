@@ -1,0 +1,354 @@
+<!-- 
+<mat-card class="mat-card">
+    <mat-card-content style="width: 100%">
+       
+      <form [formGroup]="frmRegister" class="example-form" autocomplete="off" class="formGroup">
+        <div>
+          <div>
+            <a>
+              <img
+                width="80"
+                height="80"
+                class="centers"
+                src="../../../../assets/images/logo.png"
+              />
+            </a>
+          </div>
+          <div class="selection" >
+          <div class="form-content" style="margin-right: 110px;"  >
+          
+            <mat-form-field style="width: 130%;" appearance="outline" >
+            
+              <input
+                matInput
+                type="text"
+                formControlName="first_name"
+                placeholder="First Name"
+                required
+             
+              />
+              
+  
+              <mat-error
+                *ngIf="
+                frmRegister.controls['first_name'].touched &&
+                frmRegister.controls['first_name'].hasError('required')
+                "
+                class="help-block text-danger mat-error"
+              >
+                First Name is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+          
+            <div>
+                <mat-form-field style="width: 140" appearance="outline" >
+                  <input
+                    matInput
+                    type="text"
+                    formControlName="last_name"
+                    placeholder="Last Name"
+                    required
+                  />
+      
+                  <mat-error
+                    *ngIf="
+                    frmRegister.controls['last_name'].touched &&
+                    frmRegister.controls['last_name'].hasError('required')
+                    "
+                    class="help-block text-danger mat-error"
+                  >
+                    Last Name is required
+                  </mat-error>
+                </mat-form-field>
+              
+          </div>
+        </div>
+              <div>
+                <mat-form-field style="width: 100%;" appearance="outline">
+                  <input
+                    matInput
+                    type="text"
+                    formControlName="user_id"
+                    placeholder="Email Id"
+                    required
+                    class="formControl"
+                    #userEmail
+                  />
+      
+                  <mat-error
+                    *ngIf="
+                    frmRegister.controls['user_id'].touched &&
+                    frmRegister.controls['user_id'].hasError('required')
+                    "
+                    class="help-block text-danger mat-error"
+                  >
+                    Email Id is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div>
+                <mat-form-field style="width: 100%;" appearance="outline" >
+                  <select matNativeControl formControlName="user_type" required placeholder="Select User Type" class="formControl" >
+                    <option  value="SAAS">SAAS</option>
+                    <option value="CROP CUSTOMER">CROP CUSTOMER</option>
+                    <option value="option3">Option 3</option>
+                  </select>
+                  <mat-error *ngIf="frmRegister.controls['user_type'].touched && frmRegister.controls['user_type'].hasError('required')"
+                    class="help-block text-danger mat-error">
+                    User Type is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              
+              <div class="align">
+                <mat-form-field style="width: 100%" appearance="outline">
+                  <input
+                    matInput
+                    type="text"
+                    formControlName="phone_number"
+                    placeholder="Phone Number"
+                    required
+                    class="formControl"
+                 #mobileNo
+                  />
+      
+                  <mat-error
+                    *ngIf="
+                    frmRegister.controls['phone_number'].touched &&
+                    (frmRegister.controls['phone_number'].hasError('required') ||
+      frmRegister.controls['phone_number'].hasError('pattern'))
+                    "
+                    class="help-block text-danger mat-error"
+                  >
+                  Phone Number is required and must be a 10-digit number
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div >
+            <mat-form-field style="width: 100%;" appearance="outline">
+            
+              <input
+                matInput
+                formControlName="password"
+                placeholder="Password"
+                [type]="hide ? 'password' : 'text'"
+                type="password"
+                required
+                class="formControl"
+                #userPwd
+  
+              /><mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+              <mat-error
+              *ngIf="
+                frmRegister.controls['password'].touched &&
+                frmRegister.controls['password'].hasError('required')
+              "
+              class="help-block text-danger mat-error"
+            >
+              Password is required
+            </mat-error>
+            </mat-form-field>
+          </div>
+          <div >
+            <mat-form-field style="width: 100%;" appearance="outline">
+              <input
+                matInput
+                type="text"
+                formControlName="confirm_password"
+                placeholder="Confirm Password"
+                required
+            
+              />
+              <mat-error
+              *ngIf="
+                frmRegister.controls['confirm_password'].touched &&
+                frmRegister.controls['confirm_password'].hasError('required')
+              "
+              class="help-block text-danger mat-error"
+            >
+              Confirm Password is required
+            </mat-error>
+            <mat-error
+              *ngIf="
+                frmRegister.controls['confirm_password'].touched &&
+                !frmRegister.controls['confirm_password'].hasError('required') &&
+                frmRegister.controls['confirm_password'].value !== frmRegister.controls['password'].value
+              "
+              class="help-block text-danger mat-error"
+            >
+              Passwords do not match
+            </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="login"  class="center" >
+            <button mat-raised-button color= #187bcd 
+                     (click)="authService.SignUp(userEmail.value,mobileNo.value,userPwd.value) ">
+             Register
+            </button>
+          </div>
+        </div>
+      </form>
+        
+    </mat-card-content>
+  </mat-card>
+   -->
+
+   <body class="bg">
+    <mat-card class="card" >
+      <div fxLayoutAlign="center center" fxFlexFill="">
+  
+        <div fxFlex="40%" fxFlex.md="60%" fxFlex.xs="100%" fxFlex.sm="60%" fxFlex.lg="40%">
+          <div fxLayoutAlign="center center">
+            <img src="assets/images/logo.png" style="width:70px;height:70px" alt="Logo" class="img">
+          </div>
+  
+          <!-- <div fxLayoutAlign="center" class="">
+                      <mat-card-title>Registration Form</mat-card-title>
+                  </div> -->
+          <form [formGroup]="frmRegister" fxLayoutAlign="stretch" fxLayout="column" fxLayoutGap="15px">
+            <div style="display: flex;">
+              <mat-form-field style="width:80%;margin-right: 20px;">
+                <mat-label>First Name</mat-label>
+                <input type="text" matInput formControlName="first_name">
+                <mat-error *ngIf="
+                            frmRegister.controls['first_name'].touched &&
+                            frmRegister.controls['first_name'].hasError('required')
+                            " class="help-block text-danger mat-error">
+                  First Name is required
+                </mat-error>
+                <mat-error *ngIf="
+                          frmRegister.controls['first_name'].touched &&
+                          frmRegister.controls['first_name'].hasError('pattern')
+                          " class="help-block text-danger mat-error">
+                  First Name is required
+                </mat-error>
+  
+              </mat-form-field>
+              <mat-form-field style="width:80%">
+                <mat-label>Last Name</mat-label>
+                <input type="text" matInput formControlName="last_name">
+                <mat-error *ngIf="
+                            frmRegister.controls['last_name'].touched &&
+                            frmRegister.controls['last_name'].hasError('required')
+                            " class="help-block text-danger mat-error">
+                  Last Name is required
+                </mat-error>
+                <mat-error *ngIf="
+                          frmRegister.controls['last_name'].touched &&
+                          frmRegister.controls['last_name'].hasError('pattern')
+                          " class="help-block text-danger mat-error">
+                  Last Name is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div style="display: flex;">
+            <mat-form-field style="width:80%;margin-right: 20px;">
+              <mat-label>Email</mat-label>
+              <input type="text" matInput formControlName="email" #email placeholder="example@gmail.com">
+              <mat-error *ngIf="
+                            frmRegister.controls['email'].touched &&
+                            frmRegister.controls['email'].hasError('required')
+                            " class="help-block text-danger mat-error">
+                Email Id is required
+              </mat-error>
+              <mat-error *ngIf="
+                          frmRegister.controls['email'].touched &&
+                          frmRegister.controls['email'].hasError('email')
+                          " class="help-block text-danger mat-error">
+                Email Id is required
+              </mat-error>
+            </mat-form-field>
+          
+              <mat-form-field style="width: 80%;" >
+  
+                <mat-label>User Type</mat-label>
+  
+                <mat-select matNativeControl formControlName="user_type" required placeholder="Select User Type"
+                  class="formControl">
+                  <mat-option value="SAAS">SAAS</mat-option>
+                  <mat-option value="CORP CUSTOMER">CORP CUSTOMER</mat-option>
+  
+                </mat-select>
+                <mat-error
+                  *ngIf="frmRegister.controls['user_type'].touched && frmRegister.controls['user_type'].hasError('required')"
+                  class="help-block text-danger mat-error">
+                  User Type is required
+                </mat-error>
+  
+              </mat-form-field>
+            </div>
+            <div style="display: flex;">
+            <mat-form-field  style="width: 100%;margin-right: 20px;" *ngIf="frmRegister.controls['user_type'].value === 'CORP CUSTOMER'">
+              <mat-label>Engineer Assign Type</mat-label>
+  
+              <mat-select matNativeControl formControlName="engineerassigntype"  placeholder="Select Here"
+                >
+                <mat-option value="System">Systematic</mat-option>
+                <mat-option value="Manual">Manual</mat-option>
+  
+              </mat-select>
+            </mat-form-field>
+              <mat-form-field >
+                <mat-select formControlName="country" (selectionChange)="onCountryChange($event)" placeholder="Country">
+                  <mat-option *ngFor="let country of countries" [value]="country['short']">
+                    {{ country.full }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div style="display: flex;">
+            <mat-form-field style="width: 23%; margin-right: 10px;">
+              <input type="text" matInput  [value]="callingCode" readonly
+              class="calling-code" />
+              <mat-icon matSuffix>call</mat-icon>
+            </mat-form-field>
+            <mat-form-field style="width: 77%;">
+              <mat-label>Phone Number</mat-label>
+  
+                
+                <input type="number" matInput formControlName="phoneNumber" #phoneNumber placeholder="Enter phone number" required
+                  class="phone-input" />
+         
+              <mat-error *ngIf="
+                        frmRegister.controls['phoneNumber'].touched &&
+                        (frmRegister.controls['phoneNumber'].hasError('required') ||
+          frmRegister.controls['phoneNumber'].hasError('pattern'))
+                        " class="help-block text-danger mat-error">
+                Phone Number is required and must be a 10-digit number
+              </mat-error>
+            
+            </mat-form-field>
+          </div>
+            <mat-form-field>
+              <mat-label>Password</mat-label>
+              <input type="password" [type]="hide ? 'password' : 'text'" matInput formControlName="password" #password>
+              <mat-error *ngIf="
+                            frmRegister.controls['password'].touched &&
+                            frmRegister.controls['password'].hasError('required')
+                          " class="help-block text-danger mat-error">
+                Password is required
+              </mat-error>
+              <mat-error *ngIf="
+      frmRegister.controls['password'].touched &&
+      frmRegister.controls['password'].hasError('pattern')
+    ">
+                Password must contain at least one uppercase letter, one lowercase letter, one digit, one special
+                character.
+              </mat-error>
+              <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </mat-form-field>
+  
+  
+  
+            <div style="text-align: center;">
+  
+              <button mat-raised-button style="color: rgb(5, 5, 5); " (click)=" register()">Register</button>
+            </div>
+          </form>
+  
+        </div>
+  
+      </div>
+    </mat-card>
+  </body>

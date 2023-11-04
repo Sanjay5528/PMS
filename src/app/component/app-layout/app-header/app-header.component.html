@@ -1,0 +1,50 @@
+<div style="height: 60px">
+  <mat-toolbar color="primary" class="toolbar">
+    <mat-toolbar-row>
+      <!-- <div class="app-logo"></div> -->
+      <div>
+        <a>
+          <img width="50%" class="img-responsive" src="../../../../assets/images/toolbar.png"
+            (click)="homepage($event)" />
+        </a>
+      </div>
+      <!-- <img src="/ePPAP/src/assets/images/logo.png" width="500" height="600"> -->
+      <span class="menu-items" style="padding: 8px">
+        <span *ngFor="let item of navItems">
+          <span>
+            <mat-icon>{{ item.iconName }}</mat-icon></span>
+          <!-- Handle branch node buttons here -->
+          <span *ngIf="item.children && item.children.length > 0">
+            <button mat-button [matMenuTriggerFor]="menu.childMenu">
+              {{ item.displayName }}
+              <mat-icon>expand_more</mat-icon>
+            </button>
+            <span>
+              <app-menu-item #menu [items]="item.children"></app-menu-item>
+            </span>
+          </span>
+          <!-- Leaf node buttons here -->
+          <span *ngIf="!item.children || item.children.length === 0">
+            <button mat-button color="primary" (click)="navigate(item)">
+              {{ item.displayName }}
+            </button>
+          </span>
+        </span>
+      </span>
+      <div class="profile_font">{{"Hey"+","+this.id}}</div>
+      <button mat-button color="primary" [matMenuTriggerFor]="menu" style="width: 50px; float: right">
+        <div>
+          <mat-icon class="profile">account_circle</mat-icon>
+        </div>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="logout($event)">
+          <mat-icon>logout</mat-icon><span>Logout</span>
+        </button>
+        <button mat-menu-item (click)="reset($event)">
+          <mat-icon>edit</mat-icon><span>ResetPassword</span>
+        </button>
+      </mat-menu>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</div>

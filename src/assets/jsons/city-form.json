@@ -1,0 +1,68 @@
+{
+	"pageHeading": "City",
+	"formType": "simple",
+    "editMode": "popup",
+	"form": {
+	  "collectionName": "city",
+	  "fields": [
+     
+      
+      {
+        "type": "input",
+        "key": "citycode",
+        "props": {
+        "label": "City Code",
+        "pattern": "^[A-Z]{2,3}",
+        "placeholder": "City Code",
+        "required": true
+        }
+       
+      },
+     
+      {
+        "type": "input",
+        "key": "cityname",
+        "props": {
+        "label": "City Name",
+        "placeholder": "City Name",
+        "pattern": "^[a-zA-Z_]+( [a-zA-Z_]+)*$",
+        "required": true
+        }
+      },
+       {
+        "type": "select-input",
+        "key": "countrycode",
+        "parentKey":"",
+        "props": {
+          "label": "Country Name",
+          "labelPropTemplate": " {{countryname}}",
+          "optionsDataSource": {
+            "collectionName": "country"
+          },
+          "labelProp": "countryname",
+          "valueProp": "countrycode",
+          "required": true
+        }
+      },
+      {
+        "type": "select-input",
+        "key": "statecode",
+        "parentKey":"countrycode",
+        "props": {
+          "label": "State",
+          "labelPropTemplate": "{{statename}}",
+          "optionsDataSource": {
+            "ParentcollectionName": "state/filter"
+          },
+          "labelProp": "statename",
+          "valueProp": "statecode",
+          "required": true
+        }
+      }
+      
+     
+      ]
+     
+	},
+	"onCancelRoute": "/list/city"
+  }

@@ -1,0 +1,72 @@
+{
+	"pageHeading": "Experience",
+	"form": {
+	  "fields": [
+      {
+        "type": "label-view",
+        "key": "experience.jobduration",
+        "props": {
+        "label": "Total Years Of Experience",
+        "width":"250px",
+        "height":"50px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "experience.jobscompleted",
+        "props": {
+        "label": "No of Jobs Completed",
+        "width":"250px",
+        "height":"50px"
+        }
+      },
+    
+      {
+        "type": "label-view",
+        "key": "experience.serviceprovider",
+        "props": {
+          "label": "Service Type",
+          "width":"250px",
+          "height":"50px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "skillsandroles",
+        "props": {
+          "label": "Skills",
+          "width":"250px",
+          "height":"50px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "experience.jobtype",
+        "props": {
+        "label": "Job Type",
+        "width":"250px",
+        "height":"50px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "experience.worktype",
+        "props": {
+        "label": "Work Type",
+        "width":"250px",
+        "height":"50px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "experience.jobcompleted",
+        "props": {
+        "label": "Jobs Completed",
+        "width":"250px",
+        "height":"50px"
+        }
+      }
+   
+      ]
+	}
+  }

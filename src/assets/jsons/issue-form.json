@@ -1,0 +1,129 @@
+{
+  "pageHeading": "Issue",
+  "formType": "simple",
+  "editMode": "popup",
+  "keyField": "_id",
+  "form": {
+    "collectionName": "issue",
+    "fields": [
+      {
+        "type": "input",
+        "key": "issueid",
+        "props": {
+          "label": "Issue Id",
+          "placeholder": "Issue Id"
+        }
+      },
+      {
+        "type": "input",
+        "key": "issuename",
+        "props": {
+          "label": "Issue Name",
+          "placeholder": "Issue Name"
+        }
+      },
+      {
+        "type": "input",
+        "key": "projectname",
+        "props": {
+          "label": "Project Name",
+          "type": "string",
+          "placeholder": "Project Name"
+        }
+      },
+      {
+        "key": "image",
+        "type": "image-input",
+        "props": {
+          "label": "Attachment"
+        }
+      },
+      {
+        "type": "input",
+        "key": "Assigned To",
+        "props": {
+          "label": "Assigned To",
+          "placeholder": "Assigned To",
+          "labelPropTemplate": " {{firstname}}",
+          "optionsDataSource": {
+            "collectionNameById": "query/projectname",
+            "Id": ":projectname"
+          },
+          "labelProp": "firstname",
+          "valueProp": "firstname"
+        }
+      },
+      {
+        "type": "input",
+        "key": "issuetype",
+        "props": {
+          "type": "string",
+          "label": "Issue Type",
+          "placeholder": "Issue Type"
+        }
+      },
+      {
+        "type": "input",
+        "key": "reporter",
+        "props": {
+          "type": "string",
+          "label": "Reporter",
+          "placeholder": "Reporter"
+        }
+      },
+      {
+        "type": "input",
+        "key": "priority",
+        "props": {
+          "type": "string",
+          "label": "Priority",
+          "placeholder": "Priority"
+        }
+      },
+      {
+        "key": "startdate",
+        "type": "datepicker",
+        "props": {
+          "label": "start Date",
+          "placeholder": "start Date"
+        }
+      },
+      {
+        "key": "enddate",
+        "type": "datepicker",
+        "props": {
+          "label": "End Date",
+          "placeholder": "End Date"
+        }
+      },
+      {
+        "key": "status",
+        "type": "select-input",
+        "props": {
+          "label": "Status",
+          "placeholder": "Status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open"
+            },
+            {
+              "value": "Close",
+              "label": "close"
+            }
+          ]
+        }
+      },
+      {
+        "type": "input",
+        "key": "remarks",
+        "props": {
+          "type": "string",
+          "label": "Remark",
+          "placeholder": "Remark"
+        }
+      }
+    ]
+  },
+  "onCancelRoute": "/list/issue"
+}

@@ -1,0 +1,109 @@
+{
+	"pageHeading": "Basic Details",
+	"form": {
+	  "fields": [
+      {
+        "type": "label-view",
+        "key": "contact.firstname",
+        "props": {
+        "label": "First Name",
+        "width":"250px",
+        "height":"20px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "contact.lastname",
+        "props": {
+        "label": "Last Name",
+        "width":"250px",
+        "height":"20px"
+        }
+      },
+    
+      {
+        "type": "label-view",
+        "key": "contact.emailid",
+        "props": {
+          "label": "Email Id",
+          "width":"250px",
+          "height":"20px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "contact.mobilenumber",
+        "props": {
+          "label": "Mobile No",
+          "width":"250px",
+          "height":"20px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "address.street",
+        "props": {
+        "label": "Street",
+        "width":"250px",
+        "height":"20px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "address.areaname",
+        "props": {
+        "label": "Area Name",
+        "width":"250px",
+        "height":"20px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "address.landmark",
+        "props": {
+        "label": "Landmark",
+        "width":"250px",
+        "height":"20px"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "address.country",
+        "props": {
+        "label": "Country",
+        "width":"250px",
+        "height":"20px"
+        } 
+      },
+      {
+        "type": "label-view",
+        "key": "address.state",
+        "props": {
+        "label": "State",
+        "width":"250px",
+        "height":"20px"
+        } 
+      },
+      {
+        "type": "label-view",
+        "key": "address.city",
+        "props": {
+        "label": "City",
+        "width":"250px",
+        "height":"20px"
+        } 
+      },
+      {
+        "type": "label-view",
+        "key": "address.zipcode",
+        "props": {
+        "label": "Zipcode",
+        "width":"250px",
+        "height":"20px"
+        } 
+      }
+      
+   
+      ]
+	}
+  }

@@ -1,0 +1,49 @@
+{
+    "pageHeading": "Role",
+    "collectionName": "role",
+    "editMode": "popup",
+    "screenWidth":"50%",
+    "showbutton":true,
+    "actions": [
+      {
+        "label":"Edit",
+        "icon":"edit",
+        "formName":"role"
+      },
+      {
+        "label": "Delete",
+        "icon": "delete",
+        "formName":"role"
+      }
+    ],
+    "addRoute": "add/role",
+    "editRoute": "edit/role",
+    "columnDefs": [
+        {
+            "headerName": "Id",
+            "field": "_id",
+            "sortable": true,
+            "filter": "agTextColumnFilter"
+          },
+        {
+            "headerName": "Name",
+            "field": "name",
+            "sortable": true,
+            "filter": "agTextColumnFilter"
+          },
+        
+      
+     
+      {
+        "type": "rightAligned",
+        "headerName": "Actions",
+        "cellRenderer": "buttonRenderer",
+        "lockPosition": "right",
+        "cellRendererParams": {
+          "onClick": "this.onBtnClick1.bind(this)",
+          "label": "Click 1"
+        }
+      }
+    ]
+  }
+  

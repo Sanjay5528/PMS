@@ -1,0 +1,67 @@
+
+.menu-items {
+  flex: 1 1 auto;
+}
+
+.mat-mdc-button:not(:disabled) {
+  color: #1d1d1e;
+  margin-bottom:10px;
+}
+
+
+.toolbar {
+  color: #080201;
+  background: #90c0e5; 
+}
+
+.menu-items :hover{
+  color: #080201;
+}
+
+
+.mat-toolbar-row, .mat-toolbar-single-row {
+  @media screen and (min-width: 500px) and (max-width: 768px) {
+    height: 89px;
+  }
+
+}
+
+
+
+.homepage {
+  color: #080201;
+  margin-top: 5px;
+  border-radius: 30px;
+  border: none;
+  font-size: medium;
+}
+
+
+
+.profile{
+    font-size: 23px;
+    margin-top: 17px;
+}
+
+
+.profile_font{
+  font-family: "Times New Roman", Times, serif;
+  font-style: italic;
+  font-weight: 500;
+  color: #080201;
+  font-size: smaller;
+}
+img:hover{
+  cursor: pointer;
+
+}
+.mat-icon {
+  -webkit-user-select: none;
+  user-select: none;
+  background-repeat: no-repeat;
+  display: inline-block;
+  fill: currentColor;
+  height: 24px;
+  width: 24px;
+  overflow: hidden;
+}

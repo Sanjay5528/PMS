@@ -1,0 +1,65 @@
+{
+    "pageHeading": "Country",
+    "collectionName": "country",
+    "editMode": "popup",
+    "showbutton":true,
+    "screenWidth":"40%",
+    "actions": [
+      {
+        "label":"Edit",
+        "icon":"edit",
+        "formName":"country"
+      },
+      {
+        "label": "Delete",
+        "icon": "delete",
+        "formName":"country"
+      }
+    ],
+    "addRoute": "add/country",
+    "editRoute": "edit/country",
+    "columnDefs": [
+        {
+            "headerName": "Code",
+            "field": "countrycode",
+            "sortable": true,
+            "filter": "agTextColumnFilter"
+          },
+      {
+        "headerName": "Name",
+        "field": "countryname",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "headerName": "Currency Code",
+        "field": "currencycode",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+  {
+    "headerName": "Decimal Value",
+    "field": "currencydecimal",
+    "sortable": true,
+    "filter": "agTextColumnFilter"
+  },
+  {
+    "headerName": "Languages",
+    "field": "languages",
+    "sortable": true,
+    "filter": "agTextColumnFilter"
+  },
+     
+      {
+        "type": "rightAligned",
+        "headerName": "Actions",
+        "cellRenderer": "buttonRenderer",
+        "lockPosition": "right",
+        "cellRendererParams": {
+          "onClick": "this.onBtnClick1.bind(this)",
+          "label": "Click 1"
+        }
+      }
+    ]
+  }
+  

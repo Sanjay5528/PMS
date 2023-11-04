@@ -1,0 +1,91 @@
+{
+	"pageHeading": "Skill",
+	"formType": "simple",
+  "editMode": "popup",
+  "keyField":"_id",
+	"form": {
+	  "collectionName": "skills",
+	  "fields": [
+        
+      
+      {
+        "type": "input",
+        "key": "id",
+        "props": {
+        "label": "Id",
+        "placeholder": "Id",
+        "pattern": "^[a-zA-Z0-9-]*$",
+        "required": true
+        },
+        "expressions": {
+          "hide": "model.isshow"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "id",
+        "props": {
+        "label": "Id"
+        },
+        "expressions": {
+          "hide": "!model.isshow"
+        }
+      },
+      {
+        "type": "input",
+        "key": "name",
+        "props": {
+        "label": "Name",
+        "placeholder": "Name",
+        "pattern": "^([A-Za-z&(),-]+ )+[A-Za-z(),-]+$|^[A-Za-z(),-]+$",
+        "required": true
+        }
+      }, 
+      {
+        "type": "select-input",
+        "key": "parentid",
+        "props": {
+          "label": "Service Name",
+          "labelPropTemplate": "{{name}}",
+          "optionsDataSource": {
+            "collectionName": "services"
+          },
+          "labelProp": "name",
+          "valueProp": "id",
+          "required": true
+        } 
+      },
+      {
+        "type": "select",
+        "key": "status",
+
+        "props": {
+          "label": "Status",
+          "options": [
+            {
+              "label": "Active",
+              "value": "Active"
+            },
+            {
+              "label": "InActive",
+              "value": "InActive"
+            }
+          ],
+          "required": true
+        },
+        "expressions": {
+          "hide": "!model.isshow"
+        }
+      }
+     
+      ],
+      "defaultValues": [
+		{
+		  "colName": "status",
+		  "type": "string",
+		  "value": "Active"
+		}
+	  ]
+	},
+	"onCancelRoute": "/list/skills"
+  }

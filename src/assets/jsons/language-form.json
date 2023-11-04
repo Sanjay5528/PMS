@@ -1,0 +1,46 @@
+{
+  "pageHeading": "Language",
+  "formType": "simple",
+  "editMode": "popup",
+  "keyField": "_id",
+  "form": {
+    "collectionName": "language",
+    "fields": [
+      {
+        "type": "input",
+        "key": "id",
+        "props": {
+          "label": "Id",
+          "pattern": "^[a-zA-Z0-9-]*$",
+          "placeholder": "Id",
+          "required": true
+        },
+        "expressions": {
+          "hide": "model.isshow"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "id",
+        "props": {
+        "label": "Id"
+        },
+        "expressions": {
+          "hide": "!model.isshow"
+        }
+      },
+
+      {
+        "type": "input",
+        "key": "name",
+        "props": {
+          "label": "Name",
+          "placeholder": "Name",
+          "pattern": "^[a-zA-Z]+( [a-zA-Z]+)*$",
+          "required": true
+        }
+      }
+    ]
+  },
+  "onCancelRoute": "/list/language"
+}

@@ -1,0 +1,77 @@
+{
+	"pageHeading": "Issue",
+	"formType": "simple",
+  "editMode": "page",
+  "keyField":"_id",
+	"form": {
+	  "collectionName": "Issue",
+	  "fields": [
+        {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+      {
+        "type": "label-view",
+        "key": "issueid",
+        "props": {
+        "label": "Issue Id"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "issuename",
+        "props": {
+        "label": "Issue Name"
+        }
+      }
+    ]
+},  {
+    "fieldGroupClassName": "display-flex",
+    "fieldGroup": [
+      {
+        "type": "label-view",
+        "key": "projectname",
+        "props": {
+          "label": "Project Name"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "issuetype",
+        "props": {
+          "label": "Issue Type"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "employeedetails",
+        "props": {
+          "label": "Employee Details"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "assigndata",
+        "props": {
+        "label": "Assign Data"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "status",
+        "props": {
+        "label": "Status"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "remark",
+        "props": {
+        "label": "Remark"
+        }
+      }
+    ]
+}
+      ]
+	},
+	"onCancelRoute": "/list/issue"
+  }

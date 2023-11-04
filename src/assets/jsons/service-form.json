@@ -1,0 +1,47 @@
+{
+	"pageHeading": "Service",
+	"formType": "simple",
+  "editMode": "popup",
+  "keyField":"_id",
+	"form": {
+	  "collectionName": "services",
+	  "fields": [
+      
+      {
+        "type": "input",
+        "key": "id",
+        "props": {
+        "label": "Id",
+        "placeholder": "Id",
+        "pattern": "^[a-zA-Z0-9-]*$",
+        "required": true
+        },
+        "expressions": {
+          "hide": "model.isshow"
+        }
+      },
+      {
+        "type": "label-view",
+        "key": "id",
+        "props": {
+        "label": "Id"
+        },
+        "expressions": {
+          "hide": "!model.isshow"
+        }
+      },
+      {
+        "type": "input",
+        "key": "name",
+        "props": {
+        "label": "Name",
+        "placeholder": "Name",
+        "pattern": "^[a-zA-Z_]+( [a-zA-Z_]+)*$",
+        "required": true
+        }
+      }
+     
+      ]
+	},
+	"onCancelRoute": "/list/service"
+  }

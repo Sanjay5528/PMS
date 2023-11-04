@@ -1,0 +1,65 @@
+[
+	{
+		"displayName": "Master",
+		"iconName": "group",
+		"children": [
+			{
+				"displayName": "Client",
+				"iconName": "assignment_ind",
+				"route": "/list/client"
+			},
+			{
+				"displayName": "Project",
+				"iconName": "assignment_ind",
+				"route": "/list/project"
+			},
+			 
+			{
+				"displayName": "Employee",
+				"iconName": "assignment_ind",
+				"route": "/list/employee"
+			},
+		 
+			{
+				"displayName": "TaskList",
+				"iconName": "assignment_ind",
+				"route": "/list/task" 
+			}
+ 
+			 
+		]
+	},
+	{
+		"displayName": "Testing",
+		"iconName": "group",
+		"children": [
+			{
+				"displayName": "Test Case",
+				"iconName": "assignment_ind",
+				"route": "/list/testcase"
+			},
+			{
+				"displayName": "Test Result",
+				"iconName": "assignment_ind",
+				"route": "/list/testresult"
+			}
+		]
+	},
+	{
+		"displayName": "My Profile",
+		"iconName": "group",
+		"children": [
+			{
+				"displayName": "Resume",
+				"iconName": "assignment_ind",
+				"route": "/createcv"
+			}
+		]
+	},
+	{
+		"displayName": "My Entry",
+		"iconName": "assignment_ind",
+		"route": "/home"
+	}
+
+]

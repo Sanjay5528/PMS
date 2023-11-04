@@ -1,0 +1,416 @@
+{
+    "pageHeading": "User",
+    "formType": "simple",
+    "editMode": "popup",
+    "keyField": "_id",
+    "form": {
+      "collectionName": "user",
+      "fields": [
+        {
+          "type": "select",
+          "key": "usertype",
+          "props": {
+            "label": "User Type"
+          }
+        },
+            {
+              "type": "select",
+              "key": "status",
+              "props": {
+                "label": "Status"
+              }
+            },
+                {
+                  "key": "address.street",
+                  "type": "input",
+                  "className": "flex-6",
+                  "props": {
+                    "label": "Street"
+                  }
+                },
+            {
+              "fieldGroupClassName": "display-flex",
+              "fieldGroup": [
+            {
+              "key": "address.areaname",
+              "className": "flex-6",
+              "type": "input",
+              "props": {
+                "label": "Area Name"
+              }
+            },
+            {
+              "key": "address.landmark",
+              "className": "flex-6",
+              "type": "input",
+              "props": {
+                "label": "Landmark"
+              }
+            }
+          ]
+        },
+        {
+          "fieldGroupClassName": "display-flex",
+          "fieldGroup": [
+            {
+              "type": "select-input",
+              "key": "address.country",
+              "className": "flex-6",
+              "props": {
+                "label": "Country"
+              }
+            },
+            {
+              "type": "select-input",
+              "key": "address.state",
+              "className": "flex-6",
+              "props": {
+                "label": "State"
+              }
+            }
+          ]
+        },
+        {
+          "fieldGroupClassName": "display-flex",
+          "fieldGroup": [
+            {
+              "key": "address.city",
+              "type": "select-input",
+              "className": "flex-6",
+              "props": {
+                "label": "City"
+              }
+            },
+            {
+              "key": "address.zipcode",
+              "type": "number",
+              "className": "flex-6",
+              "props": {
+                "label": "Zip code"
+              }
+            }
+          ]
+        },
+      
+            {
+              "fieldGroupClassName": "display-flex",
+              "fieldGroup": [
+            {
+              "key": "_id",
+              "type": "input",
+              "className": "flex-6",
+              "props": {
+                "label": "Company Id",
+                "pattern": "^[a-zA-Z0-9-]*$",
+                "placeholder": "Company Id",
+                "required": true
+              }
+            },
+            
+            {
+              "key": "companyname",
+              "type": "input",
+              "className": "flex-6",
+              "props": {
+                "label": "Company Name",
+                "placeholder": "Company Name",
+                "required": true
+              }
+            }
+          ]
+        },
+           
+        {
+          "fieldGroupClassName": "display-flex",
+          "fieldGroup": [
+            {
+              "type": "select",
+              "key": "type",
+              "className": "flex-6",
+              "props": {
+                "label": "Company Type"
+              }
+            },
+            {
+              "type": "select-input",
+              "key": "currencycode",
+              "className": "flex-6",
+              "props": {
+                "label": "Currency Code"
+              }
+            }
+          ]
+        },
+         
+            {
+              "fieldGroupClassName": "display-flex",
+              "fieldGroup": [
+            {
+              "type": "datepicker",
+              "key": "contractstartdate",
+              "className": "flex-6",
+              "props": {
+                "label": "Contract Start Date"
+              }
+            },
+            {
+              "type": "datepicker",
+              "key": "contractenddate",
+              "className": "flex-6",
+              "props": {
+                "label": "Contract End Date"
+              }
+            }
+          ]
+      },
+    
+        {
+            "type": "input",
+            "key": "registeredaddress.street",
+            "props": {
+              "label": "Street"
+            }
+          },
+          {
+            "fieldGroupClassName": "display-flex",
+            "fieldGroup": [
+      {
+        "key": "registeredaddress.areaname",
+        "className": "flex-6",
+        "type": "input",
+        "props": {
+          "label": "Area Name"
+          
+        }
+      },
+      {
+        "key": "registeredaddress.landmark",
+        "className": "flex-6",
+        "type": "input",
+        "props": {
+          "label": "Landmark"
+        }
+      }
+    ]
+},
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "type": "select-input",
+            "key": "registeredaddress.country",
+            "className": "flex-6",
+            "props": {
+              "label": "Country"
+            }
+          },
+          {
+            "type": "select-input",
+            "key": "registeredaddress.state",
+            "className": "flex-6",
+            "props": {
+              "label": "State"
+            }
+          }
+        ]
+      },
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "key": "registeredaddress.city",
+            "type": "select-input",
+            "className": "flex-6",
+            "props": {
+              "label": "City"
+            }
+          },
+          {
+            "key": "registeredaddress.zipcode",
+            "type": "number",
+            "className": "flex-6",
+            "props": {
+              "label": "Zip code"
+            }
+          }
+        ]
+      },
+        {
+          "key": "budgetwarningamount",
+          "type": "number",
+          "props": {
+            "maxLength": 6,
+            "label": "Budget Warning Amount"
+          }
+        },
+        {
+          "key": "remainingbudget",
+          "type": "number",
+          "props": {
+            "maxLength": 6,
+            "label": "Remaining Budget"
+            
+          }
+        },
+        {
+          "key": "overallapprovedbudget",
+          "type": "number",
+          "props": {
+            "maxLength": 6,
+            "label": "Over all Approved Budget"
+           
+          }
+        },
+        
+            {
+              "fieldGroupClassName": "display-flex",
+              "fieldGroup": [
+            {
+              "key": "primarycontact.empid",
+              "type": "input",
+                "className": "flex-6",
+              "props": {
+                "label": "Emp Id"
+              }
+            },
+            {
+              "key": "primarycontact.emailid",
+              "type": "input",
+                "className": "flex-6",
+              "props": {
+                "label": "Email Id"
+              }
+            }
+          ]
+        },
+          
+          
+        {
+          "fieldGroupClassName": "display-flex",
+          "fieldGroup": [
+            {
+              "key": "primarycontact.contact.firstname",
+              "type": "input",
+                "className": "flex-6",
+              "props": {
+                "label": "First Name"
+              }
+            },
+            {
+              "key": "primarycontact.contact.lastname",
+              "type": "input",
+              "className": "flex-6",
+              "props": {
+                "label": "Last Name"
+              }
+            }
+          ]
+        },
+        {
+          "fieldGroupClassName": "display-flex",
+          "fieldGroup": [
+            {
+              "key": "primarycontact.contact.mobilenumber",
+              "type": "number",
+              "className": "flex-6",
+              "props": {
+                "label": "Mobile Number"
+              }
+            },
+            {
+              "type": "select-input",
+              "key": "primarycontact.role",
+              "className": "flex-6",
+              "props": {
+                "label": "Role"
+              }
+            }
+          ]
+        },
+            {
+              "type": "select",
+              "key": "primarycontact.status",
+              "props": {
+                "label": "Status"
+              }
+            },
+
+                {
+                    "type": "input",
+                    "key": "primarycontact.contact.primaryaddress.street",
+                    "props": {
+                      "label": "Street"
+                    }
+                  },
+                  {
+                    "fieldGroupClassName": "display-flex",
+                    "fieldGroup": [
+              {
+                "key": "primarycontact.contact.primaryaddress.areaname",
+                "className": "flex-6",
+                "type": "input",
+                "props": {
+                  "label": "Area Name"
+                }
+              },
+              {
+                "key": "primarycontact.contact.primaryaddress.landmark",
+                "className": "flex-6",
+                "type": "input",
+                "props": {
+                  "label": "Landmark"
+                  
+                }
+              }
+            ]
+        },
+              {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                  {
+                    "type": "select-input",
+                    "key": "primarycontact.contact.primaryaddress.country",
+                    "className": "flex-6",
+                    "props": {
+                      "label": "Country"    
+                    }
+                  },
+                  {
+                    "type": "select-input",
+                    "key": "primarycontact.contact.primaryaddress.state",
+                    "className": "flex-6",
+                    "props": {
+                      "label": "State"
+                    }
+                  }
+                ]
+              },
+              {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                  {
+                    "key": "primarycontact.contact.primaryaddress.city",
+                    "type": "select-input",
+                    "parentKey":"primarycontact.contact.primaryaddress.state",
+                    "className": "flex-6",
+                    "props": {
+                      "label": "City"
+                    }
+                  },
+                  {
+                    "key": "primarycontact.contact.primaryaddress.zipcode",
+                    "type": "number",
+                    "className": "flex-6",
+                    "props": {
+                      "label": "Zip code"
+                    }
+                  }
+                ]
+              }
+            ]
+
+     
+    },
+    "onCancelRoute": "/list/user"
+  }
+  

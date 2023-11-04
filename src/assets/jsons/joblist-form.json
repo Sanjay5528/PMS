@@ -1,0 +1,329 @@
+{
+    "pageHeading": "Job",
+    "formType": "simple",
+    "editMode": "page",
+    "keyField":"_id",
+    "form": {
+        "collectionName": "joblist",
+        "fields": [
+            {
+                "key": "project.projectname",
+                "type": "input",
+                "props": {
+                    "label": "Project Name",
+                    "placeholder": "Project Name",
+                    "required": true,
+                    "maxLength": "20"
+                }
+            },
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                  {
+                    "className": "flex-1",
+                "key": "name",
+                "type": "input",
+                "props": {
+                    "label": "Job Name",
+                    "placeholder": "Job Name",
+                    "required": true,
+                    "maxLength": "25"
+                }
+            },
+            {
+                "className": "flex-1",
+                "key": "categorycode",
+                "type": "select-input",
+                "props": {
+                    "label": "Job services",
+                    "placeholder": "Job services",
+                    "labelPropTemplate": " {{skill}}",
+                    "optionsDataSource": {
+                        "collectionName": "services_skills"
+                    },
+                    "labelProp": "skill",
+                    "valueProp": "type",
+                    "required": true
+                }
+            }]},
+            {
+                "key": "description",
+                "type": "html-input",
+                "props": {
+                    "label": "Job Description",
+                    "placeholder": "Job Description",
+                    "required": true,
+                    "maxLength": 100
+                }
+            },
+            
+            {
+                "key": "numberofengineersrequired",
+                "type": "number",
+                "props": {
+                    "label": "Number of engineers required",
+                    "placeholder": "Number of engineers required",
+                    "required": true
+                }
+            },
+            {
+                "key": "workmode",
+                "type": "radio",
+                "props": {
+                    "label": "Job Type",
+                
+                    "required": true,
+                    "options": [
+                        {
+                            "value": "On-site",
+                            "label": "On-site"
+                        },
+                        {
+                            "value": "Remote",
+                            "label": "Remote"
+                        }
+                    ]
+                }
+            },
+            {
+                "key": "tools",
+                "type": "multiselect-input",
+                "props": {
+                    "label": "Tools",
+                    "placeholder": "Tools",
+                    "labelPropTemplate": " {{name}}",
+                    "optionsDataSource": {
+                        "collectionName": "tools"
+                    },
+                    "labelProp": "name",
+                    "valueProp": "name",
+                    "required": true
+                }
+            },
+            {
+                "key": "skills",
+                "type": "multiselect-input",
+                "props": {
+                    "label": "Skills",
+                    "placeholder": "Skills",
+                    "labelPropTemplate": " {{name}}",
+                    "optionsDataSource": {
+                        "collectionName": "skills"
+                    },
+                    "labelProp": "name",
+                    "valueProp": "id",
+                    "required": true
+                 
+                }
+            },
+            {
+                "key": "tasks",
+                "type": "multiselect-input",
+                "props": {
+                    "label": "Tasks",
+                    "placeholder": "Tasks",
+                    "labelPropTemplate": " {{name}}",
+                    "optionsDataSource": {
+                        "collectionName": "tasks"
+                    },
+                    "labelProp": "name",
+                    "valueProp": "id",
+                    "required": true
+                 
+                }
+            },
+            
+           
+            {
+                "key": "targetdatetime",
+                "type": "datetime-input",
+                "props": {
+                    "label": "Target Date & Time",
+                    "placeholder": "Target Date & Time",
+                    "required": true
+                
+                }
+                
+            },
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+          
+            {
+                "className": "flex-1",
+                "key": "clientserviceaddress.street",
+                "type": "textarea",
+                "props": {
+                    "label": "Street",
+                    "placeholder": "Street",
+                    "required": true,
+                    "maxLength": 50
+                }
+            },
+            {
+                "className": "flex-1",
+                "key": "clientserviceaddress.landmark",
+                "type": "textarea",
+                "props": {
+                    "label": "Landmark",
+                    "placeholder": "Landmark",
+                    
+                    "maxLength": 50
+                }
+            }]},
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+            {
+                "className": "flex-1",
+                "key": "clientserviceaddress.country",
+                "type": "select-input",
+           
+                "props": {
+                    "label": "Country",
+                    "placeholder": "Country",
+                    "attribute":"array_of_object",
+                    "required": true,
+                    "labelPropTemplate": " {{countryname}}",
+                    "optionsDataSource": {
+                        "collectionName": "country"
+                    },
+                    "labelProp": "countryname",
+                    "valueProp": "countryname"
+                }
+            },
+            {
+                "className": "flex-1",
+                "key": "clientserviceaddress.state",
+                "type": "select-input",
+                
+                "props": {
+                    "label": "State",
+                    "placeholder": "State",
+                    "attribute":"array_of_object",
+                    "required": true,
+                    "labelPropTemplate": " {{statename}}",
+                    "optionsDataSource": {
+                        "collectionName": "state"
+                    },
+                    "labelProp": "statename",
+                    "valueProp": "statename"
+                }
+            }]},
+         
+            {
+                "key": "clientserviceaddress.city",
+                "type": "select-input",
+                "props": {
+                    
+                    "label": "City",
+                    "placeholder": "City",
+                    "attribute":"array_of_object",
+                    "required": true,
+                    "labelPropTemplate": " {{cityname}}",
+                    "optionsDataSource": {
+                        "collectionName": "city"
+                    },
+                    "labelProp": "cityname",
+                    "valueProp": "cityname"
+                }
+            },
+            
+            {
+               
+                "key": "weekendavailability",
+                "type": "toggle",
+                "props": {
+                    "label": "Weekend availability"
+                }
+            },
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+            {
+                "className": "flex-1",
+                "key": "weekendworkdatetime",
+                "type": "datetime-input",
+                "props": {
+                    "label": "Date & Time",
+                    "placeholder": "Date & Time",
+                    "required": true
+                },
+                "expressions": {
+                    "hide": "!model.weekendavailability"
+                }
+            },
+            {
+                "className": "flex-1",
+                "key": "weekendadditionworkhours",
+                "type": "number",
+                "props": {
+                    "label": "Additional Hours",
+                    "placeholder": "Additional Hours",
+                    "required": true
+                },
+                "expressions": {
+                    "hide": "!model.weekendavailability"
+                }
+            },
+            {
+                "className": "flex-1",
+                "key": "weekendnumberofengineersrequired",
+                "type": "number",
+                "props": {
+                    "label": "Number of engineers required",
+                    "placeholder": "Number of engineers required",
+                    "required": true
+                },
+                "expressions": {
+                    "hide": "!model.weekendavailability"
+                }
+            }]},
+            {
+                "key": "pointofcontacts",
+                "type": "button-input",
+                "templateOptions": {
+                    "label": "Point of contact",
+                    "labelPropTemplate": "{{pointofcontacts}}",
+                    "attributes": "pointofcontacts",
+                    "required":true
+                }
+            },
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+            {
+                "className": "flex-1",
+                "key": "primarylanguage",
+                "type": "input",
+                "props": {
+                    "label": "Primary Language",
+                    "placeholder": "Primary Language",
+                    "required": true
+                }
+            },
+            {
+                "className": "flex-1",
+                "key": "secondarylanguage",
+                "type": "input",
+                "props": {
+                    "label": "Secondary Language",
+                    "placeholder": "Secondary Language",
+                    "required": true
+                }
+            }]},
+            {
+                "key": "additionaldetails",
+                "type": "html-input",
+                "props": {
+                    "placeholder": "Additonal Details",
+                  
+                    "label": "Additonal Details",
+                   
+                    "maxLength": 150
+                }
+            }
+        ]
+    },
+    "onCancelRoute": "/list/joblist"
+}

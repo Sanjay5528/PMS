@@ -1,0 +1,74 @@
+{
+  "pageHeading": "Job",
+  "collectionName": "joblist",
+  "screenWidth":"80%",
+  "editMode": "page",
+  "showbutton":true,
+  "keyField":"_id",
+  "actions": [
+    {
+      "label":"Edit",
+      "icon":"edit",
+      "formName":"joblist"
+    },
+    {
+      "label": "Delete",
+      "icon": "delete",
+      "formName":"joblist"
+    }
+  ],
+  "addRoute": "add/joblist",
+  "editRoute": "edit/joblist",
+  "columnDefs": [
+    {
+      "headerName": "Job Order Id",
+      "field": "ordernumber",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Project Name",
+      "field": "project.projectname",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Job Name",
+      "field": "name",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Job Type",
+      "field": "workmode",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+  
+   
+   
+    {
+      "headerName": "City",
+      "field": "clientserviceaddress.city",
+      "sortable": true,
+      "filter": "agDateColumnFilter"
+    },
+    {
+      "headerName": "Country",
+      "field": "clientserviceaddress.country",
+      "sortable": true,
+      "filter": "agDateColumnFilter"
+    },
+ 
+  
+    {
+      "type": "rightAligned",
+      "headerName": "Actions",
+      "cellRenderer": "buttonRenderer",
+      "cellRendererParams": {
+        "onClick": "this.onBtnClick1.bind(this)",
+        "label": "Click 1"
+      }
+    }
+  ]
+}

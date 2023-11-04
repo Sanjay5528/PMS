@@ -1,0 +1,89 @@
+{
+    "pageHeading": "Testcase",
+    "collectionName": "testcase",
+    "editMode": "popup",
+    "showbutton":true,
+    "keyField":"_id",
+    "screenWidth":"50%",
+    "actions": [
+      {
+        "label":"Edit",
+        "icon":"edit",
+        "formName":"testcase"
+      },
+      {
+        "label": "Test Result",
+        "icon": " offline_bolt",
+        "formName": "testresult"
+    },
+      {
+        "label": "Delete",
+        "icon": "delete",
+        "formName":"entities/testcase"
+      }
+    ],
+    "addRoute": "add/testcase",
+    "editRoute": "edit/testcase",
+    "testresultRoute": "testresult/testcase",
+    "columnDefs": [
+      {
+        "headerName": "Testcase Id",
+        "field": "testcaseid",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "headerName": "Testcase Name",
+        "field": "testcasename",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "headerName": "Pre Request",
+        "field": "prerequest",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "headerName": "Pre Condition",
+        "field": "precondition",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      {
+        "headerName": "Test Step",
+        "field": "teststep",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+       
+      {
+        "headerName": "Test Data",
+        "field": "testdata",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+      
+      
+      
+      {
+        "headerName": "Type",
+        "field": "type",
+        "sortable": true,
+        "filter": "agTextColumnFilter"
+      },
+    
+       
+      {
+        "type": "rightAligned",
+        "headerName": "Actions",
+        "cellRenderer": "buttonRenderer",
+        "lockPosition": "right",
+        "cellRendererParams": {
+          "onClick": "this.onBtnClick1.bind(this)",
+          "label": "Click 1"
+        }
+      }
+    ]
+  }
+  

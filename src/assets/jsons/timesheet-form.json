@@ -1,0 +1,94 @@
+{
+    "pageHeading": "TimeSheet",
+    "formType": "simple",
+    "editMode": "popup",
+    "keyField": "_id",
+    "form": {
+        "collectionName": "timesheet",
+        "fields": [
+            {
+                "type": "input",
+                "key": "projectname",
+                "props": {
+                    "label": "Project Name",
+                    "placeholder": "Project Name"
+                }
+            },
+            {
+                "type": "input",
+                "key": "taskname",
+                "props": {
+                    "label": "Task Name",
+                    "placeholder": "Task Name"
+                }
+            },
+            {
+                "type": "datepicker",
+                "key": "startdate",
+                "props": {
+                    "label": "start Date",
+                    "placeholder": "start Date"
+                }
+            },
+            {
+                "type": "datepicker",
+                "key": "enddate",
+                "props": {
+                    "label": "End Date",
+                    "placeholder": "End Date"
+                }
+            },
+            {
+                "type": "input",
+                "key": "allocatedhours",
+                "props": {
+                    "label": "Allocated Hours",
+                    "placeholder": "Allocated Hours"
+                }
+            },
+            {
+                "type": "input",
+                "key": "allocatedhours",
+                "props": {
+                    "label": "Allocated Hours",
+                    "placeholder": "Allocated Hours"
+                }
+            },
+            {
+                "type": "input",
+                "key": "workspending hours",
+                "props": {
+                    "label": "WorkSpending Hours",
+                    "placeholder": "WorkSpending Hours"
+                }
+            },
+            {
+                "type": "input",
+                "key": "remarks",
+                "props": {
+                    "label": "Remarks",
+                    "placeholder": "Remark"
+                }
+            },
+            {
+                "type": "select",
+                "key": "status",
+                "props": {
+                    "label": "status",
+                    "placeholder": "status",
+                    "options": [
+                        {
+                            "label": "Working In Process",
+                            "value": "workinginprocess"
+                        },
+                        {
+                            "label": "Completed",
+                            "value": "completed"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "onCancelRoute": "/list/timesheet"
+}

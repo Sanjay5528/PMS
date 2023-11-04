@@ -1,0 +1,127 @@
+{
+    "pageHeading": "Task Allocation",
+    "formType": "simple",
+    "editMode": "page",
+    "keyField": "_id",
+    "form": {
+        "collectionName": "taskallocation",
+        "fields": [
+            {
+                "type": "input",
+                "key": "taskallocationid",
+                "props": {
+                    "label": "Task Allocation Id",
+                    "placeholder": "Task Allocation Id"
+                }
+            },
+            {
+                "type": "input",
+                "key": "taskid",
+                "props": {
+                    "label": "Task Id",
+                    "placeholder": "Task Id"
+                }
+            },
+            {
+                "type": "select",
+                "key": "projectid",
+                "props": {
+                    "label": "Project Id",
+                    "placeholder": "Project Id "
+                }
+            },
+            {
+                "type": "select",
+                "key": "employeeid",
+                "props": {
+                    "label": "Employee Id",
+                    "placeholder": "Employee Id"
+                }
+            },
+            {
+                "type": "select",
+                "key": "projectmoduleid",
+                "props": {
+                    "label": "Project Module Id",
+                    "placeholder": "Project Module Id"
+                }
+            },
+            
+            {
+                "type": "datepicker",
+                "key": "schedulestartdate",
+                "props": {
+                    "label": "Schedule Start Date",
+                    "placeholder": "Schedule start Date"
+                }
+            },
+            {
+                "type": "datepicker",
+                "key": "scheduleenddate",
+                "props": {
+                    "label": "Schedule End Date",
+                    "placeholder": "Schedule End Date"
+                }
+            },
+            {
+                "type": "input",
+                "key": "allocatedhours",
+                "props": {
+                    "label": "Allocated Hours",
+                    "placeholder": "Allocated Hours"
+                }
+            },
+            {
+                "type": "datepicker",
+                "key": "actualstartDate",
+                "props": {
+                    "label": "Actual Start Date",
+                    "placeholder": "Actual Start Date"
+                }
+            },
+           
+            {
+                "type": "datepicker",
+                "key": "actualendDate",
+                "props": {
+                    "label": "Actual End Date",
+                    "placeholder": "Actual End Date"
+                }
+            },
+         {
+            "type": "input",
+            "key": "actualhours",
+            "props": {
+                "label": "Actual hours",
+                "placeholder": "Actual Hours"
+            }
+        },
+        {
+            "type": "input",
+            "key": "allocatedby",
+            "props": {
+                "label": "Allocated By",
+                "placeholder": "Allocated By"
+            }
+        },
+        {
+            "type": "input",
+            "key": "allocatedon",
+            "props": {
+                "label": "Allocated On",
+                "placeholder": "Allocated On"
+            }
+        },
+        {
+            "type": "input",
+            "key": "allocatedremark",
+            "props": {
+                "label": "Allocated Remark",
+                "placeholder": "Allocated Remark"
+            }
+        }
+    
+        ]
+    },
+    "onCancelRoute": "/list/taskallocation"
+}

@@ -1,0 +1,101 @@
+{
+  "pageHeading": "Timesheet",
+  "collectionName": "timesheet",
+  "editMode": "popup",
+  "showbutton": false,
+  "screenWidth": "50%",
+  "actions": [
+    {
+      "label": "Unscheduled Events",
+      "icon": "view_module",
+      "formName": "entities/timesheet/id"
+    }
+  ],
+  "moduleRoute": "/list/timesheet",
+  "columnDefs": [
+    {
+      "headerName": "Project Name",
+      "field": "projectname",
+      "sortable": true,
+      "filter": "agTextColumnFilter",
+      "editable": false
+    },
+    {
+      "headerName": "Task Name",
+      "field": "taskname",
+      "sortable": true,
+      "filter": "agTextColumnFilter",
+      "editable": false
+    },
+    {
+      "headerName": "Start Date",
+      "field": "startdate",
+      "sortable": true,
+      "filter": "agTextColumnFilter",
+      "editable": false
+    },
+    {
+      "headerName": "End Date",
+      "field": "enddate",
+      "sortable": true,
+      "filter": "agTextColumnFilter",
+      "editable": false
+    },
+    {
+      "headerName": "Allocated Hours",
+      "field": "allocatedhours",
+      "sortable": true,
+      "filter": "agTextColumnFilter",
+      "editable": false
+    },
+    {
+      "headerName": "Worked Hours",
+      "field": "workspending hours",
+      "sortable": true,
+      "filter": "agTextColumnFilter",
+      "editable": true
+    },
+    {
+      "headerName": "Remark",
+      "field": "remarks",
+      "sortable": true,
+      "filter": "agTextColumnFilter",
+      "editable": true
+    },
+    {
+      "headerName": "status",
+      "field": "status",
+      "filter": "agTextColumnFilter",
+      "editable": true,
+      "type": "select",
+      "props": {
+        "label": "status",
+        "placeholder": "status",
+        "options": [
+          {
+            "label": "Working In Process",
+            "value": "workinginprocess"
+          },
+          {
+            "label": "Completed",
+            "value": "completed"
+          },
+          {
+            "label": "Hold",
+            "value": "hold"
+          }
+        ]
+      }
+    },
+    {
+      "type": "rightAligned",
+      "headerName": "Actions",
+      "cellRenderer": "buttonRenderer",
+      "lockPosition": "right",
+      "cellRendererParams": {
+        "onClick": "this.onBtnClick1.bind(this)",
+        "label": "Click 1"
+      }
+    }
+  ]
+}
