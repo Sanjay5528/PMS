@@ -14,8 +14,6 @@ export class DataService {
     return environment.apiBaseUrl
   }
   public getDataById(path: any, id: any) {
-
-    // id = id.replace(/\//g, "%2F")
     return this.http.get(this.getWsBaseUrl() + "entities/" + path + '/' + id);
   }
    
@@ -25,45 +23,34 @@ public getChidData(collectionName:any, id:any, data?:any){
 }
 
   public getDataByIdTree(path: any, id: any) {
-
-    // id = id.replace(/\//g, "%2F")
     return this.http.get(this.getWsBaseUrl() + "query/" + path + '/' + id);
   }
 
 
-  public getDataByIdTimesheet(path: any, id: any) {
-
-    // id = id.replace(/\//g, "%2F")
-    return this.http.get(this.getWsBaseUrl() + "query/" + path + '/' + id);
-  }
+  // public getDataByIdTimesheet(path: any, id: any) {
+  //   return this.http.get(this.getWsBaseUrl() + "query/" + path + '/' + id);
+  // }
 
 
   public getDataByIdProject(ctrl: any, id: any) {
-
-    // id = id.replace(/\//g, "%2F")
     return this.http.get(this.getWsBaseUrl() + "query/" + `${ctrl.config.form.collectionName}` + '/' + id);
   }
-  public getcalendar( employee_id: any) {
 
-    // id = id.replace(/\//g, "%2F")
+  public getcalendar( employee_id: any) {
     return this.http.get(this.getWsBaseUrl() + "query/timesheet"+ `/employeeid` + '/' + `${employee_id}` );
   }
-  public getDataId(path: any, id: any) {
 
-    // id = id.replace(/\//g, "%2F")
+  public getDataId(path: any, id: any) {
     return this.http.get(this.getWsBaseUrl() + path + '/' + id);
   }
-  public getDataId1(path: any, id: any) {
-
-    // id = id.replace(/\//g, "%2F")
-    return this.http.get(this.getWsBaseUrl() + path + '/'+"projectid"+ '/'+ id);
-  }
+  // public getDataId1(path: any, id: any) {
+  //   return this.http.get(this.getWsBaseUrl() + path + '/'+"projectid"+ '/'+ id);
+  // }
 
   public getDataByIdClient(path: any, id: any) {
-    debugger
-    // id = id.replace(/\//g, "%2F")
     return this.http.get(this.getWsBaseUrl() + "entities/" + 'filters/' + path + '/' + id);
   }
+
   public saveAll(collectionName:any,data: any) {
       return this.http.post(this.getWsBaseUrl() + "entities/" + `${collectionName}`, data);
       
@@ -75,56 +62,59 @@ public getChidData(collectionName:any, id:any, data?:any){
   public loginUser(data: any) {
     return this.http.post(this.getWsBaseUrl() + 'auth/login', data);
   }
-  public upload(data: any, id: any) {
-    return this.http.post(this.getWsBaseUrl() + 'upload/' + `${id}`, data);
-  }
+
+  // public upload(data: any, id: any) {
+  //   return this.http.post(this.getWsBaseUrl() + 'upload/' + `${id}`, data);
+  // }
   public savetimesheet(data:any){
   return this.http.put(this.getWsBaseUrl()+'lookup/timesheet',data)
   }
-  public savedata(data:any){
-    return this.http.put(this.getWsBaseUrl()+'lookup/timesheet',data)
-    }
-  public updateapproved(data:any,ctrl:any){
-    return this.http.put(this.getWsBaseUrl()+"entities/"+'${data}',ctrl);
-  }
+  // public savedata(data:any){
+  //   return this.http.put(this.getWsBaseUrl()+'lookup/timesheet',data)
+  //   }
+  // public updateapproved(data:any,ctrl:any){
+  //   return this.http.put(this.getWsBaseUrl()+"entities/"+'${data}',ctrl);
+  // }
 
 
 
   //save the data
   public save(data: any, ctrl: any) {
-    if (data == "timesheet") {
-      return this.http.post(this.getWsBaseUrl() + "entities/" + `${data}`, ctrl);
-    }
+
+    let collectionName:any=ctrl.collectionName?ctrl.collectionName:ctrl.config.form.collectionName
+    // if (data == "timesheet") {
+    //   return this.http.post(this.getWsBaseUrl() + "entities/" + `${data}`, ctrl);
+    // }
    
-    else if (ctrl.pageHeading == 'Testcase') {
-      return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.collectionName}`, data);
-    }
-    else {
-      if (ctrl.pageHeading == 'Modules') {
-        return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.config.form.collectionName}`, data);
-      }
-      else if (ctrl.pageHeading == 'Project Team') {
-        debugger
-        return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.config.form.collectionName}`, data);
-      }
-      else if (ctrl.pageHeading == 'Employee') {
-        return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.collectionName}`, data);
-      }
-      else if (ctrl.pageHeading == 'Project Team Members') {
-        return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.collectionName}`, data);
-      }
-      else if (ctrl.pageHeading == 'Client') {
-        return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.collectionName}`, data);
-      }
-      else if (ctrl.pageHeading == 'Timesheet') {
-        return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.collectionName}`, data);
-      } else if (ctrl.pageHeading == 'unschedule') {
-        return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.collectionName}`, data);
-      }
-      else {
-        return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.config.form.collectionName}`, data);
-      }
-    }
+    // else if (ctrl.pageHeading == 'Testcase') {
+    //   return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.collectionName}`, data);
+    // }
+    // else {
+    //   if (ctrl.pageHeading == 'Modules') {
+    //     return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.config.form.collectionName}`, data);
+    //   }
+    //   else if (ctrl.pageHeading == 'Project Team') {
+    //     debugger
+    //     return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.config.form.collectionName}`, data);
+    //   }
+    //   else if (ctrl.pageHeading == 'Employee') {
+    //     return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.collectionName}`, data);
+    //   }
+    //   else if (ctrl.pageHeading == 'Project Team Members') {
+    //     return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.collectionName}`, data);
+    //   }
+    //   else if (ctrl.pageHeading == 'Client') {
+    //     return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.collectionName}`, data);
+    //   }
+    //   else if (ctrl.pageHeading == 'Timesheet') {
+    //     return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.collectionName}`, data);
+    //   } else if (ctrl.pageHeading == 'unschedule') {
+    //     return this.http.post(this.getWsBaseUrl() + "entities/" + `${ctrl.collectionName}`, data);
+    //   }
+    //   else {
+        return this.http.post(this.getWsBaseUrl() + "entities/" + `${collectionName}`, data);
+      // }
+    // }
   }
 
   //to list the datas in table
@@ -134,9 +124,9 @@ public getChidData(collectionName:any, id:any, data?:any){
   public getdata1() {
     return this.http.get(this.getWsBaseUrl() + "lookup/task" +"/SA");
   }
-  public getdataTimesheet(id:any) {
-    return this.http.get(this.getWsBaseUrl() + 'lookup/tasks/timesheet'+ `/${id}`);
-  }
+  // public getdataTimesheet(id:any) {
+  //   return this.http.get(this.getWsBaseUrl() + 'lookup/tasks/timesheet'+ `/${id}`);
+  // }
 
   //to list the module filter data
   public getModuleFilter(collectionName: any, key: any) {
@@ -156,15 +146,15 @@ public getChidData(collectionName:any, id:any, data?:any){
     return this.http.put(this.getWsBaseUrl() + "entities/modules"+ `/${id}` , data);
   }
 
-  public updateTimesheet(data: any, id: any,collection_name:any) {
-    // let id = ctrl.id
-    return this.http.put(this.getWsBaseUrl() + "entities/"+`${collection_name}` + `/${id}`, data);
-  }
+  // public updateTimesheet(data: any, id: any,collection_name:any) {
+  //   // let id = ctrl.id
+  //   return this.http.put(this.getWsBaseUrl() + "entities/"+`${collection_name}` + `/${id}`, data);
+  // }
  
-  public AddTimesheet(data: any) {
-    // let id = ctrl.id
-    return this.http.post(this.getWsBaseUrl() + "entities/timesheet", data);
-  }
+  // public AddTimesheet(data: any) {
+  //   // let id = ctrl.id
+  //   return this.http.post(this.getWsBaseUrl() + "entities/timesheet", data);
+  // }
   public AddUnScheduleTimesheet(data: any) {
     // let id = ctrl.id
     return this.http.post(this.getWsBaseUrl() + "entities/unschedule", data);
@@ -181,38 +171,38 @@ public getChidData(collectionName:any, id:any, data?:any){
   }
 
   //get data by url
-  public getDataByUrl(id: any) {
-    const encodedUrl = encodeURIComponent(id);
-    // http%3A%2F%2Flocalhost%3A4301%2Fpz3uA
-    return this.http.get(this.getWsBaseUrl() + 'emandate/urlData/' + `${encodedUrl}`);
-  }
+  // public getDataByUrl(id: any) {
+  //   const encodedUrl = encodeURIComponent(id);
+  //   // http%3A%2F%2Flocalhost%3A4301%2Fpz3uA
+  //   return this.http.get(this.getWsBaseUrl() + 'emandate/urlData/' + `${encodedUrl}`);
+  // }
 
   //update data by url
-  public updateDataByUrl(id: any) {
-    const encodedUrl = encodeURIComponent(id);
-    return this.http.get(this.getWsBaseUrl() + 'emandate/urlData/' + `${encodedUrl}`);
-  }
+  // public updateDataByUrl(id: any) {
+  //   const encodedUrl = encodeURIComponent(id);
+  //   return this.http.get(this.getWsBaseUrl() + 'emandate/urlData/' + `${encodedUrl}`);
+  // }
 
   public deleteDataById(path: any, id: any) {
     // id = id.replace(/\//g, "%2F")
     return this.http.delete(this.getWsBaseUrl() + path + '/_id/' + id);
   }
-  public deleteById(path: any, id: any) {
-    // id = id.replace(/\//g, "%2F")
-    return this.http.delete(this.getWsBaseUrl() + path +'/'+ id);
-  }
+  // public deleteById(path: any, id: any) {
+  //   // id = id.replace(/\//g, "%2F")
+  //   return this.http.delete(this.getWsBaseUrl() + path +'/'+ id);
+  // }
 
 
 
-  //captcha api
-  public getCaptcha(data?: any) {
-    return this.http.get(this.getWsBaseUrl() + 'captcha');
-  }
+  // //captcha api
+  // public getCaptcha(data?: any) {
+  //   return this.http.get(this.getWsBaseUrl() + 'captcha');
+  // }
 
   //For send otp for forgot password 
-  public sendOTP(data?: any, id?: any) {
-    return this.http.post(this.getWsBaseUrl() + `${data}` + `${id}`, data);
-  }
+  // public sendOTP(data?: any, id?: any) {
+  //   return this.http.post(this.getWsBaseUrl() + `${data}` + `${id}`, data);
+  // }
   // /user/forget-password/{userId}
 
   public resetPwd(data: any) {
@@ -221,9 +211,9 @@ public getChidData(collectionName:any, id:any, data?:any){
 
 
 
-  public saveDoc(data: any) {
-    return this.http.post(this.getWsBaseUrl() + `programdocument/create`, data, { reportProgress: true, observe: 'events' });
-  }
+  // public saveDoc(data: any) {
+  //   return this.http.post(this.getWsBaseUrl() + `programdocument/create`, data, { reportProgress: true, observe: 'events' });
+  // }
 
   // //search the data
   // public search(data: any, id: any) {
@@ -267,40 +257,40 @@ public getChidData(collectionName:any, id:any, data?:any){
 
 
 
-  public getRights() {
-    return this.http.get(this.getWsBaseUrl() + 'userRights');
-  }
+  // public getRights() {
+  //   return this.http.get(this.getWsBaseUrl() + 'userRights');
+  // }
 
   //to list the netbanking data 
-  public getNetBankingList() {
-    return this.http.get(this.getWsBaseUrl() + "emandate/list/NetBanking/{totalcount}");
-  }
+  // public getNetBankingList() {
+  //   return this.http.get(this.getWsBaseUrl() + "emandate/list/NetBanking/{totalcount}");
+  // }
 
   // to list the Debitlist data
-  public getDebitList() {
-    return this.http.get(this.getWsBaseUrl() + "emandate/list/Debit/{totalcount}");
-  }
-  public getAadharList() {
-    return this.http.get(this.getWsBaseUrl() + "emandate/list/AadharCard/{totalcount}");
-  }
-  public getUPI_MandatesList() {
-    return this.http.get(this.getWsBaseUrl() + "emandate/list/UPI_Mandates/{totalcount}");
-  }
+  // public getDebitList() {
+  //   return this.http.get(this.getWsBaseUrl() + "emandate/list/Debit/{totalcount}");
+  // }
+  // public getAadharList() {
+  //   return this.http.get(this.getWsBaseUrl() + "emandate/list/AadharCard/{totalcount}");
+  // }
+  // public getUPI_MandatesList() {
+  //   return this.http.get(this.getWsBaseUrl() + "emandate/list/UPI_Mandates/{totalcount}");
+  // }
 
-  public getDates() {
-    debugger
-    return this.http.get(this.getWsBaseUrl() + "emandate/count/dates");
-  }
-
-
-
-  public updatePatch(data: any, ctrl: any) {
-
-    let id = ctrl.id
-    return this.http.patch(this.getWsBaseUrl() + `${ctrl.collectionName}` + `/${id}`, data);
+  // public getDates() {
+  //   debugger
+  //   return this.http.get(this.getWsBaseUrl() + "emandate/count/dates");
+  // }
 
 
-  }
+
+  // public updatePatch(data: any, ctrl: any) {
+
+  //   let id = ctrl.id
+  //   return this.http.patch(this.getWsBaseUrl() + `${ctrl.collectionName}` + `/${id}`, data);
+
+
+  // }
 
   // public imageupload(data: any, id: any) {  
   // return this.http.post(this.getWsBaseUrl() + "upload" + "/" + id, data);
@@ -317,23 +307,25 @@ public getChidData(collectionName:any, id:any, data?:any){
 
 
   //update by id 
-  public data_update(collectionname: any, id: any, data: any) {
-    return this.http.put(this.getWsBaseUrl() + `${collectionname}` + `/${id}`, data);
-  }
+  // public data_update(collectionname: any, id: any, data: any) {
+  //   return this.http.put(this.getWsBaseUrl() + `${collectionname}` + `/${id}`, data);
+  // }
 
-  //soft delete the data
-  public disable(data: any, ctrl: any, id: any) {
-    let collection_name = ctrl.collectionName
-    return this.http.put(this.getWsBaseUrl() + `${collection_name}/` + "disable" + `/${id}`, data);
-  }
+  // //soft delete the data
+  // public disable(data: any, ctrl: any, id: any) {
+  //   let collection_name = ctrl.collectionName
+  //   return this.http.put(this.getWsBaseUrl() + `${collection_name}/` + "disable" + `/${id}`, data);
+  // }
 
 
   public getDataByFilter(collectionName: any, filter: any, c?: any) {
     return this.http.get(this.getWsBaseUrl() + collectionName + `/${filter}`);
   }
-  public getDataByFilter1(collectionName: any, filter: any, c?: any) {
-    return this.http.post(this.getWsBaseUrl() + 'search/' + collectionName +`/0/${1000}`,filter);
-  }
+
+  // public getDataByFilter1(collectionName: any, filter: any, c?: any) {
+  //   return this.http.post(this.getWsBaseUrl() + 'search/' + collectionName +`/0/${1000}`,filter);
+  // }
+
   public getDataByFilterdate(collectionName: any, filter: any, c?: any) {
     return this.http.get(this.getWsBaseUrl() +"entities/"+ collectionName + `/${filter}`);
   }

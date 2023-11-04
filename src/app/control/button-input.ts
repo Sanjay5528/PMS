@@ -39,9 +39,7 @@ margin-bottom: 20px;
     margin-right: 5px;
   }
   
-  .name {
-   
-  }
+ 
   
   .contact-row {
     display: flex;
@@ -98,15 +96,14 @@ margin-bottom: 20px;
 <div class="storedDate">
 <div class="name-row">
 <span class="bullet-point">&#8226;</span> 
-<span class="name">
-{{ field.projectroleid }} {{ field.projectrolename }}{{field.employeename}} {{field.teamname}}</span>
+<span style="justify-content: center;">
+{{ field.projectroleid }} {{ field.projectrolename }}{{field.employeename}} {{field.teamname}}
+<mat-icon style="padding-top: 3px;" *ngIf="field.showButtons" (click)="deleteItem(i)">delete</mat-icon>
+  <mat-icon (click)="editItem(field)" style="padding-top: 3px;" *ngIf="field.showButtons">edit</mat-icon>
+</span>
 </div>
 <!-- <div class="contact-row">
 <span class="contact">{{ field.emailid }}, {{ field.mobilenumber }}</span> -->
-<div class="button-group" *ngIf="field.showButtons">
-  <mat-icon (click)="deleteItem(i)">delete</mat-icon>
-  <mat-icon (click)="editItem(field)">edit</mat-icon>
-</div>
 <!-- </div> -->
 </div>
 </div>
@@ -144,9 +141,16 @@ export class ButtonInput extends FieldType<any> implements OnInit {
 
   ngOnInit(): void {
     localStorage.removeItem('projectmembers')
+    this.storedDate = this.model[this.field.key]
+    
+    if(this.model.isEdit==true){
+
+      localStorage.setItem('projectmembers',this.storedDate)
+    
+    }
+
     this.label = this.field.props?.label
     this.formName = this.field.props?.attributes
-    this.storedDate = this.model[this.field.key]
 
   }
   ngOnDestroy() {

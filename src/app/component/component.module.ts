@@ -50,8 +50,6 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ControlModule } from '../control/control.module';
 import { DynamicFormComponent } from './dynamic-form/dynamic-form.component';
-import { EngineersApprovalRequestComponent } from './engineers-approval-request/engineers-approval-request.component';
-import { EngineerProfileComponent } from './engineer-profile/engineer-profile.component';
 import { AppRoutingModule } from '../app-routing.module';
 // import { TimesheetComponent } from './timesheet/timesheet.component';
 import { NgxGanttModule } from '@worktile/gantt';
@@ -102,8 +100,6 @@ const appearance: any = {
     ProjectButtonComponent,
     DashboardComponent,
     MyLinkRendererComponent,
-    EngineerProfileComponent,
-    EngineersApprovalRequestComponent,
     //  TimesheetComponent,
     MyprofileComponent,
     CreatecvComponent,
@@ -177,8 +173,6 @@ const appearance: any = {
   exports: [
     DatatableComponent,
     DynamicFormComponent,
-    EngineersApprovalRequestComponent,
-    EngineerProfileComponent,
     ControlModule,
     CalenderComponent,
     FullCalendarModule,

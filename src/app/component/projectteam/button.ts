@@ -42,6 +42,7 @@ import { ProjectteamComponent } from "./projectteam.component";
       
     </mat-menu>
     </div>
+
     <ng-template #editViewPopup>
     <mat-card>
     <mat-card-header style="flex: 1 1 auto;">
@@ -161,7 +162,7 @@ export class ProjectButtonComponent implements ICellRendererAngularComp {
     
     if (value == 'edit' ) {
      
-      this.dialog.openDialog(this.editViewPopup, "89%", '850px', this.deletedData);
+      this.dialog.openDialog(this.editViewPopup, "89%",0, this.deletedData);
       this.httpclient
         .get("assets/jsons/projectteam-form.json")
         .subscribe((frmConfig: any) => {
@@ -210,10 +211,7 @@ export class ProjectButtonComponent implements ICellRendererAngularComp {
     } else {
       console.log("No data")
     }
-  
-
-
-  }
+   }
 
   saveForm(_data: any) {
     debugger
