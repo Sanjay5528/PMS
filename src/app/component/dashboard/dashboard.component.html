@@ -1,0 +1,38 @@
+<ng-container>
+    <div style="margin: auto; width: 100%" #cardContainer>
+      <ngx-charts-number-card
+        [view]="[cardContainer.offsetWidth, 170]"
+        [scheme]="colorScheme"
+        [results]="cardData"
+        [cardColor]="cardColor"
+        (select)="onSelectionChanged($event)"
+      >
+      </ngx-charts-number-card>
+    </div>
+    <div>
+      
+      
+    
+      <!-- <div style="width: 98%;margin: 10px;height: calc(100vh - 250px);margin-bottom: 10px; overflow-y: scroll;"> -->
+  <ag-grid-angular
+  #agGrid style="width: 98%; height: calc(100vh - 340px); flex: 1 1 auto;margin: 10px;"
+    class="ag-theme-alpine"
+    [columnDefs]="columnDefs"
+    [defaultColDef]="defaultColDef"
+    [masterDetail]="true"
+    [rowSelection]="'single'"
+    [pagination]="true"
+    [paginationPageSize]="14"
+    [context]="context"
+    [frameworkComponents]="frameworkComponents"
+    [detailCellRendererParams]="detailCellRendererParams"
+    [rowData]="rowData"
+    [frameworkComponents]="frameworkComponents"
+    (selectionChanged)="onSelectionChanged($event)"
+    (gridReady)="onGridReady($event)"
+  ></ag-grid-angular>
+      </div>
+    <!-- </div> -->
+  </ng-container>
+  
+ 

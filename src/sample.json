@@ -1,0 +1,418 @@
+{
+	"pageHeading": "Config List",
+	"formType": "master-detail",
+	"extraData": true,
+	"form": {
+	  "collectionName": "model_config",
+	  "fields": [
+		{
+		  "type": "label-view",
+		  "key": "model_name",
+		  "templateOptions": {
+			"label": "Model Name",
+			"label_width": 100,
+			"value_width": 200,
+			"value_in_next_row": false,
+			"placeholder": "Model Name",
+			"required": true
+		  }
+		},
+		{
+		  "type": "label-view",
+		  "key": "collection_name",
+		  "templateOptions": {
+			"label_width": 100,
+			"value_width": 200,
+			"value_in_next_row": true,
+			"label": "Collection Name",
+			"placeholder": "Collection Name",
+			"required": true
+		  }
+		}
+	  ],
+	  "buttons": {
+		"start": false,
+		"newEntry": false
+	  }
+	},
+	"detailForm": {
+	  "collectionName": "data_model",
+	  "mapColumn": "model_name",
+	  "uniqueColumn": "model_name",
+	  "keyColumn": "model_name",
+	  "isPopupEdit": true,
+	  "customfilter": true,
+	  "customkey": "model_name",
+	  "fields": [
+		{
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "key": "model_name",
+			  "pattern": "^[A-Z][a-zA-Z_]",
+			  "props": {
+				"label": "Model Name",
+				"flag": true,
+				"placeholder": "Model Name"
+			  }
+			},
+			{
+			  "type": "input",
+			  "key": "column_name",
+			  "props": {
+				"pattern": "^[_A-Za-z][_A-Za-z]*$",
+				"label": "Column Name",
+				"placeholder": "Column Name",
+				"required": true
+			  }
+			},
+			{
+			  "className": "flex-2",
+			  "type": "input",
+			  "key": "header",
+			  "props": {
+				"label": "Header",
+				"required": true,
+				"placeholder": "Header"
+			  }
+			},
+			{
+			  "className": "flex-2",
+			  "type": "input",
+			  "key": "json_field",
+			  "hide":true,
+			  "props": {
+				"label": "Json field",
+				"required": true,
+				"placeholder": "json field"
+			  }
+			}
+		  ]
+		},
+		{
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "className": "flex-2",
+			  "type": "select",
+			  "key": "select_field",
+			  "props": {
+				"label": "Select the Data Type",
+				"placeholder": "Select the Data Type",
+				"options": [
+				  { "label": " Custom DataType", "value": "predefined" },
+				  { "label": "Pre Defined Datatype", "value": "custom_datatype" }
+				]
+			  }
+			}
+		  ]
+		},
+		{
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "type": "select-input",
+			  "key": "modelName",
+			  "className": "flex-2",
+			  "props": {
+				"label": "Custom DataType",
+				"placeholder": "Custom DataType",
+				"labelPropTemplate": " {{modelName}}",
+				"labelProp": "value",
+				"valueProp": "value",
+				"required": true,
+				"options": []
+			  },
+			  "hideExpression": "!model.select_field || model.select_field !== 'predefined'"
+			},
+			{
+			  "type": "select",
+			  "key": "type",
+			  "props": {
+				"label": "Choose a Data Type",
+				"placeholder": "Select Data Type",
+				"required": true,
+				"options": [
+				  { "label": "string", "value": "string" },
+				  { "label": "int", "value": "int" },
+				  { "label": "int64", "value": "int64" },
+				  { "label": "float32", "value": "float32" },
+				  { "label": "float64", "value": "float64" },
+				  { "label": "bool", "value": "bool" },
+				  { "label": "Date and Time", "value": "time.Time" }
+				]
+			  },
+			  "hideExpression": "!model.select_field || model.select_field !== 'custom_datatype'"
+			},
+			{
+			  "className": "flex-2",
+			  "type": "select",
+			  "key": "enumerate_validation",
+			  "props": {
+				"label": "Validation Rule",
+				"placeholder": "Validation Rule",
+				"options": [
+				  { "label": "Minimum Length", "value": "min" },
+				  { "label": "Maximum Length", "value": "max" },
+				  { "label": "Regular Expression", "value": "regexp" },
+				  { "label": "Minimum and Maximum length", "value": "in_between" }
+				]
+			  },
+			  "hideExpression": "model.type !== 'string'"
+			},
+			{
+			  "className": "flex-2",
+			  "type": "select",
+			  "key": "enumerate_validation",
+			  "props": {
+				"label": "Select Boolean Value",
+				"placeholder": "Choose a Boolean Value",
+				"options": [
+				  { "label": "True", "value": "true" },
+				  { "label": "false", "value": "false" }
+				]
+			  },
+			  "expressions": {
+				"hide": "!['bool'].includes(model.type)"
+			  }
+			},
+			{
+			  "className": "flex-2",
+			  "type": "select",
+			  "key": "enumerate_validation",
+			  "props": {
+				"label": "Validation Rule",
+				"placeholder": "Select Validation Rule",
+				"options": [
+				  { "label": "Greater Than or Equal To", "value": "gte" },
+				  { "label": "Less Than or Equal To", "value": "lte" },
+				  { "label": "Greater Than", "value": "gt" },
+				  { "label": "Less Than", "value": "lt" },
+				  { "label": "Equal To", "value": "eq" },
+				  { "label": "Must Not Be Equal To", "value": "ne" },
+				  { "label": "Minimum value", "value": "min" },
+				  { "label": "Maximum value", "value": "max" },
+				  { "label": "Regular Expression", "value": "regexp" },
+				  { "label": "Min and Max Value", "value": "in_between" }
+				]
+			  },
+			  "expressions": {
+				"hide": "!['int', 'int64', 'float32', 'float64'].includes(model.type)"
+			  }
+			},
+			{
+			  "className": "flex-2",
+			  "type": "select",
+			  "key": "enumerate_validation",
+			  "props": {
+				"label": "Validation Rule",
+				"placeholder": "enumerate rule",
+				"options": [
+				  { "label": "Greater than or equal to", "value": "gte" },
+				  { "label": "Less than or equal to", "value": "lte" },
+				  { "label": "Greater than", "value": "gt" },
+				  { "label": "Less than", "value": "lt" },
+				  { "label": "Within Duration", "value": "within" },
+				  { "label": "Within Age Range", "value": "between_age" }
+				]
+			  },
+			  "expressions": {
+				"hide": "!['time.Time'].includes(model.type)"
+			  }
+			}
+		  ]
+		},
+		{
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "className": "flex-2",
+			  "type": "input",
+			  "key": "validation",
+			  "props": {
+				"required": true
+			  },
+			  "hideExpression": "!model.type || !model.enumerate_validation",
+			  "expressionProperties": {
+				"templateOptions.label": "['lt', 'lte'].includes(model.enumerate_validation) ? 'Less Than' : (['gt', 'gte'].includes(model.enumerate_validation) ? 'Greater Than' : (['eq'].includes(model.enumerate_validation) ? 'Equal To' : (['ne'].includes(model.enumerate_validation) ? 'Not Equal To' : (['in'].includes(model.enumerate_validation) ? 'Included Values' : (['notin'].includes(model.enumerate_validation) ? 'Excluded Values' : (['regexp'].includes(model.enumerate_validation) ? 'Regular Expression' : (model.enumerate_validation === 'min' && model.type === 'string' ? 'Min Length' : (model.enumerate_validation === 'max' && model.type === 'string' ? 'Max Length' : (['int', 'int64', 'float32', 'float64'].includes(model.type) && model.enumerate_validation === 'min' ? 'Min Value' : (['int', 'int64', 'float32', 'float64'].includes(model.type) && model.enumerate_validation === 'max' ? 'Max Value' : ''))))))))))",
+				"templateOptions.placeholder": "['lt', 'lte'].includes(model.enumerate_validation) ? 'Enter Less Than' : (['gt', 'gte'].includes(model.enumerate_validation) ? 'Enter Greater Than' : (['eq'].includes(model.enumerate_validation) ? 'Enter Equal To' : (['ne'].includes(model.enumerate_validation) ? 'Enter Not Equal To' : (['in'].includes(model.enumerate_validation) ? 'Enter Included Values' : (['notin'].includes(model.enumerate_validation) ? 'Enter Excluded Values' : (['regexp'].includes(model.enumerate_validation) ? 'Enter Regular Expression ' : (model.enumerate_validation === 'min' && model.type === 'string' ? 'Enter Min Length' : (model.enumerate_validation === 'max' && model.type === 'string' ? 'Enter Max Length' : (['int', 'int64', 'float32', 'float64'].includes(model.type) && model.enumerate_validation === 'min' ? 'Enter Min Value' : (['int', 'int64', 'float32', 'float64'].includes(model.type) && model.enumerate_validation === 'max' ? 'Enter Max Value' : ''))))))))))",
+				"templateOptions.pattern": "model.enumerate_validation === 'within' ? '[0-9]+[ydmwYDMW]$' : (model.enumerate_validation === 'between_age' ? '[0-9]+$' : (model.enumerate_validation === 'in_between' && model.type === 'string' ? '[a-zA-Z]*' : (model.enumerate_validation === 'in_between' && ['int', 'int64', 'float32', 'float64'].includes(model.type) ? '[0-9]+' : '')))",
+				"templateOptions.description": "model.enumerate_validation === 'within' ? 'Enter a duration with the format \"1y\" (1 year), \"2d\" (2 days), \"3m\" (3 months), etc.' : (model.enumerate_validation === 'regexp' && model.type ==='string' ? 'Example:regexp=^[A-Za-z ]+$ Output:First Name like' : model.enumerate_validation === 'regexp' && ['int', 'int64', 'float32', 'float64'].includes(model.type) ? 'Example:regexp=^(0|[1-9][0-9]*)+$' : model.enumerate_validation === 'between_age' ? 'Example  Start Age 18' : model.enumerate_validation === 'gt' ? 'Enter a value greater than >': model.enumerate_validation === 'gte' ? 'Enter a value greater than >=' : model.enumerate_validation === 'lte' ? 'Enter a value less than or equal <=': model.enumerate_validation === 'lt' ? 'Enter a value less than <': model.enumerate_validation === 'eq' ? 'Enter a value equal to': model.enumerate_validation === 'ne' ? 'Enter a value not equal to':model.enumerate_validation === 'in_between' && model.type === 'string' ? 'Enter a minimum value' : model.enumerate_validation === 'in_between' && ['int', 'int64', 'float32', 'float64'].includes(model.type) ? 'Enter a minimum value' : '' )"
+			  }
+			},
+			{
+			  "className": "flex-2",
+			  "type": "input",
+			  "props": {
+				"required": true
+			  },
+			  "key": "additional_input_advanced",
+			  "hideExpression": "!model.type || !model.enumerate_validation && model.type === 'time.Time' || ['between_age', 'in_between'].indexOf(model.enumerate_validation) === -1",
+			  "expressionProperties": {
+				"templateOptions.pattern": "model.enumerate_validation === 'between_age' ? '[0-9]+$' :model.enumerate_validation === 'in_between' && model.type === 'string' ? '[a-zA-Z]*' : model.enumerate_validation === 'in_between' && ['int', 'int64', 'float32', 'float64'].includes(model.type) ? '[0-9]+' : null",
+				"templateOptions.description": "model.enumerate_validation === 'between_age' ? 'Example End Age 50' : model.enumerate_validation === 'in_between' && model.type === 'string' ? 'Enter a maximum value' : model.enumerate_validation === 'in_between' && ['int', 'int64', 'float32', 'float64'].includes(model.type) ? 'Enter a maximum value' : ''"
+			  }
+			}
+		  ]
+		},
+		{
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "className": "flex-1",
+			  "key": "array_field",
+			  "type": "select",
+			  "props": {
+				"label": "Is this field an Array?",
+				"options": [
+				  { "label": "Yes, it's an array", "value": "yes" },
+				  { "label": "No, it's not an array", "value": "no" }
+				]
+			  }
+			},
+			{
+			  "className": "flex-1",
+			  "key": "required",
+			  "type": "select",
+			  "props": {
+				"label": "Is Mandatory",
+				"options": [
+				  { "label": "Required", "value": "yes" },
+				  { "label": "Not Required", "value": "no" }
+				]
+			  }
+			},
+			{
+			  "className": "flex-2",
+			  "type": "input",
+			  "key": "description",
+			  "props": {
+				"label": "Description"
+			  }
+			}
+		  ]
+		},
+  
+		{
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "className": "flex-6",
+			  "type": "checkbox",
+			  "key": "is_reference",
+			  "props": {
+				"label": "Is this field an Reference"
+			  }
+			},
+			{
+			  "key": "collection_name",
+			  "type": "select-input",
+			  "className": "flex-6",
+			  "props": {
+				"label": "Collection Name",
+				"placeholder": "Collection Name",
+				"labelPropTemplate": " {{model_name}}",
+				"custom_filter": true,
+				"collectionName": "model_config",
+				"labelProp": "model_name",
+				"valueProp": "collection_name",
+				"required": true
+			  },
+			  "hideExpression": "!model.is_reference "
+			},
+			{
+			  "key": "field",
+			  "type": "select-input",
+			  "className": "flex-6",
+			  "props": {
+				"label": "Field Name",
+				"placeholder": "Field Name",
+				"labelPropTemplate": " {{name}}",
+				"flag": true,
+				"parentkeys": "collection_name",
+				"collectionName": "data_model",
+				"labelProp": "name",
+				"valueProp": "field_name",
+				"required": true
+			  },
+			  "hideExpression": "!model.collection_name"
+			}
+		  ]
+		}
+	  ]
+	},
+	"detailListConfig": {
+	  "sectionHeading": "Config",
+	  "actions": [
+		{
+		  "label": "Edit",
+		  "icon": "edit",
+		  "formAction": "edit",
+		  "formName": "data_model"
+		},
+		{
+		  "label": "Delete",
+		  "icon": "delete",
+		  "formAction": "delete",
+		  "formName": "data_model"
+		}
+	  ],
+	  "addRoute": "add/config",
+	  "editRoute": "edit/config",
+	  "fields": [
+		{
+		  "headerName": "Column Name",
+		  "field": "column_name",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Header",
+		  "field": "header",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Type",
+		  "field": "type",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Tag",
+		  "field": "tag",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Description",
+		  "field": "description",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Status",
+		  "field": "status",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "type": "rightAligned",
+		  "headerName": "Actions",
+		  "cellRenderer": "buttonRenderer",
+		  "lockPosition": "right",
+		  "cellRendererParams": {
+			"onClick": "this.onBtnClick1.bind(this)",
+			"label": "Click 1"
+		  }
+		}
+	  ],
+	  "filterOptions": [],
+	  "defaultFilter": []
+	},
+	"onCancelRoute": "/data/list/model_config",
+	"designConfig": {
+	  "leftPanelWidth": "320px"
+	}
+  }
+  

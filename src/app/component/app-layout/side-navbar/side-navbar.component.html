@@ -1,0 +1,73 @@
+<div class="sidenav"  [ngClass]="collapsed ?'sidenav-collapsed':''">
+
+  <div class="logo-container">
+     <button class="logo"   (click)="togglecollapse()"><mat-icon>menu</mat-icon></button> 
+    <div class="image" *ngIf="collapsed">
+      <!-- UNDO -->
+      <img
+      width="150px"
+      height="150px"
+      class="center"
+      src="../../../../assets/images/property-removebg-preview.png"
+    />
+    </div>
+    
+  
+  </div>
+  <div class="menu-items">
+
+  <ul *ngFor="let data of navItems" class="sidenav-nav">
+  <li class="sidenav-nav-item" >
+     <a   *ngIf="!data.children" href=""  class="sidenav-nav-link" [routerLink]="[data.route]">
+       <mat-icon class="sidenav-link-icon">{{data.iconName}}</mat-icon>
+        <span *ngIf="collapsed"  class="sidenav-link-text">{{data.displayName}}</span>
+  </a>
+  </li>
+
+  <!-- leaft items -->
+ 
+    <li    *ngIf="data.children" (click)="toggleSubsection(data)" class="sidenav-nav-item" >
+       <a  class="sidenav-nav-link" >
+         <mat-icon class="sidenav-link-icon">{{data.iconName}}</mat-icon>
+          <span *ngIf="collapsed"  class="sidenav-link-text">{{data.displayName}}</span>
+          <mat-icon style="margin-left: auto;" >{{
+            subsectionExpanded[data.displayName]
+              ? "expand_less"
+              : "expand_more"
+          }}</mat-icon>
+    </a>
+    </li>
+
+    <li
+          *ngIf="subsectionExpanded[data.displayName] && data.children  && collapsed == true "
+          class="submenu-item"
+        >
+          <a class="sidenav-nav-link"
+            mat-list-item
+            [routerLink]="[subsection.route]"
+            *ngFor="let subsection of data.children"
+            class="subitems-link-text"
+          >
+          <div style="display: flex;flex-direction: row;">
+            <mat-icon class="sidenav-link-icon">{{ subsection.iconName }}</mat-icon>
+            <span  class="sidenav-link-text">{{
+              subsection.displayName
+            }}</span>
+          </div>
+          </a>
+        </li>
+  </ul>
+</div>
+ 
+<div class="logout">
+    <a href=""  class="sidenav-nav-link" (click)="logout()" >
+      <mat-icon class="sidenav-link-icon">exit_to_app</mat-icon>
+       <span *ngIf="collapsed"  class="sidenav-link-text">Sign Out</span>
+ </a>
+</div>
+
+ 
+
+  
+
+  </div>

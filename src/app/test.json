@@ -1,0 +1,109 @@
+{
+	"pageHeading": "Role",
+	"formType": "simple",
+	"keyField": "_id",
+	"Change_id": true,
+	"form": {
+		"collectionName": "role",
+		"fields": [
+			{
+				"fieldGroupClassName": "display-flex",
+				"fieldGroup": [
+					{
+						"type": "label-view",
+						"key": "_id",
+						"className": "flex-6",
+						"props": {
+							"label": "Role ID",
+							"label_width": 100,
+							"value_width": 200,
+							"value_in_next_row": true
+						},
+						"hideExpression": "!model.isEdit"
+					},
+					{
+						"type": "label-view",
+						"key": "name",
+						"className": "flex-6",
+						"props": {
+							"label": "Role Name",
+							"label_width": 100,
+							"value_width": 200,
+							"value_in_next_row": true
+						},
+						"hideExpression": "!model.isEdit"
+					}
+				]
+			},
+			{
+				"fieldGroupClassName": "display-flex",
+				"fieldGroup": [
+					{
+						"type": "matprefix-input",
+						"key": "_id",
+						"parentKey": "org_id",
+						"className": "flex-1",
+						"props": {
+							"label": "Role ID",
+							"type": "Simple",
+							"placeholder": "Role ID",
+							"required": true,
+							"maxLength": 10,
+							"pattern": "^[A-Z][a-zA-Z]{1,}$"
+						},
+						"hideExpression": "model.isEdit"
+					},
+					{
+						"type": "input",
+						"key": "name",
+						"className": "flex-5",
+						"templateOptions": {
+							"label": "Role Name",
+							"maxLength": 50,
+							"required": true,
+							"placeholder": "Role Name"
+						},
+						"hideExpression": "model.isEdit"
+					}
+				]
+			},
+			{
+				"type": "textarea",
+				"key": "Description",
+				"templateOptions": {
+					"label": "Anything about this role",
+					"placeholder": "Description",
+					"rows": 5
+				}
+			},
+			{
+				"key": "status",
+				"type": "select",
+				"defaultValue": "A",
+				"templateOptions": {
+					"label": "Status",
+					"options": [
+						{
+							"label": "Active",
+							"value": "A"
+						},
+						{
+							"label": "Disable",
+							"value": "D"
+						}
+					],
+					"required": true
+				},
+				"hideExpression": "!model.isEdit"
+			}
+		],
+		"defaultValues": [
+			{
+				"colName": "status",
+				"value": "A",
+				"type": "string"
+			}
+		]
+	},
+	"onCancelRoute": "/list/role"
+}

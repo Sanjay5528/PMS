@@ -1,0 +1,236 @@
+<div class="example-sidenav-content">
+
+
+  <div style="height: 50px;margin: 30px;text-align: center;display: flex;flex-direction: row; justify-content: space-evenly;   ">
+
+    <div *ngIf="filterOptions">
+      <app-dynamic-filter [filterOptions]="filterOptions"  [showdefaultFilter]="showdefaultFilter"   [config]="config" (onClick)="getList($event)"
+      (filterValue)="filterValue($event)" ></app-dynamic-filter>
+      </div>
+  <span class="head">{{ pageHeading }} List </span>
+      
+
+    <div *ngIf="this.showbutton==true">
+      <button class="icon" matTooltip="Add" mat-mini-fab (click)="onAddButonClick()"
+        style="margin-right: 20px; background: #90c0e5;   color: #080201;">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+  </div>
+<div style="display: flex;justify-content: center;width: 98%;align-items: center;margin: 10px;" *ngIf="isConfigLoaded">
+  <ag-grid-angular 
+      #agGrid style="width: 98%; height: calc(100vh - 250px); flex: 1 1 auto" 
+      class="ag-theme-alpine"
+      [defaultColDef]="defaultColDef"
+      [columnDefs]="columnDefs"
+      [rowSelection]="'single'"
+      [pagination]="true"
+      [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+      [getRowId]="getRowId"
+      [getContextMenuItems]="getContextMenuItems"
+
+      [context]="context"
+      [gridOptions]="gridOptions"
+      (firstDataRendered)="onFirstDataRendered($event)"
+      [frameworkComponents]="frameworkComponents"
+      (selectionChanged)="onSelectionChanged($event)"
+      (gridReady)="onGridReady($event)">
+  </ag-grid-angular>
+</div>
+</div>
+
+<!-- [groupSelectsChildren]="true" -->
+<ng-template #editViewPopup class="example-sidenav" mode="over" style="height: auto" let-data >
+  <div style="text-align-last: end" *ngIf="formAction == 'view'">
+    <mat-icon (click)='this.dialogService.closeModal()'>close</mat-icon>
+  </div>
+  <div class="page">
+    <div *ngIf="formAction != 'view'" class="page-content">
+      <app-dynamic-form [formName]="formName" [model]="data" [mode]="'popup'"  (onClose)="close($event)"></app-dynamic-form>
+    </div>
+  </div>
+
+  <div class="center" style="width: 100%; margin: 5px" *ngIf="formAction == 'view'">
+    <h2 style="text-align: center;" class="page-title">{{ pageHeading }}</h2>
+    <formly-form [model]="data" [fields]="fields"></formly-form>
+  </div>
+</ng-template>
+
+<ng-template #Popup  style="height: 50%;margin: 30px;width: 80%;" let-data>
+  <div style="text-align-last: end;margin: 10px">
+    <mat-icon (click)="this.dialogService.closeModal();closegrp(true)">close</mat-icon>
+  </div>
+
+  <div  style="margin: 20px;">
+    <mat-form-field>
+      <mat-label>Group Name</mat-label>
+      <input matInput placeholder="Group Name" [(ngModel)]="groupName" required>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Group Description</mat-label>
+      <textarea matInput placeholder="Group Descripition" [(ngModel)]="groupDescription"></textarea>
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Group Member From (Model Name)</mat-label>
+      <mat-select [(ngModel)]="selectedCollection" required>
+        <mat-option *ngFor="let val of collections"(click)="valuechange(val)" [value]="val?.value">{{ val?.model_name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-chip-listbox aria-label="Group Type" [(ngModel)]="grouptype" style="justify-content: center;" required>
+      <mat-label style="margin-top: 5px;">Group Member Selection Type</mat-label>
+      <mat-chip-option value="static" (click)="apiflag=false;">Manual</mat-chip-option>
+      <mat-chip-option value="rule_based" (click)="apiflag=true;valuechange(selectedCollection);">Rule Based (Dynamic)</mat-chip-option>
+    </mat-chip-listbox>
+
+  <mat-tab-group style="height: 100%;width: 100%;" *ngIf="(grouptype=='rule_based'&&grouptype!=='static')&&(apiflag==true&&selectedCollection!=='')">
+    <mat-tab label="Basic Filter">
+      <!-- <mat-button-toggle-group name="fontStyle" aria-label="Font Style" [(ngModel)]="defclause"  class="custom-toggle-group">
+        <mat-button-toggle value="AND" style="color: black;">AND</mat-button-toggle>
+        <mat-button-toggle value="OR" style="color: black;">OR</mat-button-toggle>
+      </mat-button-toggle-group>
+       -->
+       <div  style=" display: flex;
+       justify-content: flex-end;
+       align-items: center;">
+        <span style="  border: 2px solid black;
+        background-color:rgb(179, 232, 17);margin: 10px;
+        color: black;" >AND</span>  <span style="
+  border: 2px solid black;margin: 10px;
+  background-color: rgb(255, 236, 199);
+  color: black;">OR</span>
+      </div>
+      
+      <div style="overflow-y: scroll;display: block;max-height: 400px;">
+        <!-- ! Parent level Group  -->
+
+  <div *ngFor="let values of grp; let i = index ;let last=last">
+    <!--! SubParrent array -->
+    <div *ngFor="let val of values ; let index = index ">
+    
+
+    <div  style="display: flex;align-items: center;margin-left: 5px;" *ngIf="val.flag==true">
+
+     
+      <mat-form-field style="display: flex;align-items: start;justify-content: left;float: left;margin: 5px;">
+        <mat-label>Field</mat-label>
+        <mat-select [(ngModel)]="field[i][index]">
+          <mat-option *ngFor="let option of options"  (click)="setflag(option,i,index);getOperators(option,i,index)" [value]="option">{{ option?.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="field[i][index]!=undefined" style="display: flex;align-items: end;justify-content: right;margin: 5px;float: right;">
+        <mat-label>Operator</mat-label>
+        <mat-select [(ngModel)]="operator[i][index]">
+          <mat-option *ngFor="let option of operatorOptions[i][index] " (click)="opertorchange(option,i,index)" [value]="option">{{ option?.label }}</mat-option>
+        </mat-select>
+      </mat-form-field>  
+
+      <ng-container *ngIf="flag[i][index]==false&&inputflag[i][index]==false" >
+        <mat-form-field>
+          <mat-label>Value</mat-label>
+          <input matInput [(ngModel)]="orbitalValue[i][index]" />
+        </mat-form-field>
+      </ng-container>
+
+      <ng-container *ngIf="inputflag[i][index]=='any'"  style="display: flex;align-items: center;margin: 5px;margin: 5px;">
+        <mat-form-field >
+          <mat-label>Another MIN Value</mat-label>
+          <input matInput [(ngModel)]="orbitalValue[i][index]" />
+        </mat-form-field>
+        <mat-form-field >
+          <mat-label>Another Max Value</mat-label>
+          <input matInput [(ngModel)]="anotherfield[i][index]" />
+        </mat-form-field>
+      </ng-container>
+
+      <ng-container *ngIf="flag[i][index]==true &&inputflag[i][index]==true">
+        <mat-form-field style="display: flex;align-items: start;justify-content: left;float: left;margin: 5px;">
+          <mat-label>Orbital Value</mat-label>
+          <mat-select [(ngModel)]="orbitalValue[i][index]">
+            <mat-option *ngFor="let option of orbitalOptions[i][index]"[value]="option.value">{{ option?.label }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+
+    <button mat-icon-button (click)="removeField(i,index)" style="margin-bottom: 5px;">
+      <mat-icon>delete</mat-icon>
+    </button>
+    <button mat-icon-button  (click)="convertdata_into_string(i,index)" style="margin-bottom: 5px;">
+      <mat-icon>check</mat-icon>
+    </button>
+
+    </div>
+<!-- !this used for the String Conversion -->
+    <div *ngIf="val.flag == false" style="display: flex; align-items: center; " [style.margin-left]="i > 0 ? '20px' : '0px'">
+      <h6 [style.background-color]="val.operator === 'AND' ? '#b3e811' : '#ffecc7'"  style="border-radius: 50px; font-size: medium; padding: 5px;">
+        <span style="margin-left: 20px; margin-right: 20px">{{ "    " + val?.filter + "    " }}</span>
+      </h6>
+      <button mat-icon-button (click)="removeField(i,index)" style="margin-bottom: 5px;">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button mat-icon-button (click)="addgrp(i,index)" *ngIf="index==0" style="margin-bottom: 5px;">
+        <mat-icon>add</mat-icon>
+      </button>
+      <button mat-icon-button (click)="Grp_undo_edit(i,index)" style="margin-bottom: 5px;">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+    
+  </div>
+
+    <div *ngIf="last">
+      <!-- !IF Need Undo -->
+      <!-- <button mat-raised-button color="primary" (click)="Parent_Conditons(false,'Conditions',i)" style="margin: 5px; justify-content: center; align-items: center;">
+        <mat-icon>add</mat-icon>
+        Conditions
+      </button>
+       -->
+      <button mat-raised-button color="primary" (click)="Parent_Conditons(true,'AND',i)" style="margin: 5px; justify-content: center; align-items: center;">
+        <mat-icon>add</mat-icon>
+        AND Group
+      </button>
+      
+      <button mat-raised-button color="primary" (click)="Parent_Conditons(true,'OR',i)" style="margin: 5px; justify-content: center; align-items: center;">
+        <mat-icon>add</mat-icon>
+        OR Group
+      </button>
+      <!-- <button mat-raised-button color="primary" (click)="EndGRpFlag(i)" style="margin: 5px; justify-content: center; align-items: center;">
+        <mat-icon>add</mat-icon>
+        END Group
+      </button> -->
+    </div>
+  </div>
+   
+</div>
+<div *ngIf="button_Flag==false">
+  <!-- <button mat-raised-button color="primary" (click)="Parent_Conditons(false,'Conditions')" style="margin: 5px; justify-content: center; align-items: center;">
+    <mat-icon>add</mat-icon>
+    Conditions
+  </button>
+   -->
+  <button mat-raised-button color="primary" (click)="button_Flag=true;Parent_Conditons(true,'AND',0)" style="margin: 5px; justify-content: center; align-items: center;">
+    <mat-icon>add</mat-icon>
+    AND Group
+  </button>
+  
+  <button mat-raised-button color="primary" (click)="button_Flag=true;Parent_Conditons(true,'OR',0)" style="margin: 5px; justify-content: center; align-items: center;">
+    <mat-icon>add</mat-icon>
+    OR Group
+  </button>
+</div>
+    </mat-tab>
+    <!-- <mat-tab label="Advance Filter"> Advance Filter </mat-tab> -->
+  </mat-tab-group>
+ 
+  <mat-card-actions>
+    <div style="text-align-last: end; width: 100%;">
+  <button mat-raised-button color="primary"  style="margin: 5px;" [disabled]=!selectedCollection (click)="closegrp()">Reset</button>
+  <button mat-raised-button color="primary"  style="margin: 5px;"   (click)="savegrp()">Save</button>
+
+    </div>
+  </mat-card-actions>
+  </div>
+</ng-template>

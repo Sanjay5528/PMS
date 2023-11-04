@@ -1,0 +1,18 @@
+.button{
+    margin-left: 550px;
+  }
+  @media (max-width: 600px) {
+    .button {
+      margin-left: 0;
+    }
+  }
+  
+  .sign-in-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .sign-in-text {
+    margin-right: 10px;
+  }
+  
