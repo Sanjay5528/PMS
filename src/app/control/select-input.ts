@@ -155,6 +155,25 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
      console.log(this.optionsValue)
    });
   }
+
+  if(this.opt.optionsDataSource.multifilter){
+    this.opt.multifilter_condition.conditions.map((res:any)=>{
+     
+      if(res.value!=undefined && this.field.getdata){
+       let value = sessionStorage.getItem(this.field.column)
+        res.value=value
+      }
+    
+    })
+    let filter_condition={filter:[
+      this.opt.multifilter_condition
+    ]}
+    this.dataService.getDataByFilter(this.opt?.optionsDataSource?.multifilter,filter_condition).subscribe((res:any)=>{
+      // this.dataService.buildOptions(res.data[0].response, this.opt);
+      console.log(res);
+      
+    })
+}
     if (this?.opt?.optionsDataSource?.collectionName!=undefined) {
       let name = this.opt.optionsDataSource.collectionName;
       this.dataService.getDataByFilter(name,{}).subscribe((res: any) => {
