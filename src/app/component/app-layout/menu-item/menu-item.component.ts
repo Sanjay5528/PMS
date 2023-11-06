@@ -8,12 +8,14 @@ import { NavItem } from '../nav-items';
   styleUrls: ['./menu-item.component.css']
 })
 export class MenuItemComponent {
-  @Input() items!: NavItem[];
+  @Input() items!: any[];
   @ViewChild('childMenu', { static: true }) public childMenu: any;
+role:any
   constructor(
     public router: Router
   ) {
-
+let details:any=localStorage.getItem("auth")
+this.role=JSON.parse(details).role
   }
 
 

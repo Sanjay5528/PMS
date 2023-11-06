@@ -187,12 +187,14 @@ export class FormService {
         } else {
           console.log("Object Assign isn't working");
         }
-      } else if (ctrl.config.form.collectionName == "projectteam") {
+      } 
+      else if (ctrl.config.form.collectionName == "projectteam") {
         debugger;
         Object.assign(data, {
           projectid: ctrl.response?.projectid || ctrl.grid.response.projectid,
         });
-      } else if (ctrl.config.form.collectionName == "task") {
+      }
+       else if (ctrl.config.form.collectionName == "task") {
         console.log(ctrl, "ctrl");
         if (ctrl.butText == "Update") {
           debugger;
@@ -209,7 +211,8 @@ export class FormService {
             );
             resolve(res);
           });
-        } else {
+        }
+         else {
           Object.assign(data, {
             moduleid: ctrl.deletedData.moduleid,
             projectid: ctrl.response?.projectid || ctrl.grid.response.projectid,
@@ -217,16 +220,22 @@ export class FormService {
           });
           console.log("lavanya", data);
         }
-      } else if (ctrl.collectionName == "testcase") {
+      }
+       else if (ctrl.collectionName == "testcase") {
         Object.assign(data, { moduleid: ctrl.moduleid });
-      } else if (ctrl.collectionName == "testresult") {
+      } 
+      
+      else if (ctrl.collectionName == "testresult") {
+        
         Object.assign(data, {
           testcasename: sessionStorage.getItem("testcasename"),
         });
         Object.assign(data, {
           projectname: sessionStorage.getItem("projectname"),
         });
-      } else {
+
+      } 
+        else {
         console.log("Invalid Form");
       }
 

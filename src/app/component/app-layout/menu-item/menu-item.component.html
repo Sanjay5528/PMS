@@ -13,7 +13,7 @@
       <app-menu-item #menu [items]="child.children"></app-menu-item>
     </span>
     <!-- Handle leaf node menu items -->
-    <span *ngIf="!child.children || child.children.length === 0">
+    <span *ngIf="!child.children || child.children.length === 0" >
       <button mat-menu-item (click)="navigate(child)">
         <mat-icon>{{ child.iconName }}</mat-icon>
         <span class="font_color">{{ child.displayName }}</span>
@@ -21,3 +21,4 @@
     </span>
   </span>
 </mat-menu>
+<!-- [hidden]="child.children.role==this.role" -->

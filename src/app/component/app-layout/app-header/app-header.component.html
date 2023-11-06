@@ -10,7 +10,7 @@
       </div>
       <!-- <img src="/ePPAP/src/assets/images/logo.png" width="500" height="600"> -->
       <span class="menu-items" style="padding: 8px">
-        <span *ngFor="let item of navItems">
+        <span *ngFor="let item of navItems" >
           <span>
             <mat-icon>{{ item.iconName }}</mat-icon></span>
           <!-- Handle branch node buttons here -->
@@ -20,17 +20,19 @@
               <mat-icon>expand_more</mat-icon>
             </button>
             <span>
-              <app-menu-item #menu [items]="item.children"></app-menu-item>
+              <app-menu-item #menu [items]="item.children" ></app-menu-item>
             </span>
           </span>
           <!-- Leaf node buttons here -->
           <span *ngIf="!item.children || item.children.length === 0">
-            <button mat-button color="primary" (click)="navigate(item)">
+            <button mat-button color="primary"  (click)="navigate(item)">
               {{ item.displayName }}
             </button>
           </span>
         </span>
       </span>
+
+
       <div class="profile_font">{{"Hey"+","+this.id}}</div>
       <button mat-button color="primary" [matMenuTriggerFor]="menu" style="width: 50px; float: right">
         <div>
