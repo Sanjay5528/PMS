@@ -1580,9 +1580,10 @@ this.dialogService.openSnackBar("Selected Column is Required","OK")
               operator.value == "between_age") && // ! this used for the value from another input box
             operator.anotherfield == true
           ) {
-            value = [moment(this.orbitalValue[index][i]).utc(),moment(this.anotherfield[index][i]).utc() ];
+            value = [moment(this.orbitalValue[index][i]).format(),moment(this.anotherfield[index][i]).format() ];
           } else {
-            value =moment(this.orbitalValue[index][i]).utc()
+            value =moment(this.orbitalValue[index][i]).format()
+            // Assuming this.orbitalValue[index][i] contains the date string or timestamp
           }
         } else {
           if (operator.anotherfield == true && operator.value == "in_between") {
