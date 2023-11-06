@@ -139,14 +139,10 @@ const routes: Routes = [
       {
         path: ":form",
         component: DatatableComponent,
-      },
-      {
-        path: ":menu/:type",
-        component: DatatableComponent,
       }
     ],
   },{
-    path:'try',
+    path:'data_set',
     canActivate: [AuthGuardService], 
     component: DefaultLayoutComponent,
     children:[
@@ -177,16 +173,17 @@ const routes: Routes = [
         component: TimesheetComponent,
       },
     ],
-  },  {
-    path: "createcv",
-    component: DefaultLayoutComponent,
-    children: [
-      {
-        path: "",
-        component: CreatecvComponent,
-      },
-    ],
-  },
+  }, 
+  //  {
+  //   path: "createcv",
+  //   component: DefaultLayoutComponent,
+  //   children: [
+  //     {
+  //       path: "",
+  //       component: CreatecvComponent,
+  //     },
+  //   ],
+  // },
   {
     path: "projectteam/project/:id",
     component: DefaultLayoutComponent,

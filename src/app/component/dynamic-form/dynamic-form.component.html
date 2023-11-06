@@ -19,7 +19,7 @@
     <div style="text-align-last: end; width: 100%">
       <button style="margin: 5px" mat-button (click)="cancel()" [disabled]="butonflag"  *ngIf="config.onCancelRoute">Cancel</button>
       <button style="margin: 5px" mat-button (click)="resetBtn('reset')"  [disabled]="butonflag"  *ngIf="!this.id">Reset</button>
-      <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button color="warn" [disabled]="butonflag" (click)="butonflag=true;frmSubmit(this.config,$event)">
+      <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button color="warn" [disabled]="butonflag" (click)="butonflag=true;frmSubmit($event)">
         {{ butText }}
       </button>
     </div>

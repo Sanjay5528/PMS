@@ -64,10 +64,13 @@ export class DynamicFormComponent {
     }
   }
 
-  frmSubmit(data: any,event:any) {
+  frmSubmit(event:any) {
+
+  event.preventDefault();
+  event.stopPropagation();
+
     if (!this.form.valid) {
-      let array = "";
-      
+      let array = "";  
       function collectInvalidLabels(controls: any) {
         for (const key in controls) {
           if (controls.hasOwnProperty(key)) {
@@ -78,18 +81,16 @@ export class DynamicFormComponent {
           }
         }
       }
-
-      // Start collecting invalid labels
       collectInvalidLabels(this.form.controls);
       const modifiedString = array.slice(0, -1);
-      
+  
       this.dialogService.openSnackBar("Error in " + modifiedString, "OK");
-      // resolve(undefined);
      this.form.markAllAsTouched();
       this.butonflag=false
       return ;
     }
-if(this.form.valid){
+// if(this.form.valid){
+
         this.formService.saveFormData(this).then((result: any) => {
           console.log(result);
           if (result != undefined) {
@@ -97,7 +98,7 @@ if(this.form.valid){
         this.butonflag=true
           }
         })
-    }
+    // }
     
   }
 

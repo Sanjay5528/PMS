@@ -88,7 +88,7 @@ export class DatatableComponent implements OnInit {
     rowModelType: environment.rowModelType,
   };
   overlayNoRowsTemplate =
-    '<span style="padding: 10px; background:white ;">Loading Please Wait...</span>"';
+    '<span style="padding: 10px; background:white ;">No Data Found</span>"';
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -359,13 +359,18 @@ export class DatatableComponent implements OnInit {
                 
                 this.gridApi.sizeColumnsToFit();
                 if (await xyz) {
-                  if (xyz?.data[0]?.pagination[0].totalDocs !== undefined) {
+
+                  if (xyz?.data[0]?.pagination[0]?.totalDocs !== undefined) {
+                    this.gridApi.hideOverlay()
+
                     this.listData = xyz.data[0].response;
                     params.successCallback(
                       xyz.data[0].response,
                       xyz.data[0].pagination[0].totalDocs
                     );
                   } else {
+                    this.gridApi.showNoRowsOverlay();
+
                     params.successCallback(
                     [],0)
                     // params.failCallback();
@@ -374,6 +379,7 @@ export class DatatableComponent implements OnInit {
                   }
                 } else {
                   // params.failCallback();
+                  this.gridApi.showNoRowsOverlay();
 
                   params.successCallback(
                     [],0)
@@ -410,7 +416,7 @@ export class DatatableComponent implements OnInit {
   }
 //!  
   // Method for add form
-  onAddButonClick() {
+  onAddButonClick(event:any) {
     this.selectedModel = {};
     // let user_type:any =sessionStorage.getItem("org_type");
     if (this?.config?.role_based==true) {
@@ -518,8 +524,6 @@ export class DatatableComponent implements OnInit {
       // Chnages End
 
       if (confirm("Do you wish to delete this record?")) {
-        //
-
         this.DataService.deleteDataById(
           this.collectionName,
           data._id
@@ -541,33 +545,23 @@ export class DatatableComponent implements OnInit {
 // Add OR Edit DATA To Change with out api request
   close(event: any) {
     this.dialogService.closeModal();
-    event.preventDefault();
+    this.gridApi.deselectAll();
     if (event) {
       // Ensure 'event' contains the expected properties before proceeding
       if (event.action === "Add" && event.data) {
-        this.gridApi.deselectAll();
       const transaction: ServerSideTransaction = {
         add: 
-        [
-          event.data
-      ],
+        [event.data ],
       };
       const result = this.gridApi.applyServerSideTransaction(transaction);
       console.log(transaction, result)
       }else{
-        // let nodesToUpdate = this.gridApi.getSelectedNodes();
-        // console.log(nodesToUpdate)
-        // nodesToUpdate.forEach((node) => {
-        //   node.updateData({ ...node.data});
-        // });
         const transaction: ServerSideTransaction = {
-              update: 
-              [
-              event.data
-              ],
-              };
-              const result = this.gridApi.applyServerSideTransaction(transaction);
-              console.log(transaction, result)
+              update:  [event.data ]
+             };
+            const result = this.gridApi.applyServerSideTransaction(transaction);
+        console.log(transaction, result)
+
       }
     }
   }

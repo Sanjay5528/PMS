@@ -1,0 +1,89 @@
+{
+  "pageHeading": "Employee",
+  "collectionName": "employee",
+  "editMode": "page",
+  "showbutton": true,
+  "screenWidth": "40%",
+  "keyField": "_id",
+  "actions": [
+    {
+      "label": "Edit",
+      "icon": "edit",
+      "formName": "employee"
+    },
+    {
+      "label": "Delete",
+      "icon": "delete",
+      "formName": "entities/employee"
+    }
+  ],
+  "addRoute": "add/employee",
+  "editRoute": "edit/employee",
+  "columnDefs": [
+    {
+      "headerName": "Employee Id",
+      "field": "employeeid",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Employee First Name",
+      "field": "firstname",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Employee Last Name",
+      "field": "lastname",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "D.O.B",
+      "field": "dob",
+      "sortable": true,
+      "filter": "agTextColumnFilter",
+      "type": "date"
+    },
+    {
+      "headerName": "Blood Group",
+      "field": "bloodgroup",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Gender",
+      "field": "gender",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Email",
+      "field": "email",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Contact Number",
+      "field": "contactno",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "headerName": "Access Right",
+      "field": "accessright",
+      "sortable": true,
+      "filter": "agTextColumnFilter"
+    },
+    {
+      "type": "rightAligned",
+      "headerName": "Actions",
+      "cellRenderer": "buttonRenderer",
+      "lockPosition": "right",
+      "cellRendererParams": {
+        "onClick": "this.onBtnClick1.bind(this)",
+        "label": "Click 1"
+      }
+    }
+  ]
+}

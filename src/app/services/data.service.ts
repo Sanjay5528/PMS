@@ -157,6 +157,10 @@ export class DataService {
     
   }
   
+  public dataset_Get_Data(dataSetID: string,filterData:any) {
+    return this.http.post(this.getWsBaseUrl() + `${dataSetID}`,filterData);
+    
+  }
 /**
  * This method USed To Get data Using Filter Condition
  * @filter

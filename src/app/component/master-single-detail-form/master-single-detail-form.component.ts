@@ -117,28 +117,15 @@ export class MasterSingleDetailFormComponent  {
       buttons: ['reset', 'apply'],
   },
   };
-  onFirstDataRendered(params: FirstDataRenderedEvent) {
-   // params.api.sizeColumnsToFit();
-  }
-
   frmStart(event:any) {
-  //  if(event) {
-  //   event.preventDefault();
-  //   event.stopPropagation();
-  //  }
    var data:any = this.form.value
    this.id = data['_id']
    if (this.id) {
-      //try to load form data or save the data
       this.formService.LoadData(this).subscribe(isDataAvail=>{
-        // console.log(isDataAvail,'z');
-        
         if (!isDataAvail) { // data not available, so save the data
           this.formService.saveFormData(this).then(()=>{
-              //if (res) {
                 this.formService.LoadDetailConfig(this)
                 this.isFormDataLoaded = true
-              //}
           })
         }
       })
