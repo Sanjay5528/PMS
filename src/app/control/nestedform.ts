@@ -102,6 +102,7 @@ export class Nestedform {
   ) {
 
   }
+
   storeData: any;
   ctrl:any
   ngOnInit() {
@@ -128,94 +129,56 @@ export class Nestedform {
   
   frmSubmit(data: any) {
     debugger
-      
-    if(this.model){
-      Object.assign(data,{teamid:data.teamid})
-    
+    if(!this.form.valid){
+      alert("Missing Requrid Field")
+      this.form.markAllAsTouched();
+      return
     }
-    
-    //const newData = this.form.value;
 
+let value:any=this.form.value
+    let getdata: any = localStorage.getItem('projectmembers');
+    let existingData: any[] = JSON.parse(getdata) || [];
+    if (value && !isEmpty(existingData)) {
+      const roleIndex = existingData.findIndex(item=> item.roleid == value.roleid);
+if(roleIndex!==-1){
+  // this.dialogService.openSnackBar("This Role ID Aldready Exist","OK")
+  alert("This Role ID Aldready Exist")
+  return
+}
+
+      const samePresonWithSameTaskName = existingData.findIndex(item => item.employeename === value.employeename &&item.rolename === value.rolename&&item.teamname === value.teamname);
+      if(samePresonWithSameTaskName!==-1){
+alert(`This Employee ${value.employeename } With this Role Exist ${value.rolename}` )
+        // this.dialogService.openSnackBar(, "OK")
+        return
+      }
+      // A primary contact already exists, display an error message or handle the case as desired
+    }
+    // if(this.model){
+    //   Object.assign(data,{teamid:data.teamid})
+    // }
     let pushData = [];
     if (this.formAction === "Add") {
-
-      if (!this.form.valid) {
-        this.dialogService.openSnackBar("Error in your data or missing mandatory fields", "OK")
-
-
-        return;
-      }
-
-
-      let getdata: any = localStorage.getItem('projectmembers');
-      let existingData: any[] = JSON.parse(getdata) || [];
-
-      if (existingData.length >= 40) {
-        this.dialogService.openSnackBar("Maximum 4 contacts only allowed to add", "OK")
-        // Maximum limit reached, display an error message or handle the case as desired
-        return;
-      }
-
-      //existingData.push(newData);
-      //localStorage.setItem('projectmembers', JSON.stringify(existingData));
-      const primaryContact = existingData.find(
-        (item: any) => item.contacttype === "Primary Contact"
-      );
-      const secondaryContact = existingData.find(
-        (item: any) => item.contacttype === "Secondary Contact"
-      );
-
-      if (this.model.contacttype === "Primary Contact" && primaryContact) {
-        this.dialogService.openSnackBar("Primary contact already exists", "OK")
-        // A primary contact already exists, display an error message or handle the case as desired
-        return;
-      }
-      if (this.model.contacttype === "Secondary Contact" && secondaryContact) {
-        this.dialogService.openSnackBar("Secondary contact already exists", "OK")
-        // A primary contact already exists, display an error message or handle the case as desired
-        return;
-      }
-
       for (let item of existingData) {
         pushData.push(item);
       }
-      pushData.push(this.form.value);
+      pushData.push(value);
+      localStorage.removeItem("projectmembers");
+
     } else if (this.formAction === "Edit") {
       let getdata: any = localStorage.getItem('projectmembers');
       let data: any[] = JSON.parse(getdata) || [];
-
-      ///Add existing data excluding the matching item
       for (let item of data) {
-        if (item.emailid !== this.model.emailid) {
+
+        if (item.roleid !== value.roleid) {
           pushData.push(item);
         }
-        const primaryContact = data.find(
-          (item: any) => item.contacttype === "Primary Contact"
-        );
-        const secondaryContact = data.find(
-          (item: any) => item.contacttype === "Secondary Contact"
-        );
-
-        if (this.model.contacttype === "Primary Contact" && primaryContact) {
-          this.dialogService.openSnackBar("Primary contact already exists", "OK")
-          // A primary contact already exists, display an error message or handle the case as desired
-          return;
-        }
-        if (this.model.contacttype === "Secondary Contact" && secondaryContact) {
-          this.dialogService.openSnackBar("Secondary contact already exists", "OK")
-          // A primary contact already exists, display an error message or handle the case as desired
-          return;
-        }
-
       }
-
-      // Add the updated form value
-      pushData.push(this.form.value);
+      pushData.push(value);
 
       localStorage.removeItem("projectmembers");
     }
     localStorage.setItem('projectmembers', JSON.stringify(pushData));
-    console.log(localStorage)
     this.goBack()
   }
 

@@ -152,7 +152,7 @@ debugger
  file.value = ""
  this.multiples =null
  this.imageUrl = null
-  
+this.formControl.setValue("")  
   
  }
  

@@ -1,7 +1,7 @@
 {
     "pageHeading": "Project",
     "formType": "simple",
-    "editMode": "page",
+    "editMode": "popup",
     "keyField": "_id",
     "form": {
         "collectionName": "project",
@@ -10,37 +10,59 @@
                 "fieldGroupClassName": "display-flex",
                 "fieldGroup": [
                     {
+						"type": "label-view",
+						"key": "projectid",
+						"className": "flex-6",
+						"props": {
+							"label": "Project Id",
+							"label_width": 100,
+							"value_width": 200,
+							"value_in_next_row": true
+						},
+						"hideExpression": "!model.isEdit"
+					},
+                    {
                         "type": "input",
                         "key": "projectid",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "Project Id",
                             "placeholder": "Project Id",
                             "pattern": "^[a-zA-Z0-9-_]*$",
                             "required": true
                         },
-                        
-                        "expressions": {
-                       
-                            "props.readonly": "model.isEdit"
-                        }
-                    },
+						"hideExpression": "model.isEdit"
+
+                    },{
+						"type": "label-view",
+						"key": "projectname",
+						"className": "flex-6",
+						"props": {
+							"label": "Project Name",
+							"label_width": 100,
+							"value_width": 200,
+							"value_in_next_row": true
+						},
+						"hideExpression": "!model.isEdit"
+					},
                     {
                         "type": "input",
                         "key": "projectname",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "Project Name",
                             "placeholder": "Project Name",
                            
                             "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
                             "required": true
-                        }
+                        },
+                        "hideExpression": "model.isEdit"
+
                     },
                     {
                         "type": "input",
                         "key": "clientname",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "Client Name",
                             "placeholder": "Client Name",
@@ -55,7 +77,7 @@
                     {
                         "type": "select-input",
                         "key": "clientname",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "Client Name",
                             "placeholder": "Client Name",
@@ -76,7 +98,7 @@
                     {
                         "type": "select",
                         "key": "projecttype",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "Project Type",
                             "placeholder": "Project Type",
@@ -116,7 +138,7 @@
                 "fieldGroupClassName": "display-flex",
                 "fieldGroup": [
                     {
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "key": "startdate",
                         "type": "datepicker-input", 
                         "props": {
@@ -127,7 +149,7 @@
                         }
                       },
                       {
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "key": "enddate",
                         "type": "datepicker-input",
                         "parentKey": "startdate",
@@ -142,7 +164,7 @@
                     {
                         "type": "select",
                         "key": "status",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "Project Status",
                             "options": [
@@ -170,7 +192,7 @@
             {
                 "type": "html-input",
                 "key": "projectdetails",
-                "className": "flex-2",
+                "className": "flex-6",
                 "props": {
                     "label": "Project Details",
                     "required": true

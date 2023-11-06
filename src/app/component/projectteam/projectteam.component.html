@@ -71,7 +71,7 @@
             Reset
           </button>
           <button
-          style="margin: 5px; background: rgb(59, 146, 155)"
+          style="margin: 5px; background: rgb(59, 146, 155)" [disabled]="!this.form.valid"
           (click)="saveForm(config)" [mat-dialog-close]="true"
           mat-raised-button
           color="warn"

@@ -54,7 +54,7 @@
     (cellvalueChanged)="onCellValueChanged($event)" (gridReady)="onGridReady($event)"></ag-grid-angular>
 </div>
 <!-- <app-timesheet></app-timesheet> -->
-<ng-template #editViewPopup class="example-sidenav" mode="over" style="height: auto">
+<!-- <ng-template #editViewPopup class="example-sidenav" mode="over" style="height: auto">
   <div style="text-align-last: end" *ngIf="formAction == 'view'">
     <mat-icon (click)=this.dialogService.closeModal()>close</mat-icon>
   </div>
@@ -64,6 +64,22 @@
         (onClose)="close($event)"></app-dynamic-form>
     </div>
   </div>
+  <div class="center" style="width: 100%; margin: 5px" *ngIf="formAction == 'view'">
+    <h2 style="text-align: center;" class="page-title">{{ pageHeading }}</h2>
+    <formly-form [model]="selectedModel" [fields]="fields"></formly-form>
+  </div>
+</ng-template> -->
+
+<ng-template #editViewPopup class="example-sidenav" mode="over" style="height: auto;width: 100%;" let-data >
+  <div style="text-align-last: end" *ngIf="formAction == 'view'">
+    <mat-icon (click)='this.dialogService.closeModal()'>close</mat-icon>
+  </div>
+  <div class="page">
+    <div *ngIf="formAction != 'view'" class="page-content">
+      <app-dynamic-form [formName]="formName" [model]="selectedModel" [mode]="'popup'"  (onClose)="close($event)"></app-dynamic-form>
+    </div>
+  </div>
+
   <div class="center" style="width: 100%; margin: 5px" *ngIf="formAction == 'view'">
     <h2 style="text-align: center;" class="page-title">{{ pageHeading }}</h2>
     <formly-form [model]="selectedModel" [fields]="fields"></formly-form>

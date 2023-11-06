@@ -8,3 +8,9 @@
   .hide-action-button {
     display: none;
   }
+
+button:disabled {
+  opacity: 0.7; 
+  background-color: gray;
+  cursor: not-allowed; 
+}

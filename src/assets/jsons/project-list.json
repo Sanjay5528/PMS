@@ -1,7 +1,7 @@
 {
     "pageHeading": "Project",
     "collectionName": "project",
-    "editMode": "page",
+    "editMode": "popup",
     "screenWidth": "80%",
     "keyField": "_id",
     "showbutton": true,

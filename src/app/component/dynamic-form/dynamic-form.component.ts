@@ -101,7 +101,7 @@ export class DynamicFormComponent {
     if (this.config.editMode == 'page') {
       this.router.navigate([`${this.config.onCancelRoute}`]);
     } else if (this.config.editMode == 'popup') {
-      this.router.navigate([`${this.config.onCancelRoute}`]);
+      // this.router.navigate([`${this.config.onCancelRoute}`]);
       if (data) {
         this.onClose.emit(data)
       } else {

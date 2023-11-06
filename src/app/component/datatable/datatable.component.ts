@@ -92,6 +92,7 @@ export class DatatableComponent implements OnInit {
           this.clientData = res.data[0]
         })
         debugger
+        this.formName=this.listName
         this.DataService.getDataByIdClient("project", this.ById).subscribe((res: any) => {
           this.listData = res.data
         })
@@ -351,6 +352,13 @@ export class DatatableComponent implements OnInit {
     console.log(this.formAction );
     
     if (this.config.editMode == 'popup') {
+      if (this.formAction == "add") {
+        // if (this.collectionName = "project") {
+        if (this.ById != undefined) {
+          sessionStorage.setItem('ById', this.ById)
+        }
+      }
+      
       this.dialogService.openDialog(this.editViewPopup, this.config['screenWidth'], null, data);
     }
     else {

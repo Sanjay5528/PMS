@@ -6,11 +6,21 @@ import { DatePipe } from '@angular/common';
 @Component({
   selector: 'label-view',
   template: `
-    <div style="margin: 10px;display:flex;flex-direction:row">
-    <div style=" font-weight: bold;width:{{width}};height:{{height}}">{{this.field.props?.label}}</div>
-    <div *ngIf="displayType =='text'">: {{getValue()}}</div>
-    <div *ngIf="displayType !='text'" [innerHtml]="getValue()"></div>
+        <div *ngIf="!value_in_next_row" style="margin: 10px;display:flex;flex-direction:row">
+    <div style=" font-weight: bold;width:{{label_width}}">{{this.field.templateOptions?.label}}</div>  <!-- to set the name of the coming data -->
+    <b style="margin-right: 5px;font-weight: bold;">:</b>
+        <div *ngIf="displayType =='text'"style="width:{{value_width}};word-wrap: break-word;" >
+     {{getValue()}}</div>  <!-- get value as string text input -->
+    <!-- <div *ngIf="displayType !='text'" [innerHtml]="getValue()"></div> --> <!-- no text input -->
     </div>
+
+    
+    <div *ngIf="value_in_next_row" style="margin: 10px;">
+    <div style=" font-weight: bold;width:{{label_width}}">{{this.field.templateOptions?.label}}</div>  <!-- to set the name of the coming data -->
+        <div *ngIf="displayType =='text'"style="width:{{value_width}};  padding: 5px;" >{{getValue()}}</div>  <!-- get value as string text input -->
+    <!-- <div *ngIf="displayType !='text'" [innerHtml]="getValue()"></div> --> <!-- no text input -->
+    </div>
+
   `
 })
 
@@ -18,8 +28,9 @@ export class LabelView extends FieldType implements OnInit {
   displayType = 'text'
   opt: any;
   date: any
-  width = "150px"
-  height = "20px"
+  label_width :any
+  value_in_next_row!:boolean
+  value_width:any
 
   constructor(
     private datePipe: DatePipe
@@ -28,10 +39,11 @@ export class LabelView extends FieldType implements OnInit {
   }
 
   ngOnInit(): void {
-    this.opt = this.field.props || {};
-    this.width = this.opt.width || "150px"
-    this.height = this.opt.height || "20px"
+    this.opt = this.field.templateOptions || {};
+    this.label_width = this.opt.label_width || "150px"
     this.displayType = this.opt.inputType || 'text'
+    this.value_in_next_row=this.opt.value_in_next_row || false
+    this.value_width=this.opt.value_width
   }
 
   getValue() {
