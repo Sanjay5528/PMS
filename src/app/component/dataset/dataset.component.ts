@@ -1481,6 +1481,7 @@ export class DatasetComponent {
     this.SelctedColumns.splice(removeIndex, 1);
     this.dataSet.get("SelectedList").setValue(this.SelctedColumns);
   }
+
   SaveColumns() {
     let selected_Column: any[] = [];
 
@@ -1500,6 +1501,7 @@ export class DatasetComponent {
     this.dataSet.get("SelectedList").setValue(selected_Column);
     this.dialogService.closeModal();
   }
+  
   savedataSet() {
     debugger;
     console.log(this.gridApi);
