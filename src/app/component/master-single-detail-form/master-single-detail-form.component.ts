@@ -1,19 +1,13 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, Injectable, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, ValidationErrors } from '@angular/forms';
+import { Component, Injectable, Input, TemplateRef, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DataService } from 'src/app/services/data.service';
 import * as _ from 'lodash'
 import { DialogService } from 'src/app/services/dialog.service';
-import { HelperService } from 'src/app/services/helper.service';
-import { ReportService } from 'src/app/services/report.service';
 import { FormService } from 'src/app/services/form.service';
 
-import { DatePipe } from '@angular/common';
-import { TimePipe,FileSizePipe} from 'src/app/pipe/time.pipe';
 import { environment } from 'src/environments/environment';
-import * as moment from 'moment';
-import { query } from '@angular/animations';
 import { MasterButtonComponent } from './master-button';
 import { ColDef, FirstDataRenderedEvent, GridApi, GridReadyEvent } from 'ag-grid-community';
 
@@ -36,7 +30,7 @@ export class MasterSingleDetailFormComponent  {
     private dataService : DataService
   ) {
     this.context = { componentParent: this };
-    this.frameworkComponents = {
+    this.components = {
       buttonRenderer: MasterButtonComponent,
     };
    }
@@ -52,8 +46,6 @@ export class MasterSingleDetailFormComponent  {
   fields!:FormlyFieldConfig[]
   isFormDataLoaded = false
   id:any
-
-  orgId=environment.OrgId
   data:any
   //detail form variables
   detailForm = new FormGroup({});
@@ -94,7 +86,7 @@ export class MasterSingleDetailFormComponent  {
   holiday:any
   sg_date:any
   delete:any
-  frameworkComponents: any;
+  components: any;
   context: any;
   public gridApi!: GridApi
 

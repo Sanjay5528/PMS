@@ -1,0 +1,111 @@
+{
+  "pageHeading": "Task",
+  "formType": "simple",
+  "editMode": "page",
+  "keyField": "_id",
+                                             
+  "form": {
+    "collectionName": "task",
+    "fields": [
+      {
+        "type": "input",
+        "key": "taskid",
+        "props": {
+          "label": "Task Id",
+          "placeholder": "Task Id",
+          "pattern": "^[a-zA-Z0-9-_]*$",
+          "required": true
+        },
+        "expressions": {
+          "props.readonly": "model.isEdit"
+           }
+      },
+      {
+        "type": "input",
+        "key": "taskname",
+        "props": {
+          "label": "Task Name",
+          "placeholder": "Task Name", 
+          "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+          "required": true
+        },
+         "expressions": {
+        "props.readonly": "model.isEdit"
+           }
+      },
+     {
+        "key": "scheduledstartdate",
+        "type": "datetime-input",
+         
+        "props": {
+          "label": "Scheduled Start Date",
+         "placeholder": "Scheduled Start Date",
+           
+          "required": true
+        }
+      },
+      
+      { 
+        "key": "scheduledenddate",
+        "type": "datetime-input",
+        "parentKey": "scheduledstartdate",
+        "parentCollectionName": "task",
+        "props": {
+          "label": "Scheduled End Date",
+          "placeholder": "Scheduled End Date",
+          
+          "required": true
+        }
+      },
+      
+      {
+        "type": "number",
+        "key": "allocatedhours",
+        "props": {
+          "label": "Allocated Hours",
+          "placeholder": "Allocated Hours",
+          "pattern": "^(?:|[1-9][0-9]*)$",
+          "required": true
+        } 
+      },
+      {
+        "type": "input",
+        "key": "assignedto",
+         
+        "props": {
+            "label": "Assigned To",
+            "placeholder": "Assigned To",
+            "required": true,
+            "readonly": true
+           
+        },
+        "expressions": {
+            "hide": "!model.isEdit"
+        }
+    },
+      
+      {
+        "type": "select-input",
+        "key": "assignedto",
+        "props": {
+          "label": "Assigned To",
+          "required": true,
+          "flag":true,
+          "placeholder": "Assigned To",
+          "labelPropTemplate": "{{firstname}}",
+          "optionsDataSource": {
+            "collectionNameById": "query/projectname",
+            "Id": ":projectname"
+          },
+          "labelProp": "firstname",
+          "valueProp": "firstname"
+        },
+        "expressions": {
+          "hide": "model.isshow"
+        }
+      }
+     
+    ]
+  },
+  "onCancelRoute": "/list/task"
+}

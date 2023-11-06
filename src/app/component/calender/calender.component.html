@@ -1,0 +1,41 @@
+<div>
+  <div style="
+      
+      
+      text-align: center;
+      display: flex;
+      flex-direction: row;
+    ">
+      <div class="head">
+          <span>
+              <p>My Entry</p>
+          </span>
+      </div>
+  </div>
+</div>
+
+<!-- height: 50px; margin: 30px;-->
+
+
+<div class='demo-app'>
+  
+    <div class='demo-app-main'>
+      
+      <full-calendar #fullCalendar *ngIf='calendarVisible()' [options]='calendarOptions()'>
+        <ng-template #eventContent let-arg>
+          <!-- <b>{{ arg.timeText }}</b> -->
+          <!-- <div *ngIf="showGreen"> -->
+            <div class="circle-wrapper">
+              <div class="circle">{{ arg.event.title }}</div>
+            </div>
+          <!-- </div> -->
+          <!-- <div *ngIf="showRed"> -->
+            <!-- <div class="circle-wrapper">
+              <div class="circle2">{{ arg.event.title }}</div>
+            </div> -->
+          <!-- </div> -->
+        </ng-template>
+      </full-calendar>
+    </div>
+  
+  </div>

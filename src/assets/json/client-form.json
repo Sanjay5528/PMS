@@ -1,0 +1,781 @@
+{
+    "pageHeading": "Client",
+    "formType": "simple",
+    "editMode": "page",
+    "keyField": "_id",
+    "form": {
+        "collectionName": "client",
+        "fields": [
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                    {
+                        "type": "input",
+                        "key": "clientid",
+                        "className": "flex-2",
+                        "props": {
+                            "label": "Client Id",
+                            "placeholder": "Client Id",
+                            "pattern": "^[a-zA-Z0-9-_]*$",
+                            "required": true
+                        },
+                         "expressions": {
+                       
+                            "props.readonly": "model.isEdit"
+                        }
+                    },
+                    {
+                        "type": "input",
+                        "key": "clientname",
+                        "className": "flex-2",
+                        "props": {
+                            "label": "Client Name",
+                            "placeholder": "Client Name",
+                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                            "required": true
+                        }
+                    },
+                    {
+                        "type": "select",
+                        "key": "clienttype",
+                        "className": "flex-2",
+                        "props": {
+                            "label": "Client Type",
+                            "options": [
+                                {
+                                    "label": "Product",
+                                    "value": "Product"
+                                },
+                                {
+                                    "label": "Service",
+                                    "value": "Service"
+                                },
+                                {
+                                    "label": "Others",
+                                    "value": "Others"
+                                }
+                            ],
+                            "placeholder": "Client Type",
+                            "required": true
+                        }
+                    }
+                ]
+            },
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                    {
+                        "type": "input",
+                        "key": "email",
+                        "className": "flex-2",
+                        "props": {
+                            "label": "Company Email",
+                            "placeholder": "Company Email",
+                            
+                            
+                            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                            "required": true
+                        }
+                    },
+                   
+                    {
+                        "type": "select",
+                        "key": "industrytype_name",
+                        "className": "flex-2",
+                        "props": {
+                            "label": "Industry Type",
+                            "options": [
+                                {
+                                    "label": "Chemical Industry",
+                                    "value": "Chemical Industry"
+                                },
+                                {
+                                    "label": "Manufacturing Industry",
+                                    "value": "Manufacturing Industry"
+                                },
+                                {
+                                    "label": "Construction Industry",
+                                    "value": "Construction Industry"
+                                },
+                                {
+                                    "label": "Automobile Industry",
+                                    "value": "Automobile Industry"
+                                },
+                                {
+                                    "label": "Service Industry",
+                                    "value": "Service Industry"
+                                },
+                                {
+                                    "label": "Information Industry",
+                                    "value": "Information Industry"
+                                },
+                                {
+                                    "label": "Telecommunication Industry",
+                                    "value": "Telecommunication Industry"
+                                },
+                                {
+                                    "label": "Others",
+                                    "value": "Others"
+                                }
+                            ],
+                            "placeholder": "Industry Type",
+                            "required": true
+                        }
+                    },
+                    {
+                        "type": "select",
+                        "key": "status",
+                        "className": "flex-2",
+                        "props": {
+                            "type": "input",
+                            "label": "Client Status",
+                            "options": [
+                                {
+                                    "label": "Active",
+                                    "value": "Active"
+                                },
+                                {
+                                    "label": "Inactive",
+                                    "value": "Inactive"
+                                }
+
+                                 
+                            ],
+                            
+                            "placeholder": "Client Status",
+                            "required": true
+                        },
+                    
+                        "expressions": {
+                            "hide": "!model.isshow"
+                        }
+                        }
+                ]
+            },
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                    {
+                        "type": "datepicker",
+                        "key": "estabilished",
+                        "className": "flex-2",
+                        "props": {
+                            "label": "Estabilished Date",
+                            "placeholder": "Estabilished Date",
+                            "required": true
+                        }
+                    },
+                    {
+                        "type": "input",
+                        "key": "website",
+                        "className": "flex-2",
+                        "props": {
+                            "label": "Website",
+                            "placeholder": "Website",
+                            "pattern": "(https?:\\/\\/)?(www\\.)?([\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*\\/?"
+                             
+                        }
+                    },
+                    {
+                        "type": "input",
+                        "key": "linkedin",
+                        "className": "flex-2",
+                        "props": {
+                            "label": "LinkedIn Url",
+                            "placeholder": "LinkedIn Url",
+                            "pattern": "(https?:\\/\\/)?(www\\.)?linkedin\\.com\\/in\\/[a-z0-9-]+\\/?"
+                            
+                        }
+                    },
+                    {
+                        "type": "input",
+                        "key": "twitter",
+                        "className": "flex-2",
+                        "props": {
+                            "label": "Twitter Url",
+                            "placeholder": "Twitter Url",
+                            "pattern": "(https?:\\/\\/)?(www\\.)?twitter\\.com\\/[A-Za-z0-9_]{1,15}\\/?"
+                          
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "tab-input",
+                "fieldGroup": [
+                    {
+                        "props": {
+                            "label": "Primary Contact",
+                            "required": true
+                        },
+                        "fieldGroup": [
+                            {
+                                "fieldGroupClassName": "display-flex",
+                                "fieldGroup": [
+                                    {
+                                        "type": "input",
+                                        "key": "primaryfirst_name",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "First Name",
+                                            "placeholder": "First Name",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "primarylast_name",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Last Name",
+                                            "placeholder": "Last Name",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "primaryemail",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Email Id",
+                                            "placeholder": "Email Id",
+                                            
+                                            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "primarymob",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Mobile Number",
+                                            "placeholder": "Mobile Number",
+                                            "pattern": "[6-9]{1}[0-9]{9}",
+                                            "maxLength":"10",
+                                            "required": true
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "fieldGroupClassName": "display-flex",
+                                "fieldGroup": [
+                                    {
+                                        "type": "input",
+                                        "key": "primaryaddr",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Address",
+                                            "placeholder": "Address",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "select-input",
+                                        "key": "pricountry_name",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Country",
+                                            "placeholder": "Country",
+                                            "labelPropTemplate": " {{country_name}}",
+                                           
+                                            "optionsDataSource": {
+                                                "collectionName": "country"
+                                            },
+                                            "labelProp": "country_name",
+                                            "valueProp": "country_name",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "select-input",
+                                        "key": "pristates",
+                                        "className": "flex-2",
+                                        "parentKey": "pricountry_name",
+                                        "parentCollectionName": "statename",
+                                        "props": {
+                                            "label": "State",
+                                            "placeholder": "State",     
+                                            "labelPropTemplate": "{{states}}",
+                                            
+                                            "optionsDataSource": {
+                                                "collectionName": "statename"
+                                            },
+                                            "labelProp": "states",
+                                            "valueProp": "states",
+                                            "required": true
+                                              
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "primarycity",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "City",
+                                            "placeholder": "City",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "primarypincode",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Postal code",
+                                            "placeholder": "Postal code",
+                                            "pattern": "^[1-9][0-9]{5}$",
+                                            "maxLength": 6,
+                                            "required": true
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "props": {
+                            "label": "Secondary Contact",
+                            "required": true
+                        },
+                        "fieldGroup": [
+                            {
+                                "fieldGroupClassName": "display-flex",
+                                "fieldGroup": [
+                                    {
+                                        "type": "input",
+                                        "key": "secondaryfirst_name",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "First Name",
+                                            "placeholder": "First Name",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "secondarylast_name",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Last Name",
+                                            "placeholder": "Last Name",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "secondaryemail",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Email Id",
+                                            "placeholder": "Email Id",
+                                            
+                                           "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "secondarymob",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Mobile Number",
+                                            "placeholder": "Mobile Number",
+                                            "pattern": "[6-9]{1}[0-9]{9}",
+                                            "maxLength":"10",
+                                            "required": true
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "fieldGroupClassName": "display-flex",
+                                "fieldGroup": [
+                                    {
+                                        "type": "input",
+                                        "key": "secondaryaddr",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Address",
+                                            "placeholder": "Address",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "select-input",
+                                        "key": "secondarycountry_name",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Country",
+                                            "placeholder": "Country",
+                                            "labelPropTemplate": " {{country_name}}",
+                                            "type":"input",
+                                            "optionsDataSource": {
+                                                "collectionName": "country"
+                                            },
+                                            "labelProp": "country_name",
+                                            "valueProp": "country_name",
+                                            "required": true
+                                           
+                                        }
+                                    },
+                                    {
+                                        "type": "select-input",
+                                        "key": "secondarystates",
+                                        "className": "flex-2",
+                                        "parentKey": "secondarycountry_name",
+                                        "parentCollectionName": "statename",
+                                        "props": {
+                                            "label": "State",
+                                            "placeholder": "State",
+                                            "labelPropTemplate": " {{states}}",
+                                             "type":"input",
+                                            "optionsDataSource": {
+                                                "collectionName": "statename"
+                                            },
+                                            "labelProp": "states",
+                                            "valueProp": "states",
+                                            "required": true
+                                            
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "secondarycity",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "City",
+                                            "placeholder": "City",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "secondarypincode",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Postal code",
+                                            "placeholder": "Postal code",
+                                            "pattern": "^[1-9][0-9]{5}$",
+                                            "maxLength": 6,
+                                            "required": true
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "props": {
+                            "label": "Register Address",
+                            "required": true
+                        },
+                        "fieldGroup": [
+                            {
+                                "fieldGroupClassName": "display-flex",
+                                "fieldGroup": [
+                                    {
+                                        "type": "input",
+                                        "key": "registerstreet",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Street",
+                                            "placeholder": "Street",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "registerareaname",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Area Name",
+                                            "placeholder": "Area Name",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "registerlandmark",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Land Mark",
+                                            "placeholder": "Land Mark",
+                                            "required": true,
+                                            "pattern": "^[a-zA-Z0-9_@!#$%^&*()>/<> ]+[a-zA-Z0-9_@!#$%^&*()>/<> ]*$"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "fieldGroupClassName": "display-flex",
+                                "fieldGroup": [
+                                    {
+                                        "type": "select-input",
+                                        "key": "registercountry_name",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Country",
+                                            "placeholder": "Country",
+                                            "labelPropTemplate": " {{country_name}}",
+                                            "required": true,
+                                            "type":"input",
+                                            "optionsDataSource": {
+                                                "collectionName": "country"
+                                            },
+                                            "labelProp": "country_name",
+                                            "valueProp": "country_name"
+                                             
+                                        }
+                                    },
+                                    {
+                                        "type": "select-input",
+                                        "key": "registerstates",
+                                        "className": "flex-2",
+                                        "parentKey": "registercountry_name",
+                                        "parentCollectionName": "statename",
+                                        "props": {
+                                            "label": "State",
+                                            "placeholder": "State",
+                                            "labelPropTemplate": "{{states}}",
+                                            "required": true,
+                                            "type":"input",
+                                            "optionsDataSource": {
+                                                "collectionName": "statename"
+                                            },
+                                            "labelProp": "states",
+                                            "valueProp": "states"
+                                            
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "registercity",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "City",
+                                            "placeholder": "City",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "registercurrency",
+                                        "className": "flex-2",
+                                        "parentKey": "country_name",
+                                        "parentCollectionName": "country/country_name",
+                                        "props": {
+                                            "label": "Currency",
+                                            "placeholder": "Currency",
+                                            "labelPropTemplate": "{{currency}}",
+                                            "optionsDataSource": {
+                                                "collectionName": "country"
+                                            },
+                                            "labelProp": "currency",
+                                            "valueProp": "currency",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "registertimezone",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Time Zone",
+                                            "placeholder": "Time Zone",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "registerpincode",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Postal code",
+                                            "placeholder": "Postal code",
+                                            "pattern": "^[1-9][0-9]{5}$",
+                                            "maxLength": 6,
+                                            "required": true
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "props": {
+                            "label": "Billing Address",
+                            "required": true
+                        },
+                        "fieldGroup": [
+                            {
+                                "fieldGroupClassName": "display-flex",
+                                "fieldGroup": [
+                                    {
+                                        "type": "input",
+                                        "key": "billingstreet",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Street",
+                                            "placeholder": "Street",
+                                            "required": true,
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$"
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "billingareaname",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Area Name",
+                                            "placeholder": "Area Name",
+                                            "required": true,
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$"
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "billinglandmark",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Land Mark",
+                                            "placeholder": "Land Mark",
+                                            "required": true,
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "fieldGroupClassName": "display-flex",
+                                "fieldGroup": [
+                                    {
+                                        "type": "select-input",
+                                        "key": "billingcountry_name",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Country",
+                                            "placeholder": "Country",
+                                            "labelPropTemplate": " {{country_name}}",
+                                            "optionsDataSource": {
+                                                "collectionName": "country"
+                                            },
+                                            "labelProp": "country_name",
+                                            "valueProp": "country_name",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "select-input",
+                                        "key": "billingstates",
+                                        "className": "flex-2",
+                                        "parentKey": "billingcountry_name",
+                                        "parentCollectionName": "statename",
+                                        "props": {
+                                            "label": "State",
+                                            "placeholder": "State",
+                                            "labelPropTemplate": "{{states}}",
+                                            "optionsDataSource": {
+                                                "collectionName": "statename"
+                                            },
+                                            "labelProp": "states",
+                                            "valueProp": "states",
+                                           
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "billingcity",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "City",
+                                            "placeholder": "City",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "billingcurrency",
+                                        "className": "flex-2",
+                                        "parentKey": "country_name",
+                                        "parentCollectionName": "country/country_name",
+                                        "props": {
+                                            "label": "Currency",
+                                            "placeholder": "Currency",
+                                            "labelPropTemplate": "{{currency}}",
+                                            "optionsDataSource": {
+                                                "collectionName": "country"
+                                            },
+                                            "labelProp": "currency",
+                                            "valueProp": "currency",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "billingtimezone",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Time Zone",
+                                            "placeholder": "Time Zone",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "billingpincode",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Postal code",
+                                            "placeholder": "Postal code",
+                                            "pattern": "^[1-9][0-9]{5}$",
+                                            "maxLength": 6,
+                                            "required": true
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "image-input",
+                "key": "logo",
+                "refId":"id",
+                "role":"client",
+                 
+                "bind_key":"clientid",
+                "details_type":"logo",
+                "props": {
+                   "refId":"clientid",
+                    "label": "Client Logo",
+                    "placeholder": "Client Logo",
+                    "required":true
+                }
+            }
+        ],
+        "defaultValues": [
+            {
+              "colName": "status",
+              "type": "string",
+              "value": "Active"
+            }
+          ]
+    },
+    "onCancelRoute": "/list/client"
+}

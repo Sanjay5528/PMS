@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Output, ViewChild, EventEmitter } from '@angular/core';
 import * as _ from 'lodash';
-import { async } from 'rxjs';
+import { async, catchError } from 'rxjs';
 import { Observable, Subject } from 'rxjs';
 import { DataService } from './data.service';
 import { DialogService } from './dialog.service';
@@ -574,31 +574,57 @@ console.log(ctrl);
       // this.helperService.validateAllFormFields(ctrl.form); I Dont what is it ?
       
       if (!ctrl.form.valid) {
-        this.dialogService.openSnackBar("Error in your data or missing mandatory fields", "OK")
+        let array = "";
         
-        return
+        function collectInvalidLabels(controls: any) {
+          for (const key in controls) {
+            if (controls.hasOwnProperty(key)) {
+              const data = controls[key].status;
+              if (data === "INVALID") {
+                array += controls[key]._fields[0].props.label + ",";
+              }
+            }
+          }
+        }
+
+        // Start collecting invalid labels
+        collectInvalidLabels(ctrl.form.controls);
+        const modifiedString = array.slice(0, -1);
+        this.dialogService.openSnackBar("Error in " + modifiedString, "OK");
+        resolve(undefined);
+                
+        return ;
       }
       var data = ctrl.form.value
       let role_type:any =this.dataService.getdetails().profile.role
       if(ctrl?.config?.rolebased&& role_type!=="SA"){
        data.org_id=this.dataService.getdetails().profile.org_id
-       
       }
+
       if(ctrl?.config?.user&&role_type!=="SA"){
         data.org_id=this.dataService.getdetails().profile.org_id 
         data.user_type=role_type
       }
+
       if(ctrl?.config?.Change_id){
         data.org_id=this.dataService.getdetails().profile.org_id
         data._id=data.org_id+"-"+data._id
-
       }
+
       // It can be done in any project with different screen config
       //while saving set default values
+
         if (ctrl.formAction == 'Add') {
           var defaultValues = ctrl.config.form.defaultValues || []
           this.loadDefaultValues(defaultValues,data,ctrl.model)
-           this.dataService.save(ctrl.collectionName,data).subscribe((res: any) => {
+          this.dataService.save(ctrl.collectionName,data).pipe(
+            catchError((error:any) => {
+              ctrl.butonflag=false
+              console.error('Error occurred:', error);
+              return error
+            })
+    )
+      .subscribe((res: any) => {
             console.log(res);
             if(res){
               console.log(ctrl);
@@ -616,7 +642,13 @@ console.log(ctrl);
         }
         else {
           delete data._id
-          this.dataService.update(ctrl.collectionName,ctrl.id,data).subscribe((res: any) => {
+          this.dataService.update(ctrl.collectionName,ctrl.id,data).pipe(
+            catchError((error:any) => {
+              ctrl.butonflag=false
+              console.error('Error occurred:', error);
+              return error
+            })
+    ).subscribe((res: any) => {
           this.dialogService.openSnackBar("Data has been updated successfully", "OK")
             resolve(res)
           })
@@ -680,6 +712,7 @@ console.log(ctrl);
     )
      
   }
+
   /**
  * This method used for the Get the data from model into Tag of String
  * @ctrl This is Total content from the parent componet.

@@ -36,34 +36,18 @@ import { DialogService } from '../services/dialog.service';
   type="file"
   accept="image/*"
   name="myfile"
-  (change)="onSelectFile($event)"
+  (change)="onSelectFile($event,myInput)"
   style="margin-top: 30px;"
 />
-<button style="margin-left:2px;margin-right:10px" type="button" [disabled]="show_button"   mat-button (click)="reset(myInput)">
-      <span class="glyphicon glyphicon-trash"></span> Reset
-    </button>
-
-    <button
-    [disabled]="this.model[this.field.props?.refId]?false:true"
-    type="button"
-    (click)="upload()"
-    mat-raised-button
-    [disabled]="show_button" 
-    class="approve-button"
-    class="btn btn-primary"
-  >
-    Upload
-  </button>
 </div>
 
 <div 
 style="margin-top: 40px; 
- display: flex; gap: 12px;" >
- <div>
-  <img width="200" height="133"
-    [src]="image"  
+ display: flex; gap: 12px" >
+
+  <img width="200" height="133" style="object-fit:contain"    [src]="image"  
   /> 
- </div>
+
 </div>  
   `,
 })
@@ -76,7 +60,7 @@ export class ImageInput extends FieldType<any>  implements OnInit{
   show_button:boolean=true
 constructor(
   public dataservice:DataService,
-  public dialogService:DialogService,
+  public dialogservice:DialogService,
   private cf: ChangeDetectorRef
 ){
   super();
@@ -84,14 +68,23 @@ constructor(
 
 
 ngOnInit(): void {
-  
+  debugger
 
   console.log(this.refId)
   this.image=this.model[this.field.key]
 }
 
-    onSelectFile(event:any) {
+    onSelectFile(event:any,value:any) {
      
+
+      if(this.field.bind_key){
+        if(this.model[this.field.bind_key]==undefined){
+          this.file=[]
+          value.value = "";
+          return this.dialogservice.openSnackBar(`${this.field.error_msg}`,"OK")
+        }
+    
+      }
       this.show_button =false
         let i: number = 0;
         for (const singlefile of event.target.files) {
@@ -108,6 +101,29 @@ ngOnInit(): void {
             this.cf.detectChanges();
           };
         }
+
+
+          
+      let ref=this.field.props.refId
+      this.refId=this.model[ref]
+      const formData = new FormData();
+      if(this.field.bind_key){
+        if(this.model[this.field.bind_key]==undefined){
+          return this.dialogservice.openSnackBar(`${this.field.error_msg}`,"OK")
+        }
+        formData.append('file',this.file);
+        formData.append(this.field.refId,this.model[this.field.bind_key]);
+        formData.append("category",this.field.category);
+      }
+      this.dataservice.imageupload(formData).subscribe((res:any)=>{
+        if(res.data){
+          this.formControl.setValue(res.data.file_path)
+          this.dialogservice.openSnackBar("File Uploaded successfully", "OK")
+          this.show_button =true
+        }
+      
+      })
+       
        
     }
 
@@ -115,23 +131,9 @@ ngOnInit(): void {
     reset(file:any){
       file.value = ""
       this.image=""
+      this.formControl.setvalue("")
     }
 
-    upload(){
-      
-      let ref=this.field.props.refId
-      this.refId=this.model[ref]
-      const formData = new FormData();
-      formData.append('file',  this.file );
-      formData.append('CorpCustomer', this.refId);
-      this.dataservice.imageupload(formData).subscribe((res:any)=>{
-        if(res.data){
-          this.formControl.setValue(res.data[0])
-          this.dialogService.openSnackBar("File Uploaded successfully", "OK")
-          this.show_button =true
-        }
-      
-      })
-    }
+   
    
   }

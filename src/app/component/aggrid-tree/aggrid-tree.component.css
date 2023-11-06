@@ -1,0 +1,10 @@
+.head {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: larger;
+  flex: 1 1 auto
+}
+
+/* Custom CSS class to hide the action button */
+.hide-action-button {
+  display: none;
+}

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -33,11 +33,14 @@ export class DialogService {
     this.dialogRef.close()
   }
 
-
+public CloseALL(){
+  this.dialogRef.closeAll()
+}
 
   public openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action, {
       duration: 2000,
     });
   }
+  
 }

@@ -9,6 +9,7 @@ import { DatatableComponent } from '../component/datatable/datatable.component';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { isEmpty } from 'lodash';
 
 
 @Component({
@@ -90,24 +91,28 @@ export class Nestedform {
   @Input('mode') mode: string = "page"
   @Input('model') model: any = {}
   @Output('onClose') onClose = new EventEmitter<any>();
+  selectedModel: any = {};
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private formService: FormService,
-    
+
     private dialogService: DialogService
   ) {
-   
+
   }
- storeData:any;
- 
+
+  storeData: any;
+  ctrl:any
   ngOnInit() {
     this.initLoad()
-    // let getdata:any =sessionStorage.getItem('point_of_contacts')
-    // this.storeData =JSON.parse(getdata)
-    
-      
+   
+    let getdata: any = localStorage.getItem('projectmembers')
+    this.storeData = JSON.parse(getdata)
+    this.formAction = this.model.id ? 'Edit' : 'Add'
+    this.butText = this.model.id ? 'Update' : 'Save';
+
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -115,94 +120,77 @@ export class Nestedform {
     if (this.formName && this.model) {
       this.id = this.model['_id']
       this.initLoad()
+      this.formAction = this.model.id ? 'Edit' : 'Add'
+    this.butText = this.model.id ? 'Update' : 'Save';
     }
+   
   }
 
+  
   frmSubmit(data: any) {
-    
-    
+    debugger
+    if(!this.form.valid){
+      alert("Missing Requrid Field")
+      this.form.markAllAsTouched();
+      return
+    }
+
+let value:any=this.form.value
+    let getdata: any = localStorage.getItem('projectmembers');
+    let existingData: any[] = JSON.parse(getdata) || [];
+    if (value && !isEmpty(existingData)) {
+      const roleIndex = existingData.findIndex(item=> item.roleid == value.roleid);
+if(roleIndex!==-1){
+  // this.dialogService.openSnackBar("This Role ID Aldready Exist","OK")
+  alert("This Role ID Aldready Exist")
+  return
+}
+
+      const samePresonWithSameTaskName = existingData.findIndex(item => item.employeename === value.employeename &&item.rolename === value.rolename&&item.teamname === value.teamname);
+      if(samePresonWithSameTaskName!==-1){
+alert(`This Employee ${value.employeename } With this Role Exist ${value.rolename}` )
+        // this.dialogService.openSnackBar(, "OK")
+        return
+      }
+      // A primary contact already exists, display an error message or handle the case as desired
+    }
+    // if(this.model){
+    //   Object.assign(data,{teamid:data.teamid})
+    // }
     let pushData = [];
-    if (!this.form.valid) {
-      this.dialogService.openSnackBar("Error in your data or missing mandatory fields", "OK")
-      return;
-    }
-
-    if(this.config.split_data){
-      // let length=this.model[this.config.split_data].length
-      // let split_data:any= this.model[this.config?.split_column].slice(length);
-      let data:any=this.form.value
-      data[this.config.split_column]=this.model[this.config.split_data].concat(this.model[this.config.split_column]);
-    }
     if (this.formAction === "Add") {
-  
-      // let getdata: any = sessionStorage.getItem('point_of_contacts');
-      // let existingData: any[] = JSON.parse(getdata) || [];
-  
-  //     if (existingData.length >= 4) {
-  //       this.dialogService.openSnackBar("Maximum 4 contacts only allowed to add", "OK")
-  //       // Maximum limit reached, display an error message or handle the case as desired
-  //       return;
-  //     }
-  //     const primaryContact = existingData.find(
-  //       (item: any) => item[this.config.check_condition] === "Primary Contact"
-  //     );
-  //     const secondaryContact = existingData.find(
-  //       (item: any) => item[this.config.check_condition] === "Secondary Contact"
-  //     );
-  
-  //     if (this.model[this.config.check_condition] === "Primary Contact" && primaryContact) {
-  //       this.dialogService.openSnackBar("Primary contact already exists", "OK")
-  //       // A primary contact already exists, display an error message or handle the case as desired
-  //       return;
-  //     }
-  //     if (this.model[this.config.check_condition] === "Secondary Contact" && secondaryContact) {
-  //       this.dialogService.openSnackBar("Secondary contact already exists", "OK")
-  //       // A primary contact already exists, display an error message or handle the case as desired
-  //       return;
-  //     }
-  
-  //     for (let item of existingData) {
-  //       pushData.push(item);
-  //     }
-  //     pushData.push(this.form.value);
-  //   }  else if (this.formAction === "Edit") {
-  //   let getdata: any = sessionStorage.getItem('point_of_contacts');
-  //   let data: any[] = JSON.parse(getdata) || [];
+      for (let item of existingData) {
+        pushData.push(item);
+      }
+      pushData.push(value);
+      localStorage.removeItem("projectmembers");
 
-  //   // Add existing data excluding the matching item
-  //   for (let item of data) {
-  //     if (item[this.config.keyField] !== this.model['this.config.keyField']) {
-  //       pushData.push(item);
-  //     }
-  //     var clone_data:any=data.filter((a:any)=>{
-  //      return  a[this.config.keyField]!=this.model[this.config.keyField]
-  //     })
-  
-  //     let new_data:any=this.form.value
-  //     new_data=Object.assign(this.form.value, {"contact_type":this.model['contact_type']})
-  //  clone_data.push(new_data)
-  //     console.log(clone_data)
-  
+    } else if (this.formAction === "Edit") {
+      let getdata: any = localStorage.getItem('projectmembers');
+      let data: any[] = JSON.parse(getdata) || [];
+      for (let item of data) {
+
+        if (item.roleid !== value.roleid) {
+          pushData.push(item);
+        }
+      }
+      pushData.push(value);
+
+      localStorage.removeItem("projectmembers");
     }
-
-  //   // Add the updated form value
-  //   pushData=clone_data
-
-  //   sessionStorage.removeItem("point_of_contacts");
-  // }
-  //     sessionStorage.setItem('point_of_contacts',JSON.stringify(pushData));
-  //     console.log(sessionStorage)
-  //     this.goBack()
+    localStorage.setItem('projectmembers', JSON.stringify(pushData));
+    this.goBack()
   }
 
-  initLoad() {
-    this.formService.LoadInitData(this)
+ async initLoad() {
+     this.formService.LoadInitData(this)
+    
   }
 
   goBack(data?: any) {
-        this.onClose.emit()
-     
-    
+    this.onClose.emit()
+
+
   }
 
   resetBtn(data?: any) {

@@ -61,6 +61,8 @@ import { radiobutton } from './radiobutton';
 import { RepeatTypeComponent } from './repeat';
 import { Chips } from './chips';
 import {MatChipsModule} from '@angular/material/chips';
+import { DateInput } from './datepicker';
+import { CustomDecimalInputType } from './custom-decimal-input';
 
 
 
@@ -135,6 +137,13 @@ const formlyConfig = {
     { name: 'map', component: MapComponent },
     { name: 'logo', component: LogoComponent },
     { name: 'datetime-input', component: DateTimeInput },
+    { name: 'date-input', component: DateInput,validationMessages: [
+      { name: 'required', message: required },
+      { name: 'pattern', message: patternValidationMessage },    
+    ]},  {name: 'custom-decimal-input', component: CustomDecimalInputType , validationMessages: [
+      { name: 'required', message: required},
+      { name: 'pattern', message: patternValidationMessage },    
+    ],},
     { name: 'file-input', component: FileInput },
     { name: 'image-input', component: ImageInput },
     { name: 'autoId-input', component: AutogenerateId }, // input text entry key
@@ -164,19 +173,19 @@ const formlyConfig = {
     LabelView,
     MultiSelectInput,
     SelectInput,
-    DateTimeInput,
+    DateTimeInput,MapComponent,
     ImageInput,
     AutogenerateId,
-    ButtonInput,
+    ButtonInput,DateInput,
     Nestedform,
     PrefixInput,
     MatPrefixInput,
     PasswordInput,RepeatTypeComponent,
     CustomPopupInput,
+    FormlyFieldSelectAutocomplete,CustomDecimalInputType,
     TimeInput,
     Location,LogoComponent,tooglebutton,Card,
     CallingcodeInput,patchWork,Chips,
-    FormlyFieldSelectAutocomplete,MapComponent
     
   ],
   imports: [
@@ -233,7 +242,7 @@ const formlyConfig = {
     AutogenerateId,RepeatTypeComponent,
     ButtonInput,
     Nestedform,
-    PrefixInput,
+    PrefixInput,DateInput,
     MatPrefixInput,
     PasswordInput,
     CustomPopupInput,
@@ -243,8 +252,8 @@ const formlyConfig = {
     CallingcodeInput,
     patchWork,
     FormlyFieldSelectAutocomplete,
-    MapComponent
-    
+    MapComponent,
+    CustomDecimalInputType
   ],
   providers: [
     ArrayTodateStringPipe, ArrayToStringPipe, LastIndexPipe, SumPipe,

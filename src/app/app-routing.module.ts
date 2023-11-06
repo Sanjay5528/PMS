@@ -10,6 +10,17 @@ import { LoginLayoutComponent } from './component/app-layout/login-layout/login-
 import { DashboardComponent } from './component/dashboard/dashboard.component';
 import { MasterSingleDetailFormComponent } from './component/master-single-detail-form/master-single-detail-form.component';
 import { ForgotPasswordComponent } from './component/authentication/forgot-password/forgot-password.component';
+import { AccessrightComponent } from './component/ACL/accessright/accessright.component';
+import { IndividualAccessComponent } from './component/ACL/individual-access/individual-access.component';
+import { RoleDataAclComponent } from './component/ACL/role-data-acl/role-data-acl.component';
+import { DatasetComponent } from './component/dataset/dataset.component';
+import { NgmodelComponent } from './component/dataset/ngmodel/ngmodel.component';
+import { AggridTreeComponent } from './component/aggrid-tree/aggrid-tree.component';
+import { ProjectteamComponent } from './component/projectteam/projectteam.component';
+import { TimesheetComponent } from './component/timesheet/timesheet.component';
+import { CreatecvComponent } from './component/createcv/createcv.component';
+
+
 
 const routes: Routes = [
 
@@ -35,7 +46,31 @@ const routes: Routes = [
   //   path: "add",
   //   component: DefaultLayoutComponent,
   //   children:[]},
-  
+  {
+    path: 'access_right/:Type/:Role',
+    component: DefaultLayoutComponent,
+   canActivate: [AuthGuardService],
+
+    children:[
+      {path:'',component: AccessrightComponent}
+    ]
+  },{
+    path: 'ACL/:id',
+    component: DefaultLayoutComponent,
+   canActivate: [AuthGuardService],
+
+    children:[
+      {path:'',component: IndividualAccessComponent}
+    ]
+  },{
+    path: 'role/acl/:orgid/:role',
+   canActivate: [AuthGuardService],
+
+    component: DefaultLayoutComponent,
+    children:[
+      {path:'',component: RoleDataAclComponent}
+    ]
+  },
   // {
   //   path: 'ACL/:id',
   //   component: IndividualAccessComponent
@@ -109,6 +144,57 @@ const routes: Routes = [
         path: ":menu/:type",
         component: DatatableComponent,
       }
+    ],
+  },{
+    path:'try',
+    canActivate: [AuthGuardService], 
+    component: DefaultLayoutComponent,
+    children:[
+      {
+        path: "",
+        component:DatasetComponent
+      
+      },{
+        path:'ngmodel',
+        component:NgmodelComponent
+      }
+    ]
+  }, {
+    path: "module/project/:id",
+    component: DefaultLayoutComponent,
+    children: [
+      {
+        path: "",
+        component: AggridTreeComponent,
+      },
+    ],
+  }, {
+    path: "timesheet/:date",
+    component: DefaultLayoutComponent,
+    children: [
+      {
+        path: "",
+        component: TimesheetComponent,
+      },
+    ],
+  },  {
+    path: "createcv",
+    component: DefaultLayoutComponent,
+    children: [
+      {
+        path: "",
+        component: CreatecvComponent,
+      },
+    ],
+  },
+  {
+    path: "projectteam/project/:id",
+    component: DefaultLayoutComponent,
+    children: [
+      {
+        path: "",
+        component: ProjectteamComponent,
+      },
     ],
   },
   {

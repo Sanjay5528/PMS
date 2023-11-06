@@ -57,13 +57,28 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { MasterSingleDetailFormComponent } from './master-single-detail-form/master-single-detail-form.component';
 import { MasterButtonComponent } from './master-single-detail-form/master-button';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { AccessrightComponent } from './ACL/accessright/accessright.component';
+import { AccessActionButtonComponent } from './ACL/accessright/action-button';
+import { CellComponent } from './ACL/accessright/radiobutton';
+import { IndividualAccessComponent } from './ACL/individual-access/individual-access.component';
 import { Icon } from './dashboard/icon';
-
+import { RoleDataAclComponent } from './ACL/role-data-acl/role-data-acl.component';
+import { viewCellComponent } from './ACL/individual-access/view-button';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { DatasetComponent } from './dataset/dataset.component';
 
 
 import {  DragDropModule } from '@angular/cdk/drag-drop';
+import { NgmodelComponent } from './dataset/ngmodel/ngmodel.component';
+import { AggridTreeComponent } from './aggrid-tree/aggrid-tree.component';
+import { ProjectteamComponent } from './projectteam/projectteam.component';
+import { TimesheetComponent } from './timesheet/timesheet.component';
+import { CreatecvComponent } from './createcv/createcv.component';
+import { ProjectButtonComponent } from './projectteam/button';
+import { ButtonComponent } from './aggrid-tree/button';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { CalenderComponent } from './calender/calender.component';
 
 
 
@@ -88,18 +103,40 @@ const appearance: any = {
 @NgModule({
   declarations: [
     DatatableComponent,
+
+    ProjectButtonComponent,
+    ButtonComponent, //! Project button component
+    
     DynamicFormComponent,
     DynamicFilterComponent,Icon,
-    ActionButtonComponent,
-    MyLinkRendererComponent,MasterSingleDetailFormComponent,MasterButtonComponent,DashboardComponent, 
+    ActionButtonComponent
+    ,AccessActionButtonComponent
+    ,CellComponent,
+    viewCellComponent,
+    MyLinkRendererComponent,
+    MasterSingleDetailFormComponent
+    ,MasterButtonComponent,
+    DashboardComponent, 
+    AccessrightComponent, 
+    IndividualAccessComponent, 
+    RoleDataAclComponent, 
+    DatasetComponent, 
+     NgmodelComponent,
+     AggridTreeComponent,
+     CreatecvComponent,
+     CalenderComponent,
+     ProjectteamComponent,
+     TimesheetComponent
   ],
   imports: [
     NgSelectModule,
     MatStepperModule,
     AppRoutingModule,
     CommonModule,
-    NbMenuModule,DragDropModule,
-    NgxChartsModule,MatChipsModule,
+    NbMenuModule,
+    DragDropModule,
+    NgxChartsModule,
+    MatChipsModule,
     FormlyMatToggleModule,
     BrowserModule,
     AgGridModule,
@@ -113,7 +150,8 @@ const appearance: any = {
     ReactiveFormsModule,
     FormlyMatCheckboxModule,
     FormlyMatDatepickerModule,
-    FormlyMatInputModule,MatButtonToggleModule,
+    FormlyMatInputModule,
+    MatButtonToggleModule,
     FormlyMatRadioModule,
     FormlyMatSelectModule,
     FlexLayoutModule,
@@ -125,7 +163,8 @@ const appearance: any = {
     MatAutocompleteModule,
     MatListModule,
     MatSidenavModule,
-    MatCardModule,MatIconModule,
+    MatCardModule,
+    MatIconModule,
     MatMenuModule,
     MatTooltipModule,
     MatSnackBarModule,
@@ -140,21 +179,19 @@ const appearance: any = {
     MatDatepickerModule,
     ControlModule,
     MatGridListModule,
-    FormlyModule.forRoot({
-      validationMessages: [
-        { name: 'required', message: "This field is required" }],
-    }),
+    FullCalendarModule,
     MatExpansionModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    ControlModule
 
   ],
 
 
   exports: [
     DatatableComponent,
-    DynamicFormComponent,
+    DynamicFormComponent,    FullCalendarModule,
+
     DynamicFilterComponent,
-    ControlModule
   ],
 
   providers: [

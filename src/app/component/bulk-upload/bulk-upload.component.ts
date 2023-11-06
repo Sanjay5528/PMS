@@ -29,7 +29,7 @@ export class BulkUploadComponent implements OnInit{
   upload_data: any[] = [];
   wopts: XLSX.WritingOptions = { bookType: "xlsx", type: "array" };
   fileName: string = "SheetJS.xlsx";
-  frameworkComponents: any;
+  components: any;
   template_data:any
   count:any=[]
   upload_button_disabled:boolean =true
@@ -48,7 +48,7 @@ export class BulkUploadComponent implements OnInit{
     private route: ActivatedRoute,
     private router: Router,
   ) {
-    this.frameworkComponents = {
+    this.components = {
       datecolor: dateCellColorComponent,
     };
   }

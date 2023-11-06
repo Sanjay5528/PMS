@@ -60,7 +60,7 @@ export class DatatableComponent implements OnInit {
   loading: boolean = false;
   id: any;
   gridApi!: GridApi;
-  frameworkComponents: any;
+  components: any;
   context: any;
   formAction: string = "add";
   selectedModel: any = {};
@@ -77,12 +77,10 @@ export class DatatableComponent implements OnInit {
   template_id: any | undefined;
   filterCollectionName: any;
   filterQuery: any;
+  allFilter:any
 
   @Output("onClose") onClose = new EventEmitter<any>(); //UNDO
   @Input("mode") mode: string = "page";
-  public cacheOverflowSize: any;
-  public maxConcurrentDatasourceRequests: any;
-  public infiniteInitialRowCount: any;
   public gridOptions: any = {
     flex: 1,
     cacheBlockSize: environment.cacheBlockSize,
@@ -100,10 +98,10 @@ export class DatatableComponent implements OnInit {
     private arraytostring: ArrayToStringPipe,
     private helperService: HelperService
   ) {
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    // this.router.routeReuseStrategy.shouldReuseRoute = () => false;
 
     this.context = { componentParent: this };
-    this.frameworkComponents = {
+    this.components = {
       buttonRenderer: ActionButtonComponent,
       linkRenderer: MyLinkRendererComponent,
     };
@@ -121,8 +119,13 @@ export class DatatableComponent implements OnInit {
     });
   }
 
-  public defaultColDef: ColDef = {
+   public defaultColDef: ColDef = {
     resizable: true,
+    // suppressMovable:true,
+  //   filterParams: {
+  //     closeOnApply:true,
+  //     buttons: ['reset', 'apply'],
+  // },
   };
 
   filterValue(event: any) {
@@ -144,9 +147,10 @@ export class DatatableComponent implements OnInit {
   }
 
   showdefaultFilter: boolean = true;
+
   isConfigLoaded: boolean = false;
-  public getRowId: GetRowIdFunc = (params: GetRowIdParams) =>
-  `${params.data[this.config.keyField ? this.config.keyField  : "_id"]}`;
+
+  public getRowId: GetRowIdFunc = (params: GetRowIdParams) => `${params.data[this.config.keyField ? this.config.keyField  : "_id"]}`;
 
   loadConfig() {
     this.DataService.loadListConfigJson(this.listName).subscribe(
@@ -154,25 +158,20 @@ export class DatatableComponent implements OnInit {
         let org_type_id: any;
         let role_type: any;
         var role_filter: any;
-        if (config?.rolebased) {
+        if (config?.rolebased) { // config . role == true  
           role_type = this.DataService.getdetails().profile.role;
           org_type_id = this.DataService.getdetails().profile.org_id;
           if (role_type !== "SA") {
+
             role_filter = {
               clause: "AND",
               conditions: [
-                {
-                  column: "org_id",
-                  operator: "EQUALS",
-                  type: "string",
-                  value: org_type_id,
-                },
+                {column: "org_id",operator: "EQUALS",type: "string",value: org_type_id,},
               ],
             };
           }
-        }
-        console.log(role_filter);
 
+        }
         this.config = config;
         this.showbutton = config.showbutton; // show button used to show add button it should done in json
         let filter = this.DataService.getFilterQuery(config, this);
@@ -180,11 +179,12 @@ export class DatatableComponent implements OnInit {
         console.log(config?.rolebased && role_type !== "SA");
 
         if (config?.rolebased && role_type !== "SA") {
+          this.filterQuery = [role_filter];
+
           if (filter != undefined) {
             this.filterQuery = [filter, role_filter];
-          } else {
-            this.filterQuery = [role_filter];
-          }
+          } 
+
         } else {
           this.filterQuery = filter;
         }
@@ -192,11 +192,9 @@ export class DatatableComponent implements OnInit {
         this.filterOptions = config.filterOptions;
         this.filterCollectionName = config.filtercollectionName || "";
         this.showdefaultFilter = config.showdefaultFilter;
-
         this.pageHeading = config.pageHeading;
         this.screenEditMode = config.screenEditMode; // screenEditMode is type used for POP up And PAge Screen
         this.fields = [];
-
         this.columnDefs = this.config.columnDefs; // Thus  for AG Grid columnDefs
         this.columnDefs.forEach((e: any) => {
           if (e.type == "datetime") {
@@ -225,16 +223,18 @@ export class DatatableComponent implements OnInit {
             if (e.Diffkey == true) {
               e.filterParams = {
                 values: (params: any) => {
-                  this.DataService.getDataByFilter(this.collectionName, {
+                  let filter:any={
                     start: 0,
                     end: 1000,
                     filter: this.filterQuery,
-                  }).subscribe((xyz: any) => {
+                  }
+                  if(this.allFilter!==undefined){
+                  filter=this.allFilter;
+                  }
+                  this.DataService.getDataByFilter(this.collectionName, filter).subscribe((xyz: any) => {
                     const apidata = xyz.data[0].response;
                     const uniqueArray = Array.from(
-                      new Map(
-                        apidata.map((obj: any) => [obj[e.field], obj])
-                      ).values()
+                      new Map( apidata.map((obj: any) => [obj[e.field], obj])).values()
                     );
                     params.success(uniqueArray);
                   });
@@ -249,11 +249,15 @@ export class DatatableComponent implements OnInit {
             } else {
               e.filterParams = {
                 values: (params: any) => {
-                  this.DataService.getDataByFilter(this.collectionName, {
+                  let filter:any={
                     start: 0,
                     end: 1000,
                     filter: this.filterQuery,
-                  }).subscribe((xyz: any) => {
+                  }
+                  if(this.allFilter!==undefined){
+                  filter=this.allFilter;
+                  }
+                  this.DataService.getDataByFilter(this.collectionName,filter).subscribe((xyz: any) => {
                     const apidata = xyz.data[0].response
                       .map((result: any) => {
                         let val = result[e.field];
@@ -269,19 +273,19 @@ export class DatatableComponent implements OnInit {
             }
           }
           //if the object in nested array
-          if (
-            e.type == "set_Filter" &&
-            e.filter == "agSetColumnFilter" &&
-            e.object_type == "nested_array"
-          ) {
+          if (e.type == "set_Filter" && e.filter == "agSetColumnFilter" &&e.object_type == "nested_array") {
             debugger;
             e.filterParams = {
               values: (params: any) => {
-                this.DataService.getDataByFilter(this.collectionName, {
+                let filter:any={
                   start: 0,
                   end: 1000,
                   filter: this.filterQuery,
-                }).subscribe((xyz: any) => {
+                }
+                if(this.allFilter!==undefined){
+                filter=this.allFilter;
+                }
+                this.DataService.getDataByFilter(this.collectionName,filter).subscribe((xyz: any) => {
                   const apidata = xyz.data[0].response
                     .map((result: any) => {
                       //let val = result[e.field];
@@ -310,77 +314,8 @@ export class DatatableComponent implements OnInit {
   /**
    * This method Get All Data by Passing collectionName  in grid
    */
-  // getList(filterQuery?: any) {
-  //   const datasource = {
-  //     getRows:async (params:any) => {
-  //       console.log(params);
-  //       let obj:any={
-  //         start:params.startRow,
-  //         end:params.endRow,
-  //         filter:params.filterModel,
-  //         sort:params.sortModel
-  //       }
-  //     //   const fullPath = this.router.createUrlTree(this.route.snapshot.url).toString();
-  //     // console.log(fullPath);
-
-  //       this.DataService.makeFiltersConditions(obj).then((filtercondition:any)=>{
-  //         let filter = filtercondition.filter;
-  //         filtercondition.filter=[]
-  //         if (this.filterQuery !== undefined && filterQuery !== undefined) {
-  //           if(this.filterQuery==filterQuery){
-  //             filtercondition.filter = [...this.filterQuery, ...filter];
-
-  //           }else{
-
-  //             filtercondition.filter = [...this.filterQuery, ...filter, ...filterQuery];
-  //           }
-  //         } else if (this.filterQuery !== undefined) {
-  //           filtercondition.filter = [...this.filterQuery, ...filter];
-  //         } else if (filterQuery !== undefined) {
-  //           filtercondition.filter = [...filter, ...filterQuery];
-  //         }else{
-  //           filtercondition.filter = [...filter];
-
-  //         }
-  //         this.DataService.getDataByFilter(this.collectionName ,filtercondition).subscribe( async (xyz: any)  =>  {
-  //           console.log(xyz);
-  //           this.gridApi.sizeColumnsToFit()
-
-  //           if(await xyz){
-  //             // ! if not used
-  //             // let paginationPageSize:any =xyz?.data[0]?.pagination[0]?.totalDocs!==undefined?xyz.data[0].pagination.totalDocs:xyz.data[0].pagination[0].totalDocs
-  //           if(xyz?.data[0]?.pagination[0]?.totalDocs!==undefined){
-
-  //               params.successCallback( xyz.data[0].response, xyz.data[0].pagination[0].totalDocs)
-
-  //               // // call the success callback
-  //               // params.success({
-  //               //   rowData: xyz.data[0].response ,
-  //               //   rowCount:  xyz.data[0].pagination[0].totalDocs,
-  //               // });
-  //           }else{
-  //             //! Need to say
-  //             params.successCallback([],0)
-  //           }
-  //         } //! API Erroe
-  //         else{
-  //           params.successCallback([],0)
-  //         }
-  //         })
-  //       })
-
-  //     }
-  //   }
-  //     this.gridApi.setDatasource(datasource)
-  //     // this.gridOptions.columnApi.setColumnsVisible('role', false);
-
-  // }
-
   getList(filterQuery?: any, sort?: any) {
     //! DEfenie this for GridAPi Should not be undefined
-    console.log(filterQuery);
-console.log(this);
-
     if (this.gridApi !== undefined) {
       const datasource = {
         getRows: async (params: any) => {
@@ -390,6 +325,7 @@ console.log(this);
             filter: params.request.filterModel,
             sort: params.request.sortModel,
           };
+
           this.DataService.makeFiltersConditions(obj).then(
             (filtercondition: any) => {
               let filter = filtercondition.filter;
@@ -414,7 +350,7 @@ console.log(this);
               if (sort != undefined) {
                 filtercondition.sort = sort;
               }
-             
+             this.allFilter=filtercondition
               this.DataService.getDataByFilter(
                 this.collectionName ,
                 filtercondition
@@ -423,7 +359,7 @@ console.log(this);
                 
                 this.gridApi.sizeColumnsToFit();
                 if (await xyz) {
-                  if (xyz?.data[0]?.pagination[0]?.totalDocs !== undefined) {
+                  if (xyz?.data[0]?.pagination[0].totalDocs !== undefined) {
                     this.listData = xyz.data[0].response;
                     params.successCallback(
                       xyz.data[0].response,
@@ -592,10 +528,6 @@ console.log(this);
             "Data has been deleted successfully",
             "OK"
           );
-          // this.getList(); //!NEW
-          console.log(this.gridApi.getSelectedNodes()[0]);
-          console.log(data);
-          
           const transaction: ServerSideTransaction = {
             remove: [data],
           };
@@ -609,9 +541,7 @@ console.log(this);
 // Add OR Edit DATA To Change with out api request
   close(event: any) {
     this.dialogService.closeModal();
-    // this.fields = undefined;
-    // console.log("dasd");
-
+    event.preventDefault();
     if (event) {
       // Ensure 'event' contains the expected properties before proceeding
       if (event.action === "Add" && event.data) {

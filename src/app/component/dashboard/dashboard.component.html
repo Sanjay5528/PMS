@@ -1,4 +1,4 @@
-<ng-container>
+<!-- <ng-container>
     <div style="margin: auto; width: 100%" #cardContainer>
       <ngx-charts-number-card
         [view]="[cardContainer.offsetWidth, 170]"
@@ -13,7 +13,7 @@
       
       
     
-      <!-- <div style="width: 98%;margin: 10px;height: calc(100vh - 250px);margin-bottom: 10px; overflow-y: scroll;"> -->
+      <div style="width: 98%;margin: 10px;height: calc(100vh - 250px);margin-bottom: 10px; overflow-y: scroll;">
   <ag-grid-angular
   #agGrid style="width: 98%; height: calc(100vh - 340px); flex: 1 1 auto;margin: 10px;"
     class="ag-theme-alpine"
@@ -24,15 +24,15 @@
     [pagination]="true"
     [paginationPageSize]="14"
     [context]="context"
-    [frameworkComponents]="frameworkComponents"
+    [components]="components"
     [detailCellRendererParams]="detailCellRendererParams"
     [rowData]="rowData"
-    [frameworkComponents]="frameworkComponents"
+    [components]="components"
     (selectionChanged)="onSelectionChanged($event)"
     (gridReady)="onGridReady($event)"
   ></ag-grid-angular>
       </div>
-    <!-- </div> -->
+ </div> 
   </ng-container>
-  
- 
+  -->
+  <app-calender></app-calender>

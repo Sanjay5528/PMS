@@ -65,15 +65,31 @@ export class DynamicFormComponent {
   }
 
   frmSubmit(data: any,event:any) {
-    if(!this.form.valid)
-    {
-      this.form.markAllAsTouched();
-      this.butonflag=false
-    }
+    if (!this.form.valid) {
+      let array = "";
+      
+      function collectInvalidLabels(controls: any) {
+        for (const key in controls) {
+          if (controls.hasOwnProperty(key)) {
+            const data = controls[key].status;
+            if (data === "INVALID") {
+              array += controls[key]._fields[0].props.label + ",";
+            }
+          }
+        }
+      }
 
+      // Start collecting invalid labels
+      collectInvalidLabels(this.form.controls);
+      const modifiedString = array.slice(0, -1);
+      
+      this.dialogService.openSnackBar("Error in " + modifiedString, "OK");
+      // resolve(undefined);
+     this.form.markAllAsTouched();
+      this.butonflag=false
+      return ;
+    }
 if(this.form.valid){
-  event.preventDefault();
-      event.stopPropagation();
         this.formService.saveFormData(this).then((result: any) => {
           console.log(result);
           if (result != undefined) {
