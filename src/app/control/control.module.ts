@@ -64,6 +64,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import { DateInput } from './datepicker';
 import { CustomDecimalInputType } from './custom-decimal-input';
 import{FormlyFieldset} from "./fieldsetform"
+import { OnlyDecimalDirective } from './decimal-directive';
 
 
 export function minlengthValidationMessage(err:any, field: FormlyFieldConfig) {
@@ -97,7 +98,7 @@ export function exclusiveMaximumValidationMessage(err:any, field: FormlyFieldCon
 export function patternValidationMessage(err:any, field: FormlyFieldConfig) {
   console.log(field);
   
-  return `Invalid ${field.props?.label}`
+  return `Invalid Format ${field.props?.label}`
 }
 export function uniqueItemsValidationMessag(err:any, field: FormlyFieldConfig) {
   return `This ${field.props?.label} is already exists in database `
@@ -186,7 +187,8 @@ const formlyConfig = {
     PrefixInput,
     MatPrefixInput,
     PasswordInput,RepeatTypeComponent,
-    CustomPopupInput,
+    CustomPopupInput,        OnlyDecimalDirective,
+
     FormlyFieldSelectAutocomplete,CustomDecimalInputType,
     TimeInput,
     Location,LogoComponent,tooglebutton,Card,
@@ -253,7 +255,8 @@ const formlyConfig = {
     CustomPopupInput,
     TimeInput,
     Location,
-    LogoComponent,
+    LogoComponent,        OnlyDecimalDirective,
+
     CallingcodeInput,
     patchWork,
     FormlyFieldSelectAutocomplete,

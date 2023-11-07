@@ -66,9 +66,6 @@ export class DynamicFormComponent {
 
   frmSubmit(event:any) {
 
-  event.preventDefault();
-  event.stopPropagation();
-
     if (!this.form.valid) {
       let array = "";  
       function collectInvalidLabels(controls: any) {
@@ -91,10 +88,11 @@ export class DynamicFormComponent {
     }
 // if(this.form.valid){
 
-        this.formService.saveFormData(this).then((result: any) => {
+        this.formService.saveFormData(this,event).then((result: any) => {
           console.log(result);
           if (result != undefined) {
             this.goBack(result)
+            
         this.butonflag=true
           }
         })
@@ -116,10 +114,10 @@ export class DynamicFormComponent {
     } else if (this.mode == 'popup') {
       if (data) {
         this.onClose.emit({ action: this.formAction, data: this.form.value })
-        this.dialogService.closeModal()
+        
       } else {
         this.onClose.emit({ action: this.formAction, data: this.form.value })
-        this.dialogService.closeModal()
+        
       }
       return
     }
@@ -139,6 +137,8 @@ export class DynamicFormComponent {
       this.router.navigate([`${this.config.onCancelRoute}`]);
     }else
     this.dialogService.closeModal()
+    // this.dialogService.CloseALL()
+
   }
 
 

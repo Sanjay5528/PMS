@@ -412,8 +412,6 @@ export class DatatableComponent implements OnInit {
         this.selectedModel
       );
       
-  event.preventDefault();
-  event.stopPropagation();
     } else {
       return;
     }
@@ -550,6 +548,7 @@ export class DatatableComponent implements OnInit {
   close(event: any) {
     this.dialogService.closeModal();
     this.gridApi.deselectAll();
+    
     if (event) {
       // Ensure 'event' contains the expected properties before proceeding
       if (event.action === "Add" && event.data) {

@@ -1,206 +1,115 @@
-{
-    "pageHeading": "Project",
-    "formType": "simple",
-    "editMode": "popup",
-    "keyField": "_id",
-    "form": {
-        "collectionName": "project",
-        "fields": [
+[
+	{
+		"displayName": "Production",
+		"iconName": "group",
+		"children": [
+			{
+				"displayName": "Screen Configuration",
+				"iconName": "edit",
+				"route": "/list/screen"
+			},{
+				"displayName": "Model Configuration",
+				"iconName": "edit",
+				"route": "/list/model_config"
+			},{
+				"displayName": "Group Configuration",
+				"iconName": "group",
+				"route": "/list/group"
+			},{
+				"displayName": "Data Set Configuration",
+				"iconName": "group",
+				"route": "/data_set"
+			}
+		]
+	},	
+	{
+		"displayName": "Master",
+		"iconName": "perm_identity",
+		"children": [
+			{
+				"displayName": "Client",
+				"iconName": "assignment_ind",
+				"route": "/list/client"
+			},
+			{
+				"displayName": "Employee",
+				"iconName": "assignment_ind",
+				"route": "/list/employee"
+			},
+			{
+				"displayName": "Project",
+				"iconName": "assignment_ind",
+				"route": "/list/project"
+			},
             {
-                "fieldGroupClassName": "display-flex",
-                "fieldGroup": [
-                    {
-						"type": "label-view",
-						"key": "project_id",
-						"className": "flex-6",
-						"props": {
-							"label": "Project Id",
-							"label_width": 100,
-							"value_width": 200,
-							"value_in_next_row": true
-						},
-						"hideExpression": "!model.isEdit"
-					},  
-                    {
-                        "type": "select-input",
-                        "key": "client_name",
-                        "className": "flex-6",
-                        "props": {
-                            "label": "Client Name",
-                            "placeholder": "Client Name",
-                            "labelPropTemplate": " {{clientname}}",
-                            "optionsDataSource": {
-                                "collectionName": "client"
-                            },
-                           
-                            "labelProp": "clientname",
-                            "valueProp": "clientname",
-                            "required": true
-                        },
-                        "expressions": {
-                            "hide": "model.isEdit"
-                           
-                        }
-                    },
-                    {
-						"type": "matprefix-input",
-						"parentKey": "client_name",
-						"className": "flex-6",
-						"props": {
-							"label": "Project ID",
-							"type": "Linked",
-							"placeholder": "Project ID",
-							"required": true,
-							"maxLength": 10,
-							"pattern": "^[A-Z][a-zA-Z]{1,}$"
-						},
-						"hideExpression": "model.isEdit || !model.client_name"
-					},{
-						"type": "label-view",
-						"key": "project_name",
-						"className": "flex-6",
-						"props": {
-							"label": "Project Name",
-							"label_width": 100,
-							"value_width": 200,
-							"value_in_next_row": true
-						},
-						"hideExpression": "!model.isEdit"
-					},
-                    {
-                        "type": "input",
-                        "key": "project_name",
-                        "className": "flex-6",
-                        "props": {
-                            "label": "Project Name",
-                            "placeholder": "Project Name",
-                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
-                            "required": true
-                        },
-                        "hideExpression": "model.isEdit"
-
-                    },
-                    {
-						"type": "label-view",
-						"key": "project_type",
-						"className": "flex-6",
-						"props": {
-							"label": "Project Type",
-							"label_width": 100,
-							"value_width": 200,
-							"value_in_next_row": true
-						},
-						"hideExpression": "!model.isEdit"
-					},
-                    {
-                        "type": "select",
-                        "key": "project_type",
-                        "className": "flex-6",
-                        "props": {
-                            "label": "Project Type",
-                            "placeholder": "Project Type",
-                            "options": [
-                                {
-                                    "value": "Software Development ",
-                                    "label": "Software Development "
-                                },
-                                {
-                                    "value": "Web Development",
-                                    "label": "Web Development"
-                                },
-                                {
-                                    "value": "Technology Installation",
-                                    "label": "Technology Installation "
-                                },
-                                {
-                                    "value": "Cloud Computing ",
-                                    "label": "Cloud Computing "
-                                },
-                                {
-                                    "value": "Cyber Security ",
-                                    "label": "Cyber Security"
-                                },
-                                {
-                                    "label": "Others",
-                                    "value": "Others"
-                                }
-                            ],
-                            "required": true
-                        }
-                    }
-                ]
-            },
-            
+				"displayName": "Sprint",
+				"iconName": "assignment_ind",
+				"route": "/list/sprint"
+			},
             {
-                "fieldGroupClassName": "display-flex",
-                "fieldGroup": [
-                    {
-                        "className": "flex-6",
-                        "key": "startdate",
-                        "type": "date-input", 
-                        "props": {
-                          "label": "Scheduled Start Date",
-                          "placeholder": "Scheduled Start Date",
-                          "type": "date",
-                          "required": true
-                        }
-                      },
-                      {
-                        "className": "flex-6",
-                        "key": "enddate",
-                        "type": "date-input",
-                        "parentKey": "startdate",
-                        "parentCollectionName": "project",
-                        "props": {
-                          "label": "Scheduled End Date",
-                          "placeholder": "Scheduled End Date",
-                          "type": "date",
-                          "required": true
-                        }
-                      },
-                    {
-                        "type": "select",
-                        "key": "status",
-                        "className": "flex-6",
-                        "props": {
-                            "label": "Project Status",
-                            "options": [
-                                {
-                                    "label": "Active",
-                                    "value": "Active"
-                                },
-                                {
-                                    "label": "Inactive",
-                                    "value": "Inactive"
-                                }
-                            ]
-                        },
-                    
-                        "expressions": {
-                            "hide": "!model.isEdit"
-                        }
-                        }
-                ]
-            },
+				"displayName": "Project Team Member",
+				"iconName": "assignment_ind",
+				"route": "/list/projectteammembers"
+			},
             {
-                "type": "html-input",
-                "key": "projectdetails",
-                "className": "flex-6",
-                "props": {
-                    "label": "Project Details",
-                    "required": true
-                },
-                
-                "maxlength": 500
-            }
-        ],
-        "defaultValues": [
-            {
-              "colName": "status",
-              "type": "string",
-              "value": "Active"
-            }
-          ]
-    },
-    "onCancelRoute": "/list/project"
-}
+				"displayName": "Project Team",
+				"iconName": "assignment_ind",
+				"route": "/list/projectteam"
+			}
+ 
+		]
+	},
+	{
+		"displayName": "Personal",
+		"iconName": "assignment_ind",
+		"children": [
+				 
+			{
+				"displayName": "Task",
+				"iconName": "assignment_ind",
+				"route": "/list/task" 
+			},		 
+			{
+				"displayName": "My Profile",
+				"iconName": "assignment_ind",
+				"route": "/list/profile" 
+			}
+ 
+		]
+	},
+	{
+		"displayName": "Customer",
+		"iconName": "perm_identity",
+		"children": [
+			{
+				"displayName": "Organization",
+				"iconName": "assignment_ind",
+				"route": "/list/organisation"
+			},
+			{
+				"displayName": "System User",
+				"iconName": "assignment_ind",
+				"route": "/list/system_user"
+			}
+		]
+	},
+	{
+		"displayName": "User",
+		"iconName": "assignment"
+	},
+	{
+		"displayName": "Device List",
+		"iconName": "assignment",
+		"route": "/list/device"
+	},
+	{
+		"displayName": "Role List",
+		"iconName": "assignment",
+		"route": "/list/role"
+	},
+	{
+		"displayName": "Org Type List",
+		"iconName": "assignment",
+		"route": "/list/org_type"
+	}
+]

@@ -569,7 +569,7 @@ console.log(ctrl);
  * Take the Old Data in modelOldData 
  * @param ctrl This is Total content from the parent componet
  */
-  async saveFormData(ctrl: any, file?: any): Promise<any> {
+  async saveFormData(ctrl: any, event?: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       // this.helperService.validateAllFormFields(ctrl.form); I Dont what is it ?
       
@@ -631,6 +631,10 @@ console.log(ctrl);
               if(ctrl?.config?.user){
                 this.updateuser(ctrl);
               } 
+              
+    event.preventDefault();
+    event.stopPropagation();
+
               this.dialogService.openSnackBar("Data has been Inserted successfully", "OK")
              resolve(res)
 
@@ -649,6 +653,10 @@ console.log(ctrl);
               return error
             })
     ).subscribe((res: any) => {
+      
+    event.preventDefault();
+    event.stopPropagation();
+
           this.dialogService.openSnackBar("Data has been updated successfully", "OK")
             resolve(res)
           })
