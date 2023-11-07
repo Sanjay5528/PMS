@@ -12,7 +12,7 @@
                     {
                         "type": "input",
                         "key": "clientid",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "Client Id",
                             "placeholder": "Client Id",
@@ -27,7 +27,7 @@
                     {
                         "type": "input",
                         "key": "clientname",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "Client Name",
                             "placeholder": "Client Name",
@@ -38,7 +38,7 @@
                     {
                         "type": "select",
                         "key": "clienttype",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "Client Type",
                             "options": [
@@ -67,7 +67,7 @@
                     {
                         "type": "input",
                         "key": "email",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "Company Email",
                             "placeholder": "Company Email",
@@ -81,7 +81,7 @@
                     {
                         "type": "select",
                         "key": "industrytype_name",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "Industry Type",
                             "options": [
@@ -125,7 +125,7 @@
                     {
                         "type": "select",
                         "key": "status",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "type": "input",
                             "label": "Client Status",
@@ -138,7 +138,7 @@
                                     "label": "Inactive",
                                     "value": "Inactive"
                                 }
-
+  
                                  
                             ],
                             
@@ -158,7 +158,7 @@
                     {
                         "type": "datepicker",
                         "key": "estabilished",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "Estabilished Date",
                             "placeholder": "Estabilished Date",
@@ -168,7 +168,7 @@
                     {
                         "type": "input",
                         "key": "website",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "Website",
                             "placeholder": "Website",
@@ -179,7 +179,7 @@
                     {
                         "type": "input",
                         "key": "linkedin",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "LinkedIn Url",
                             "placeholder": "LinkedIn Url",
@@ -190,7 +190,7 @@
                     {
                         "type": "input",
                         "key": "twitter",
-                        "className": "flex-2",
+                        "className": "flex-6",
                         "props": {
                             "label": "Twitter Url",
                             "placeholder": "Twitter Url",
@@ -215,7 +215,7 @@
                                     {
                                         "type": "input",
                                         "key": "primaryfirst_name",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "First Name",
                                             "placeholder": "First Name",
@@ -226,7 +226,7 @@
                                     {
                                         "type": "input",
                                         "key": "primarylast_name",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Last Name",
                                             "placeholder": "Last Name",
@@ -237,7 +237,7 @@
                                     {
                                         "type": "input",
                                         "key": "primaryemail",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Email Id",
                                             "placeholder": "Email Id",
@@ -249,7 +249,7 @@
                                     {
                                         "type": "input",
                                         "key": "primarymob",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Mobile Number",
                                             "placeholder": "Mobile Number",
@@ -266,7 +266,7 @@
                                     {
                                         "type": "input",
                                         "key": "primaryaddr",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Address",
                                             "placeholder": "Address",
@@ -277,12 +277,12 @@
                                     {
                                         "type": "select-input",
                                         "key": "pricountry_name",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Country",
                                             "placeholder": "Country",
                                             "labelPropTemplate": " {{country_name}}",
-                                           
+                                            "multifilter":true,
                                             "optionsDataSource": {
                                                 "collectionName": "country"
                                             },
@@ -294,17 +294,32 @@
                                     {
                                         "type": "select-input",
                                         "key": "pristates",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "parentKey": "pricountry_name",
-                                        "parentCollectionName": "statename",
+                                        "parentCollectionName": "country",
                                         "props": {
                                             "label": "State",
-                                            "placeholder": "State",     
+                                            "placeholder": "country_name",     
                                             "labelPropTemplate": "{{states}}",
                                             
                                             "optionsDataSource": {
-                                                "collectionName": "statename"
+                                                "collectionName": "country"
                                             },
+                                            "Properties": {
+                                              "formVAlueChange":true
+                                            },
+                                            "multifilter_condition": {
+                                              "clause": "AND",
+                                              "conditions": [
+                                                {
+                                                  "column": "_id",
+                                                  "operator": "EQUALS",
+                                                  "type": "string",
+                                                  "value": ""
+                                                }
+                                              ]
+                                            },
+                                          
                                             "labelProp": "states",
                                             "valueProp": "states",
                                             "required": true
@@ -314,7 +329,7 @@
                                     {
                                         "type": "input",
                                         "key": "primarycity",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "City",
                                             "placeholder": "City",
@@ -325,7 +340,7 @@
                                     {
                                         "type": "input",
                                         "key": "primarypincode",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Postal code",
                                             "placeholder": "Postal code",
@@ -350,7 +365,7 @@
                                     {
                                         "type": "input",
                                         "key": "secondaryfirst_name",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "First Name",
                                             "placeholder": "First Name",
@@ -361,7 +376,7 @@
                                     {
                                         "type": "input",
                                         "key": "secondarylast_name",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Last Name",
                                             "placeholder": "Last Name",
@@ -372,7 +387,7 @@
                                     {
                                         "type": "input",
                                         "key": "secondaryemail",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Email Id",
                                             "placeholder": "Email Id",
@@ -384,7 +399,7 @@
                                     {
                                         "type": "input",
                                         "key": "secondarymob",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Mobile Number",
                                             "placeholder": "Mobile Number",
@@ -401,7 +416,7 @@
                                     {
                                         "type": "input",
                                         "key": "secondaryaddr",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Address",
                                             "placeholder": "Address",
@@ -412,7 +427,7 @@
                                     {
                                         "type": "select-input",
                                         "key": "secondarycountry_name",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Country",
                                             "placeholder": "Country",
@@ -430,7 +445,7 @@
                                     {
                                         "type": "select-input",
                                         "key": "secondarystates",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "parentKey": "secondarycountry_name",
                                         "parentCollectionName": "statename",
                                         "props": {
@@ -450,7 +465,7 @@
                                     {
                                         "type": "input",
                                         "key": "secondarycity",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "City",
                                             "placeholder": "City",
@@ -461,7 +476,7 @@
                                     {
                                         "type": "input",
                                         "key": "secondarypincode",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Postal code",
                                             "placeholder": "Postal code",
@@ -486,7 +501,7 @@
                                     {
                                         "type": "input",
                                         "key": "registerstreet",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Street",
                                             "placeholder": "Street",
@@ -497,7 +512,7 @@
                                     {
                                         "type": "input",
                                         "key": "registerareaname",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Area Name",
                                             "placeholder": "Area Name",
@@ -508,7 +523,7 @@
                                     {
                                         "type": "input",
                                         "key": "registerlandmark",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Land Mark",
                                             "placeholder": "Land Mark",
@@ -524,7 +539,7 @@
                                     {
                                         "type": "select-input",
                                         "key": "registercountry_name",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Country",
                                             "placeholder": "Country",
@@ -542,7 +557,7 @@
                                     {
                                         "type": "select-input",
                                         "key": "registerstates",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "parentKey": "registercountry_name",
                                         "parentCollectionName": "statename",
                                         "props": {
@@ -562,7 +577,7 @@
                                     {
                                         "type": "input",
                                         "key": "registercity",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "City",
                                             "placeholder": "City",
@@ -573,7 +588,7 @@
                                     {
                                         "type": "input",
                                         "key": "registercurrency",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "parentKey": "country_name",
                                         "parentCollectionName": "country/country_name",
                                         "props": {
@@ -591,7 +606,7 @@
                                     {
                                         "type": "input",
                                         "key": "registertimezone",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Time Zone",
                                             "placeholder": "Time Zone",
@@ -601,7 +616,7 @@
                                     {
                                         "type": "input",
                                         "key": "registerpincode",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Postal code",
                                             "placeholder": "Postal code",
@@ -626,7 +641,7 @@
                                     {
                                         "type": "input",
                                         "key": "billingstreet",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Street",
                                             "placeholder": "Street",
@@ -637,7 +652,7 @@
                                     {
                                         "type": "input",
                                         "key": "billingareaname",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Area Name",
                                             "placeholder": "Area Name",
@@ -648,7 +663,7 @@
                                     {
                                         "type": "input",
                                         "key": "billinglandmark",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Land Mark",
                                             "placeholder": "Land Mark",
@@ -664,7 +679,7 @@
                                     {
                                         "type": "select-input",
                                         "key": "billingcountry_name",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Country",
                                             "placeholder": "Country",
@@ -680,7 +695,7 @@
                                     {
                                         "type": "select-input",
                                         "key": "billingstates",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "parentKey": "billingcountry_name",
                                         "parentCollectionName": "statename",
                                         "props": {
@@ -699,7 +714,7 @@
                                     {
                                         "type": "input",
                                         "key": "billingcity",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "City",
                                             "placeholder": "City",
@@ -710,7 +725,7 @@
                                     {
                                         "type": "input",
                                         "key": "billingcurrency",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "parentKey": "country_name",
                                         "parentCollectionName": "country/country_name",
                                         "props": {
@@ -728,7 +743,7 @@
                                     {
                                         "type": "input",
                                         "key": "billingtimezone",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Time Zone",
                                             "placeholder": "Time Zone",
@@ -738,7 +753,7 @@
                                     {
                                         "type": "input",
                                         "key": "billingpincode",
-                                        "className": "flex-2",
+                                        "className": "flex-6",
                                         "props": {
                                             "label": "Postal code",
                                             "placeholder": "Postal code",
@@ -778,4 +793,4 @@
           ]
     },
     "onCancelRoute": "/list/client"
-}
+  }

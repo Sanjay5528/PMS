@@ -4,7 +4,7 @@ import { FieldType, FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   selector: 'tab',
   template: `
-    <mat-tab-group style="width:95%">
+    <mat-tab-group>
     <div *ngFor="let tab of field.fieldGroup; let i = index; let last = last;" style="background-color: #D3E2D3; border: 1px solid #3D4849;">
     <mat-tab [label]="tab.props!.label || 'Tab'" *ngIf="!tab.hide">
         <formly-field [field]="tab"></formly-field>

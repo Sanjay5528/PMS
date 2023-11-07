@@ -217,6 +217,8 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
       (this.field.hooks as any).afterViewInit = (f: any) => {
         const parentControl = this.form.get(this.currentField.parentKey); //this.opt.parent_key);        
         parentControl?.valueChanges.subscribe((val: any) => {
+          console.log(val);
+          
           let selectedOption: any;
           if (val == undefined) return;
           if (this.field.props.attribute == "array_of_object") {
@@ -234,6 +236,8 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
                 selectedOption
               )
               .subscribe((res: any) => {
+                console.log(res);
+                
                 if (res.data == null) {
                   this.opt.options = [];
                 } else {
@@ -264,6 +268,8 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
     //   }
 
     // }
+    console.log(this.model);
+    
     if (this.opt.onValueChangeUpdate) {
       this.field.form.controls[this.opt.onValueChangeUpdate.key].setValue(
         selectedObject[this.opt.onValueChangeUpdate.key]
@@ -271,6 +277,8 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
       selectedObject = {};
     } 
     if(this.opt.Child){
+    console.log(this.opt);
+
       console.log(this.field.props.options);
       var values:any =this.field.props.options
       let selectedvalues:any=this.model[this.opt.changesfield]
@@ -309,6 +317,8 @@ console.log((!this.model.field && !this.model.operator) ||this.model.orbital);
   subscribeOnValueChangeEvent() {
     // on ParentKey changes logic to be implemented
     if (this.field.parentKey! != "") {
+      console.log(this.field.parent_key);
+      
       (this.field.hooks as any).afterViewInit = (f: any) => {
         const parentControl = this.form.get(this.field.parentKey); //this.opt.parent_key);
         parentControl?.valueChanges.subscribe((val: any) => {

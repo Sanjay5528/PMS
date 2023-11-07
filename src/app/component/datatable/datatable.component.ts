@@ -398,6 +398,7 @@ export class DatatableComponent implements OnInit {
    @example event.api.getSelectedRows()
    */
   onSelectionChanged(event: any) {
+
     this.selectedModel = event.api.getSelectedRows()[0];
     if (this.config.onSelect == true) {
       this.router.navigate([this.config.route]);
@@ -410,6 +411,9 @@ export class DatatableComponent implements OnInit {
         null,
         this.selectedModel
       );
+      
+  event.preventDefault();
+  event.stopPropagation();
     } else {
       return;
     }
