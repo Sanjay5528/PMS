@@ -59,32 +59,26 @@ private apiCalled = false;
     this.onValueChangeUpdate = this.opt.onValueChangeUpdate;
     this.parent_field=this.field?.props.parent_field
     console.log(this.parent_field)
-
+    // todo
+    // if(this?.opt?.type=="local"||this?.opt?.type=="session"){
+    //   // console.log(this.opt);
+    //   this.prefix=this.model[this.currentField.parentKey]+"-"      
+    // }
     if (this.currentField.parentKey != "") {
       if(this?.opt?.type=="Simple"){
         // console.log(this.opt);
         this.prefix=this.model[this.currentField.parentKey]+"-"      
       }
+
       (this.field.hooks as any).afterViewInit = (f: any) => {
-        const parentControl = this.form.get(this.currentField.parentKey); //this.opt.parent_key);
-        parentControl?.valueChanges.subscribe((val: any) => {
-          let selectedOption;
-          selectedOption = this.field.parentKey.split(".").reduce((o: any, i: any) => o[i], this.model);
-          // if (selectedOption != undefined) {
-          //   this.dataService.getparentdataById(this.field.ParentcollectionName, val)
-          //     .subscribe((res: any) => {
-          //       if (res.data != null && this.model[this.field.key]==undefined) {
-          //         let data = res.data[0];
-          //         this.prefix = data[this.field.attribute];
-          //       } else if(this.model[this.field.key]!=undefined){
-          //         let length=res.data[0]?.this.field?.attribute
-          //         let data=this.model[this.field.key]
-          //         let split_data= data.slice(length);
-          //         this.formControl.setValue(split_data)
-          //         this.prefix=this.data[this.parent_field]
-          //       }
-          //     });
-          // }
+        const parentControl = this.form.get(this.currentField.parentKey); 
+        parentControl?.valueChanges.subscribe((val: any) => {          
+          if(this?.opt?.type=="Linked"){
+            this.prefix=val
+            +"-"      
+
+          }
+        
         });
       };
     }

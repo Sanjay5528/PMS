@@ -43,22 +43,22 @@ opt:any
 this.currentField = this.field
 this.required=this.field.props?.required
     this.opt=this.field.props
-    if(this.opt.attributes.hide=="past_date"){
-      this.minFromDate=moment().add(this.opt.attributes.add_days || 0, 'day')
+    if(this?.opt?.attributes?.hide=="past_date"){
+      this.minFromDate=moment().add(this?.opt?.attributes?.add_days || 0, 'day')
   }
-    if(this.model.isEdit==true&& this?.opt?.dynamic==true){
+    if(this?.model?.isEdit==true&& this?.opt?.dynamic==true){
 this.minFromDate=this.formControl.value
     }
     
     
 
-    if(this.opt.attributes.hide=="future_date"){
-      this.maxFromDate=moment().add(this.opt.attributes.add_days || 0, 'day')
+    if(this?.opt?.attributes?.hide=="future_date"){
+      this.maxFromDate=moment().add(this?.opt?.attributes?.add_days || 0, 'day')
   }
 
 console.log(this.opt);
 
-  if(this.model.isEdit==true&& this?.opt?.overrideFromDate?.dynamic==true){
+  if(this?.model?.isEdit==true&& this?.opt?.overrideFromDate?.dynamic==true){
     // let field =  this.opt.overrideFromDate.ToDAtekey
     const todate:any=this.form.get(this.opt.overrideFromDate.ToDAtekey)
     // console.log(todate);

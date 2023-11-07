@@ -9,7 +9,7 @@ import { FormService } from 'src/app/services/form.service';
 
 import { environment } from 'src/environments/environment';
 import { MasterButtonComponent } from './master-button';
-import { ColDef, FirstDataRenderedEvent, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { ColDef, FirstDataRenderedEvent, GetRowIdFunc, GetRowIdParams, GridApi, GridReadyEvent } from 'ag-grid-community';
 
 
 @Component({
@@ -89,10 +89,19 @@ export class MasterSingleDetailFormComponent  {
   components: any;
   context: any;
   public gridApi!: GridApi
+  // public gridOptions: any = {
+  //   flex: 1,
+  //   cacheBlockSize: environment.cacheBlockSize,
+  //   paginationPageSize: environment.paginationPageSize,
+  //   rowModelType: environment.rowModelType,
+  // };
 
+  // overlayNoRowsTemplate =
+  //   '<span style="padding: 10px; background:white ;">No Data Found</span>"';
   otherdetails:any
   value:any
   valueformGrupo:any=new FormGroup({})
+  // public getRowId: GetRowIdFunc = (params: GetRowIdParams) => `${params.data[this.config.keyField ? this.config.keyField  : "_id"]}`;
 
   @ViewChild('popupEdit', { static: true }) popupEdit!: TemplateRef<any>;
   @ViewChild('otherpopupEdit', { static: true })  otherpopupEdit!: TemplateRef<any>;
@@ -112,10 +121,10 @@ export class MasterSingleDetailFormComponent  {
   public defaultColDef: ColDef = {
     resizable: true,
     suppressMovable:true,
-    filterParams: {
-      closeOnApply:true,
-      buttons: ['reset', 'apply'],
-  },
+  //   filterParams: {
+  //     closeOnApply:true,
+  //     buttons: ['reset', 'apply'],
+  // },
   };
   frmStart(event:any) {
    var data:any = this.form.value

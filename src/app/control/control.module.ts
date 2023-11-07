@@ -63,7 +63,7 @@ import { Chips } from './chips';
 import {MatChipsModule} from '@angular/material/chips';
 import { DateInput } from './datepicker';
 import { CustomDecimalInputType } from './custom-decimal-input';
-
+import{FormlyFieldset} from "./fieldsetform"
 
 
 export function minlengthValidationMessage(err:any, field: FormlyFieldConfig) {
@@ -145,11 +145,16 @@ const formlyConfig = {
       { name: 'pattern', message: patternValidationMessage },    
     ],},
     { name: 'file-input', component: FileInput },
+
+    { name: 'fieldset', component: FormlyFieldset },
     { name: 'image-input', component: ImageInput },
     { name: 'autoId-input', component: AutogenerateId }, // input text entry key
     { name: 'button-input', component: ButtonInput },
     { name: 'password-input', component: PasswordInput},
-    { name: 'matprefix-input', component: MatPrefixInput},
+    { name: 'matprefix-input', component: MatPrefixInput, validationMessages: [
+      { name: 'required', message: required},
+      { name: 'pattern', message: patternValidationMessage },    
+    ]},
     {name: 'select-autocomplete',component: FormlyFieldSelectAutocomplete},
     { name: 'custompopup-input', component: CustomPopupInput},
     { name: 'time-input', component: TimeInput},
@@ -172,7 +177,7 @@ const formlyConfig = {
     HtmlInput,
     LabelView,
     MultiSelectInput,
-    SelectInput,
+    SelectInput,FormlyFieldset,
     DateTimeInput,MapComponent,
     ImageInput,
     AutogenerateId,

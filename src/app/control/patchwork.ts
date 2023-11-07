@@ -30,6 +30,24 @@ export class patchWork extends FieldType implements OnInit {
   ngOnInit(): void {
     this.opt = this.field.props || {};
     this.label = this.opt.label;
+    if(this.model.isEdit==true) {
+      let value: any = this.form.value;
+      let valueKey: any = this.opt.patch;
+      let patchKey: any = this.opt.patch_value;
+      this.checkboxValue=true;
+      for (const key in value[patchKey]) {
+        // if (Object.prototype.hasOwnProperty.call(value[patchKey], key)) {
+        //   const element = object[key];
+          
+        // }
+      
+        if(value[patchKey][key]!==value[valueKey][key]){
+this.checkboxValue=false
+        }
+
+      }
+      
+    }
   }
 
   public get thisFormControl(): FormControl {

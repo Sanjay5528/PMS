@@ -17,21 +17,32 @@
 
   
   </div> -->
-  <div style="width: 100%;" [ngClass]="class()">
+  <!-- <div style="width: 100%;" >
     <app-app-header></app-app-header>
-    <div style="margin-top: 30px;">
-
+    <div class="page-content">
       <router-outlet></router-outlet>
     </div>
     
   <div class="page-footer">
     <app-app-footer></app-app-footer>
   </div>
-  </div>
+  </div> -->
   <!-- </div> -->
 
 
-
+  <div class="page">
+    <div class="page-header">
+      <app-app-header></app-app-header>
+    </div>
+    <div class="page-content">
+      <router-outlet></router-outlet>
+    </div>
+    <div class="page-footer">
+      <app-app-footer></app-app-footer>
+    </div>
+  </div>
+  
+  
 
 
 

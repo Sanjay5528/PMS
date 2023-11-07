@@ -593,10 +593,12 @@ export class DatatableComponent implements OnInit {
             null,
             value
           );
-        } else if (this.config.individual) {
+        } 
+        else if (this.config.individual) {
 
           this.grpfn();
-        } else {
+        } 
+        else {
           this.dialogService.openDialog(
             this.editViewPopup,
             this.config["screenWidth"],

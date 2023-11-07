@@ -28,9 +28,7 @@ import { DataService } from "../services/data.service";
           <span [innerHTML]="op[this.labelProp]"></span>
         </mat-option>
       </mat-select>
-      <mat-error *ngIf="this.field.props.required"
-        >This {{ this.field.props?.label }} is required</mat-error
-      >
+      <mat-error *ngIf="this.field.props.required">This {{ this.field.props?.label }} is required</mat-error>
       <input
         matInput
         readonly
@@ -216,44 +214,64 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
     if (this.currentField.parentKey != "") {
       (this.field.hooks as any).afterViewInit = (f: any) => {
         const parentControl = this.form.get(this.currentField.parentKey); //this.opt.parent_key);        
+        console.log(parentControl);
+        
         parentControl?.valueChanges.subscribe((val: any) => {
-          console.log(val);
-          
-          let selectedOption: any;
-          if (val == undefined) return;
-          if (this.field.props.attribute == "array_of_object") {
+          if(this?.opt?.Properties?.formVAlueChange){
+            this.opt.multifilter_condition.conditions.map((res:any)=>{
+             if(this.opt.multifiltertype=="Simple")
+              if(res.value!=undefined ){
+              //  let value = sessionStorage.getItem(this.field.column)
+                res.value=val
+              }
             
-            selectedOption = this.field.parentKey
-              .split(".")
-              .reduce((o: any, i: any) => o[i], this.model);
-          } else {
-            selectedOption = this.model[this.currentField.parentKey];
-          }
-          if (selectedOption != undefined) {
-            this.dataService
-              .getDataById(
-                this.opt.optionsDataSource?.ParentcollectionName,
-                selectedOption
-              )
-              .subscribe((res: any) => {
-                console.log(res);
+            })
+            let filter_condition={filter:[
+              this.opt.multifilter_condition
+            ]}
+            console.log(filterCondition);
+            
+            this.dataService.getDataByFilter(this.opt?.optionsDataSource?.collectionName,filter_condition).subscribe((res:any)=>{
+              // this.dataService.buildOptions(res.data[0].response, this.opt);
+              console.log(res);
+              
+            })
+        }
+        //   let selectedOption: any;
+        //   if (val == undefined) return;
+        //   if (this.field.props.attribute == "array_of_object") {
+            
+        //     selectedOption = this.field.parentKey
+        //       .split(".")
+        //       .reduce((o: any, i: any) => o[i], this.model);
+        //   } else {
+        //     selectedOption = this.model[this.currentField.parentKey];
+        //   }
+        //   if (selectedOption != undefined) {
+        //     this.dataService
+        //       .getDataById(
+        //         this.opt.optionsDataSource?.ParentcollectionName,
+        //         selectedOption
+        //       )
+        //       .subscribe((res: any) => {
+        //         console.log(res);
                 
-                if (res.data == null) {
-                  this.opt.options = [];
-                } else {
-                  this.dataService.buildOptions(res, this.opt);
-                }
-                if (this.field.props.attribute) {
-                  //if the data in array of object
-                  let data = this.field.key
-                    .split(".")
-                    .reduce((o: any, i: any) => o[i], this.model);
-                  this.field.formControl.setValue(data);
-                } else {
-                  this.field.formControl.setValue(this.model[this.field.key]);
-                }
-              });
-          }
+        //         if (res.data == null) {
+        //           this.opt.options = [];
+        //         } else {
+        //           this.dataService.buildOptions(res, this.opt);
+        //         }
+        //         if (this.field.props.attribute) {
+        //           //if the data in array of object
+        //           let data = this.field.key
+        //             .split(".")
+        //             .reduce((o: any, i: any) => o[i], this.model);
+        //           this.field.formControl.setValue(data);
+        //         } else {
+        //           this.field.formControl.setValue(this.model[this.field.key]);
+        //         }
+        //       });
+        //   }
         });
       };
     }
@@ -276,42 +294,6 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
       );
       selectedObject = {};
     } 
-    if(this.opt.Child){
-    console.log(this.opt);
-
-      console.log(this.field.props.options);
-      var values:any =this.field.props.options
-      let selectedvalues:any=this.model[this.opt.changesfield]
-      // const data = values.foreach((vals: any) => {
-      //   // return { label: name.model_name, value: name.model_name };        
-      //   if(vals.name==selectedvalues){
-      //     return vals
-      //   }
-      // });
-      const data = values.filter((vals: any) => {
-        return vals.field_name === selectedvalues;
-      });
-      
-      if(data[0].reference){
-        this.dataService.getDataByFilter(data[0].orbitalvaule.collection_name,{}).subscribe((xyz:any)=>{
-          console.log(xyz);
-          const unmatchedNames = xyz.data[0].response;
-
-        // Update the options array within the subscription
-        this.field.parent.fieldGroup[2].props.options= unmatchedNames.map((name: any) => {
-          return { label: name.name, id: name[data[0].orbitalvaule.field] };
-        });
-        })
-      }
-      console.log(data);
-this.model['orbital']=true
-console.log(this.opt);
-console.log(this.model);
-console.log(this.field.parent.fieldGroup[2].props.options);
-
-console.log((!this.model.field && !this.model.operator) ||this.model.orbital);
-
-    }
   }
 
   subscribeOnValueChangeEvent() {
@@ -323,6 +305,25 @@ console.log((!this.model.field && !this.model.operator) ||this.model.orbital);
         const parentControl = this.form.get(this.field.parentKey); //this.opt.parent_key);
         parentControl?.valueChanges.subscribe((val: any) => {
           this.selectedObject = val;
+          console.log(val);
+          if(this?.opt?.Properties?.formVAlueChange){
+            this.opt.multifilter_condition.conditions.map((res:any)=>{
+             if(this.opt.multifiltertype=="Simple"){
+              // if(res.value){
+                res.value=val
+              // }
+            }
+            })
+            let filter_condition={filter:[
+              this.opt.multifilter_condition
+            ]}            
+            this.dataService.getDataByFilter(this?.field?.parentCollectionName,filter_condition).subscribe((res:any)=>{
+let specificField:any = res?.data[0]?.response[0][this?.opt?.multifilterFieldName]
+              this.field.props.options = specificField.map((name: any) => {
+                return { label: name, value: name };
+              });
+            })
+        }
         });
       };
     }

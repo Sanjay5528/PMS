@@ -11,7 +11,7 @@
                 "fieldGroup": [
                     {
 						"type": "label-view",
-						"key": "projectid",
+						"key": "project_id",
 						"className": "flex-6",
 						"props": {
 							"label": "Project Id",
@@ -20,22 +20,44 @@
 							"value_in_next_row": true
 						},
 						"hideExpression": "!model.isEdit"
-					},
+					},  
                     {
-                        "type": "input",
-                        "key": "projectid",
+                        "type": "select-input",
+                        "key": "client_name",
                         "className": "flex-6",
                         "props": {
-                            "label": "Project Id",
-                            "placeholder": "Project Id",
-                            "pattern": "^[a-zA-Z0-9-_]*$",
+                            "label": "Client Name",
+                            "placeholder": "Client Name",
+                            "labelPropTemplate": " {{clientname}}",
+                            "optionsDataSource": {
+                                "collectionName": "client"
+                            },
+                           
+                            "labelProp": "clientname",
+                            "valueProp": "clientname",
                             "required": true
                         },
-						"hideExpression": "model.isEdit"
-
-                    },{
+                        "expressions": {
+                            "hide": "model.isEdit"
+                           
+                        }
+                    },
+                    {
+						"type": "matprefix-input",
+						"parentKey": "client_name",
+						"className": "flex-6",
+						"props": {
+							"label": "Project ID",
+							"type": "Linked",
+							"placeholder": "Project ID",
+							"required": true,
+							"maxLength": 10,
+							"pattern": "^[A-Z][a-zA-Z]{1,}$"
+						},
+						"hideExpression": "model.isEdit || !model.client_name"
+					},{
 						"type": "label-view",
-						"key": "projectname",
+						"key": "project_name",
 						"className": "flex-6",
 						"props": {
 							"label": "Project Name",
@@ -47,12 +69,11 @@
 					},
                     {
                         "type": "input",
-                        "key": "projectname",
+                        "key": "project_name",
                         "className": "flex-6",
                         "props": {
                             "label": "Project Name",
                             "placeholder": "Project Name",
-                           
                             "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
                             "required": true
                         },
@@ -60,55 +81,20 @@
 
                     },
                     {
-                        "type": "input",
-                        "key": "clientname",
-                        "className": "flex-6",
-                        "props": {
-                            "label": "Client Name",
-                            "placeholder": "Client Name",
-                            "required": true,
-                            "readonly": true
-                             
-                        },
-                        "expressions": {
-                            "hide": "!model.isEdit"
-                        }
-                    },
-                    {
-                        "type": "select-input",
-                        "key": "clientname",
-                        "className": "flex-6",
-                        "props": {
-                            "label": "Client Name",
-                            "placeholder": "Client Name",
-                            "labelPropTemplate": " {{clientname}}",
-                            "optionsDataSource": {
-                                "multifilter":true,
-                                "collectionName": "client"
-                            },
-                            "multifilter_condition": {
-                                "clause": "AND",
-                                "conditions": [
-                                  {
-                                    "column": "_id",
-                                    "operator": "EQUALS",
-                                    "type": "string",
-                                    "value": ""
-                                  }
-                                ]
-                              },
-                            "labelProp": "clientname",
-                            "valueProp": "clientname",
-                            "required": true
-                        },
-                        "expressions": {
-                            "hide": "model.ishide "
-                           
-                        }
-                    },
+						"type": "label-view",
+						"key": "project_type",
+						"className": "flex-6",
+						"props": {
+							"label": "Project Type",
+							"label_width": 100,
+							"value_width": 200,
+							"value_in_next_row": true
+						},
+						"hideExpression": "!model.isEdit"
+					},
                     {
                         "type": "select",
-                        "key": "projecttype",
+                        "key": "project_type",
                         "className": "flex-6",
                         "props": {
                             "label": "Project Type",
@@ -151,7 +137,7 @@
                     {
                         "className": "flex-6",
                         "key": "startdate",
-                        "type": "datepicker-input", 
+                        "type": "date-input", 
                         "props": {
                           "label": "Scheduled Start Date",
                           "placeholder": "Scheduled Start Date",
@@ -162,7 +148,7 @@
                       {
                         "className": "flex-6",
                         "key": "enddate",
-                        "type": "datepicker-input",
+                        "type": "date-input",
                         "parentKey": "startdate",
                         "parentCollectionName": "project",
                         "props": {
@@ -187,15 +173,11 @@
                                     "label": "Inactive",
                                     "value": "Inactive"
                                 }
-                                
-                                 
-                            ],
-                            "placeholder": "Project Status",
-                            "required": true
+                            ]
                         },
                     
                         "expressions": {
-                            "hide": "!model.isshow"
+                            "hide": "!model.isEdit"
                         }
                         }
                 ]

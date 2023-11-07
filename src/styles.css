@@ -16,7 +16,8 @@
   font-style: normal;
   font-display: swap;
   font-weight: 400;
-  src: url('assets/fonts/material-icons-base-400-normal.woff2') format('woff2'), url('assets/fonts/material-icons-base-400-normal.woff') format('woff');
+  src: url('assets/fonts/material-icons-base-400-normal.woff2') format('woff2'),
+   url('assets/fonts/material-icons-base-400-normal.woff') format('woff');
 
 }
 
@@ -735,16 +736,13 @@ body {
   flex: 0 0 auto;
   position: absolute;
 }
-.page-content {
-  /* flex: 1 1 auto;
-  position: relative; */
-  margin: 10px 10px;
-  /* need this to position inner content */
-  overflow-y: auto;
-  color: #000;
-  /* overflow-x: hidden; */
-}
 
+.page-content {
+  flex: 1 1 auto;
+  position: relative;
+  margin: 10px 10px;
+  overflow-y: auto;
+}
 .page-style{
   overflow-y: auto;
   height: 100%;
