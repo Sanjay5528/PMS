@@ -232,35 +232,28 @@ export class ImageInput extends FieldType<any> implements OnInit {
 
 
  ngOnInit(): void {
- // this.route.params.subscribe((params: any) => {
- // this.id = params['id'];
- // });
-console.log(this.id);
 
- // });
- // if (typeof this.model[this.field.key] === 'string') {
+    console.log(this.id);
+if(this.model.isEdit){
  this.imageUrl=this.model[this.field.key]
- // It's a string
- // } else {
- // It's not a string (possibly an array or another type)
- // this.multiples=this.model[this.field.key]
- // }
 
- this.dataService.getDataById("employee", this.id).subscribe((res: any) => {
- console.log(res);
- this.response = res.data
-
- })
-
- 
- this.dataService.getDataById("client", this.id).subscribe((res: any) => {
-console.log(res);
-    this.response = res.data
-   
-    
-    })
-
-
+    this.dataService.getDataById("employee", this.id).subscribe((res: any) => {
+        console.log(res);
+        this.response = res.data
+       
+        })
+       
+        
+        this.dataService.getDataById("client", this.id).subscribe((res: any) => {
+       console.log(res);
+           this.response = res.data
+          
+           
+           })
+       
+       
+        
+}
  }
 
  onSelectFile(event: any) {
@@ -303,13 +296,13 @@ let ref=this.field.props.refId
  const formData = new FormData();
  if(this.field.bind_key){
  if(this.model[this.field.bind_key]==undefined){
- return this.dialogService.openSnackBar(`${this.field.error_msg}`,"OK")
+ return this.dialogService.openSnackBar(`${this.field.bind_key.toUpperCase().replace('_', ' ')} Is Missing`,"OK")
  }
  debugger
  formData.append('file',this.file);
  formData.append(this.field.refId,this.model[this.field.bind_key]);
- formData.append("details_type",this.field.details_type);
- formData.append("role",this.field.role);
+//  formData.append("details_type",this.field.details_type);
+//  formData.append("role",this.field.role);
  
  }
  

@@ -154,13 +154,13 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
    });
   }
 
-  if(this.opt.optionsDataSource.multifilter){
-    this.opt.multifilter_condition.conditions.map((res:any)=>{
+  if(this?.opt?.optionsDataSource?.multifilter){
+    this?.opt?.multifilter_condition?.conditions.map((res:any)=>{
      
-      if(res.value!=undefined && this.field.getdata){
+      // if(res?.value!=undefined && this?.field?.getdata){
        let value = sessionStorage.getItem(this.field.column)
         res.value=value
-      }
+      // 
     
     })
     let filter_condition={filter:[
@@ -219,21 +219,33 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
         parentControl?.valueChanges.subscribe((val: any) => {
           if(this?.opt?.Properties?.formVAlueChange){
             this.opt.multifilter_condition.conditions.map((res:any)=>{
-             if(this.opt.multifiltertype=="Simple")
-              if(res.value!=undefined ){
+             if(this.opt.multifiltertype=="Simple"){
+              res.value=val
+
+             }
+              // if(res.value=='' ){
               //  let value = sessionStorage.getItem(this.field.column)
-                res.value=val
-              }
+              // }
             
             })
             let filter_condition={filter:[
               this.opt.multifilter_condition
             ]}
             console.log(filterCondition);
-            
-            this.dataService.getDataByFilter(this.opt?.optionsDataSource?.collectionName,filter_condition).subscribe((res:any)=>{
+            let collectionName: any = this?.field?.parentCollectionName ? this?.field?.parentCollectionName : this.opt?.optionsDataSource?.collectionName;
+            this.dataService.getDataByFilter(collectionName,filter_condition).subscribe((res:any)=>{
               // this.dataService.buildOptions(res.data[0].response, this.opt);
+              
               console.log(res);
+              if (this?.opt?.multifilterFieldName!==undefined) { //! To Take the value of array
+                let specificField: any = res?.data[0]?.response[0]?.[this?.opt?.multifilterFieldName];
+                this.field.props.options = specificField.map((name: any) => {
+                    return { label: name, value: name };
+                });
+            } else {
+              // this.dataService.buildOptions(res.data[0].response, this.opt);
+              console.error("specificField is undefined");
+            }
               
             })
         }
@@ -317,12 +329,28 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
             let filter_condition={filter:[
               this.opt.multifilter_condition
             ]}            
-            this.dataService.getDataByFilter(this?.field?.parentCollectionName,filter_condition).subscribe((res:any)=>{
-let specificField:any = res?.data[0]?.response[0][this?.opt?.multifilterFieldName]
-              this.field.props.options = specificField.map((name: any) => {
-                return { label: name, value: name };
-              });
-            })
+            // this.dataService.getDataByFilter(this?.field?.parentCollectionName,filter_condition).subscribe((res:any)=>{
+            //     let specificField:any = res?.data[0]?.response[0][this?.opt?.multifilterFieldName]
+            //   this.field.props.options = specificField.map((name: any) => {
+            //     return { label: name, value: name };
+            //   });
+            // })
+            let collectionName: any = this?.field?.parentCollectionName ? this?.field?.parentCollectionName : this.opt?.optionsDataSource?.collectionName;
+            this.dataService.getDataByFilter(collectionName,filter_condition).subscribe((res:any)=>{
+
+            // this.dataService.getDataByFilter(this?.field?.parentCollectionName, filter_condition).subscribe((res: any) => {
+              let specificField: any = res?.data[0]?.response[0]?.[this?.opt?.multifilterFieldName];
+          
+              if (specificField) {
+                  this.field.props.options = specificField.map((name: any) => {
+                      return { label: name, value: name };
+                  });
+              } else {
+                  // Handle the case when specificField is undefined
+                  console.error("specificField is undefined");
+              }
+          });
+          
         }
         });
       };

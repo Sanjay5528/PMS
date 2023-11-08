@@ -226,7 +226,7 @@ public lookup(orgID:any){
 
 //Image Upload
 public imageupload(folder:any,refId:any,data: any) {
-  return this.http.post(this.getWsBaseUrl() + `/file/${folder}/${refId}`, data);
+  return this.http.post(this.getWsBaseUrl() + `file/${folder}/${refId}`, data);
 }
 
   public getDataByPath(data: any, path: string) {
