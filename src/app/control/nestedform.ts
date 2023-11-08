@@ -104,7 +104,7 @@ export class Nestedform {
   }
 
   storeData: any;
-  ctrl:any
+  flag:any
   ngOnInit() {
     this.initLoad()
    
@@ -138,7 +138,7 @@ export class Nestedform {
 let value:any=this.form.value
     let getdata: any = localStorage.getItem('projectmembers');
     let existingData: any[] = JSON.parse(getdata) || [];
-    if (value && !isEmpty(existingData)) {
+    if (value && !isEmpty(existingData) && this.model.isEdit==undefined ) {
       const roleIndex = existingData.findIndex(item=> item.roleid == value.roleid);
 if(roleIndex!==-1){
   // this.dialogService.openSnackBar("This Role ID Aldready Exist","OK")
@@ -169,7 +169,6 @@ alert(`This Employee ${value.employeename } With this Role Exist ${value.rolenam
       let getdata: any = localStorage.getItem('projectmembers');
       let data: any[] = JSON.parse(getdata) || [];
       for (let item of data) {
-
         if (item.roleid !== value.roleid) {
           pushData.push(item);
         }

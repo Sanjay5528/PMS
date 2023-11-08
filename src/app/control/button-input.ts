@@ -87,7 +87,7 @@ margin-bottom: 20px;
 
 
 
-<ng-template  #editViewPopup>
+<ng-template  #editViewPopup let-data>
 <nestedform (onClose)="close($event)" [formName]="formName" [model]="data" ></nestedform>
 </ng-template>
 
@@ -119,7 +119,6 @@ export class ButtonInput extends FieldType<any> implements OnInit {
   mode: any
   label: any
   formName: any
-  data: any = {}
   public fields!: FormlyFieldConfig[]
   config: any
   onClose = new EventEmitter<any>();
@@ -155,7 +154,6 @@ export class ButtonInput extends FieldType<any> implements OnInit {
   }
   ngOnDestroy() {
     console.log("Component will be destroyed");
-    localStorage.removeItem("pointofcontacts")
   }
   close_icon() {
     this.dialogService.closeModal()
@@ -170,13 +168,13 @@ export class ButtonInput extends FieldType<any> implements OnInit {
   onAddButonClick() {
     debugger
 
-    this.data = {}
     this.dialogService.openDialog(this.editViewPopup, "40%", null, {});
   }
 
-  close($data: any) {
+  close(data: any) {
     debugger
-    this.data
+    console.log(data);
+    
     this.dialogService.closeModal()
     let getData: any = localStorage.getItem('projectmembers')
     this.storedDate = JSON.parse(getData)
@@ -192,7 +190,8 @@ export class ButtonInput extends FieldType<any> implements OnInit {
   }
   editItem(item: any) {
     debugger
-    this.data = item
+    
+    item.isEdit=true
     this.dialogService.openDialog(this.editViewPopup, "40%", null, item);
 
   }
