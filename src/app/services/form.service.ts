@@ -596,13 +596,22 @@ console.log(ctrl);
         return ;
       }
       var data = ctrl.form.value
-      let role_type:any =this.dataService.getdetails().profile.role
+      // let role_type:any =this.dataService.getdetails().profile.role
+      // if(ctrl?.config?.rolebased&& role_type!=="SA"){
+      //  data.org_id=this.dataService.getdetails().profile.org_id
+      // }
+
+      // if(ctrl?.config?.user&&role_type!=="SA"){
+      //   data.org_id=this.dataService.getdetails().profile.org_id 
+      //   data.user_type=role_type
+      // }
+      let role_type:any =this.dataService.getdetails().role
       if(ctrl?.config?.rolebased&& role_type!=="SA"){
-       data.org_id=this.dataService.getdetails().profile.org_id
+       data.org_id=this.dataService.getdetails().org_id
       }
 
       if(ctrl?.config?.user&&role_type!=="SA"){
-        data.org_id=this.dataService.getdetails().profile.org_id 
+        data.org_id=this.dataService.getdetails().org_id 
         data.user_type=role_type
       }
 

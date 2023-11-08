@@ -94,8 +94,8 @@
           "placeholder": "Assigned To",
           "labelPropTemplate": "{{firstname}}",
           "optionsDataSource": {
-            "collectionNameById": "query/projectname",
-            "Id": ":projectname"
+            "collectionNameById": "projectname",
+            "RefField": "projectname"
           },
           "labelProp": "firstname",
           "valueProp": "firstname"

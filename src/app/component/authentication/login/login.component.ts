@@ -38,11 +38,11 @@ export class LoginComponent implements OnInit {
     let user_data = this.frmLogin.value
     this.dataService.login(user_data).subscribe((res: any) => {
       if (res) {
-        this.user_data = this.jwtService.decodeToken(res.token)
+        this.user_data = this.jwtService.decodeToken(res.data.LoginResponse.token)
         sessionStorage.setItem('selectedOrgId', environment.OrgId)
-        sessionStorage.setItem('token', res.token);
+        sessionStorage.setItem('token', res.data.LoginResponse.token);
         sessionStorage.setItem('auth', JSON.stringify(res));
-        this.dialogService.openSnackBar(res.name,"OK");
+        this.dialogService.openSnackBar(res.data.Message  ,"OK");
         this.router.navigate(['/home']);
     }
   })

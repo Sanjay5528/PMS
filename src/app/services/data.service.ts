@@ -68,13 +68,17 @@ export class DataService {
       return this.loadConfig(screenViewId+'-view')
       }
 
-  public loadConfig(screenId:string):Observable<any> {
+  public loadConfig(screenId:any):Observable<any> {
     //let config = sessionStorage.getItem(screenId)
     return new Observable((observer) => {
       // if (config) {
       //   observer.next(JSON.parse(config))
       // }
+      console.log(screenId);
+      
       this.getDataById('screen',screenId).subscribe((result:any)=>{       
+        console.log(result);
+        
         let config =  result.data ? result.data[0].config : []
         observer.next(JSON.parse(config))
        
@@ -315,7 +319,10 @@ public imageupload(folder:any,refId:any,data: any) {
   let details:any=JSON.parse(value)
   return details
  }  
-
+ 
+ public getModuleFilter(collectionName: any, key: any) {
+  return this.http.get(this.getWsBaseUrl() + "entities/filter/" + `${collectionName}` + "/" + `${key}`);
+}
 //  async makeFiltersConditions(Input_object: any): Promise<any> {
 //   return await new Promise((resolve, reject) => {
 //     let vals:any={

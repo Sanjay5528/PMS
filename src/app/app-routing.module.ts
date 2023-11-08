@@ -156,13 +156,17 @@ const routes: Routes = [
       }
     ]
   }, {
-    path: "module/project/:id",
+    path: "project",
     component: DefaultLayoutComponent,
     children: [
       {
-        path: "",
+        path: ":component/:id",
         component: AggridTreeComponent,
       },
+      // {
+      //   path: "projectteam/:id",
+      //   component: AggridTreeComponent,
+      // }
     ],
   }, {
     path: "timesheet/:date",

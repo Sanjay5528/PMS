@@ -12,8 +12,6 @@ import { HttpClient } from '@angular/common/http';
   selector: 'button-input',
   template: `
   <style>
-
-  
   .icon{
 margin-bottom: 20px;
 
@@ -21,7 +19,6 @@ margin-bottom: 20px;
   .label {
     font-weight: bold;
     color: #555;
-    margin-left:15px
   }
   .list-item {
     margin-bottom: 10px;
@@ -68,54 +65,50 @@ margin-bottom: 20px;
    <div class=icon>
    <mat-label class="label">{{field.props!['label']}}</mat-label>
       <button
-     
+       
         [formlyAttributes]="field"
         matTooltip="Add"
         mat-mini-fab
         (click)="onAddButonClick()"
         style="
-        margin-left: 30px;
-        background-color: #B0B0B0;
-        color: white;
-        height: 24px;
-        width: 24px;
-        font-size: 9px;
-        line-height: 3;
-        vertical-align: middle;
-      "
+          margin-left: 30px;
+          background-color: #5C6BC0;
+          color: white;
+          height: 30px;
+          width: 30px;
+          font-size: 9px;
+          line-height: 3;
+          vertical-align: middle;
+        "
       >
         <mat-icon>add</mat-icon>
       </button>
     </div>
 
-    <div *ngFor="let field of storedDate ; let i=index " class="list-item" (mouseenter)="toggleButtons(i, true)" (mouseleave)="toggleButtons(i, false)" >
-    <div class="storedDate" style="color:black">
-    <div class="name-row">
-    <span class="bullet-point">&#8226;</span> 
-    <span class="name"  style="color:black">{{ field.first_name }} {{ field.last_name }}</span>
-    </div>
-    <div class="contact-row" >
-    <span class="contact"  style="color:black">{{ field.email_id }}, {{ field.mobile_number }}</span>
-    <div class="button-group" *ngIf="field.showButtons">
-      <mat-icon (click)="deleteItem(i)">delete</mat-icon>
-      <mat-icon (click)="editItem(field)">edit</mat-icon>
-    </div>
-    </div>
-    </div>
-    </div>
 
 
-
-
-
-<ng-template  #editViewPopup>
+<ng-template  #editViewPopup let-data>
 <nestedform (onClose)="close($event)" [formName]="formName" [model]="data" ></nestedform>
 </ng-template>
 
 
+<div *ngFor="let field of storedDate ; let i=index " class="list-item" (mouseenter)="toggleButtons(i, true)" (mouseleave)="toggleButtons(i, false)" >
+<div class="storedDate">
+<div class="name-row">
+<span class="bullet-point">&#8226;</span> 
+<span style="justify-content: center;">
+{{ field.projectroleid }} {{ field.projectrolename }}{{field.employeename}} {{field.teamname}}
+<mat-icon style="padding-top: 3px;" *ngIf="field.showButtons" (click)="deleteItem(i)">delete</mat-icon>
+  <mat-icon (click)="editItem(field)" style="padding-top: 3px;" *ngIf="field.showButtons">edit</mat-icon>
+</span>
+</div>
+<!-- <div class="contact-row">
+<span class="contact">{{ field.emailid }}, {{ field.mobilenumber }}</span> -->
+<!-- </div> -->
+</div>
+</div>
 
-
-  `,
+  `
 
 })
 
@@ -126,11 +119,10 @@ export class ButtonInput extends FieldType<any> implements OnInit {
   mode: any
   label: any
   formName: any
-  data:any={}
   public fields!: FormlyFieldConfig[]
   config: any
   onClose = new EventEmitter<any>();
-  
+
   // form = new FormGroup({});
 
 
@@ -140,65 +132,70 @@ export class ButtonInput extends FieldType<any> implements OnInit {
     private dialogService: DialogService,
     private httpclient: HttpClient,
     private dataservice: DataService
-  ) { super() 
-    }
+  ) {
+    super()
+  }
 
 
 
   ngOnInit(): void {
+    localStorage.removeItem('projectmembers')
+    this.storedDate = this.model[this.field.key]
     
+    if(this.model.isEdit==true){
+
+      localStorage.setItem('projectmembers',this.storedDate)
+    
+    }
+
     this.label = this.field.props?.label
     this.formName = this.field.props?.attributes
-    this.storedDate=this.model[this.field.key]
-    if( this.storedDate?.length!=0 && this.storedDate!=undefined){
-      this.field.formControl.setValue(this.storedDate)
-    }
-    
+
   }
   ngOnDestroy() {
     console.log("Component will be destroyed");
-  //  sessionStorage.removeItem("point_of_contacts")
   }
   close_icon() {
     this.dialogService.closeModal()
   }
- 
+
 
   // ...
-  
+
   toggleButtons(index: number, show: boolean): void {
     this.storedDate[index].showButtons = show;
   }
   onAddButonClick() {
-    
-    
-  this.data={}
-  
+    debugger
+
     this.dialogService.openDialog(this.editViewPopup, "40%", null, {});
   }
 
-  close($data: any) {
+  close(data: any) {
+    debugger
+    console.log(data);
     
-    this.data
     this.dialogService.closeModal()
-    // let getData:any =sessionStorage.getItem('point_of_contacts')
-  //  this.storedDate =JSON.parse(getData)
-  //  
-    this.field.formControl.setValue( this.storedDate)
- 
- 
+    let getData: any = localStorage.getItem('projectmembers')
+    this.storedDate = JSON.parse(getData)
+
+    this.field.formControl.setValue(this.storedDate)
+
+
   }
   deleteItem(index: number): void {
     this.storedDate.splice(index, 1);
-    // sessionStorage.setItem('point_of_contacts', JSON.stringify(this.storedDate));
-  
+    localStorage.setItem('projectmembers', JSON.stringify(this.storedDate));
+
   }
-editItem(item:any){
-  this.data=item
-  this.dialogService.openDialog(this.editViewPopup, "40%", null, item);
+  editItem(item: any) {
+    debugger
+    
+    item.isEdit=true
+    this.dialogService.openDialog(this.editViewPopup, "40%", null, item);
 
-}
+  }
 
-  
-  
+
+
 }

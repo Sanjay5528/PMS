@@ -140,7 +140,7 @@ export class ButtonComponent implements ICellRendererAngularComp {
   id: any;
   config: any
   pageHeading: any
-  deletedData: any;
+  gridData: any;
   @ViewChild("popup", { static: true }) popup!: TemplateRef<any>;
   @ViewChild("modulesViewPopup", { static: true }) modulesViewPopup!: TemplateRef<any>;
   @Input() selectedRows: any;
@@ -163,10 +163,10 @@ export class ButtonComponent implements ICellRendererAngularComp {
     public dataService: DataService,
     private dialog: DialogService,
     private router: Router,
-    public grid: AggridTreeComponent,
-    private httpclient: HttpClient,
-    public aggrid: AggridTreeComponent,
-    private formservice: FormService
+    // public ParentComponent: AggridTreeComponent,
+    // private httpclient: HttpClient,
+    // public aggrid: AggridTreeComponent,
+    // private formservice: FormService
 
   ) { }
 
@@ -175,8 +175,8 @@ export class ButtonComponent implements ICellRendererAngularComp {
   }
   agInit(params: any): void {
     debugger
-    this.deletedData = params.data;
-    console.log("hello",this.deletedData)
+    this.gridData = params.data;
+    this.params=params
   }
 
   refresh(_params?: any): boolean {
@@ -184,10 +184,10 @@ export class ButtonComponent implements ICellRendererAngularComp {
   }
 
   //   onDelete($event: any) {
-  //     // this.deletedData = $event.api.getSelectedRows();
+  //     // this.gridData = $event.api.getSelectedRows();
   //     // let a = $event.gridApi.getSelectedRows();
   //     this.dataService
-  //       .getSupplierDelete(this.deletedData._id)
+  //       .getSupplierDelete(this.gridData._id)
   //       .then((res: any) => {
 
   //         // this.selectedRows = this.gridApi.remove.getSelectedRows();
@@ -225,18 +225,18 @@ export class ButtonComponent implements ICellRendererAngularComp {
   onClickMenuItem(value: any, data?: any) {
     debugger
     console.log(value);
+    console.log(this.gridData);
     
     if (value == 'submodules' ) {
-      this.dialog.openDialog(this.modulesViewPopup,  "50%", '530px', {});
-      this.httpclient
-        .get("assets/jsons/modules-form.json")
-        .subscribe((frmConfig: any) => {
+      this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
           this.formAction = "Add"
           this.config = frmConfig;
           //  this.aggrid.saveForm(this.data)
           this.fields = frmConfig.form.fields;
           // this.pageHeading = frmConfig.pageHeading;
           // this.doAction(data, data[id])
+      this.dialog.openDialog(this.modulesViewPopup,  "50%", '530px', {});
+
         });
 
       // this.aggrid.onSelectionChanged(event)
@@ -244,47 +244,67 @@ export class ButtonComponent implements ICellRendererAngularComp {
     } 
      
     else if (value == 'task') {
-      this.dialog.openDialog(this.taskViewPopup, "50%", null, {});
-      this.httpclient
-        .get("assets/jsons/task-form.json")
-        .subscribe((frmConfig: any) => {
+      // this.httpclient
+      //   .get("assets/jsons/task-form.json")
+      //   .subscribe((frmConfig: any) => {
+          this.dataService.loadConfig("task").subscribe((frmConfig: any) => {
+
           this.formAction = "Add"
           this.config = frmConfig;
           //  this.aggrid.saveForm(this.data)
           this.fields = frmConfig.form.fields;
+          this.dialog.openDialog(this.taskViewPopup, "50%", null, this.gridData);
+
           // this.pageHeading = frmConfig.pageHeading;
           // this.doAction(data, data[id])
         });
 
       // this.router.navigate(['/add/task']);
       //this.data.taskname = taskname;
-      this.data = this.params.data;
+      // this.data = this.gridData.data;
 
-      this.grid.onAddButonClick(this.data);
+      // this.grid.onAddButonClick(this.data);
     }
 
     else {
-      this.data = this.deletedData
+      this.data = this.gridData
       this.router.navigate(['/list/testcase/' + `${this.data.moduleid}`]);
     }
   }
 
 
 
-
+  // if (ctrl.config.form.collectionName == "modules") {
+  //   if (ctrl.autoGroupColumnDef?.headerName == "Parent Modules") {
+  //     Object.assign(data, {
+  //       parentmodulename: "",
+  //       projectid: ctrl.response?.projectid || ctrl.grid.response.projectid,
+  //     });
+  //   } else if (
+  //     ctrl.aggrid.autoGroupColumnDef.headerName == "Parent Modules"
+  //   ) {
+  //     Object.assign(data, {
+  //       projectid: ctrl.response?.projectid || ctrl.grid.response.projectid,
+  //       parentmodulename: ctrl.gridData.modulename,
+  //     });
+  //   } else {
+  //     console.log("Object Assign isn't working");
+  //   }
+  // } 
   saveForm(_data: any) {
     debugger
-    this.formservice.saveFormData(this).then((res: any) => {
-      // if (res) {
-      //   console.log("Added Successfully");
-      // }
-      if (res != undefined) {
-        this.aggrid.ngOnInit()
-       //this.agInit(this.params.data)
-        //this.goBack(res)
-      }
+    let values:any=this.form.value
+    values.parentmodulename=this.gridData.modulename
+    values.project_id=this.gridData.project_id
+    // values.client_name=this.gridData.modulename
+
+    this.dataService.save(this.config.form.collectionName,values).subscribe((data:any)=>{
+      console.log(data);
+      this.dialog.closeModal();
+      this.form.reset();
     })
-    //this.aggrid.getTreeData()
+  
+   this.params.context.componentParent.getTreeData(values)
   }
 
   goBack(data?: any) {

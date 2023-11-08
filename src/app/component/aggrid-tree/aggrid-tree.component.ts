@@ -125,8 +125,8 @@ export class AggridTreeComponent {
     this.components = {
       buttonRenderer: ButtonComponent
     }
-    this.form = new FormGroup({});
-  
+
+    
   } 
 
 
@@ -137,6 +137,8 @@ export class AggridTreeComponent {
     this.route.params.subscribe(params => {
       this.id = params['id'];
     });
+    console.log(this.route.snapshot.routeConfig?.path);
+    this.formName='module'
 
     this.dataService.getDataById("project", this.id).subscribe((res: any) => {
       this.response = res.data[0]
@@ -160,33 +162,35 @@ export class AggridTreeComponent {
 
   // }
 
-  getTreeData() {
+  getTreeData(data?:any) {
     debugger
 // ! UNDO
-//     this.dataService.getModuleFilter("modules", this.response.projectid).subscribe((res: any) => {
-//       this.listData = []
-//       console.log(this.listData, "hide");
-// console.log(res.data,'1');
+console.log(this.response.project_id);
 
-//       for (let idx = 0; idx < res.data.length; idx++) {
-//         const row = res.data[idx];
-//         if (row.parentmodulename == "" || !row.parentmodulename) {
-//           row.treePath = [row.modulename];
-//         } else {
-//           var parentNode = this.listData.find((d) => d.modulename == row.parentmodulename);
-//           if (
-//             parentNode &&
-//             parentNode.treePath &&
-//             !parentNode.treePath.includes(row.modulename)
-//           ) {
-//             row.treePath = [...parentNode.treePath];
-//             row.treePath.push(row.modulename);
-//           }
-//         }
-//         this.listData.push(row);
-//         // this.getmodules()
-//       }
-//     });
+    this.dataService.getModuleFilter("modules", this.response.project_id).subscribe((res: any) => {
+      this.listData = []
+      console.log(this.listData, "hide");
+console.log(res.data,'1');
+
+      for (let idx = 0; idx < res.data.length; idx++) {
+        const row = res.data[idx];
+        if (row.parentmodulename == "" || !row.parentmodulename) {
+          row.treePath = [row.modulename];
+        } else {
+          var parentNode = this.listData.find((d) => d.modulename == row.parentmodulename);
+          if (
+            parentNode &&
+            parentNode.treePath &&
+            !parentNode.treePath.includes(row.modulename)
+          ) {
+            row.treePath = [...parentNode.treePath];
+            row.treePath.push(row.modulename);
+          }
+        }
+        this.listData.push(row);
+        // this.getmodules()
+      }
+    });
 }
 
 
@@ -268,8 +272,9 @@ export class AggridTreeComponent {
   onAddButonClick(ctrl: any) {
     debugger
     
-    this.dialogService.openDialog(this.editViewPopup, "50%", '530px', {});
     this.dataService.loadConfig("module").subscribe(async (config: any) => {
+      console.log(config);
+      
       this.formAction='Add' 
       this.config = config
       this.fields = config.form.fields
@@ -279,25 +284,26 @@ export class AggridTreeComponent {
       ctrl.formAction = 'Add';
       ctrl.butText = 'Save';   //buttons based on the id
 
-      // if (ctrl.formAction == 'Edit' && ctrl.config.mode == 'page') {
-      //   ctrl.fields = config.form.fields
-      // }
-      // else if (ctrl.formAction == 'Edit' && ctrl.mode == 'popup') {
-      //   ctrl.model['isEdit'] = true
-      //   ctrl.model['isshow'] = true
-      //   ctrl.model['ishide'] = true
-      //   ctrl.isFormDataLoaded = true
-      //   ctrl.formAction = ctrl.config.formAction || 'Edit';
-      //   ctrl.isEditMode = true;
-      // }
-      //this.fields = config.form.fields
+    this.dialogService.openDialog(this.editViewPopup, "50%", '530px', {});
+      
      
 
 
     })
   
   } 
-
+ 
+  saveChild() { 
+  let values:any=this.form.value
+  values.client_name= this.response?.client_name
+  values.project_id= this.response?.project_id
+  values. parentmodulename= ""
+  this.dataService.save(this.config.form.collectionName,values).subscribe((data:any)=>{
+    console.log(data);
+    this.dialogService.closeModal();
+  })
+  this.ngOnInit()
+  }
 // try(res:any){
 //   let array= res.data
 //   console.log(array);
@@ -362,32 +368,7 @@ export class AggridTreeComponent {
 
 // }
 
-  saveForm(data: any,event:any) {
-    debugger
-    this.formservice.saveFormData(this).then((res: any) => {
-      // if (res) {
-      //   console.log("Added Successfully");
-      // }
-      if (res != undefined) {
-        this.ngOnInit()
-        //this.goBack(res)
-        this.selectedModel={}
-        this.form.reset()
-        this.model={}
-      }
-    })
-   // this.getTreeData
-  }
-
-  // initializeFormControls() {
-  //   this.fields.forEach((field) => {
-  //     if (typeof field.key === 'string' && field.key) {
-  //       this.form.addControl(field.key, new FormControl(null));
-  //     }
-  //   });
-
-  // }
-
+  
   
 
 

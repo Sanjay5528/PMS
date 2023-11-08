@@ -2,7 +2,6 @@
   "pageHeading": "Task",
   "collectionName": "task",
   "editMode": "page",
-  "showbutton": false,
   "flag":true,
    
   "keyField": "_id",
