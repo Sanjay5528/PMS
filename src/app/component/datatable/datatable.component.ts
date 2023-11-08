@@ -193,7 +193,7 @@ export class DatatableComponent implements OnInit {
         this.filterCollectionName = config.filtercollectionName || "";
         this.showdefaultFilter = config.showdefaultFilter;
         this.pageHeading = config.pageHeading;
-        this.screenEditMode = config.screenEditMode; // screenEditMode is type used for POP up And PAge Screen
+        this.screenEditMode = config.screenEditMode || "popup"; // screenEditMode is type used for POP up And PAge Screen
         this.fields = [];
         this.columnDefs = this.config.columnDefs; // Thus  for AG Grid columnDefs
         this.columnDefs.forEach((e: any) => {

@@ -239,9 +239,11 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
               console.log(res);
               if (this?.opt?.multifilterFieldName!==undefined) { //! To Take the value of array
                 let specificField: any = res?.data[0]?.response[0]?.[this?.opt?.multifilterFieldName];
+                if (specificField) {
+
                 this.field.props.options = specificField.map((name: any) => {
                     return { label: name, value: name };
-                });
+                });}
             } else {
               // this.dataService.buildOptions(res.data[0].response, this.opt);
               console.error("specificField is undefined");

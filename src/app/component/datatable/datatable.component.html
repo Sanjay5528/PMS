@@ -47,7 +47,7 @@
   </div>
   <div class="page">
     <div *ngIf="formAction != 'view'" class="page-content">
-      <app-dynamic-form [formName]="formName" [model]="data" [mode]="'popup'"  (onClose)="close($event)"></app-dynamic-form>
+      <app-dynamic-form [formName]="formName" [model]="data" [mode]="screenEditMode"  (onClose)="close($event)"></app-dynamic-form>
     </div>
   </div>
 

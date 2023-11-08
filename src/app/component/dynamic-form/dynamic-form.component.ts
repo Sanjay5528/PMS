@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DialogService } from 'src/app/services/dialog.service';
 import { FormService } from 'src/app/services/form.service';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 
@@ -68,20 +68,45 @@ export class DynamicFormComponent {
 
     if (!this.form.valid) {
       let array = "";  
-      function collectInvalidLabels(controls: any) {
+      // function collectInvalidLabels(controls: any) {
+      //   for (const key in controls) {
+
+      //     if (controls.hasOwnProperty(key)) {
+      //       const data = controls[key].status;
+      //       if (data === "INVALID") {
+      //         array += controls[key]._fields[0].props.label + ",";
+      //       }
+      //     }
+      //   }
+      // }
+      // collectInvalidLabels(this.form.controls);
+      function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
         for (const key in controls) {
-          if (controls.hasOwnProperty(key)) {
-            const data = controls[key].status;
-            if (data === "INVALID") {
-              array += controls[key]._fields[0].props.label + ",";
+            if (controls.hasOwnProperty(key)) {
+                const control = controls[key];
+        
+                if (control instanceof FormGroup) {
+                    invalidLabels += collectInvalidLabels(control.controls);
+                } else if (control instanceof FormControl && control.status === 'INVALID') {
+                    // Access the label property assuming it exists in the control
+                    invalidLabels +=controls[key]._fields[0].props.label + ",";
+                }
             }
-          }
         }
-      }
-      collectInvalidLabels(this.form.controls);
-      const modifiedString = array.slice(0, -1);
+        return invalidLabels;
+    }
+    
+    // Assuming this.mainForm is your main FormGroup
+    // const invalidLabelsString = collectInvalidLabels(this.mainForm.controls);
+    // console.log('Invalid Labels:', invalidLabelsString);
+    
+    // Assuming this.mainForm is your main FormGroup
+    const invalidLabels:any = collectInvalidLabels(this.form.controls);
+    // console.log('Invalid Labels:', invalidLabels.join(', '));
+    
+      // const modifiedString = array.slice(0, -1);
   
-      this.dialogService.openSnackBar("Error in " + modifiedString, "OK");
+      this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
      this.form.markAllAsTouched();
       this.butonflag=false
       return ;
