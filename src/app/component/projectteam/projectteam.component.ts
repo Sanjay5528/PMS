@@ -32,7 +32,6 @@ export class ProjectteamComponent {
 
   form = new FormGroup({});
   gridApi!: GridApi<any>;
-  private gridColumnApi!: ColumnApi;
   rowSelected: any[] = []
   selectedModel: any = {}
   public listData: any[] = []
@@ -100,7 +99,6 @@ export class ProjectteamComponent {
   butText = 'Save'
   onClose: any;
   desiredProjectId!: string;
-  // context:any
   
   
 
@@ -110,10 +108,9 @@ export class ProjectteamComponent {
       this.context = { componentParent: this };
       this.frameworkComponent = {
         buttonRenderer: ProjectButtonComponent
-      }
-    this.form = new FormGroup({}); 
-  
+      }  
   } 
+
   ngOnInit() {
     debugger
     
@@ -168,20 +165,15 @@ export class ProjectteamComponent {
   /**gridReady for ag grid */
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
     this.gridApi.sizeColumnsToFit();
   }
 
 
 
   onAddButonClick(ctrl:any) {
-    //event.stopPropagation();
-    debugger
-    
     this.dialogService.openDialog(this.editViewPopup, "89%", '850px', {});
     this.httpclient.get("assets/jsons/projectteam-form.json").subscribe(async (config: any) => {
     
-     //this.config.editMode == 'page'
       this.formAction='Add' 
       this.config = config
       this.fields = config.form.fields
@@ -189,8 +181,7 @@ export class ProjectteamComponent {
       ctrl.config = config
       ctrl.collectionName = config.form.collectionName
       ctrl.formAction = 'Add';
-      ctrl.butText = 'Save';   //buttons based on the id
-
+      ctrl.butText = 'Save';   
       if (ctrl.formAction == 'Edit' && ctrl.config.mode == 'page') {
         ctrl.fields = config.form.fields
       }
@@ -203,10 +194,7 @@ export class ProjectteamComponent {
         ctrl.isEditMode = true;
       }
       this.fields = config.form.fields
-     
-
-
-    })
+     })
     
   } 
   saveForm(data: any) {

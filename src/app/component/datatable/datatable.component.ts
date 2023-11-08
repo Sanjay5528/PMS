@@ -197,7 +197,7 @@ export class DatatableComponent implements OnInit {
         this.fields = [];
         this.columnDefs = this.config.columnDefs; // Thus  for AG Grid columnDefs
         this.columnDefs.forEach((e: any) => {
-          if (e.type == "datetime") {
+          if (e.type == "datetime" || e.type == "date") {
             e.valueGetter = (params: any) => {
               if (params.data && params.data[e.field]) {
                 return moment(params.data[e.field]).format(
@@ -432,7 +432,7 @@ export class DatatableComponent implements OnInit {
 
   // Method for action buttons
   onActionButtonClick(item: any, data: any) {
-    this.formAction = item.formAction;
+    this.formAction = item.formAction? item.formAction: item.label.toLowerCase() ;
     this.formName = item.formName;
     let id = this.config.keyField;
     console.log(data, item);
@@ -444,10 +444,17 @@ export class DatatableComponent implements OnInit {
     } else if (this.formAction == "components") {
       // console.log(this);
       if (item.route == "ACL") {
-        console.log(data._id);
-
-        console.log(data.org_type);
         this.router.navigate([`${item.route}` + "/" + data._id]);
+      }  else if (item.route_type == "CustomRoute") {
+        // ! item.Custom_Route To another Component
+        if(item.Custom_Key_filed&&item.Custom_Route)
+        // todo if this filed is missing it should take the _id
+        // let field = data[item.Custom_Key_filed] ? data[item.Custom_Key_filed] : data[_id];
+       
+        this.router.navigate([
+          `${item.Custom_Route}`,
+          data[item.Custom_Key_filed],
+        ]);
       } else if (item.route == "role/acl/") {
         this.router.navigate([`${item.route}` + data.org_id + "/" + data._id]);
       } else {

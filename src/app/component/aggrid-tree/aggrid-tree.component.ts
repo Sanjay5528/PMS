@@ -29,7 +29,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 export class AggridTreeComponent {
   form = new FormGroup({});
   gridApi!: GridApi<any>;
-  private gridColumnApi!: ColumnApi;
+  public gridColumnApi!: ColumnApi;
   rowSelected: any[] = []
   selectedModel: any = {}
   public listData: any[] = []
@@ -119,9 +119,9 @@ export class AggridTreeComponent {
   
    
 
-  constructor(private httpclient: HttpClient,  
-    private dialogService: DialogService, private route: ActivatedRoute,   private router: Router,
-    private dataService: DataService, private formservice: FormService,private formBuilder: FormBuilder) {
+  constructor(public httpclient: HttpClient,  
+    public dialogService: DialogService, public route: ActivatedRoute,   public router: Router,
+    public dataService: DataService, public formservice: FormService,public formBuilder: FormBuilder) {
     this.components = {
       buttonRenderer: ButtonComponent
     }
@@ -140,13 +140,13 @@ export class AggridTreeComponent {
 
     this.dataService.getDataById("project", this.id).subscribe((res: any) => {
       this.response = res.data[0]
-      sessionStorage.setItem("projectname", this.response.projectname)
+      // sessionStorage.setItem("projectname", this.response.projectname)
 
       this.getTreeData()
     
      
     })
-    this.initializeFormControls();
+    // this.initializeFormControls();
   }
 
 
@@ -212,6 +212,30 @@ export class AggridTreeComponent {
   //   return data.parentmodulename;
   // };
 
+  close(event: any) {
+    this.dialogService.closeModal();
+    this.gridApi.deselectAll();
+    // this.ngOnInit()
+
+    if (event) {
+      // Ensure 'event' contains the expected properties before proceeding
+      // if (event.action === "Add" && event.data) {
+      // const transaction: ServerSideTransaction = {
+      //   add: 
+      //   [event.data ],
+      // };
+      // const result = this.gridApi.applyServerSideTransaction(transaction);
+      // console.log(transaction, result)
+      // }else{
+      //   const transaction: ServerSideTransaction = {
+      //         update:  [event.data ]
+      //        };
+      //       const result = this.gridApi.applyServerSideTransaction(transaction);
+      //   console.log(transaction, result)
+
+      // }
+    }
+  }
 
   onSelectionChanged(params: any) {
     debugger
@@ -245,7 +269,7 @@ export class AggridTreeComponent {
     debugger
     
     this.dialogService.openDialog(this.editViewPopup, "50%", '530px', {});
-    this.httpclient.get("assets/jsons/modules-form.json").subscribe(async (config: any) => {
+    this.dataService.loadConfig("module").subscribe(async (config: any) => {
       this.formAction='Add' 
       this.config = config
       this.fields = config.form.fields
@@ -338,7 +362,7 @@ export class AggridTreeComponent {
 
 // }
 
-  saveForm(data: any) {
+  saveForm(data: any,event:any) {
     debugger
     this.formservice.saveFormData(this).then((res: any) => {
       // if (res) {
@@ -354,30 +378,17 @@ export class AggridTreeComponent {
     })
    // this.getTreeData
   }
-  initializeFormControls() {
-    this.fields.forEach((field) => {
-      if (typeof field.key === 'string' && field.key) {
-        this.form.addControl(field.key, new FormControl(null));
-      }
-    });
 
-  }
+  // initializeFormControls() {
+  //   this.fields.forEach((field) => {
+  //     if (typeof field.key === 'string' && field.key) {
+  //       this.form.addControl(field.key, new FormControl(null));
+  //     }
+  //   });
 
-  goBack(data?: any) {
-    debugger
-    if (this.config.editMode == 'page') {
-      this.router.navigate([`${this.config.onCancelRoute}`]);
-    } else if (this.config.editMode == 'popup') {
-      this.router.navigate([`${this.config.onCancelRoute}`]);
-      if (data) {
-        this.onClose.emit(data)
-      } else {
-        this.onClose.emit({ action: this.formAction, data: this.model })
-       }
-      // return 
-    }
-  }
+  // }
 
+  
 
 
 

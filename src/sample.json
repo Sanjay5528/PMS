@@ -1,115 +1,88 @@
-[
-	{
-		"displayName": "Production",
-		"iconName": "group",
-		"children": [
-			{
-				"displayName": "Screen Configuration",
-				"iconName": "edit",
-				"route": "/list/screen"
-			},{
-				"displayName": "Model Configuration",
-				"iconName": "edit",
-				"route": "/list/model_config"
-			},{
-				"displayName": "Group Configuration",
-				"iconName": "group",
-				"route": "/list/group"
-			},{
-				"displayName": "Data Set Configuration",
-				"iconName": "group",
-				"route": "/data_set"
-			}
-		]
-	},	
-	{
-		"displayName": "Master",
-		"iconName": "perm_identity",
-		"children": [
-			{
-				"displayName": "Client",
-				"iconName": "assignment_ind",
-				"route": "/list/client"
-			},
-			{
-				"displayName": "Employee",
-				"iconName": "assignment_ind",
-				"route": "/list/employee"
-			},
-			{
-				"displayName": "Project",
-				"iconName": "assignment_ind",
-				"route": "/list/project"
-			},
-            {
-				"displayName": "Sprint",
-				"iconName": "assignment_ind",
-				"route": "/list/sprint"
-			},
-            {
-				"displayName": "Project Team Member",
-				"iconName": "assignment_ind",
-				"route": "/list/projectteammembers"
-			},
-            {
-				"displayName": "Project Team",
-				"iconName": "assignment_ind",
-				"route": "/list/projectteam"
-			}
- 
-		]
-	},
-	{
-		"displayName": "Personal",
-		"iconName": "assignment_ind",
-		"children": [
-				 
-			{
-				"displayName": "Task",
-				"iconName": "assignment_ind",
-				"route": "/list/task" 
-			},		 
-			{
-				"displayName": "My Profile",
-				"iconName": "assignment_ind",
-				"route": "/list/profile" 
-			}
- 
-		]
-	},
-	{
-		"displayName": "Customer",
-		"iconName": "perm_identity",
-		"children": [
-			{
-				"displayName": "Organization",
-				"iconName": "assignment_ind",
-				"route": "/list/organisation"
-			},
-			{
-				"displayName": "System User",
-				"iconName": "assignment_ind",
-				"route": "/list/system_user"
-			}
-		]
-	},
-	{
-		"displayName": "User",
-		"iconName": "assignment"
-	},
-	{
-		"displayName": "Device List",
-		"iconName": "assignment",
-		"route": "/list/device"
-	},
-	{
-		"displayName": "Role List",
-		"iconName": "assignment",
-		"route": "/list/role"
-	},
-	{
-		"displayName": "Org Type List",
-		"iconName": "assignment",
-		"route": "/list/org_type"
-	}
-]
+{
+  "pageHeading": "Project",
+  "collectionName": "project",
+  "editMode": "popup",
+  "screenWidth": "80%",
+  "keyField": "_id",
+  "showbutton": true,
+  "actions": [
+      {
+          "label": "Edit",
+          "icon": "edit",
+          "formName": "project"
+      },
+      {
+          "label": "Modules",
+          "icon": "view_module",
+          "formAction": "components",
+          "route_type":"CustomRoute",
+          "Custom_Route":"module/project",
+          "Custom_Key_filed":"_id"
+          
+      },
+      {
+          "label": "ProjectTeam",
+          "icon": "view_module",
+          "formName": "projectteam"
+      },
+      {
+          "label": "Delete",
+          "icon": "delete",
+          "formName": "entities/project"
+      }
+  ],
+  "addRoute": "add/project",
+  "editRoute": "edit/project",
+  "moduleRoute": "module/project",
+  "projectteamRoute": "projectteam/project",
+  
+  "columnDefs": [
+      {
+          "headerName": " Client Name",
+          "field": "client_name",
+          "sortable": true,
+          "filter": "agTextColumnFilter"
+      },
+      {
+          "headerName": "Project Id",
+          "field": "project_id",
+          "sortable": true,
+          "filter": "agTextColumnFilter"
+      },
+      {
+          "headerName": "Project Name",
+          "field": "project_name",
+          "sortable": true,
+          "filter": "agTextColumnFilter"
+      },
+      {
+          "headerName": "Schedule Start Date",
+          "field": "startdate",
+          "sortable": true,
+          "filter": "agDateColumnFilter",
+          "type": "date"
+      },
+      {
+          "headerName": "Schedule End Date",
+          "field": "enddate",
+          "sortable": true,
+          "filter": "agDateColumnFilter",
+          "type": "date"
+      },
+      {
+          "headerName": "Project Status",
+          "field": "status",
+          "sortable": true,
+          "filter": "agTextColumnFilter"
+      },
+      {
+          "type": "rightAligned",
+          "headerName": "Actions",
+          "cellRenderer": "buttonRenderer",
+          "cellRendererParams": {
+              "onClick": "this.onBtnClick1.bind(this)",
+              "label": "Click 1"
+          }
+      }
+  ]
+}

@@ -22,7 +22,7 @@ import { DataService } from "../services/data.service";
       >
         <mat-option
           *ngFor="let op of this.opt.options"
-          [value]="op[this.valueProp]"
+          [value]="op[this.labelProp]"
           (click)="selectionChange(op)"
         >
           <span [innerHTML]="op[this.labelProp]"></span>
@@ -44,7 +44,6 @@ export class SelectInput extends FieldType<any> implements OnInit {
   data: any;
   currentField: any;
   //default prop setting
-
   //default prop setting
   valueProp = "id";
   labelProp = "name";
@@ -60,6 +59,12 @@ export class SelectInput extends FieldType<any> implements OnInit {
     return this.formControl as FormControl;
   }
 
+  valueSlected(){
+
+    this.selectedValue=this.formControl.value    
+    this.thisFormControl?.setValue(this.selectedValue)
+  }
+
   ngOnInit(): void {
     this.opt = this.field.props || {};
     this.labelProp = this.opt.labelProp;
@@ -67,126 +72,130 @@ export class SelectInput extends FieldType<any> implements OnInit {
     this.currentField = this.field;
     this.subscribeOnValueChangeEvent();
     //below logic only for dynamic selection option
-  if(this?.field?.props?.custom_filter){
-    let name=this.field.props.collectionName
-    var filterCondition1 =
-   {filter: [
-   {
-    clause: "AND",
-    conditions: [
-     { column: 'is_collection', operator: "EQUALS", value:  "Yes"},
-    ]
-   }
-   ]}
-   // model_config
-   //! to chnage 
-   // this.dataService.getotherModuleName(model_name)
-   this.dataService.getDataByFilter(name,filterCondition1)
-   .subscribe((abc: any) => {
-     console.log(abc);
-     const unmatchedNames = abc.data[0].response;
-     // Update the options array within the subscription
-     this.field.props.options = unmatchedNames.map((name: any) => {
-       return { model_name: name.model_name, collection_name: name.collection_name };
-     });
-     this.optionsValue = this.field.props.options;
-     console.log(this.optionsValue)
-   });
+//   if(this?.field?.props?.custom_filter){
+//     let name=this.field.props.collectionName
+//     var filterCondition1 =
+//    {filter: [
+//    {
+//     clause: "AND",
+//     conditions: [
+//      { column: 'is_collection', operator: "EQUALS", value:  "Yes"},
+//     ]
+//    }
+//    ]}
+//    // model_config
+//    //! to chnage 
+//    // this.dataService.getotherModuleName(model_name)
+//    this.dataService.getDataByFilter(name,filterCondition1)
+//    .subscribe((abc: any) => {
+//      console.log(abc);
+//      const unmatchedNames = abc.data[0].response;
+//      // Update the options array within the subscription
+//      this.field.props.options = unmatchedNames.map((name: any) => {
+//        return { model_name: name.model_name, collection_name: name.collection_name };
+//      });
+//      this.optionsValue = this.field.props.options;
+//      console.log(this.optionsValue)
+//    });
  
-  }
-  if(this?.opt?.flag){
-const keys=this.opt.parentkeys
-let values:any
-var filterCondition :any 
-if(this.opt.Child){
+//   }
+//   if(this?.opt?.flag){
+// const keys=this.opt.parentkeys
+// let values:any
+// var filterCondition :any 
+// if(this.opt.Child){
 
-  values=this.currentField.form._parent._parent.value
-  filterCondition =
-    [
-   {
-    clause: "AND",
-    conditions: [
-     { column: 'model_name', operator: "EQUALS", value:values[keys]  },
-    ]
-   }
-   ]
-}else{
-  console.log('else');
-  console.log(this.model);
+//   values=this.currentField.form._parent._parent.value
+//   filterCondition =
+//     [
+//    {
+//     clause: "AND",
+//     conditions: [
+//      { column: 'model_name', operator: "EQUALS", value:values[keys]  },
+//     ]
+//    }
+//    ]
+// }else{
+//   console.log('else');
+//   console.log(this.model);
   
-  values= this.model[keys]
-  filterCondition =
-   {filter: [
-   {
-    clause: "AND",
-    conditions: [
-     { column: 'model_name', operator: "EQUALS", value:values },
-    ]
-   }
-   ]
-}   }
-   // model_config
-   //! to chnage 
-   // this.dataService.getotherModuleName(model_name)
-   this.dataService.getDataByFilter(this.opt.collectionName,filterCondition)
-   .subscribe((res: any) => {
+//   values= this.model[keys]
+//   filterCondition =
+//    {filter: [
+//    {
+//     clause: "AND",
+//     conditions: [
+//      { column: 'model_name', operator: "EQUALS", value:values },
+//     ]
+//    }
+//    ]
+// }   }
+//    // model_config
+//    //! to chnage 
+//    // this.dataService.getotherModuleName(model_name)
+//    this.dataService.getDataByFilter(this.opt.collectionName,filterCondition)
+//    .subscribe((res: any) => {
      
-     const unmatchedNames = res.data[0].response
+//      const unmatchedNames = res.data[0].response
 
-     // Update the options array within the subscription
-     this.field.props.options = unmatchedNames.map((name: any) => {
-      let field_name=name.column_name.toLowerCase()
-      let data:any={}
+//      // Update the options array within the subscription
+//      this.field.props.options = unmatchedNames.map((name: any) => {
+//       let field_name=name.column_name.toLowerCase()
+//       let data:any={}
 
-      if(name.is_reference){
-data.collection_name=name.collection_name
-data.field=name.field
-return { name: name.column_name, field_name:field_name,reference:name.is_reference, orbitalvaule: data ,type:name.type};
+//       if(name.is_reference){
+// data.collection_name=name.collection_name
+// data.field=name.field
+// return { name: name.column_name, field_name:field_name,reference:name.is_reference, orbitalvaule: data ,type:name.type};
 
-      }else{
-       return { name: name.column_name, field_name:field_name,type:name.type};
+//       }else{
+//        return { name: name.column_name, field_name:field_name,type:name.type};
 
-      }
-      // to add collection and fiels and references
-     });
-     this.optionsValue = this.field.props.options;
-     console.log(this.optionsValue)
-   });
-  }
+//       }
+//       // to add collection and fiels and references
+//      });
+//      this.optionsValue = this.field.props.options;
+//      console.log(this.optionsValue)
+//    });
+//   }
 
-  if(this?.opt?.optionsDataSource?.multifilter){
-    this?.opt?.multifilter_condition?.conditions.map((res:any)=>{
+//   if(this?.opt?.optionsDataSource?.multifilter){
+//     this?.opt?.multifilter_condition?.conditions.map((res:any)=>{
      
-      // if(res?.value!=undefined && this?.field?.getdata){
-       let value = sessionStorage.getItem(this.field.column)
-        res.value=value
-      // 
+//       // if(res?.value!=undefined && this?.field?.getdata){
+//        let value = sessionStorage.getItem(this.field.column)
+//         res.value=value
+//       // 
     
-    })
-    let filter_condition={filter:[
-      this.opt.multifilter_condition
-    ]}
-    this.dataService.getDataByFilter(this.opt?.optionsDataSource?.multifilter,filter_condition).subscribe((res:any)=>{
-      // this.dataService.buildOptions(res.data[0].response, this.opt);
-      console.log(res);
+//     })
+//     let filter_condition={filter:[
+//       this.opt.multifilter_condition
+//     ]}
+//     this.dataService.getDataByFilter(this.opt?.optionsDataSource?.multifilter,filter_condition).subscribe((res:any)=>{
+//       // this.dataService.buildOptions(res.data[0].response, this.opt);
+//       console.log(res);
       
-    })
-}
+//     })
+// }
     if (this?.opt?.optionsDataSource?.collectionName!=undefined) {
       let name = this.opt.optionsDataSource.collectionName;
       this.dataService.getDataByFilter(name,{}).subscribe((res: any) => {
         console.log(res);
         
         this.dataService.buildOptions(res.data[0].response, this.opt);
-
+      
         if (this.field.props.attribute) {
           //if the data in array of object
           let data = this.field.key
             .split(".")
             .reduce((o: any, i: any) => o[i], this.model);
           this.field.formControl.setValue(data);
+         
         } else {
           this.field.formControl.setValue(this.model[this.field.key]);
+          if(this.model.isEdit){
+            this.valueSlected()
+          }
         }
       });
     }
@@ -198,40 +207,44 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
       this.dataService.getDataById(name, id).subscribe((res: any) => {
         ;
         this.dataService.buildOptions(res, this.opt);
-
+        if(this.model.isEdit){
+          this.valueSlected()
+        }
         if (this.field.props.attribute) {
           //if the data in array of object
           let data = this.field.key
             .split(".")
             .reduce((o: any, i: any) => o[i], this.model);
           this.field.formControl.setValue(data);
+       
         } else {
+     
           this.field.formControl.setValue(this.model[this.field.key]);
         }
       });
     }
 
-    if (this.currentField.parentKey != "") {
+    if (this.currentField.parentKey != undefined) {
       (this.field.hooks as any).afterViewInit = (f: any) => {
-        const parentControl = this.form.get(this.currentField.parentKey); //this.opt.parent_key);        
+        const parentControl:any = this.form.get(this.currentField.parentKey); //this.opt.parent_key);        
         console.log(parentControl);
         
         parentControl?.valueChanges.subscribe((val: any) => {
           if(this?.opt?.Properties?.formVAlueChange){
             this.opt.multifilter_condition.conditions.map((res:any)=>{
              if(this.opt.multifiltertype=="Simple"){
-              res.value=val
-
+              if(this.model.isEdit){
+                res.value=parentControl.defaultValue
+                
+              }else{
+                res.value=val
+              }
              }
-              // if(res.value=='' ){
-              //  let value = sessionStorage.getItem(this.field.column)
-              // }
-            
             })
             let filter_condition={filter:[
               this.opt.multifilter_condition
             ]}
-            console.log(filterCondition);
+            console.log(filter_condition);
             let collectionName: any = this?.field?.parentCollectionName ? this?.field?.parentCollectionName : this.opt?.optionsDataSource?.collectionName;
             this.dataService.getDataByFilter(collectionName,filter_condition).subscribe((res:any)=>{
               // this.dataService.buildOptions(res.data[0].response, this.opt);
@@ -243,7 +256,14 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
 
                 this.field.props.options = specificField.map((name: any) => {
                     return { label: name, value: name };
-                });}
+                });
+                if(this.model.isEdit){
+                  this.valueSlected()
+                }
+              }
+
+    
+           
             } else {
               // this.dataService.buildOptions(res.data[0].response, this.opt);
               console.error("specificField is undefined");
@@ -289,6 +309,7 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
         });
       };
     }
+ 
   }
 
   selectionChange(selectedObject: any) {
@@ -312,11 +333,11 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
 
   subscribeOnValueChangeEvent() {
     // on ParentKey changes logic to be implemented
-    if (this.field.parentKey! != "") {
+    if (this.field.parentKey!= undefined) {
       console.log(this.field.parent_key);
       
       (this.field.hooks as any).afterViewInit = (f: any) => {
-        const parentControl = this.form.get(this.field.parentKey); //this.opt.parent_key);
+        const parentControl:any = this.form.get(this.field.parentKey); //this.opt.parent_key);
         parentControl?.valueChanges.subscribe((val: any) => {
           this.selectedObject = val;
           console.log(val);
@@ -324,7 +345,13 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
             this.opt.multifilter_condition.conditions.map((res:any)=>{
              if(this.opt.multifiltertype=="Simple"){
               // if(res.value){
-                res.value=val
+                if(this.model.isEdit){
+                  res.value=parentControl.defaultValue
+
+                }else{
+
+                  res.value=val
+                }
               // }
             }
             })
@@ -347,6 +374,10 @@ return { name: name.column_name, field_name:field_name,reference:name.is_referen
                   this.field.props.options = specificField.map((name: any) => {
                       return { label: name, value: name };
                   });
+                  if(this.model.isEdit){
+                    this.valueSlected()
+                  }
+        
               } else {
                   // Handle the case when specificField is undefined
                   console.error("specificField is undefined");

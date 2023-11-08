@@ -219,7 +219,7 @@ export class ImageInput extends FieldType<any> implements OnInit {
  // override id: any
  // id:any
  imageUrl :any
- response: any
+//  response: any
  
  constructor(
  public dataService: DataService,
@@ -235,21 +235,22 @@ export class ImageInput extends FieldType<any> implements OnInit {
 
     console.log(this.id);
 if(this.model.isEdit){
- this.imageUrl=this.model[this.field.key]
+    // To Implemt
+ this.imageUrl=  "https://amsort.sgp1.digitaloceanspaces.com/"+this.model[this.field.key]
 
-    this.dataService.getDataById("employee", this.id).subscribe((res: any) => {
-        console.log(res);
-        this.response = res.data
+    // this.dataService.getDataById("employee", this.id).subscribe((res: any) => {
+    //     console.log(res);
+    //     this.response = res.data
        
-        })
+    //     })
        
         
-        this.dataService.getDataById("client", this.id).subscribe((res: any) => {
-       console.log(res);
-           this.response = res.data
+    //     this.dataService.getDataById("client", this.id).subscribe((res: any) => {
+    //    console.log(res);
+    //        this.response = res.data
           
            
-           })
+    //        })
        
        
         
@@ -284,7 +285,7 @@ console.log(this.file);
 debugger
  file.value = ""
  this.multiples =null
- this.imageUrl = null
+ this.imageUrl = null   
 this.formControl.setValue("")  
   
  }

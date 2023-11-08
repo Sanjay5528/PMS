@@ -81,7 +81,7 @@ export class FormService {
       ctrl.butText = ctrl.id ? 'Update' : 'Save';   //buttons based on the id
       
         if (ctrl.formAction == 'Edit' && ctrl.config.mode == 'page') {
-        // this.LoadData(ctrl).subscribe((res: any) => {
+                  // this.LoadData(ctrl).subscribe((res: any) => {
         ctrl.fields = config.form.fields
         // })
       }
@@ -569,7 +569,7 @@ console.log(ctrl);
  * Take the Old Data in modelOldData 
  * @param ctrl This is Total content from the parent componet
  */
-  async saveFormData(ctrl: any, event?: any): Promise<any> {
+  async saveFormData(ctrl: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       // this.helperService.validateAllFormFields(ctrl.form); I Dont what is it ?
       
@@ -607,8 +607,10 @@ console.log(ctrl);
       }
 
       if(ctrl?.config?.Change_id){
-        data.org_id=this.dataService.getdetails().profile.org_id
-        data._id=data.org_id+"-"+data._id
+
+        // data.org_id=this.dataService.getdetails().profile.org_id
+        // data._id=data.org_id+"-"+data._id
+        data[ctrl.config.changekeyfield]=data[ctrl.config.addkeyfield]+"-"+data[ctrl.config.changekeyfield]
       }
 
       // It can be done in any project with different screen config
@@ -632,9 +634,6 @@ console.log(ctrl);
                 this.updateuser(ctrl);
               } 
               
-    event.preventDefault();
-    event.stopPropagation();
-
               this.dialogService.openSnackBar("Data has been Inserted successfully", "OK")
              resolve(res)
 
@@ -653,10 +652,6 @@ console.log(ctrl);
               return error
             })
     ).subscribe((res: any) => {
-      
-    event.preventDefault();
-    event.stopPropagation();
-
           this.dialogService.openSnackBar("Data has been updated successfully", "OK")
             resolve(res)
           })

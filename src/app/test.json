@@ -1,73 +1,84 @@
 {
-    "pageHeading": "Modules",
-    "formType": "simple",
-    "editMode": "popup",
-    "keyField": "_id",
-    "form": {
-      "collectionName": "modules",
-      "fields": [
-        {
-          "type": "input",
-          "key": "moduleid",
-          "props": {
-            "label": "Module Id",
-            "placeholder": "Module Id",
-            "pattern": "^[a-zA-Z0-9-_]*$",
-            "required": true
+  "pageHeading": "Project",
+  "collectionName": "project",
+  "editMode": "popup",
+  "screenWidth": "80%",
+  "keyField": "_id",
+  "showbutton": true,
+  "actions": [
+      {
+          "label": "Edit",
+          "icon": "edit",
+          "formName": "project"
+      },
+      {
+          "label": "Modules",
+          "icon": "view_module",
+          "formName": "project"
+      },
+      {
+          "label": "ProjectTeam",
+          "icon": "view_module",
+          "formName": "projectteam"
+      },
+      {
+          "label": "Delete",
+          "icon": "delete",
+          "formName": "entities/project"
+      }
+  ],
+  "addRoute": "add/project",
+  "editRoute": "edit/project",
+  "moduleRoute": "module/project",
+  "projectteamRoute": "projectteam/project",
+  
+  "columnDefs": [
+      {
+          "headerName": " Client Name",
+          "field": "client_name",
+          "sortable": true,
+          "filter": "agTextColumnFilter"
+      },
+      {
+          "headerName": "Project Id",
+          "field": "project_id",
+          "sortable": true,
+          "filter": "agTextColumnFilter"
+      },
+      {
+          "headerName": "Project Name",
+          "field": "project_name",
+          "sortable": true,
+          "filter": "agTextColumnFilter"
+      },
+      {
+          "headerName": "Schedule Start Date",
+          "field": "startdate",
+          "sortable": true,
+          "filter": "agDateColumnFilter",
+          "type": "date"
+      },
+      {
+          "headerName": "Schedule End Date",
+          "field": "enddate",
+          "sortable": true,
+          "filter": "agDateColumnFilter",
+          "type": "date"
+      },
+      {
+          "headerName": "Project Status",
+          "field": "status",
+          "sortable": true,
+          "filter": "agTextColumnFilter"
+      },
+      {
+          "type": "rightAligned",
+          "headerName": "Actions",
+          "cellRenderer": "buttonRenderer",
+          "cellRendererParams": {
+              "onClick": "this.onBtnClick1.bind(this)",
+              "label": "Click 1"
           }
-        },
-        {
-          "type": "input",
-          "key": "modulename",
-          "props": {
-            "label": "Module Name",
-            "placeholder": "Module Name",
-            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
-            "required": true
-          }
-        },
-        {
-          "type": "select-input",
-          "key": "parentmodulename",
-          "props": {
-            "label": "Parent Module Name",
-            "placeholder": "Parent Module Name",
-            "labelPropTemplate": " {{parentmodulename}}",
-            "optionsDataSource": {
-              "collectionName": "modules"
-            },
-            "labelProp": "parentmodulename",
-            "valueProp": "parentmodulename",
-            "required": true
-          },
-          "expressions": {
-            "hide": "!model.isshow"
-          }
-        },
-        {
-          "key": "startdate",
-          "type": "date-input",
-         
-          "props": {
-            "label": "Start Date",
-            "placeholder": "Start Date",
-            "type": "date",
-            "required": true
-          }
-        },
-        {
-          "key": "enddate",
-          "type": "date-input",
-          "parentKey": "startdate",
-          "parentCollectionName": "modules",
-          "props": {
-            "label": "End Date",
-            "placeholder": "End Date",
-            "type": "date",
-            "required": true
-          }
-        }
-      ]
-    },
-    "onCancelRoute": "list/module"
-  }
+      }
+  ]
+}

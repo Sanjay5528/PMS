@@ -113,7 +113,7 @@ export class DynamicFormComponent {
     }
 // if(this.form.valid){
 
-        this.formService.saveFormData(this,event).then((result: any) => {
+        this.formService.saveFormData(this).then((result: any) => {
           console.log(result);
           if (result != undefined) {
             this.goBack(result)

@@ -316,175 +316,386 @@ public imageupload(folder:any,refId:any,data: any) {
   return details
  }  
 
- async makeFiltersConditions(Input_object: any): Promise<any> {
-  return await new Promise((resolve, reject) => {
-    let vals:any={
-      start:Input_object.start,
-      end:Input_object.end,
-      filter:[],
-      sort:Input_object.sort
-    }
-let overallfilter:any[]=[]
+//  async makeFiltersConditions(Input_object: any): Promise<any> {
+//   return await new Promise((resolve, reject) => {
+//     let vals:any={
+//       start:Input_object.start,
+//       end:Input_object.end,
+//       filter:[],
+//       sort:Input_object.sort
+//     }
+// let overallfilter:any[]=[]
 
-if (!_.isEmpty(Input_object.filter)) {
-  let filter: any = Input_object.filter;
+// if (!_.isEmpty(Input_object.filter)) {
+//   let filter: any = Input_object.filter;
   
 
-  for (const column in filter) {
-    let data: any = filter[column];
-    let filtervaluse: any = {
-      clause: '',
-      conditions: [],
-    };
-    filtervaluse.clause=data.operator || "AND" //! AND / OR
-    // if (data.operator == "OR") {
-    //   filtervaluse.clause = "OR";
-    // } else {
-    //   filtervaluse.clause = "AND";
-    // }
+//   for (const column in filter) {
+//     let data: any = filter[column];
+//     let filtervaluse: any = {
+//       clause: '',
+//       conditions: [],
+//     };
+//     filtervaluse.clause=data.operator || "AND" //! AND / OR
+//     // if (data.operator == "OR") {
+//     //   filtervaluse.clause = "OR";
+//     // } else {
+//     //   filtervaluse.clause = "AND";
+//     // }
 
-    let dataconditions: any[] = [];
+//     let dataconditions: any[] = [];
 
-    // Check if data has a 'conditions' property and if it's an array with length > 0
-    if (data.conditions && Array.isArray(data.conditions) && data.conditions.length > 0) {
-      console.log(data);
+//     // Check if data has a 'conditions' property and if it's an array with length > 0
+//     if (data.conditions && Array.isArray(data.conditions) && data.conditions.length > 0) {
+//       console.log(data);
       
-      data.conditions.forEach((xyz: any) => {
-        let operator: any=xyz.type.toUpperCase();
-        let flag:boolean=false;
-        // if (xyz.type == "equals") {
-        //   operator = "EQUALS";
-        // } else if (xyz.type == "notEqual") {
-        //   operator = "NOTEQUAL";
-        // }else if (xyz.type == "lessThanOrEqual") {
-        //   operator = "$lte";
-        // } else if (xyz.type == "greaterThanOrEqual") {
-        //   operator = "$gte";
-        // } else if (xyz.type == "greaterThan") {
-        //   operator = "$gt";
-        // } else if (xyz.type == "lessThan") {
-        //   operator = "$le";
-        // } else 
-        if (xyz.type == "inRange") {
+//       data.conditions.forEach((xyz: any) => {
+//         let operator: any=xyz.type.toUpperCase();
+//         let flag:boolean=false;
+//         // if (xyz.type == "equals") {
+//         //   operator = "EQUALS";
+//         // } else if (xyz.type == "notEqual") {
+//         //   operator = "NOTEQUAL";
+//         // }else if (xyz.type == "lessThanOrEqual") {
+//         //   operator = "$lte";
+//         // } else if (xyz.type == "greaterThanOrEqual") {
+//         //   operator = "$gte";
+//         // } else if (xyz.type == "greaterThan") {
+//         //   operator = "$gt";
+//         // } else if (xyz.type == "lessThan") {
+//         //   operator = "$le";
+//         // } else 
+//         if (xyz.type == "inRange") {
           
-          flag=true;
-        }
-        // }  else {
-        //   operator = xyz.type;
-        // }
-        console.log(xyz.filterType);
+//           flag=true;
+//         }
+//         // }  else {
+//         //   operator = xyz.type;
+//         // }
+//         console.log(xyz.filterType);
         
-        if(xyz.filterType=="date"){
-console.log(xyz);
-if(flag){
-  dataconditions.push({
-    column: column,
-    operator: operator,
-    type: xyz.dateFrom.toUpperCase(),
-    value: [moment(xyz.dateFrom).format( 'yyyy-MM-DDT00:00:00.000Z'),moment(xyz.dateTo).format( 'yyyy-MM-DDT00:00:00.000Z')],
-  });
-}else{
-  dataconditions.push({
-    column: column,
-    operator: operator,
-    type: xyz.filterType.toUpperCase(),
-    value: moment(xyz.dateFrom).format( 'yyyy-MM-DDT00:00:00.000Z'),
-  });
-}  
-        }else{
+//         if(xyz.filterType=="date"){
+// console.log(xyz);
+// if(flag){
+//   dataconditions.push({
+//     column: column,
+//     operator: operator,
+//     type: xyz.dateFrom.toUpperCase(),
+//     value: [moment(xyz.dateFrom).format( 'yyyy-MM-DDT00:00:00.000Z'),moment(xyz.dateTo).format( 'yyyy-MM-DDT00:00:00.000Z')],
+//   });
+// }else{
+//   dataconditions.push({
+//     column: column,
+//     operator: operator,
+//     type: xyz.filterType.toUpperCase(),
+//     value: moment(xyz.dateFrom).format( 'yyyy-MM-DDT00:00:00.000Z'),
+//   });
+// }  
+//         }else{
 
-          if(flag){
-            dataconditions.push({
-              column: column,
-              operator: operator,
-              type: xyz.filterType.toUpperCase(),
-              value: [xyz.filter,xyz.filterTo],
-            });
-          }else{
-            dataconditions.push({
-              column: column,
-              operator: operator,
-              type: xyz.filterType.toUpperCase(),
-              value: xyz.filter,
-            });
-          }
-        }
-      });
-    } else {
-      let operator: any=data.type.toUpperCase();;
-      let flag:boolean=false;
-      //! go here
-      // if (data.type == "equals") {
-      //   operator = "EQUALS";
-      // } else if (data.type == "notEqual") {
-      //   operator = "NOTEQUAL";
-      // }else if (data.type == "lessThanOrEqual") {
-      //   operator = "$lte";
-      // } else if (data.type == "greaterThanOrEqual") {
-      //   operator = "$gte";
-      // } else if (data.type == "greaterThan") {
-      //   operator = "$gt";
-      // } else if (data.type == "lessThan") {
-      //   operator = "$le";
-      // } else
-       if (data.type == "inRange") {
+//           if(flag){
+//             dataconditions.push({
+//               column: column,
+//               operator: operator,
+//               type: xyz.filterType.toUpperCase(),
+//               value: [xyz.filter,xyz.filterTo],
+//             });
+//           }else{
+//             dataconditions.push({
+//               column: column,
+//               operator: operator,
+//               type: xyz.filterType.toUpperCase(),
+//               value: xyz.filter,
+//             });
+//           }
+//         }
+//       });
+//     } else {
+//       let operator: any=data.type.toUpperCase();;
+//       let flag:boolean=false;
+//       //! go here
+//       // if (data.type == "equals") {
+//       //   operator = "EQUALS";
+//       // } else if (data.type == "notEqual") {
+//       //   operator = "NOTEQUAL";
+//       // }else if (data.type == "lessThanOrEqual") {
+//       //   operator = "$lte";
+//       // } else if (data.type == "greaterThanOrEqual") {
+//       //   operator = "$gte";
+//       // } else if (data.type == "greaterThan") {
+//       //   operator = "$gt";
+//       // } else if (data.type == "lessThan") {
+//       //   operator = "$le";
+//       // } else
+//        if (data.type == "inRange") {
         
-        flag=true;
-      }
-      //   else {
-      //   operator = data.type;
-      // }
-      if(data.filterType=="date"){
-        console.log(data);
+//         flag=true;
+//       }
+//       //   else {
+//       //   operator = data.type;
+//       // }
+//       if(data.filterType=="date"){
+//         console.log(data);
         
-        if(flag){
-          dataconditions.push({
-            column: column,
-            operator: operator,
-            type: data.filterType.toUpperCase(),
+//         if(flag){
+//           dataconditions.push({
+//             column: column,
+//             operator: operator,
+//             type: data.filterType.toUpperCase(),
             
-            value: [moment(data.dateFrom).format( 'yyyy-MM-DDT00:00:00.000Z'),moment(data.dateTo).format( 'yyyy-MM-DDT00:00:00.000Z')],
-          });
-        }else{
-          dataconditions.push({
-            column: column,
-            operator: operator,
-            type: data.filterType.toUpperCase(),
-            value: moment(data.dateFrom).format( 'yyyy-MM-DDT00:00:00.000Z'),
-          });
-        }    
-             }else{  
-                  if(flag){
-                    dataconditions.push({
-                      column: column,
-                      operator: operator,
-                      type: data.filterType.toUpperCase(),
-                      value: [data.filter,data.filterTo],
-                    });
-                  }else{
-                    dataconditions.push({
-                      column: column,
-                      operator: operator,
-                      type: data.filterType.toUpperCase(),
-                      value: data.filter,
+//             value: [moment(data.dateFrom).format( 'yyyy-MM-DDT00:00:00.000Z'),moment(data.dateTo).format( 'yyyy-MM-DDT00:00:00.000Z')],
+//           });
+//         }else{
+//           dataconditions.push({
+//             column: column,
+//             operator: operator,
+//             type: data.filterType.toUpperCase(),
+//             value: moment(data.dateFrom).format( 'yyyy-MM-DDT00:00:00.000Z'),
+//           });
+//         }    
+//              }else{  
+//                   if(flag){
+//                     dataconditions.push({
+//                       column: column,
+//                       operator: operator,
+//                       type: data.filterType.toUpperCase(),
+//                       value: [data.filter,data.filterTo],
+//                     });
+//                   }else{
+//                     dataconditions.push({
+//                       column: column,
+//                       operator: operator,
+//                       type: data.filterType.toUpperCase(),
+//                       value: data.filter,
+//                     });
+//                   }
+//                 }
+      
+//     }
+
+//     filtervaluse.conditions = dataconditions;
+//     overallfilter.push(filtervaluse);
+//   }
+// vals.filter=overallfilter
+//   console.log(overallfilter);
+// }
+// resolve(vals)
+//   })
+
+
+// }
+ 
+async makeFiltersConditions(Input_object: any): Promise<any> {
+  return await new Promise((resolve, reject) => {
+    let vals: any = {
+      start: Input_object.start,
+      end: Input_object.end,
+      filter: [],
+      sort: Input_object.sort,
+    };
+    let overallfilter: any[] = [];
+
+    if (!_.isEmpty(Input_object.filter)) {
+      let filter: any = Input_object.filter;
+
+      for (let column in filter) {
+        let data: any = filter[column];
+        let filtervaluse: any = {
+          clause: "",
+          conditions: [],
+        };
+        filtervaluse.clause = data.operator || "AND";
+        let dataconditions: any[] = [];
+
+        if (
+          data.conditions &&
+          Array.isArray(data.conditions) &&
+          data.conditions.length > 0
+        ) {
+          data.conditions.forEach((xyz: any) => {
+            let operator: any = xyz.type.toUpperCase();
+            let flag: boolean = false;
+
+            if (xyz.type == "inRange") {
+              flag = true;
+            }
+
+            if (xyz.filterType == "string") {
+              if (!_.isEmpty(data.value)) {
+                if (xyz.values[0][2] == true) {
+                  console.log("if");
+
+                  column = xyz.values[0][1];
+                  xyz.filter = xyz.values.map((vals: any) => {
+                    return vals[0];
+                  });
+                }
+              } else {
+                xyz.filter = xyz?.values;
+              }
+            }
+            if (xyz.filterType == "set") {
+              xyz.filterType = "string";
+              xyz.type = "IN";
+              if (!_.isEmpty(data.value)) {
+                if (xyz?.values[0][2] == true) {
+                  console.log("if");
+
+                  column = xyz?.values[0][1];
+                  xyz.filter = xyz.values.map((vals: any) => {
+                    return vals[0];
+                  });
+                }
+              } else {
+                console.log("else");
+
+                xyz.filter = xyz?.values;
+              }
+            }
+            console.log(xyz);
+
+            if (xyz.filterType == "date") {
+              console.log(xyz);
+              if (flag) {
+                dataconditions.push({
+                  column: column,
+                  operator: operator,
+                  type: xyz.dateFrom,
+                  value: [
+                    moment(xyz.dateFrom).format("yyyy-MM-DDT00:00:00.000Z"),
+                    moment(xyz.dateTo).format("yyyy-MM-DDT00:00:00.000Z"),
+                  ],
+                });
+              } else {
+                dataconditions.push({
+                  column: column,
+                  operator: operator,
+                  type: xyz.filterType,
+                  value: moment(xyz.dateFrom).format(
+                    "yyyy-MM-DDT00:00:00.000Z"
+                  ),
+                });
+              }
+            } else {
+              if (xyz.filterType == "string") {
+                if (!_.isEmpty(data.value)) {
+                  if (xyz?.values[0][2] == true) {
+                    console.log("if");
+
+                    column = xyz?.values[0][1];
+                    xyz.filter = xyz.values.map((vals: any) => {
+                      return vals[0];
                     });
                   }
+                } else {
+                  console.log("else");
+
+                  xyz.filter = xyz?.values;
                 }
-      
+              }
+              if (flag) {
+                dataconditions.push({
+                  column: column,
+                  operator: operator,
+                  type: xyz.filterType,
+                  value: [xyz.filter, xyz.filterTo],
+                });
+              } else {
+                dataconditions.push({
+                  column: column,
+                  operator: operator,
+                  type: xyz.filterType,
+                  value: xyz.filter,
+                });
+              }
+            }
+          });
+        } else {
+          if (data.filterType == "set") {
+            data.filterType = "string";
+            data.type = "IN";
+            if (!_.isEmpty(data.value)) {
+              if (data?.values[0][2] == true) {
+                column = data.values[0][1];
+                data.filter = data?.values.map((vals: any) => {
+                  console.log(vals);
+                  return vals[0];
+                });
+              }
+            } else {
+              data.filter = data.values;
+            }
+            console.log(data);
+          }
+
+          let operator: any = data.type.toUpperCase();
+          let flag: boolean = false;
+
+          if (data.type == "inRange") {
+            flag = true;
+          }
+          if (data.filterType == "string") {
+            if (!_.isEmpty(data.value)) {
+              if (data.values[0][2] == true) {
+                console.log("if");
+
+                column = data.values[0][1];
+                data.filter = data.values.map((vals: any) => {
+                  return vals[0];
+                });
+              }
+            }
+          }
+          if (data.filterType == "date") {
+            console.log(data);
+            if (flag) {
+              dataconditions.push({
+                column: column,
+                operator: operator,
+                type: data.filterType,
+
+                value: [
+                  moment(data.dateFrom).format("yyyy-MM-DDT00:00:00.000Z"),
+                  moment(data.dateTo).format("yyyy-MM-DDT00:00:00.000Z"),
+                ],
+              });
+            } else {
+              dataconditions.push({
+                column: column,
+                operator: operator,
+                type: data.filterType,
+                value: moment(data.dateFrom).format(
+                  "yyyy-MM-DDT00:00:00.000Z"
+                ),
+              });
+            }
+          } else {
+            if (flag) {
+              dataconditions.push({
+                column: column,
+                operator: operator,
+                type: data.filterType,
+                value: [data.filter, data.filterTo],
+              });
+            } else {
+              dataconditions.push({
+                column: column,
+                operator: operator,
+                type: data.filterType,
+                value: data.filter,
+              });
+            }
+          }
+        }
+
+        filtervaluse.conditions = dataconditions;
+        overallfilter.push(filtervaluse);
+      }
+      vals.filter = overallfilter;
+      console.log(overallfilter);
     }
-
-    filtervaluse.conditions = dataconditions;
-    overallfilter.push(filtervaluse);
-  }
-vals.filter=overallfilter
-  console.log(overallfilter);
+    resolve(vals);
+  });
 }
-resolve(vals)
-  })
-
-
-}
- 
-
 
 }

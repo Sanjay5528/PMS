@@ -29,22 +29,11 @@ import { DataService } from "../services/data.service";
 })
 export class MatPrefixInput extends FieldType<any> implements OnInit {
   opt: any;
-  //default prop setting
-  // valueProp: any;
-  // labelProp: any;
-  // onValueChangeUpdate: any;
   label: any;
-  // dropdownList = [];
   currentField: any;
   prefix: any;
-  // country_code:any
   parent_field:any
-//   data:any
-//   api!:Subscription
-//   test:any
-// test2:any
-// private apiCalled = false;
-  constructor(private dataService: DataService,) {
+  constructor() {
     super();
   }
 
@@ -55,13 +44,11 @@ export class MatPrefixInput extends FieldType<any> implements OnInit {
   ngOnInit(): void {
     this.label = this.field.props?.label;
     this.opt = this.field.props || {};
-    this.currentField = this.field;
-    // this.onValueChangeUpdate = this.opt.onValueChangeUpdate;
-    
+    this.currentField = this.field;    
     if (this.currentField.parentKey != "") {
       if(this?.opt?.type=="Simple"){
-        // console.log(this.opt);
         this.prefix=this.model[this.currentField.parentKey]+"-"      
+        this.model["ChangeKey"]=this.currentField.parentKey
       }
 
       // (this.field.hooks as any).afterViewInit = (f: any) => {
@@ -81,15 +68,32 @@ export class MatPrefixInput extends FieldType<any> implements OnInit {
       };
     }
 
-    if(this.field.getdata=='local'){ 
-    }
+   console.log(this.formControl);
+   
   }
 
   onselect(event: any) {
-    
-    // this.model["calling_code"]=this.prefix
+    this.formControl.setValue(event.target.value)
+    // this.model[this.currentField.parentKey]=this.prefix+event.target.value
    
   }
 
 }
-
+// !outer the form 
+// "Change_id": true,
+// "changekeyfield":"project_id",
+// ! inside the form
+// {
+//   "type": "matprefix-input",
+//   "parentKey": "client_name", // ! it used to take the dynamic parent key
+//   "className": "flex-6",
+//   "props": {
+//     "label": "Project ID",
+    // "type": "Linked", //! Linked <==> dynamic change  // Simple <==> Static 
+//     "placeholder": "Project ID",
+//     "required": true,
+//     "maxLength": 10,
+//     "pattern": "^[A-Z][a-zA-Z]{1,}$"
+//   },
+//   "hideExpression": "model.isEdit || !model.client_name"
+// }

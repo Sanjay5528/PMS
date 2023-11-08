@@ -10,23 +10,24 @@
       <span>
         <h3><b>Modules</b></h3>
     </span>
+    <div style="display: flex; margin-right: 30px">
+      <span>Client Name :<span style="font-weight: bold;">{{response?.client_name}}</span></span>
+    </div>
         <div style="display: flex; margin-right: 30px">
-          <span>Project Id :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: bold;">{{response?.projectid}}</span></span>
+          <span>Project Id :<span style="font-weight: bold;">{{response?.project_id}}</span></span>
         </div>
         <div style="display: flex; margin-right: 30px">
-          <span>Project Name :&nbsp;&nbsp;&nbsp;&nbsp;<span
-            style="font-weight: bold;">{{response?.projectname}}</span></span>
+          <span>Project Name :<span
+            style="font-weight: bold;">{{response?.project_name}}</span></span>
         </div>
-        <div style="display: flex; margin-right: 30px">
-          <span>Project Type :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+        <!-- <div style="display: flex; margin-right: 30px">
+          <span>Project Type :<span
             style="font-weight: bold;">{{response?.projecttype}}</span></span>
-        </div>
+        </div> -->
         <div style="display: flex; margin-right: 30px">
-          <span>Project Status :&nbsp;&nbsp;&nbsp;<span style="font-weight: bold;">{{response?.status}}</span></span>
+          <span>Project Status :<span style="font-weight: bold;">{{response?.status}}</span></span>
         </div>
-        <div style="display: flex; margin-right: 30px">
-          <span>Client Name :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: bold;">{{response?.clientname}}</span></span>
-        </div>
+       
     </div>
     <div>
       <button class="icon" matTooltip="Add" mat-mini-fab (click)="onAddButonClick($event)"
@@ -43,7 +44,9 @@
     [components]="components" (selectionChanged)="onSelectionChanged($event)"
     (cellValueChanged)="onCellValueChanged($event)"(gridReady)="onGridReady($event)" ></ag-grid-angular>
 </div>
-<ng-template #editViewPopup>
+
+
+<!-- <ng-template #editViewPopup>
   <mat-card>
     <mat-card-header style="flex: 1 1 auto;">
       <div style="width: 100%">
@@ -56,8 +59,7 @@
     <mat-card-content style="padding-top: 10px">
       <form [formGroup]="form">
         <formly-form [model]="selectedModel" [fields]="fields" [form]="form"></formly-form>
-        <!-- <formly-form  [fields]="fields" [form]="form">
-    </formly-form> -->
+      
       </form>
     </mat-card-content>
     <mat-card-actions>
@@ -70,7 +72,7 @@
         </button>
         <button
         style="margin: 5px; background: rgb(59, 146, 155)"
-        (click)="saveForm(config)"
+        (click)="saveForm(config,$event)"
         mat-raised-button
         color="warn"
        
@@ -82,4 +84,102 @@
       </div>
     </mat-card-actions>
   </mat-card>
+</ng-template> -->
+
+
+<ng-template #editViewPopup class="example-sidenav" mode="over" style="height: auto" let-data >
+  <div style="text-align-last: end" *ngIf="formAction == 'view'">
+    <mat-icon (click)='this.dialogService.closeModal()'>close</mat-icon>
+  </div>
+  <div class="page">
+    <div *ngIf="formAction != 'view'" class="page-content">
+      <app-dynamic-form [formName]="formName" [model]="data" [mode]="'popup'"  (onClose)="close($event)"></app-dynamic-form>
+    </div>
+  </div>
+
+  <div class="center" style="width: 100%; margin: 5px" *ngIf="formAction == 'view'">
+    <h2 style="text-align: center;" class="page-title">{{ pageHeading }}</h2>
+    <formly-form [model]="data" [fields]="fields"></formly-form>
+  </div>
 </ng-template>
+<!-- ! To DO like bleow
+
+<div fxLayout="column" fxLayoutAlign="center center" style="width:100%">
+  
+  <div fxLayout="row" fxLayoutAlign="center center" fxFlex="100%" style="width:100%">
+    <div fxLayout="column" fxFlex="5%" class="back">
+      <mat-icon style="font-size:35px;margin-top: 30px;" (click)="goBack()">keyboard_backspace</mat-icon>
+    </div>
+    <div fxLayout="column" fxFlex="95%" fxLayoutAlign="center center" style="margin-top: 10px;">
+      <h2 class="page-title">{{config['pageHeading']}}</h2>
+      
+    </div>
+  </div>
+  <div fxLayout="row" *ngIf="!isDataError" class="form-container">
+      <div [ngStyle]="{'width': config.designConfig ? config.designConfig.leftPanelWidth : '20%' }" fxLayout="column">
+        <div>
+          <form [formGroup]="form" *ngIf="formName">
+          <formly-form [model]="model" [fields]="fields" [options]="options" [form]="form"></formly-form>
+            <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="15px" *ngIf="fields">
+              <button mat-raised-button color="primary" type="submit" (click)="frmStart($event)" *ngIf="!isFormDataLoaded && config.form.buttons.start">Start</button>
+            </div>
+          </form>
+        </div>
+        <div *ngIf="!isPopupEdit">
+            <form [formGroup]="detailForm" *ngIf="formName && isFormDataLoaded">
+              <formly-form [model]="detailModel" [fields]="detailFields" [options]="options" [form]="detailForm"></formly-form>
+              <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="20px" *ngIf="detailFields">
+                <button mat-button type="reset" (click)="this.formService.resetDetailModel(this)" *ngIf="isDetailEditMode">Cancel</button>
+                <button mat-raised-button type="submit" color="primary" (click)="frmDetailSubmit($event);">{{(isDetailEditMode?'Update':'Add')}}</button>
+              </div>
+            </form>
+       </div>
+
+      </div>
+      <div class="table-container" style="width:80%" *ngIf="config && config.detailListConfig">
+        <div fxLayout="column">
+          <div fxFlex="auto">
+            <div fxLayout="row">
+              <div fxFlex="1 0 auto">
+                <app-dynamic-filter  [showdefaultFilter]="showdefaultFilter" (filterValue)=" ' ' "></app-dynamic-filter>
+              </div>
+              <div style="float:right;" fxLayout="column" fxFlex="10%">
+                {{this.listData.length}} Record(s) found
+              </div>
+              <div>
+              <div fxLayout="column" fxFlex="5%">
+              </div>
+              <div class="add-container" *ngIf="!config['hideAddButton'] || isEditMode">
+                <button mat-raised-button color="primary"
+                  (click)="addForm('add')">
+                  <mat-icon>add</mat-icon>
+                  Add</button>
+                </div>
+            </div>
+          </div>
+          <div *ngIf="listData" >
+<ag-grid-angular
+      #agGrid
+      style="width: 100%; height: calc(100vh - 250px); flex: 1 1 auto"
+      class="ag-theme-alpine"
+      [defaultColDef]="defaultColDef"
+      [columnDefs]="detailListFields"
+      [rowData]="listData"
+      [rowSelection]="'single'"
+      [pagination]="true"
+      [paginationPageSize]="15"
+      (gridReady)="onGridReady($event)"
+      [components]="components"
+      [context]="context"
+      (selectionChanged)="onSelect($event)"
+    ></ag-grid-angular>
+        </div>
+        </div>
+      </div>
+      </div>
+      
+      <div *ngIf="isDataError">
+        <mat-icon color="warn" aria-label="Given ID is not valid">error</mat-icon>
+        <span>Given ID is not valid</span>
+      </div>
+</div> -->
