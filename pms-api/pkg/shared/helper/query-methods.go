@@ -3,6 +3,8 @@ package helper
 import (
 	"fmt"
 	"log"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -170,7 +172,6 @@ func Updateformodel(c *fiber.Ctx) error {
 		return shared.BadRequest("Organization Id missing")
 	}
 
-	// fmt.Println("Insert The Collections")
 	collectionName := c.Params("collectionName")
 
 	// If the ID is not a valid ObjectID, search using the ID as a string
@@ -221,17 +222,12 @@ func FindDocs(orgId, collection string, filter interface{}) (map[string]interfac
 	return result, nil
 }
 
-func BuildAggregationPipeline(inputData []FilterCondition, BasecollectionName string) (bson.M, error) {
+func BuildAggregationPipeline(inputData []FilterCondition, BasecollectionName string) bson.M {
 	var matchConditions []bson.M
 
 	for _, filter := range inputData {
 		for _, condition := range filter.Conditions {
-			Finals, err := GenerateAggregationPipeline(condition, BasecollectionName)
-
-			if err != nil {
-				shared.BadRequest("Invaild operator")
-			}
-
+			Finals := GenerateAggregationPipeline(condition, BasecollectionName)
 			matchConditions = append(matchConditions, Finals...)
 		}
 	}
@@ -245,20 +241,18 @@ func BuildAggregationPipeline(inputData []FilterCondition, BasecollectionName st
 		}
 	}
 
-	return bson.M{"$match": clause}, nil
+	return bson.M{"$match": clause}
 }
 
-func GenerateAggregationPipeline(condition ConditionGroup, basecollection string) ([]bson.M, error) {
+func GenerateAggregationPipeline(condition ConditionGroup, basecollection string) []bson.M {
 	conditions := []bson.M{}
 
 	//* If Nested Conditions Here that time Recursively load the filter
 	if len(condition.Conditions) > 0 {
 		nestedConditions := []bson.M{}
 		for _, nestedCondition := range condition.Conditions {
-			Nested, err := GenerateAggregationPipeline(nestedCondition, basecollection)
-			if err != nil {
-				shared.BadRequest("Invalid Oper")
-			}
+			Nested := GenerateAggregationPipeline(nestedCondition, basecollection)
+
 			nestedConditions = append(nestedConditions, Nested...)
 		}
 
@@ -266,8 +260,7 @@ func GenerateAggregationPipeline(condition ConditionGroup, basecollection string
 
 	column := condition.Column
 	value := condition.Value
-	// valueType := condition.ValueType
-	//Refence Collection
+
 	reference := condition.ParentCollectionName
 
 	//if basecollection is empty we use directly use columnName
@@ -298,16 +291,11 @@ func GenerateAggregationPipeline(condition ConditionGroup, basecollection string
 		"IN":                 "$in",
 	}
 
-	// if valueType == "custom_Variable" {
-	// 	Value := DateTimeConvert(value)
-	// 	value = Value
-	// }
-
 	//OpertorMap check we Sended In body to map
 	if operator, exists := operatorMap[condition.Operator]; exists {
-		conditionValue := DataTypeMakingCondition(condition.Type, value)
-		if condition.Operator == "INRANGE" {
-			if condition.Type == "date" {
+		conditionValue := ConvertToDataType(value, condition.Type)
+		if condition.Operator == "INRANGE" || condition.Operator == "IN_BETWEEN" {
+			if condition.Type == "date" || condition.Type == "time.Time" {
 				dateValues, isDate := value.([]interface{})
 				if isDate && len(dateValues) == 2 {
 					startDateValue, startOK := dateValues[0].(string)
@@ -350,10 +338,9 @@ func GenerateAggregationPipeline(condition ConditionGroup, basecollection string
 			conditions = append(conditions, bson.M{column: bson.M{operator: value.([]interface{})}})
 
 		} else {
+
 			conditions = append(conditions, bson.M{column: bson.M{operator: conditionValue}})
 		}
-	} else {
-		shared.BadRequest("INVALIDS")
 	}
 
 	//Caluse Binding
@@ -362,114 +349,83 @@ func GenerateAggregationPipeline(condition ConditionGroup, basecollection string
 	} else if condition.Clause == "OR" {
 		conditions = append(conditions, bson.M{"$or": conditions})
 	}
-	return conditions, nil
+	return conditions
 }
 
-// if value == "YesterDay"
-func DataTypeMakingCondition(dataType string, value interface{}) interface{} {
-	switch dataType {
-	case "date":
+// PagiantionPipeline -- METHOD Pagination return set of Limit data return
+func PagiantionPipeline(start, end int) bson.M {
+	// Get the Default value from env file
+	startValue, _ := strconv.Atoi(os.Getenv("DEFAULT_START_VALUE"))
+	endValue, _ := strconv.Atoi(os.Getenv("DEFAULT_LIMIT_VALUE"))
+
+	//param is empty set the Default value
+	if start == 0 || end == 0 {
+		start = startValue
+		end = endValue
+	}
+
+	// return the bson for pagination
+	return bson.M{
+		"$facet": bson.D{
+			{"response",
+				bson.A{
+					bson.D{{"$skip", start}},
+					bson.D{{"$limit", end - start}},
+				},
+			},
+			{"pagination",
+				bson.A{
+					bson.D{{"$count", "totalDocs"}},
+				},
+			},
+		},
+	}
+}
+
+// ConvertToDataType --METHOD Build the Datatype from Paramters
+func ConvertToDataType(value interface{}, DataType string) interface{} {
+	if DataType == "time.Time" || DataType == "date" {
 		if valStr, ok := value.(string); ok {
 			t, err := time.Parse(time.RFC3339, valStr)
 			if err == nil {
-				return t.UTC()
+				StartedDay := time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), 0, time.UTC)
+				return StartedDay
 			}
 		}
+	} else if DataType == "string" || DataType == "text" {
 
-		return nil
-
-	case "string", "text":
-		if strValue, ok := value.(string); ok {
-			return strValue
+		if valStr, ok := value.(string); ok {
+			t, err := time.Parse(time.RFC3339, valStr)
+			//if err is nil that time only convert the string to time.Time format
+			if err == nil {
+				StartedDay := time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), 0, time.UTC)
+				return StartedDay
+			} else {
+				// Default retrun the value string after convert string
+				return valStr
+			}
 		}
-	case "boolean":
+	} else if DataType == "boolean" || DataType == "bool" {
+
 		if boolValue, ok := value.(bool); ok {
 			return boolValue
 		}
-	case "time.Time":
-		if valStr, ok := value.(string); ok {
-			t, err := time.Parse(time.RFC3339, valStr)
-			if err == nil {
-				return t.UTC()
-			}
-		}
-
-		return nil
-	default:
-
 	}
 
 	return value
 }
 
-func DateTimeConvert(value interface{}) interface{} {
-	// var values interface{}
-	ValueData := value.(string)
-	referenceDate := time.Now()
-	if ValueData == "TODAY" {
-		// values = referenceDate.UTC()
-		return referenceDate
-
-	} else {
-		return referenceDate.AddDate(0, 0, -1).Truncate(24 * time.Hour).UTC()
+// UpdateDatasetConfig -- METHOD update the Data  to Db from filter and Data and collectionName from Param
+func UpdateDataToDb(orgId string, filter interface{}, Data interface{}, collectionName string) (fiber.Map, error) {
+	res, err := database.GetConnection(orgId).Collection(collectionName).UpdateOne(ctx, filter, Data)
+	if err != nil {
+		return nil, shared.InternalServerError(err.Error())
+	}
+	UpdatetResponse := fiber.Map{
+		"status":  "success",
+		"message": "Update Successfully",
+		"Data":    res.UpsertedID,
 	}
 
-}
-
-func GetSearchQueryResult(orgId string, collectionName string, filters []Filter, page int64, limit int64) ([]bson.M, error) {
-	query := generateSearchQuery(filters)
-	return GetQueryResult(orgId, collectionName, query, page, limit, nil)
-}
-
-func GetSearchQueryWithChildCount(orgId string, collectionName string, keyColumn string, childCollectionName string, lookupColumn string, filters []Filter) ([]bson.M, error) {
-	matchQuery := generateSearchQuery(filters)
-	pipeline := []bson.M{
-		{"$lookup": bson.M{
-			"from":         childCollectionName,
-			"localField":   keyColumn,
-			"foreignField": lookupColumn,
-			"as":           "details",
-		}},
-		{"$addFields": bson.M{"count": bson.M{"$size": "$details"}}},
-		{"$unset": "details"},
-	}
-	if matchQuery != nil {
-		pipeline = append([]bson.M{{"$match": matchQuery}}, pipeline...)
-	}
-	//fmt.Println(pipeline)
-	return GetAggregateQueryResult(orgId, collectionName, pipeline)
-}
-func generateSearchQuery(filters []Filter) interface{} {
-	if len(filters) == 0 {
-		return nil
-	}
-	//build query
-	var finalQuery interface{}
-	var queryArray [](map[string][]bson.M)
-	for _, filter := range filters {
-		filterQuery := make(map[string][]bson.M)
-		var con []bson.M
-		conditions := filter.Conditions
-		for _, condition := range conditions {
-			var f bson.M
-			if condition.Type == "date" {
-				date, _ := time.Parse(time.RFC3339, condition.Value)
-				f = bson.M{condition.Column: bson.M{condition.Operator: date}}
-			} else {
-				f = bson.M{condition.Column: bson.M{condition.Operator: condition.Value}}
-			}
-			con = append(con, f)
-		}
-		filterQuery[filter.Clause] = con
-		queryArray = append(queryArray, filterQuery)
-	}
-	if len(filters) == 1 {
-		finalQuery = queryArray[0]
-	} else {
-		finalQuery = bson.M{"$and": queryArray}
-	}
-	//fmt.Println(finalQuery)
-	//query, _ := json.Marshal(finalQuery)
-	//fmt.Println(string(query))
-	return finalQuery
+	return UpdatetResponse, err
 }

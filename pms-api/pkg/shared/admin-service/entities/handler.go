@@ -15,6 +15,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"kriyatec.com/pms-api/pkg/shared"
@@ -30,50 +31,50 @@ var fileUploadPath = ""
 var ctx = context.Background()
 
 func PostDocHandler(c *fiber.Ctx) error {
-	// Extract the organization ID from the request headers
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		shared.BadRequest("Organization Id missing")
+	org, exists := helper.GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
+	}
+	userToken := utils.GetUserTokenValue(c)
+
+	collectionName := CollectionNameGet(c.Params("model_name"), org.Id)
+	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	var errmsgs []string
+	if errmsg != nil {
+		for _, values := range errmsg {
+			errmsgs = append(errmsgs, values)
+		}
+		return shared.SendErrorResponse(c, errmsgs)
 	}
 
-	userToken := utils.GetUserTokenValue(c)
-	// inputData, errmsg := helper.InsertValidateInDatamodel(c.Params("model_name"), string(c.Body()), orgId)
-	// var errmsgs []string
-	// if errmsg != nil {
-	// 	for _, values := range errmsg {
-	// 		errmsgs = append(errmsgs, values)
-	// 	}
-	// 	return shared.SendErrorResponse(c, errmsgs)
-	// }
+	// var inputData map[string]interface{}
+	// c.BodyParser(&inputData)
 
-	// collectionName := CollectionNameGet(c.Params("model_name"), orgId)
-
-	var inputData map[string]interface{}
-	c.BodyParser(&inputData)
-
+	// collectionName := c.Params("model_name")
 	inputData["created_on"] = time.Now()
 	inputData["created_by"] = userToken.UserId
-
-	collectionName := c.Params("model_name")
-
+	inputData["status"] = "A"
 	if collectionName == "user" {
+
 		if inputData["password"].(string) != inputData["pwdConfirm"].(string) {
 			shared.BadRequest("mis-matched Confirm Password ")
 		} else if inputData["password"].(string) != "" || inputData["pwdConfirm"].(string) != "" {
-			shared.BadRequest("Missing Password ")
+			shared.BadRequest("Missing User Password ")
 		}
 		passwordHash, _ := helper.GeneratePasswordHash(inputData["password"].(string))
 		delete(inputData, "password")
 		delete(inputData, "pwdConfirm")
 		inputData["pwd"] = passwordHash
+
 	}
 
-	res, err := database.GetConnection(orgId).Collection(collectionName).InsertOne(ctx, inputData)
+	res, err := database.GetConnection(org.Id).Collection(collectionName).InsertOne(ctx, inputData)
 	if err != nil {
 		return shared.BadRequest("Failed to insert data into the database: " + err.Error())
 	}
 
-	return shared.SuccessResponse(c, res)
+	return shared.SuccessResponse(c, res.InsertedID)
 }
 
 func UserRegister(c *fiber.Ctx) error {
@@ -195,19 +196,17 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 	// collectionName := CollectionNameGet(orgID, c.Params("collectionName"))
 
 	// Validate the input data based on the data model
-	// inputData, validationErrors := helper.UpdateValidateInDatamodel( c.Params("collectionName"), string(c.Body()), orgID)
+	// inputData, validationErrors := helper.UpdateValidateInDatamodel(collectionName, string(c.Body()), orgID)
 	// if validationErrors != nil {
 	// 	// Handle validation errors with status code 400 (Bad Request)
 	// 	jsonstring, _ := json.Marshal(validationErrors)
 	// 	return shared.BadRequest(string(jsonstring))
 	// }
 
-	var Data map[string]interface{}
-
-	c.BodyParser(&Data)
-
+	// updatedData := make(map[string]interface{})
 	// Data := helper.UpdateFieldsWithParentKey(inputData, "", updatedData)
-
+	var Data map[string]interface{}
+	c.BodyParser(&Data)
 	update := bson.M{
 		"$set": Data,
 	}
@@ -246,7 +245,7 @@ func getDocByIddHandler(c *fiber.Ctx) error {
 	projectid := c.Params("projectid")
 
 	filter := bson.A{
-		bson.D{{"$match", bson.D{{"project_id", projectid}}}}, //Todo Im Change in backend
+		bson.D{{"$match", bson.D{{"project_id", projectid}}}},
 		bson.D{
 			{"$lookup",
 				bson.D{
@@ -291,10 +290,10 @@ func getDocByClientIdHandler(c *fiber.Ctx) error {
 	clientname := c.Params("clientname")
 	decodedProjectName, err := url.QueryUnescape(clientname)
 	if err != nil {
-		fmt.Println("Error decoding:", err)
+		// fmt.Println("Error decoding:", err)
 	}
 	client := strings.Replace(decodedProjectName, "%20", " ", -1)
-	fmt.Println("Decoded Client Name:", client)
+	// fmt.Println("Decoded Client Name:", client)
 	if collectionName == "testcase" {
 		filter = bson.M{"moduleid": client}
 	} else {
@@ -324,7 +323,7 @@ func getDocBycolonynameHandler(c *fiber.Ctx) error {
 		return shared.BadRequest("Invalid URL parameter")
 	}
 
-	fmt.Println(paramsValue)
+	// fmt.Println(paramsValue)
 
 	// Define a map of collection names to fields to search
 	collectionFieldMap := map[string][]string{
@@ -401,7 +400,7 @@ func ModuleTaskHandler(c *fiber.Ctx) error {
 		return shared.BadRequest("Organization Id missing")
 	}
 	projectid := c.Params("projectid")
-	fmt.Println(projectid)
+	// fmt.Println(projectid)
 	var collectionName = "modules"
 	filter := bson.A{
 		bson.D{{"$match", bson.D{{"projectid", projectid}}}},
@@ -479,10 +478,10 @@ func TeamMemberHandler(c *fiber.Ctx) error {
 	projectname := c.Params("projectname")
 	decodedProjectName, err := url.QueryUnescape(projectname)
 	if err != nil {
-		fmt.Println("Error decoding:", err)
+		// fmt.Println("Error decoding:", err)
 	}
 	project := strings.Replace(decodedProjectName, "%20", " ", -1)
-	fmt.Println("Decoded Project Name:", project)
+	// fmt.Println("Decoded Project Name:", project)
 	var collectionName = "projectteammembers"
 
 	filter := bson.A{
@@ -523,10 +522,10 @@ func StateHandler(c *fiber.Ctx) error {
 	country := c.Params("country")
 	decodedProjectName, err := url.QueryUnescape(country)
 	if err != nil {
-		fmt.Println("Error decoding:", err)
+		// fmt.Println("Error decoding:", err)
 	}
 	countryname := strings.Replace(decodedProjectName, "%20", " ", -1)
-	fmt.Println("Decoded country Name:", countryname)
+	// fmt.Println("Decoded country Name:", countryname)
 	var collectionName = "country"
 
 	filter :=
@@ -564,7 +563,7 @@ func taskHandler(c *fiber.Ctx) error {
 		return shared.BadRequest("Organization Id missing")
 	}
 	employee_id := c.Params("employee_id")
-	fmt.Println("employee_id", employee_id)
+	// fmt.Println("employee_id", employee_id)
 	var filter primitive.A
 	filter =
 		bson.A{
@@ -622,7 +621,7 @@ func taskHandler(c *fiber.Ctx) error {
 		filter = filter
 
 	} else {
-		fmt.Println(employee_id)
+		// fmt.Println(employee_id)
 		filter = append(filter, bson.D{{"$match", bson.D{{"employeeid", employee_id}}}})
 	}
 	response, err := helper.GetAggregateQueryResult(orgId, "task", filter)
@@ -658,18 +657,18 @@ func BlockidHandler(c *fiber.Ctx) error {
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
-	fmt.Println("docId", response)
+	// fmt.Println("docId", response)
 	//fmt.Println(response)
 	response1, err := helper.GetAggregateQueryResult(orgId, collectionName1, filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
-	fmt.Println("docId", response1)
+	// fmt.Println("docId", response1)
 	response2, err := helper.GetAggregateQueryResult(orgId, collectionName2, filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
-	fmt.Println("docId", response2)
+	// fmt.Println("docId", response2)
 	combinedResponse := append(response, response1...)
 	combinedResponse1 := append(combinedResponse, response2...)
 	return shared.SuccessResponse(c, combinedResponse1)
@@ -683,10 +682,10 @@ func colonyHandler(c *fiber.Ctx) error {
 
 	decodedCompanyName, err := url.QueryUnescape(companyname)
 	if err != nil {
-		fmt.Println("Error decoding:", err)
+		// fmt.Println("Error decoding:", err)
 	}
 	company := strings.Replace(decodedCompanyName, "%20", " ", -1)
-	fmt.Println("Decoded Company Name:", company)
+	// fmt.Println("Decoded Company Name:", company)
 	var collectionName = "colony"
 
 	filter :=
@@ -771,10 +770,10 @@ func EmployeeTaskHandler(c *fiber.Ctx) error {
 
 	decodedProjectName, err := url.QueryUnescape(assignedto)
 	if err != nil {
-		fmt.Println("Error decoding:", err)
+		// fmt.Println("Error decoding:", err)
 	}
 	assign := strings.Replace(decodedProjectName, "%20", " ", -1)
-	fmt.Println("Decoded assign Name:", assign)
+	// fmt.Println("Decoded assign Name:", assign)
 	var collectionName = "task"
 
 	filter := bson.A{
@@ -821,10 +820,10 @@ func ColvalHandler(c *fiber.Ctx) error {
 
 	decodedkeyName, err := url.QueryUnescape(key)
 	if err != nil {
-		fmt.Println("Error decoding:", err)
+		// fmt.Println("Error decoding:", err)
 	}
 	keyname := strings.Replace(decodedkeyName, "%20", " ", -1)
-	fmt.Println("Decoded Key Name:", keyname)
+	// fmt.Println("Decoded Key Name:", keyname)
 
 	filter := bson.A{
 		bson.D{{"$match", bson.D{{colvalue, keyname}}}},
@@ -945,7 +944,7 @@ func TimeSheetByIdHandler(c *fiber.Ctx) error {
 
 		filter = filter
 	} else {
-		fmt.Println(employee_id)
+		// fmt.Println(employee_id)
 		filter = append(filter, bson.D{{"$match", bson.D{{"employeeid", employee_id}}}})
 	}
 
@@ -1038,7 +1037,7 @@ func TimeSheetByTesting(c *fiber.Ctx) error {
 
 		filter = filter
 	} else {
-		fmt.Println(employee_id)
+		// fmt.Println(employee_id)
 		filter = append(filter, bson.D{{"$match", bson.D{{"employeeid", employee_id}}}})
 	}
 
@@ -1060,7 +1059,7 @@ func TimeSheetByiiIdHandler(c *fiber.Ctx) error {
 	scheduledstartdate = strings.TrimPrefix(scheduledstartdate, ":")
 	date, err := time.Parse(time.RFC3339, scheduledstartdate)
 	if err != nil {
-		fmt.Println("Error parsing date:", err)
+		// fmt.Println("Error parsing date:", err)
 	}
 
 	var collectionName = "task"
@@ -1124,7 +1123,7 @@ func TimeSeetByIdHandler(c *fiber.Ctx) error {
 	if orgId == "" {
 		return shared.BadRequest("Organization Id missing")
 	}
-	fmt.Println("orgId", orgId)
+	// fmt.Println("orgId", orgId)
 	employee_id := c.Params("employee_id")
 	scheduledstartdate := c.Params("scheduledstartdate")
 
@@ -1156,9 +1155,9 @@ func TimeSeetByIdHandler(c *fiber.Ctx) error {
 	}
 	//fmt.Println("response UC:", response)
 	for _, res1 := range response {
-		fmt.Println(res1["resultSize"], "gg")
+		// fmt.Println(res1["resultSize"], "gg")
 		if res1["resultSize"] == 0 {
-			fmt.Println(res1["resultSize"], "gg")
+			// fmt.Println(res1["resultSize"], "gg")
 			filter1 :=
 				bson.A{
 					bson.D{
@@ -1224,7 +1223,7 @@ func TimeSeetByIdHandler(c *fiber.Ctx) error {
 			if err != nil {
 				return shared.BadRequest(err.Error())
 			}
-			fmt.Println("SS", response1)
+			// fmt.Println("SS", response1)
 			return shared.SuccessResponse(c, response1)
 		} else {
 			filter :=
@@ -1391,13 +1390,14 @@ func TimeSeetByIdHandler(c *fiber.Ctx) error {
 			if err != nil {
 				return shared.BadRequest(err.Error())
 			}
-			fmt.Println("SSU", response)
+			// fmt.Println("SSU", response)
 			return shared.SuccessResponse(c, response)
 		}
 	}
 	return nil
 }
 
+// getDocsHandler --METHOD get the data from Db with pagination
 func getDocsHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
 	if orgId == "" {
@@ -1410,21 +1410,23 @@ func getDocsHandler(c *fiber.Ctx) error {
 		return nil
 	}
 
-	var colllectionNmame string
-	// Build the aggregation pipeline
-	pipeline := helper.MasterAggregationPipeline(requestBody, c)
+	var pipeline []primitive.M
+	pipeline = helper.MasterAggregationPipeline(requestBody, c)
 
-	colllectionNmame = c.Params("collectionName")
+	PagiantionPipeline := helper.PagiantionPipeline(requestBody.Start, requestBody.End)
+	pipeline = append(pipeline, PagiantionPipeline)
+	Response, err := helper.GetAggregateQueryResult(orgId, c.Params("collectionName"), pipeline)
 
-	results, err := helper.GetAggregateQueryResult(orgId, colllectionNmame, pipeline)
 	if err != nil {
-		return shared.BadRequest(err.Error())
+		if cmdErr, ok := err.(mongo.CommandError); ok {
+			return shared.BadRequest(cmdErr.Message)
+		}
 	}
 
-	return shared.SuccessResponse(c, results)
+	return shared.SuccessResponse(c, Response)
 }
 
-// getProduct Details by its ID
+// getProduct --METHOD Details by its ID
 func getDocsByKeyValueHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
 	if orgId == "" {
@@ -1437,9 +1439,9 @@ func getDocsByKeyValueHandler(c *fiber.Ctx) error {
 	key := c.Params("key")
 	value := c.Params("value")
 	if value == "_" {
-		fmt.Print("No User Id")
+		// fmt.Print("No User Id")
 		value = token.UserId
-		fmt.Print(token.UserId)
+		// fmt.Print(token.UserId)
 	}
 	filter := bson.M{key: value}
 	response, err := helper.GetQueryResult(orgId, collectionName, filter, helper.Page(page), helper.Limit(limit), nil)
@@ -1529,159 +1531,18 @@ func sendSimpleEmailHandler(c *fiber.Ctx) error {
 	return shared.BadRequest("Try again")
 }
 
-//func sendSMS(c *fiber.Ctx) error {
-//	orgId := c.Get("OrgId")
-//	if orgId == "" {
-//		return shared.BadRequest("Organization Id missing")
-//	}
-//	var req map[string]string
-//	err := c.BodyParser(&req)
-//	if err != nil {
-//		return shared.BadRequest(err.Error())
-//	}
-//	resp, errContent := shared.SendSMS(req["dMobileNumber"], req["cMobileNumber"], req["consignmentNumber"], req["reason"])
-//	if errContent != "" {
-//		return shared.BadRequest(errContent)
-//	}
-//	return shared.SuccessResponse(c, resp)
-//}
-
-// Search EntitiesHandler - Get Entities
-func searchDocsHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	var collectionName = c.Params("collectionName")
-	var conditions []helper.Filter
-	page := c.Params("page")
-	if page == "" {
-		page = "0"
-	}
-	limit := c.Params("limit")
-	if limit == "" {
-		limit = "200"
-	}
-	err := c.BodyParser(&conditions)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	response, err := helper.GetSearchQueryResult(orgId, collectionName, conditions, helper.Page(page), helper.Limit(limit))
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-// // Search EntitiesHandler - Get Entities
-func DataLookupDocsHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	var lookupQuery helper.LookupQuery
-	err := c.BodyParser(&lookupQuery)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	response, err := helper.ExecuteLookupQuery(orgId, lookupQuery)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-// func GrpReportHandler(c *fiber.Ctx) error {
+// // // Search EntitiesHandler - Get Entities
+// func DataLookupDocsHandler(c *fiber.Ctx) error {
 // 	orgId := c.Get("OrgId")
 // 	if orgId == "" {
 // 		return shared.BadRequest("Organization Id missing")
 // 	}
-// 	var request helper.GroupSumRequest
-// 	err := c.BodyParser(&request)
+// 	var lookupQuery helper.LookupQuery
+// 	err := c.BodyParser(&lookupQuery)
 // 	if err != nil {
 // 		return shared.BadRequest(err.Error())
 // 	}
-// 	response, err := shared.ExecuteGroupReportQuery(orgId, request)
-// 	if err != nil {
-// 		return shared.BadRequest(err.Error())
-// 	}
-// 	return shared.SuccessResponse(c, response)
-// }
-
-// func ReportHandler(c *fiber.Ctx) error {
-// 	orgId := c.Get("OrgId")
-// 	if orgId == "" {
-// 		return shared.BadRequest("Organization Id missing")
-// 	}
-// 	var request shared.GroupSumRequest
-// 	err := c.BodyParser(&request)
-// 	if err != nil {
-// 		return shared.BadRequest(err.Error())
-// 	}
-// 	response, err := shared.ExecuteGroupQuery(orgId, request)
-// 	if err != nil {
-// 		return shared.BadRequest(err.Error())
-// 	}
-// 	return shared.SuccessResponse(c, response)
-// }
-
-// Search EntitiesHandler - Get Entities
-func searchEntityWithChildCountHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	var parentCollection = c.Params("parent_collection")
-	var keyColumn = c.Params("key_column")
-	var childCollection = c.Params("child_collection")
-	var lookupColumn = c.Params("lookup_column")
-	var conditions []helper.Filter
-	err := c.BodyParser(&conditions)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	response, err := helper.GetSearchQueryWithChildCount(orgId, parentCollection, keyColumn, childCollection, lookupColumn, conditions)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-func sharedDBEntityHandler(c *fiber.Ctx) error {
-	var collectionName = c.Params("collectionName")
-	if collectionName == "db_config" {
-		return shared.BadRequest("Access Denied")
-	}
-	cur, err := database.SharedDB.Collection(collectionName).Find(ctx, bson.D{})
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	var response []bson.M
-	if err = cur.All(ctx, &response); err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-// // Search EntitiesHandler - Get Entities
-// func rawQueryHandler(c *fiber.Ctx) error {
-// 	orgId := c.Get("OrgId")
-// 	if orgId == "" {
-// 		return shared.BadRequest("Organization Id missing")
-// 	}
-// 	var collectionName = c.Params("collectionName")
-// 	var query map[string]interface{}
-// 	err := c.BodyParser(&query)
-// 	if err != nil {
-// 		return shared.BadRequest(err.Error())
-// 	}
-// 	shared.UpdateDateObject(query)
-// 	var response []primitive.M
-// 	if c.Params("type") == "aggregate" {
-// 		response, err = shared.GetAggregateQueryResult(orgId, collectionName, query)
-// 	} else {
-// 		response, err = shared.GetQueryResult(orgId, collectionName, query, int64(0), int64(200), nil)
-// 	}
+// 	response, err := helper.ExecuteLookupQuery(orgId, lookupQuery)
 // 	if err != nil {
 // 		return shared.BadRequest(err.Error())
 // 	}
@@ -1703,20 +1564,6 @@ func GetNextSeqNumber(orgId string, collectionName string) int32 {
 	result, _ := helper.ExecuteFindAndModifyQuery(orgId, "sequence", filter, update)
 	return result["seq"].(int32)
 }
-
-// func getPreSignedUploadUrlHandler(c *fiber.Ctx) error {
-// 	orgId := c.Get("OrgId")
-// 	if orgId == "" {
-// 		return shared.BadRequest("Organization Id missing")
-// 	}
-// 	request := new(PreSignedUploadUrlRequest)
-// 	err := c.BodyParser(request)
-// 	if err != nil {
-// 		return shared.BadRequest(err.Error())
-// 	}
-// 	fileName := request.FolderPath + "/" + request.FileKey
-// 	return c.JSON(shared.GetUploadUrl("tpctrz", fileName, request.MetaData))
-// }
 
 func postTimesheetDocHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")

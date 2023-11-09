@@ -98,6 +98,9 @@ type DataSetConfiguration struct {
 	Filter                      []FilterCondition       `json:"Filter,omitempty" bson:"Filter,omitempty"`
 	DataSetBaseCollectionFilter []FilterCondition       `json:"dataSetBaseCollectionFilter,omitempty, bson:"dataSetBaseCollectionFilter,omitempty"`
 	Pipeline                    string                  `json:"pipeline,omitempty" bson:"pipeline,omitempty"`
+	Reference_pipeline          string                  `json:"Reference_pipeline,omitempty" bson:"Reference_pipeline,omitempty"`
+	Start                       int                     `json:"start,omitempty" bson:"start,omitempty"`
+	End                         int                     `json:"end,omitempty" bson:"end,omitempty"`
 }
 
 type DataSetJoinCollection struct {
@@ -108,7 +111,6 @@ type DataSetJoinCollection struct {
 	FromCollection      string            `json:"fromCollection,omitempty" bson:"fromCollection,omitempty"`
 	FromCollectionField string            `json:"fromCollectionField,omitempty" bson:"fromCollectionField,omitempty"`
 }
-
 
 type Filter struct {
 	Clause     string      `json:"clause" bson:"clause"`
@@ -122,15 +124,11 @@ type Condition struct {
 	Value    string `json:"value" bson:"value"`
 }
 
-
-
 type LookupQuery struct {
 	Operation string        `json:"operation" bson:"operation"`
 	ParentRef CollectionRef `json:"parent_collection" bson:"parent_collection"`
 	ChildRef  CollectionRef `json:"child_collection" bson:"child_collection"`
 }
-
-
 
 type CollectionRef struct {
 	Name    string   `json:"name" bson:"name"`
@@ -138,8 +136,6 @@ type CollectionRef struct {
 	Columns []string `json:"columns,omitempty" bson:"columns,omitempty"`
 	Filter  []Filter `json:"filter,omitempty" bson:"filter,omitempty"`
 }
-
-
 
 type EmailServerConfig struct {
 	OrgId    string `json:"org_id" bson:"org_id"`

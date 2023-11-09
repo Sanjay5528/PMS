@@ -222,10 +222,7 @@ func MasterAggregationPipeline(request PaginationRequest, c *fiber.Ctx) []bson.M
 	Pipeline := []bson.M{}
 
 	if len(request.Filter) > 0 {
-		FilterConditions, err := BuildAggregationPipeline(request.Filter, "")
-		if err != nil {
-			shared.BadRequest("Invalid operator")
-		}
+		FilterConditions := BuildAggregationPipeline(request.Filter, "")
 		Pipeline = append(Pipeline, FilterConditions)
 	}
 
@@ -234,28 +231,6 @@ func MasterAggregationPipeline(request PaginationRequest, c *fiber.Ctx) []bson.M
 		Pipeline = append(Pipeline, sortConditions)
 	}
 
-	if request.Start == 0 && request.End == 0 {
-		request.Start = 0
-		request.End = 5000
-	}
-
-	pagination := bson.M{
-		"$facet": bson.D{
-			{"response",
-				bson.A{
-					bson.D{{"$skip", request.Start}},
-					bson.D{{"$limit", request.End - request.Start}},
-				},
-			},
-			{"pagination",
-				bson.A{
-					bson.D{{"$count", "totalDocs"}},
-				},
-			},
-		},
-	}
-
-	Pipeline = append(Pipeline, pagination)
 	return Pipeline
 }
 
@@ -295,13 +270,14 @@ func GroupDataBasedOnRules(c *fiber.Ctx) error {
 	return c.JSON(result)
 }
 
+// DatasetsConfig -- METHOD PURPOSE handle requests related to dataset configuration, including building aggregation pipelines
 func DatasetsConfig(c *fiber.Ctx) error {
-
+	//Get the OrgId from Header
 	orgId := c.Get("OrgId")
 	if orgId == "" {
 		return shared.BadRequest("Organization Id missing")
 	}
-
+	//TO Bind the Value from Body
 	var inputData DataSetConfiguration
 	if err := c.BodyParser(&inputData); err != nil {
 		if cmdErr, ok := err.(mongo.CommandError); ok {
@@ -311,35 +287,33 @@ func DatasetsConfig(c *fiber.Ctx) error {
 	}
 
 	var Response fiber.Map
+	// BuildPipeline -- Create a Filter Pipeline from Body Content
+	Data, Response := BuildPipeline(orgId, inputData)
 
-	Data, Response, err := BuildPipeline(orgId, inputData)
-
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-
+	// Params options -- options is  insert the data to Db
+	// if options empty is preview the data
 	if c.Params("options") == "Insert" {
-		Response, err = InsertDatasetConfig(orgId, Data)
+		var err error
+		Response, err = InsertDataDb(orgId, Data, "dataset_config")
 		if err != nil {
 			return shared.BadRequest("Failed to insert data into the database")
 
 		}
 	}
 
-	return c.JSON(Response)
+	return shared.SuccessResponse(c, Response)
 
 }
 
-func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfiguration, fiber.Map, error) {
-
+// BuildPipeline    -- METHOD PURPOSE  build a comprehensive MongoDB aggregation pipeline for querying and aggregating data
+func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfiguration, fiber.Map) {
+	//append the pipelien from child Pipeline
 	Pipeline := []bson.M{}
-
+	//Every If condtion for if Data is here that time only that func work
 	if len(inputData.DataSetBaseCollectionFilter) > 0 {
-		Pipelines, err := BuildAggregationPipeline(inputData.DataSetBaseCollectionFilter, inputData.DataSetBaseCollection)
+		Pipelines := BuildAggregationPipeline(inputData.DataSetBaseCollectionFilter, inputData.DataSetBaseCollection)
 		Pipeline = append(Pipeline, Pipelines)
-		if err != nil {
-			shared.BadRequest("Invaild operator")
-		}
+
 	}
 
 	if len(inputData.DataSetJoinCollection) > 0 {
@@ -357,32 +331,35 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 		Pipeline = append(Pipeline, AggregationData...)
 	}
 	if len(inputData.Filter) > 0 {
-		filterPipelines, err := BuildAggregationPipeline(inputData.Filter, inputData.DataSetBaseCollection)
+		filterPipelines := BuildAggregationPipeline(inputData.Filter, inputData.DataSetBaseCollection)
 		Pipeline = append(Pipeline, filterPipelines)
-		if err != nil {
-			shared.BadRequest("Invaild operator")
-		}
-	}
 
+	}
+	//Project the pipeline
 	if len(inputData.SelectedList) > 0 {
 		selectedColumns := CreateSelectedColumn(inputData.SelectedList, inputData.DataSetBaseCollection)
 		Pipeline = append(Pipeline, selectedColumns...)
 	}
 
+	// filter pipeline convert the byte
 	marshaldata, err := json.Marshal(Pipeline)
 	if err != nil {
-		return DataSetConfiguration{}, nil, err
+		return DataSetConfiguration{}, nil
 	}
-
+	// marshaldata  variable -- filter byte  convert the string
 	pipelinestring := string(marshaldata)
+	// set the inputData.Pipeline  -- store the data form converted string pipeine
 	inputData.Pipeline = pipelinestring
-
+	// Set the DatasetName to _id for unique
 	inputData.Id = inputData.DataSetName
-
+	//
+	// Filter Params for to replace the string to convert to pipeline again
 	if len(inputData.FilterParams) > 0 {
+		inputData.Reference_pipeline = pipelinestring
 		pipelinestring := createFilterParams(inputData.FilterParams, pipelinestring)
+		// if filter params here that time to replace the old pipeline
 		inputData.Pipeline = pipelinestring
-
+		// convert the pipeline
 		err := bson.UnmarshalExtJSON([]byte(pipelinestring), true, &Pipeline)
 		if err != nil {
 			fmt.Println("Error parsing pipeline:", err)
@@ -391,24 +368,28 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 
 	}
 
+	//final pagination TO add the Filter
+	PagiantionPipeline := PagiantionPipeline(inputData.Start, inputData.End)
+	Pipeline = append(Pipeline, PagiantionPipeline)
+	// Get the Data form Db
 	Response, err := GetAggregateQueryResult(orgId, inputData.DataSetBaseCollection, Pipeline)
 	if err != nil {
-		return DataSetConfiguration{}, nil, err
+		return DataSetConfiguration{}, nil
 	}
+	// this PreviewResponse
 	PreviewResponse := fiber.Map{
-		"status":    "success",
-		"data":      Response,
-		"Body_Data": inputData,
-		"Pipeline":  Pipeline,
+		"status": "success",
+		"data":   Response,
 	}
 
-	return inputData, PreviewResponse, nil
+	return inputData, PreviewResponse
 
 }
 
-func InsertDatasetConfig(orgId string, inputData DataSetConfiguration) (fiber.Map, error) {
+// Insert the Data and return map
+func InsertDataDb(orgId string, inputData interface{}, collectionName string) (fiber.Map, error) {
 
-	res, err := database.GetConnection(orgId).Collection("dataset_config").InsertOne(ctx, inputData)
+	res, err := database.GetConnection(orgId).Collection(collectionName).InsertOne(ctx, inputData)
 	InsertResponse := fiber.Map{
 		"status":  "success",
 		"message": "Data Added Successfully",
@@ -419,40 +400,70 @@ func InsertDatasetConfig(orgId string, inputData DataSetConfiguration) (fiber.Ma
 	return InsertResponse, err
 }
 
+// DatasetsRetrieve  -- METHOD PURPOSE Get the Filter pipeline in Db to show the data
 func DatasetsRetrieve(c *fiber.Ctx) error {
+	//OrgId oming from Header
 	orgId := c.Get("OrgId")
 	if orgId == "" {
 		return shared.BadRequest("Organization Id missing")
 	}
+	//Params
 	datasetname := c.Params("datasetname")
-	filter := bson.M{"dataSetName": datasetname}
 
+	filter := bson.M{"dataSetName": datasetname}
+	// Find the Data from Db
 	response, err := FindDocs(orgId, "dataset_config", filter)
 	if err != nil {
-		return err
+		return shared.BadRequest("Invalid  Params value")
 	}
 
 	var ResponseData map[string]interface{}
+	//Marshal the data from find the Document
+	marshaldata, err := json.Marshal(response)
+	if err != nil {
+		return shared.BadRequest("Failed to Marshal ")
+	}
 
-	marshaldata, _ := json.Marshal(response)
-
+	// Unmarshal -- after Unmarshal to map[string]interface{} convert
 	if err := json.Unmarshal(marshaldata, &ResponseData); err != nil {
+		return shared.BadRequest("Invalid Body Content from MarshalData")
 
 	}
 
 	PipeleData := ResponseData["pipeline"].(string)
+	//Get the Collection Name in Database
 	CollectionName := ResponseData["dataSetBaseCollection"].(string)
-
-	var pipeline []map[string]interface{}
-	if err := json.Unmarshal([]byte(PipeleData), &pipeline); err != nil {
-		// if cmdErr, ok := err.(mongo.CommandError); ok {
-		// 	return BadRequest(cmdErr.Message)
-		// }
+	//Body Filter storing to struct
+	var requestBody PaginationRequest
+	if err := c.BodyParser(&requestBody); err != nil {
+		return shared.BadRequest("Invalid Body")
+	}
+	// Parse the provided string into a slice of BSON documents for the pipeline.
+	pipeline := []primitive.M{}
+	err = json.Unmarshal([]byte(PipeleData), &pipeline)
+	if err != nil {
+		return shared.BadRequest("Cannot Find the String")
 
 	}
 
-	Response, err := GetAggregateQueryResult(orgId, CollectionName, pipeline)
+	//finalpipeline -- Build the Final append filter pipeline
+	var finalpipeline []bson.M
+	//UpdateDatatypes -- To build the Pipeline from pipeline variable
+	Updatedpipeline := UpdateDatatypes(pipeline)
 
+	finalpipeline = append(finalpipeline, Updatedpipeline...)
+
+	//Body Filter Pipeline making
+	filterpipeline := MasterAggregationPipeline(requestBody, c)
+	//To combine the pipeline filter and basefilter
+	finalpipeline = append(finalpipeline, filterpipeline...)
+
+	//final pagination TO add the Filter
+	PagiantionPipeline := PagiantionPipeline(requestBody.Start, requestBody.End)
+	finalpipeline = append(finalpipeline, PagiantionPipeline)
+
+	// To Get the Data from Db
+	Response, err := GetAggregateQueryResult(orgId, CollectionName, finalpipeline)
 	if err != nil {
 		shared.InternalServerError(err.Error())
 	}
@@ -460,46 +471,80 @@ func DatasetsRetrieve(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, Response)
 }
 
+// UpdateDatatypes    --METHOD  Get the match object and to build the mongo Query
+func UpdateDatatypes(pipeline []bson.M) []bson.M {
+	output := []bson.M{}
+	for _, stage := range pipeline {
+		if matchStage, ok := stage["$match"]; ok {
+			// To Pass the interface{} to $match data for datatype convertion
+			matchedPipeline := createQueryPipeline(matchStage)
+			output = append(output, bson.M{"$match": matchedPipeline})
+		} else {
+			output = append(output, stage)
+		}
+	}
+
+	return output
+}
+
+/*
+	createQueryPipeline -- METHOD To change the value Datatype and return the pipeline format
+
+Recusively call the  Method for Datatype converntiuon
+*/
+func createQueryPipeline(data interface{}) interface{} {
+	// Check the Every DataType to incoming
+	switch dataType := data.(type) {
+	case map[string][]interface{}:
+		var outputArray []interface{}
+		for _, value := range dataType {
+			for _, item := range value {
+				outputArray = append(outputArray, createQueryPipeline(item))
+			}
+		}
+		return outputArray
+	case map[string]interface{}:
+		valueMap := dataType
+		for k := range valueMap {
+			valueMap[k] = createQueryPipeline(valueMap[k])
+		}
+		return valueMap
+	case []interface{}:
+		var outputArray []interface{}
+		for _, i := range dataType {
+			outputArray = append(outputArray, createQueryPipeline(i))
+		}
+		return outputArray
+	default:
+		// if return final interface{} to ge the convert the data type to  ConvertToDataType
+		return ConvertToDataType(data, reflect.TypeOf(data).String())
+	}
+}
+
+// UpdateDataset  --METHOD Update the Dataset_config collection to store the data with pipeline
 func UpdateDataset(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
 	if orgId == "" {
 		return shared.BadRequest("Organization Id missing")
 	}
 	datasetname := c.Params("datasetname")
-
+	//Params
 	filter := bson.M{"dataSetName": datasetname}
-
+	//Update body to bind the  DataSetConfiguration
 	var inputData DataSetConfiguration
 	if err := c.BodyParser(&inputData); err != nil {
-
 		return shared.BadRequest("Invalid Body Content")
 	}
-
+	// Global Variable set the For response
 	var Response fiber.Map
+	//Build the Pipeline
+	Data, Response := BuildPipeline(orgId, inputData)
 
-	Data, Response, err := BuildPipeline(orgId, inputData)
-	if err != nil {
-		return shared.InternalServerError("err.Error()")
-	}
-
-	Response, err = UpdateDatasetConfig(orgId, filter, Data)
+	Response, err := UpdateDataToDb(orgId, filter, Data, "dataset_config")
 	if err != nil {
 		return shared.BadRequest("Failed to insert data into the database")
 
 	}
-	return c.JSON(Response)
-}
 
-func UpdateDatasetConfig(orgId string, filter interface{}, inputData DataSetConfiguration) (fiber.Map, error) {
-	res, err := database.GetConnection(orgId).Collection("dataset_config").UpdateOne(ctx, filter, inputData)
-	if err != nil {
-		return nil, shared.InternalServerError(err.Error())
-	}
-	UpdatetResponse := fiber.Map{
-		"status":  "success",
-		"message": "Update Successfully",
-		"Data":    res.UpsertedID,
-	}
-
-	return UpdatetResponse, err
+	return shared.SuccessResponse(c, Response)
 }

@@ -31,7 +31,7 @@ func LoginHandler(c *fiber.Ctx) error {
 	if err := c.BodyParser(loginRequest); err != nil {
 		return shared.BadRequest("Invalid params")
 	}
-
+	
 	if loginRequest.Id == "" {
 		shared.BadRequest("Invalid User ID")
 	}

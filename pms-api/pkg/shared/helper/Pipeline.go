@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"kriyatec.com/pms-api/pkg/shared"
 )
 
 // // Build match conditions for a filter
@@ -98,11 +97,8 @@ func ExecuteLookupQueryData(Data DataSetConfiguration, basecollectionName string
 			currentCollection = LookupData.ToCollection
 
 			if len(LookupData.Filter) > 0 {
-				filterPipeline, err := BuildAggregationPipeline(LookupData.Filter, basecollectionName)
+				filterPipeline := BuildAggregationPipeline(LookupData.Filter, basecollectionName)
 				lookupDataPipeline = append(lookupDataPipeline, filterPipeline)
-				if err != nil {
-					shared.BadRequest("Invalid  operator")
-				}
 			}
 		}
 	}
@@ -292,33 +288,4 @@ func createFilterParams(FilterParams []FilterParam, Pipeline string) string {
 
 	}
 	return filterPipeline
-}
-
-
-
-func ExecuteLookupQuery(orgId string, query LookupQuery) ([]bson.M, error) {
-	matchQuery := generateSearchQuery(query.ParentRef.Filter)
-	pipeline := []bson.M{
-		{"$lookup": bson.M{
-			"from":         query.ChildRef.Name,
-			"localField":   query.ParentRef.Key,
-			"foreignField": query.ChildRef.Key,
-			"as":           "details",
-		},
-		},
-	}
-	if query.Operation == "child_count" {
-		pipeline = append(pipeline, bson.M{"$addFields": bson.M{"count": bson.M{"$size": "$details"}}})
-		pipeline = append(pipeline, bson.M{"$unset": "details"})
-	} else if query.Operation == "parent_child_detail" {
-		pipeline = append(pipeline, bson.M{"$project": bson.M{"_id": 1, "name": 1, "details": 1}})
-	} else if query.Operation == "child_detail" {
-		pipeline = append(pipeline, bson.M{"$project": bson.M{"_id": 0, "details": 1}})
-		pipeline = append(pipeline, bson.M{"$unionWith": "details"})
-	}
-	if matchQuery != nil {
-		pipeline = append([]bson.M{{"$match": matchQuery}}, pipeline...)
-	}
-	//fmt.Println(pipeline)
-	return GetAggregateQueryResult(orgId, query.ParentRef.Name, pipeline)
 }

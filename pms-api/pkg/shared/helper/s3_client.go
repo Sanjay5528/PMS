@@ -88,6 +88,7 @@ func FileUpload(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(422).JSON(fiber.Map{"errors": err.Error()})
 	}
+	
 	token := utils.GetUserTokenValue(c)
 	// year := time.Now().Year()
 	// currentYear := strconv.Itoa(year)
@@ -102,6 +103,7 @@ func FileUpload(c *fiber.Ctx) error {
 	for _, file := range request.File {
 		// fmt.Println(file)
 		fileNew := file[0]
+		fmt.Println(fileNew)
 		fileExtn := filepath.Ext(file[0].Filename)
 		fileName := strings.TrimSuffix(file[0].Filename, fileExtn)
 		fileName = fileName + "__" + time.Now().Format("2006-01-02-15-04-05") + fileExtn
