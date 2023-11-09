@@ -34,7 +34,8 @@ export class DialogService {
   }
 
 public CloseALL(){
-  this.dialogRef.closeAll()
+  this.dialog.closeAll()
+  console.log("All Dialog box was closed")
 }
 
   public openSnackBar(message: string, action: string) {

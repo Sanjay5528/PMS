@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Output, ViewChild, EventEmitter } from '@angular/core';
+import { Injectable, Output, ViewChild, EventEmitter, Input } from '@angular/core';
 import * as _ from 'lodash';
 import { async, catchError } from 'rxjs';
 import { Observable, Subject } from 'rxjs';
@@ -8,7 +8,8 @@ import { DialogService } from './dialog.service';
 import { HelperService } from './helper.service';
 import { values } from 'lodash';
 import * as moment from 'moment';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, FormArray } from '@angular/forms';
+import { ArrayToStringPipe } from '../pipe/arraytostring';
 
 @Injectable({
   providedIn: 'root'
@@ -23,13 +24,15 @@ export class FormService {
   constructor(
     private helperService: HelperService,
     private dataService: DataService,
-    private dialogService: DialogService,
+    private dialogService: DialogService,public arraytostring:ArrayToStringPipe,
     private httpclient: HttpClient) {
    
   }
 
   LoadMasterInitData(ctrl:any) {
     this.dataService.loadScreenConfigJson(ctrl.formName).subscribe(async config=>{
+      console.log(config);
+      
         ctrl.config = config
         ctrl.pageHeading = config.pageHeading
         ctrl.collectionName = config.form.collectionName
@@ -355,14 +358,133 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
     //TODO
   ctrl.detailListFields =  ctrl.config.detailListConfig.fields
   
-    ctrl.config.detailListConfig.fields.forEach((e:any) => {
-      if (e.type) {
-        if (e.type == "date") {
-            e["valueFormatter"] =  (params:any) => params.value == null ? "" : moment(params.value).format(e.format || "DD/MM/YY");
-        } 
+    ctrl.config.detailListConfig.fields.forEach((e:any) => 
+    // {
+    //   if (e.type) {
+    //     if (e.type == "date") {
+    //         e["valueFormatter"] =  (params:any) => params.value == null ? "" : moment(params.value).format(e.format || "DD/MM/YY");
+    //     } 
+    //   }
+    // });
+    {
+      if (e.type == "datetime" || e.type == "date") {
+        e.valueGetter = (params: any) => {
+          if (params.data && params.data[e.field]) {
+            return moment(params.data[e.field]).format(
+              e.format || "DD-MM-YYYY "
+            );
+          }
+          return moment().format(e.format || "DD-MM-YYYY "); //? set curent date
+        };
       }
-    });
+      if (e.type == "color") {
+        e.cellStyle = (params: any) => {
+          return { color: "blue" };
+        };
+      }
+      if (e.type == "arraytostring") {
+        e.valueGetter = (params: any) => {
+          if (params.data && params.data[e.field]&& !_.isEmpty(params.data[e.field])) {
+            let txt = "";
+            let input=params.data[e.field] ;
+            let attribute=e.value
+            for (let i=0; i < input?.length;i++){
+                txt += (input[i][attribute]) +","
+             }
+             var n =txt.lastIndexOf(",")
+             var value=txt.substring(0,n)
+             return value
+            } return
 
+        };
+      }
+      if (e.width) {
+        e["width"] = e.width;
+      }
+      // if (e.type == "set_Filter" && e.filter == "agSetColumnFilter") {
+      //   if (e.Diffkey == true) {
+      //     e.filterParams = {
+      //       values: (params: any) => {
+      //         let filter:any={
+      //           start: 0,
+      //           end: 1000,
+      //           filter: this.filterQuery,
+      //         }
+      //         if(this.allFilter!==undefined){
+      //         filter=this.allFilter;
+      //         }
+      //         this.DataService.getDataByFilter(this.collectionName, filter).subscribe((xyz: any) => {
+      //           const apidata = xyz.data[0].response;
+      //           const uniqueArray = Array.from(
+      //             new Map( apidata.map((obj: any) => [obj[e.field], obj])).values()
+      //           );
+      //           params.success(uniqueArray);
+      //         });
+      //       },
+      //       keyCreator: (params: KeyCreatorParams) => {
+      //         return [params.value[e.keyCreator], e.keyCreator, true];
+      //       },
+      //       valueFormatter: (params: any) => {
+      //         return params.value[e.field];
+      //       },
+      //     };
+      //   } else {
+      //     e.filterParams = {
+      //       values: (params: any) => {
+      //         let filter:any={
+      //           start: 0,
+      //           end: 1000,
+      //           filter: this.filterQuery,
+      //         }
+      //         if(this.allFilter!==undefined){
+      //         filter=this.allFilter;
+      //         }
+      //         this.dataService.getDataByFilter(this.collectionName,filter).subscribe((xyz: any) => {
+      //           const apidata = xyz.data[0].response
+      //             .map((result: any) => {
+      //               let val = result[e.field];
+      //               if (val !== undefined) {
+      //                 return val;
+      //               }
+      //             })
+      //             .filter((val: any) => val !== undefined); // Filter out undefined values
+      //           params.success(apidata);
+      //         });
+      //       },
+      //     };
+      //   }
+      // }
+      //if the object in nested array
+      // if (e.type == "set_Filter" && e.filter == "agSetColumnFilter" &&e.object_type == "nested_array") {
+      //   debugger;
+      //   e.filterParams = {
+      //     values: (params: any) => {
+      //       let filter:any={
+      //         start: 0,
+      //         end: 1000,
+      //         filter: this.filterQuery,
+      //       }
+      //       if(this.allFilter!==undefined){
+      //       filter=this.allFilter;
+      //       }
+      //       this.DataService.getDataByFilter(this.collectionName,filter).subscribe((xyz: any) => {
+      //         const apidata = xyz.data[0].response
+      //           .map((result: any) => {
+      //             //let val = result[e.field];
+      //             let val = e.field
+      //               .split(".")
+      //               .reduce((o: any, i: any) => o[i], result);
+      //             if (val !== undefined) {
+      //               return val;
+      //             }
+      //           })
+      //           .filter((val: any) => val !== undefined); // Filter out undefined values
+      //         params.success(apidata);
+      //       });
+      //     },
+      //   };
+      // }
+    })
 
   }
 
@@ -501,6 +623,8 @@ console.log(ctrl);
           },
         ]
     }
+    console.log(filterCondition);
+
   this.dataService.makeFilterConditions(ctrl.detailListConfig.defaultFilter,filterCondition,ctrl.detailModel)
   this.dataService.makeFilterConditions(ctrl.detailListConfig.fixedFilter,filterCondition,ctrl.detailModel)
 
@@ -515,6 +639,7 @@ console.log(ctrl);
       clause: "AND",
       conditions: filterCondition
     }]}
+    
 
   this.dataService.getDataByFilter(ctrl.config.detailForm.collectionName,filterQuery).subscribe(
     (result:any) => {
@@ -584,25 +709,28 @@ console.log(ctrl);
       // this.helperService.validateAllFormFields(ctrl.form); I Dont what is it ?
       
       if (!ctrl.form.valid) {
-        let array = "";
-        
-        function collectInvalidLabels(controls: any) {
+        function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
           for (const key in controls) {
-            if (controls.hasOwnProperty(key)) {
-              const data = controls[key].status;
-              if (data === "INVALID") {
-                array += controls[key]._fields[0].props.label + ",";
+              if (controls.hasOwnProperty(key)) {
+                  const control = controls[key];
+          
+                  if (control instanceof FormGroup) {
+                      invalidLabels += collectInvalidLabels(control.controls);
+                  } else if (control instanceof FormControl && control.status === 'INVALID') {
+                      // Access the label property assuming it exists in the control
+                      invalidLabels +=controls[key]._fields[0].props.label + ",";
+                  }else if(control instanceof FormArray && control.status === 'INVALID'){
+                    invalidLabels +=controls[key]._fields[0].props.label + ",";
+                  }
               }
-            }
           }
-        }
-
-        // Start collecting invalid labels
-        collectInvalidLabels(ctrl.form.controls);
-        const modifiedString = array.slice(0, -1);
-        this.dialogService.openSnackBar("Error in " + modifiedString, "OK");
-        resolve(undefined);
-                
+          return invalidLabels;
+      }
+      
+      const invalidLabels:any = collectInvalidLabels(ctrl.form.controls);
+        ctrl.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
+       ctrl.form.markAllAsTouched();
+        ctrl.butonflag=false
         return ;
       }
       var data = ctrl.form.value

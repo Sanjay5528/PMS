@@ -115,10 +115,7 @@ export class Nestedform {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    const currentItem: SimpleChange = changes['item'];
-    console.log(this.formName && this.model);
-    
-    if (this.formName && this.model) {
+        if (this.formName && this.model) {
       this.id = this.model['_id']
       this.initLoad()
       
@@ -141,16 +138,34 @@ let value:any=this.form.value
     let getdata: any = localStorage.getItem('projectmembers');
     let existingData: any[] = JSON.parse(getdata) || [];
     if (value && !isEmpty(existingData) && this.model.isEdit==undefined ) {
-      const roleIndex = existingData.findIndex(item=> item.roleid == value.roleid);
+      const roleIndex = existingData.findIndex(item=> item.role_id == value.role_id);
 if(roleIndex!==-1){
   // this.dialogService.openSnackBar("This Role ID Aldready Exist","OK")
-  alert("This Role ID Aldready Exist")
+  alert(`This ${value.role_id} Role ID Aldready Exist`)
   return
 }
+console.log(existingData);
+const exists = existingData.some(item => item.employee_name === value.employee_name && item.team_name === value.team_name);
 
-      const samePresonWithSameTaskName = existingData.findIndex(item => item.employeename === value.employeename &&item.rolename === value.rolename&&item.teamname === value.teamname);
-      if(samePresonWithSameTaskName!==-1){
-alert(`This Employee ${value.employeename } With this Role Exist ${value.rolename}` )
+// Basic check simple a person can play one role in on team
+const samePresonWithSameTaskName = existingData.findIndex(item => {
+  console.log(item.employee_name == value.employee_name && item.team_name == value.team_name,'final');
+  
+  item.employee_name == value.employee_name && item.team_name == value.team_name});
+  
+  console.log(samePresonWithSameTaskName);
+  
+  if(samePresonWithSameTaskName!==-1|| exists==true){
+alert(`This Employee ${value.employee_name } With this Role Exist ${value.role_name} on ${value.team_name}` )
+        // this.dialogService.openSnackBar(, "OK")
+        return
+      }
+
+      const samePreson = existingData.findIndex(item => item.employee_name === value.employee_name &&item.role_name === value.role_name&&item.team_name === value.team_name);
+      console.log(samePreson);
+      
+      if(samePreson!==-1){
+alert(`This Employee ${value.employee_name } With this Role Exist ${value.role_name}` )
         // this.dialogService.openSnackBar(, "OK")
         return
       }

@@ -97,7 +97,7 @@ margin-bottom: 20px;
 <div class="name-row">
 <span class="bullet-point">&#8226;</span> 
 <span style="justify-content: center;">
-{{ field.role_name }} {{ field.team_name }}{{field.employee_name}} 
+{{ field.role_name }} {{ field.team_name }}  {{field.employee_name}} 
 <!-- {{field.team_name}} -->
 <mat-icon style="padding-top: 3px;" *ngIf="field.showButtons" (click)="deleteItem(i)">delete</mat-icon>
   <mat-icon (click)="editItem(field)" style="padding-top: 3px;" *ngIf="field.showButtons">edit</mat-icon>
@@ -145,7 +145,7 @@ export class ButtonInput extends FieldType<any> implements OnInit {
     
     if(this.model.isEdit==true){
 
-      localStorage.setItem('projectmembers',this.storedDate)
+      localStorage.setItem('projectmembers',JSON.stringify(this.storedDate))
     
     }
 

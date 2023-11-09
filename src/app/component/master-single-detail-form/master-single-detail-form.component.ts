@@ -1,6 +1,6 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, Injectable, Input, TemplateRef, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DataService } from 'src/app/services/data.service';
 import * as _ from 'lodash'
@@ -100,6 +100,8 @@ export class MasterSingleDetailFormComponent {
     this.route.params.subscribe(params => {
       this.formName = params['form']
       this.id = params['id']
+      console.log(params);
+      
       this.formService.LoadMasterInitData(this)
 
     })
@@ -159,7 +161,81 @@ export class MasterSingleDetailFormComponent {
   }
 
   SaveProjectTeam() {
+    var data :any= this.detailForm.value
+    if(data.teammember==undefined){
+  return    this.dialogService.openSnackBar("Choose a Team Member Atleast one person","OK")
+    }
+    data.project_id=this.model["project_id"]
+    
+    data.project_name=this.model["project_name"]
 
+console.log(data);
+if(this.butText == "Add"){
+  var defaultValues = this.config.detailForm.defaultValues || []
+  this.formService.loadDefaultValues(defaultValues, data, this.model)
+
+this.dataService.save(this.config.detailForm.collectionName,data).subscribe(
+  res => {
+    this.isEditMode = false
+    this.formService.resetDetailModel(this)
+    this.dialogService.openSnackBar("Data has been updated successfully", "OK");              
+    this.dialogService.CloseALL()
+    this.tempListData = this.listData;
+    this.listData = [...this.listData]
+    this.tempListData = this.listData;
+    
+
+  },
+  error => {
+    this.dialogService.openSnackBar(error.message, "OK");              
+    
+  } //this.dialogService.openSnackBar("Data has been added successfully","OK")
+)
+}else{
+  
+var uniqueColumn = this.config.detailForm.uniqueColumn
+let findIndex:any
+// data[this.config.detailForm.mapColumnname] = this.model.name 
+if (uniqueColumn) { //grid level validation
+findIndex = this.listData.findIndex((e:any) => e[uniqueColumn] == data[uniqueColumn])     //unique column
+if (!this.isDetailEditMode && findIndex > -1) {
+//unique column data found in the grid
+console.log("column data found in the grid");
+
+this.dialogService.openSnackBar("Data already exists", "OK")
+
+return
+}
+}
+  let id =data._id
+  delete data._id //? IdK
+  this.dataService.update(this.config.detailForm.collectionName, id,   data).subscribe(
+    res => {
+      this.isEditMode = false
+      this.formService.resetDetailModel(this)
+      this.dialogService.openSnackBar("Data has been updated successfully", "OK");              
+    this.dialogService.CloseALL()
+    this.dialogService.CloseALL()
+     
+  data._id =id;
+      if (findIndex >= 0) {
+        //data already in the grid
+        this.listData[findIndex] = data
+      } else {
+        this.listData.unshift(data)
+      }
+      this.tempListData = this.listData;
+      this.listData = [...this.listData]
+      this.tempListData = this.listData;
+     
+
+    },
+    error => {
+      this.dialogService.openSnackBar(error.message, "OK");              
+     
+    } //this.dialogService.openSnackBar("Data has been added successfully","OK")
+  )
+}
   }
 
 
@@ -169,20 +245,23 @@ export class MasterSingleDetailFormComponent {
     if (!this.detailForm.valid) {
       function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
         for (const key in controls) {
-          if (controls.hasOwnProperty(key)) {
-            const control = controls[key];
-
-            if (control instanceof FormGroup) {
-              invalidLabels += collectInvalidLabels(control.controls);
-            } else if (control instanceof FormControl && control.status === 'INVALID') {
-              // Access the label property assuming it exists in the control
-              invalidLabels += controls[key]._fields[0].props.label + ",";
+            if (controls.hasOwnProperty(key)) {
+                const control = controls[key];
+        
+                if (control instanceof FormGroup) {
+                    invalidLabels += collectInvalidLabels(control.controls);
+                } else if (control instanceof FormControl && control.status === 'INVALID') {
+                    // Access the label property assuming it exists in the control
+                    invalidLabels +=controls[key]._fields[0].props.label + ",";
+                }else if(control instanceof FormArray && control.status === 'INVALID'){
+                  invalidLabels +=controls[key]._fields[0].props.label + ",";
+                }
             }
-          }
         }
         return invalidLabels;
-      }
-      const invalidLabels: any = collectInvalidLabels(this.detailForm.controls);
+    }
+    
+      const invalidLabels:any = collectInvalidLabels(this.detailForm.controls);
       this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
       this.detailForm.markAllAsTouched();
       return

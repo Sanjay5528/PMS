@@ -126,7 +126,7 @@
 			},
 			{
 				"type": "html-input",
-				"key": "teamdes",
+				"key": "team_description",
 				"className": "flex-2",
 				"props": {
 					"label": "Team Description",

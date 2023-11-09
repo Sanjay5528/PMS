@@ -67,19 +67,6 @@ export class DynamicFormComponent {
   frmSubmit(event:any) {
 
     if (!this.form.valid) {
-      let array = "";  
-      // function collectInvalidLabels(controls: any) {
-      //   for (const key in controls) {
-
-      //     if (controls.hasOwnProperty(key)) {
-      //       const data = controls[key].status;
-      //       if (data === "INVALID") {
-      //         array += controls[key]._fields[0].props.label + ",";
-      //       }
-      //     }
-      //   }
-      // }
-      // collectInvalidLabels(this.form.controls);
       function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
         for (const key in controls) {
             if (controls.hasOwnProperty(key)) {
@@ -98,16 +85,7 @@ export class DynamicFormComponent {
         return invalidLabels;
     }
     
-    // Assuming this.mainForm is your main FormGroup
-    // const invalidLabelsString = collectInvalidLabels(this.mainForm.controls);
-    // console.log('Invalid Labels:', invalidLabelsString);
-    
-    // Assuming this.mainForm is your main FormGroup
     const invalidLabels:any = collectInvalidLabels(this.form.controls);
-    // console.log('Invalid Labels:', invalidLabels.join(', '));
-    
-      // const modifiedString = array.slice(0, -1);
-  
       this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
      this.form.markAllAsTouched();
       this.butonflag=false

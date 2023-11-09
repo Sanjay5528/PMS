@@ -74,11 +74,7 @@ export class DataService {
       // if (config) {
       //   observer.next(JSON.parse(config))
       // }
-      console.log(screenId);
-      
       this.getDataById('screen',screenId).subscribe((result:any)=>{       
-        console.log(result);
-        
         let config =  result.data ? result.data[0].config : []
         observer.next(JSON.parse(config))
        
