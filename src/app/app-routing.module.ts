@@ -19,6 +19,7 @@ import { AggridTreeComponent } from './component/aggrid-tree/aggrid-tree.compone
 import { ProjectteamComponent } from './component/projectteam/projectteam.component';
 import { TimesheetComponent } from './component/timesheet/timesheet.component';
 import { CreatecvComponent } from './component/createcv/createcv.component';
+import { ExpansionComponent } from './component/checkformaly/expansion/expansion.component';
 
 
 
@@ -95,7 +96,7 @@ const routes: Routes = [
     children: [
       {
         path: "",
-        component: DashboardComponent
+        component: ExpansionComponent
 
       }
 
