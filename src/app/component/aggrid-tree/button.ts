@@ -30,12 +30,19 @@ import { FormService } from "src/app/services/form.service";
       <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-     
-    <button mat-menu-item (click)="onClickMenuItem('submodules')">
+    <button mat-menu-item (click)="onClickMenuItem('edit',params.data)">
+    <mat-icon>edit</mat-icon>
+        <span>Edit</span>
+      </button>
+      <button mat-menu-item (click)="onClickMenuItem('delete',params.data)">
+    <mat-icon>delete</mat-icon>
+        <span>Delete</span>
+      </button>  
+    <button mat-menu-item (click)="onClickMenuItem('submodules',params.data)">
     <mat-icon>task</mat-icon>
         <span>Sub Modules</span>
       </button>
-      <button mat-menu-item (click)="onClickMenuItem('task')">
+      <button mat-menu-item (click)="onClickMenuItem('task',params.data)">
       <mat-icon>task</mat-icon>
         <span>Task</span>
       </button>
@@ -95,7 +102,7 @@ import { FormService } from "src/app/services/form.service";
       </button>
     </mat-menu>
   </div>
-<ng-template #modulesViewPopup>
+<ng-template #modulesViewPopup let-data>
 <mat-card>
 <mat-card-header style="flex: 1 1 auto;">
 <div style="width: 100%">
@@ -107,7 +114,7 @@ import { FormService } from "src/app/services/form.service";
 </mat-card-header>
 <mat-card-content style="padding-top: 10px">
 <form [formGroup]="form">
-<formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+<formly-form [fields]="fields" [form]="form" [model]="data"></formly-form>
 
 </form>
 </mat-card-content>
@@ -163,16 +170,13 @@ export class ButtonComponent implements ICellRendererAngularComp {
     public dataService: DataService,
     private dialog: DialogService,
     private router: Router,
-    // public ParentComponent: AggridTreeComponent,
+    public ParentComponent: AggridTreeComponent,
     // private httpclient: HttpClient,
     // public aggrid: AggridTreeComponent,
     // private formservice: FormService
 
   ) { }
 
-  ngOnInit() {
-   
-  }
   agInit(params: any): void {
     debugger
     this.gridData = params.data;
@@ -222,12 +226,11 @@ export class ButtonComponent implements ICellRendererAngularComp {
     this.dialog.dialogRef.close();
   }
   ctrl: any
-  onClickMenuItem(value: any, data?: any) {
-    debugger
-    console.log(value);
-    console.log(this.gridData);
+  onClickMenuItem(formAction: any, data?: any) {
     
-    if (value == 'submodules' ) {
+    console.log(formAction);
+    
+    if (formAction == 'submodules' ) {
       this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
           this.formAction = "Add"
           this.config = frmConfig;
@@ -243,7 +246,7 @@ export class ButtonComponent implements ICellRendererAngularComp {
       // this.router.navigate(['/list/modules'])
     } 
      
-    else if (value == 'task') {
+    else if (formAction == 'task') {
       // this.httpclient
       //   .get("assets/jsons/task-form.json")
       //   .subscribe((frmConfig: any) => {
@@ -253,7 +256,7 @@ export class ButtonComponent implements ICellRendererAngularComp {
           this.config = frmConfig;
           //  this.aggrid.saveForm(this.data)
           this.fields = frmConfig.form.fields;
-          this.dialog.openDialog(this.taskViewPopup, "50%", null, this.gridData);
+          this.dialog.openDialog(this.taskViewPopup, "50%", null, data);
 
           // this.pageHeading = frmConfig.pageHeading;
           // this.doAction(data, data[id])
@@ -265,7 +268,38 @@ export class ButtonComponent implements ICellRendererAngularComp {
 
       // this.grid.onAddButonClick(this.data);
     }
+    else if(formAction=='edit'){
+      this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
+        this.formAction = "Edit"
+        this.config = frmConfig;
+        //  this.aggrid.saveForm(this.data)
+        this.fields = frmConfig.form.fields;
+        // this.pageHeading = frmConfig.pageHeading;
+        // this.doAction(data, data[id])
+    this.dialog.openDialog(this.modulesViewPopup,  "50%", '530px', data);
 
+      });
+    }else if(formAction == "delete") {
+    if (confirm("Do you wish to delete this record?")) {
+      // !Look Up delete 
+      this.dataService.deleteDataById(
+        "module",
+        data._id
+      ).subscribe((res: any) => {
+        console.log(res);
+        
+        this.dialog.openSnackBar(
+          res.message,
+          "OK"
+        );
+        // const transaction: ServerSideTransaction = {
+        //   remove: [data],
+        // };
+        // const result = this.gridApi.applyServerSideTransaction(transaction);
+        // console.log(transaction, result);
+      });
+    }
+  }
     else {
       this.data = this.gridData
       this.router.navigate(['/list/testcase/' + `${this.data.moduleid}`]);
@@ -303,8 +337,8 @@ export class ButtonComponent implements ICellRendererAngularComp {
       this.dialog.closeModal();
       this.form.reset();
     })
-  
-   this.params.context.componentParent.getTreeData(values)
+  //! To To in transion For time Save
+   this.ParentComponent.ngOnInit()
   }
 
   goBack(data?: any) {

@@ -8,6 +8,7 @@ import { DialogService } from './dialog.service';
 import { HelperService } from './helper.service';
 import { values } from 'lodash';
 import * as moment from 'moment';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -140,7 +141,26 @@ export class FormService {
       console.log(ctrl);
       
       if (!ctrl.detailForm.valid) {
-        this.dialogService.openSnackBar("Error in detailed data or missing mandatory fields", "OK")
+        function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
+          for (const key in controls) {
+              if (controls.hasOwnProperty(key)) {
+                  const control = controls[key];
+          
+                  if (control instanceof FormGroup) {
+                      invalidLabels += collectInvalidLabels(control.controls);
+                  } else if (control instanceof FormControl && control.status === 'INVALID') {
+                      // Access the label property assuming it exists in the control
+                      invalidLabels +=controls[key]._fields[0].props.label + ",";
+                  }
+              }
+          }
+          return invalidLabels;
+      }
+      const invalidLabels:any = collectInvalidLabels(ctrl.detailForm.controls);
+      this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
+     ctrl.detailForm.markAllAsTouched();
+
+        // this.dialogService.openSnackBar("Error in detailed data or missing mandatory fields", "OK")
         ctrl.detailForm.fields[ctrl.detailDefaultFocusIndex].focus = true
         resolve(false)
         return
@@ -149,7 +169,7 @@ export class FormService {
       var data = ctrl.detailForm.value
       data[ctrl.config.detailForm.mapColumn] = ctrl.id
       console.log(ctrl);
-      
+      // TO CREATE the STRUCT
       if(ctrl.config.extraData){
         this.Create_struct(ctrl,data).then((val:any)=>{
           console.log(val,'strusct');
@@ -237,7 +257,8 @@ export class FormService {
         
 
         })
-      }else{
+      }
+      else{
       var findIndex = -1
 
         if(ctrl.butText == "Add"){
@@ -307,18 +328,7 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
             } //this.dialogService.openSnackBar("Data has been added successfully","OK")
           )
         }
-      
-    
       }
-
-     
-          
-          // Addd
-         
-      // const element: any = document.getElementsByClassName("datatable-body-row").item(ctrl.listData.length - 1);
-      // if (element) {
-      //   element.focus();
-      // }
     })
   }
 

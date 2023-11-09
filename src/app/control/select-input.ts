@@ -184,19 +184,11 @@ export class SelectInput extends FieldType<any> implements OnInit {
         
         this.dataService.buildOptions(res.data[0].response, this.opt);
       
-        if (this.field.props.attribute) {
-          //if the data in array of object
-          let data = this.field.key
-            .split(".")
-            .reduce((o: any, i: any) => o[i], this.model);
-          this.field.formControl.setValue(data);
-         
-        } else {
-          this.field.formControl.setValue(this.model[this.field.key]);
+          this.currentField.formControl.setValue(this.formControl.value);
           if(this.model.isEdit){
             this.valueSlected()
           }
-        }
+        
       });
     }
 

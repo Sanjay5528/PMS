@@ -168,6 +168,8 @@ export class AggridTreeComponent {
 console.log(this.response.project_id);
 
     this.dataService.getModuleFilter("modules", this.response.project_id).subscribe((res: any) => {
+    console.log(res);
+    
       this.listData = []
       console.log(this.listData, "hide");
 console.log(res.data,'1');
@@ -197,6 +199,10 @@ console.log(res.data,'1');
   public autoGroupColumnDef: ColDef = {
     headerName: "Parent Modules",
     minWidth: 200
+    // ,
+    // cellRendererParams: {
+    //   suppressCount: true,
+    // },
   };
 
   public defaultColDef: ColDef = {
@@ -279,10 +285,9 @@ console.log(res.data,'1');
       this.config = config
       this.fields = config.form.fields
       this.pageHeading = config.pageHeading;
-      ctrl.config = config
-      ctrl.collectionName = config.form.collectionName
-      ctrl.formAction = 'Add';
-      ctrl.butText = 'Save';   //buttons based on the id
+      this.collectionName = config.form.collectionName
+      this.formAction = 'Add';
+      this.butText = 'Save';   //buttons based on the id
 
     this.dialogService.openDialog(this.editViewPopup, "50%", '530px', {});
       
@@ -294,6 +299,28 @@ console.log(res.data,'1');
   } 
  
   saveChild() { 
+    if (!this.form.valid) {
+      
+      function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
+        for (const key in controls) {
+            if (controls.hasOwnProperty(key)) {
+                const control = controls[key];
+        
+                if (control instanceof FormGroup) {
+                    invalidLabels += collectInvalidLabels(control.controls);
+                } else if (control instanceof FormControl && control.status === 'INVALID') {
+                    // Access the label property assuming it exists in the control
+                    invalidLabels +=controls[key]._fields[0].props.label + ",";
+                }
+            }
+        }
+        return invalidLabels;
+    }
+    const invalidLabels:any = collectInvalidLabels(this.form.controls);
+      this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
+     this.form.markAllAsTouched();
+      return ;
+    }
   let values:any=this.form.value
   values.client_name= this.response?.client_name
   values.project_id= this.response?.project_id
@@ -368,11 +395,6 @@ console.log(res.data,'1');
 
 // }
 
-  
-  
-
-
-
 
 
   resetBtn(data?: any) {
@@ -381,6 +403,9 @@ console.log(res.data,'1');
     this.formAction = this.model.id ? 'Edit' : 'Add'
     this.butText = this.model.id ? 'Update' : 'Save';
 
+  }
+  goBack(){
+    this.router.navigate(['list/project'])
   }
 
 

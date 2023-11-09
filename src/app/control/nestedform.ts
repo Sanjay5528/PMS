@@ -106,8 +106,7 @@ export class Nestedform {
   storeData: any;
   flag:any
   ngOnInit() {
-    this.initLoad()
-   
+    // this.initLoad()   
     let getdata: any = localStorage.getItem('projectmembers')
     this.storeData = JSON.parse(getdata)
     this.formAction = this.model.id ? 'Edit' : 'Add'
@@ -117,9 +116,12 @@ export class Nestedform {
 
   ngOnChanges(changes: SimpleChanges) {
     const currentItem: SimpleChange = changes['item'];
+    console.log(this.formName && this.model);
+    
     if (this.formName && this.model) {
       this.id = this.model['_id']
       this.initLoad()
+      
       this.formAction = this.model.id ? 'Edit' : 'Add'
     this.butText = this.model.id ? 'Update' : 'Save';
     }

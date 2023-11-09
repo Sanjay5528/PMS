@@ -1,90 +1,107 @@
 {
-    "pageHeading": "Project",
-    "collectionName": "project",
-    "editMode": "popup",
-    "screenWidth": "80%",
-    "keyField": "_id",
-    "showbutton": true,
-    "actions": [
-        {
-            "label": "Edit",
-            "icon": "edit",
-            "formName": "project"
-        },
-        {
-            "label": "Modules",
-            "icon": "view_module",
-            "formAction": "components",
-            "route_type":"CustomRoute",
-            "Custom_Route":"project/module",
-            "Custom_Key_filed":"_id"
-            
-        },
-        {
-            "label": "ProjectTeam",
-            "icon": "view_module",
-            "formName": "projectteam",
-            "formAction": "components",
-            "route_type":"CustomRoute",
-            "Custom_Route":"project/projectteam",
-            "Custom_Key_filed":"_id"
-            
-        },
-        {
-            "label": "Delete",
-            "icon": "delete",
-            "formName": "entities/project"
-        }
-    ],
-    "addRoute": "add/project",
-    "editRoute": "edit/project",
-    "columnDefs": [
-        {
-            "headerName": " Client Name",
-            "field": "client_name",
-            "sortable": true,
-            "filter": "agTextColumnFilter"
-        },
-        {
-            "headerName": "Project Id",
-            "field": "project_id",
-            "sortable": true,
-            "filter": "agTextColumnFilter"
-        },
-        {
-            "headerName": "Project Name",
-            "field": "project_name",
-            "sortable": true,
-            "filter": "agTextColumnFilter"
-        },
-        {
-            "headerName": "Schedule Start Date",
-            "field": "startdate",
-            "sortable": true,
-            "filter": "agDateColumnFilter",
-            "type": "date"
-        },
-        {
-            "headerName": "Schedule End Date",
-            "field": "enddate",
-            "sortable": true,
-            "filter": "agDateColumnFilter",
-            "type": "date"
-        },
-        {
-            "headerName": "Project Status",
-            "field": "status",
-            "sortable": true,
-            "filter": "agTextColumnFilter"
-        },
-        {
-            "type": "rightAligned",
-            "headerName": "Actions",
-            "cellRenderer": "buttonRenderer",
-            "cellRendererParams": {
-                "onClick": "this.onBtnClick1.bind(this)",
-                "label": "Click 1"
-            }
-        }
-    ]
-  }
+	"pageHeading": "Desigination ",
+	"formType": "simple",
+	"keyField": "_id",
+	"form": {
+		"collectionName": "desigination",
+		"fields": [
+			{
+				"fieldGroupClassName": "display-flex",
+				"fieldGroup": [
+					{
+						"type": "label-view",
+						"key": "_id",
+						"className": "flex-6",
+						"props": {
+							"label": "Desigination ID",
+							"label_width": 100,
+							"value_width": 200,
+							"value_in_next_row": true
+						},
+						"hideExpression": "!model.isEdit"
+					},
+					{
+						"type": "label-view",
+						"key": "name",
+						"className": "flex-6",
+						"props": {
+							"label": "Desigination Name",
+							"label_width": 100,
+							"value_width": 200,
+							"value_in_next_row": true
+						},
+						"hideExpression": "!model.isEdit"
+					}
+				]
+			},
+			{
+				"fieldGroupClassName": "display-flex",
+				"fieldGroup": [
+					{
+						"type": "input",
+						"key": "_id",
+						"className": "flex-1",
+						"props": {
+							"label": "Desigination ID",
+							"type": "Simple",
+							"placeholder": "Desigination ID",
+							"required": true,
+							"maxLength": 10,
+							"pattern": "^[A-Z][a-zA-Z]{1,}$"
+						},
+						"hideExpression": "model.isEdit"
+					},
+					{
+						"type": "input",
+						"key": "name",
+						"className": "flex-5",
+						"templateOptions": {
+							"label": "Desigination Name",
+							"maxLength": 50,
+							"required": true,
+							"placeholder": "Desigination Name"
+						},
+						"hideExpression": "model.isEdit"
+					}
+				]
+			},
+			{
+				"type": "textarea",
+				"key": "Description",
+				"templateOptions": {
+					"label": "Anything about this role",
+					"placeholder": "Description",
+					"rows": 5
+				}
+			},
+			{
+				"key": "status",
+				"type": "select",
+				"defaultValue": "A",
+				"templateOptions": {
+					"label": "Status",
+					"options": [
+						{
+							"label": "Active",
+							"value": "A"
+						},
+						{
+							"label": "Disable",
+							"value": "D"
+						}
+					],
+					"required": true
+				},
+				"hideExpression": "!model.isEdit"
+			}
+		],
+		"defaultValues": [
+			{
+				"colName": "status",
+				"value": "A",
+				"type": "string"
+			}
+		]
+	},
+	"onCancelRoute": "/list/desigination"
+}

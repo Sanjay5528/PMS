@@ -20,7 +20,7 @@
           <formly-form [model]="model" [fields]="fields" [options]="options" [form]="form"></formly-form>
             <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="15px" *ngIf="fields">
               <button mat-raised-button color="primary" type="submit" (click)="frmStart($event)" *ngIf="!isFormDataLoaded && config.form.buttons.start">Start</button>
-              <button mat-raised-button color="secondary" type="reset" (click)="resetForm()" *ngIf="isFormDataLoaded && config.form.buttons.newEntry">New Entry</button>
+              <button mat-raised-button color="secondary" type="reset"  *ngIf="isFormDataLoaded && config.form.buttons.newEntry">New Entry</button>
             </div>
           </form>
         </div>
@@ -30,7 +30,7 @@
               <formly-form [model]="detailModel" [fields]="detailFields" [options]="options" [form]="detailForm"></formly-form>
               <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="20px" *ngIf="detailFields">
                 <button mat-button type="reset" (click)="this.formService.resetDetailModel(this)" *ngIf="isDetailEditMode">Cancel</button>
-                <button mat-raised-button type="submit" color="primary" (click)="frmDetailSubmit($event);">{{(isDetailEditMode?'Update':'Add')}}</button>
+                <button mat-raised-button type="submit" color="primary" (click)="frmDetailSubmit($event);">{{(isDetailEditMode?'Update':'Save')}}</button>
               </div>
             </form>
        </div>

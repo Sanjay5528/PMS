@@ -79,6 +79,7 @@ import { ProjectButtonComponent } from './projectteam/button';
 import { ButtonComponent } from './aggrid-tree/button';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalenderComponent } from './calender/calender.component';
+import { ExpansionComponent } from './checkformaly/expansion/expansion.component';
 
 
 
@@ -126,7 +127,8 @@ const appearance: any = {
      CreatecvComponent,
      CalenderComponent,
      ProjectteamComponent,
-     TimesheetComponent
+     TimesheetComponent,
+     ExpansionComponent
   ],
   imports: [
     NgSelectModule,
