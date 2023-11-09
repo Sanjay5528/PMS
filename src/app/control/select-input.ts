@@ -60,7 +60,6 @@ export class SelectInput extends FieldType<any> implements OnInit {
   }
 
   valueSlected(){
-
     this.selectedValue=this.formControl.value    
     this.thisFormControl?.setValue(this.selectedValue)
   }

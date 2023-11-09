@@ -96,7 +96,8 @@ const routes: Routes = [
     children: [
       {
         path: "",
-        component: ExpansionComponent
+        component:DashboardComponent
+        // component: ExpansionComponent
 
       }
 

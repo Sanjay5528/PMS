@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DialogService } from 'src/app/services/dialog.service';
 import { FormService } from 'src/app/services/form.service';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 
@@ -90,6 +90,8 @@ export class DynamicFormComponent {
                 } else if (control instanceof FormControl && control.status === 'INVALID') {
                     // Access the label property assuming it exists in the control
                     invalidLabels +=controls[key]._fields[0].props.label + ",";
+                }else if(control instanceof FormArray && control.status === 'INVALID'){
+                  invalidLabels +=controls[key]._fields[0].props.label + ",";
                 }
             }
         }

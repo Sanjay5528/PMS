@@ -43,7 +43,7 @@ export class MasterSingleDetailFormComponent {
 
   //main form variables
   form = new FormGroup({});
-  model = {}
+  model:any = {}
   fields!: FormlyFieldConfig[]
   isFormDataLoaded = false
   id: any
@@ -116,6 +116,7 @@ export class MasterSingleDetailFormComponent {
     //     buttons: ['reset', 'apply'],
     // },
   };
+
   frmStart(event: any) {
     var data: any = this.form.value
     this.id = data['_id']
@@ -130,6 +131,7 @@ export class MasterSingleDetailFormComponent {
       })
     }
   }
+
   addForm(mode: any) {
 
     //! send the value in local storage 
@@ -138,23 +140,32 @@ export class MasterSingleDetailFormComponent {
       this.isDetailEditMode = mode != "add"
       console.log(this, mode);
       this.butText = 'Add'
+      let data:any={}
+      
+      
       if (this?.config?.detailForm?.collectionName == "data_model") {
         let data: any = this.model
         sessionStorage.setItem("model_name", data.model_name)
       }
-      this.dialogService.openDialog(this.popupEdit, null, null, {})
+      if(this.config.isCustomFuction==true&&this.config.addfields){
+      data[this.config.addfields] =this.model[this?.config?.addfields]
+      }
+      this.dialogService.openDialog(this.popupEdit, null, null, data)
     }
     else {
       this.router.navigate([`${this.config.addRoute}`])
     }
 
   }
+
   SaveProjectTeam() {
 
   }
 
 
   frmDetailSubmit(event: any) {
+    console.log(this?.config);
+    
     if (!this.detailForm.valid) {
       function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
         for (const key in controls) {

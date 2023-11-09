@@ -236,7 +236,10 @@ export class ImageInput extends FieldType<any> implements OnInit {
     console.log(this.id);
 if(this.model.isEdit){
     // To Implemt
- this.imageUrl=  "https://amsort.sgp1.digitaloceanspaces.com/"+this.model[this.field.key]
+    console.log(this.formControl.value);
+    console.log(this.model);
+    
+ this.imageUrl=  "https://amsort.sgp1.digitaloceanspaces.com/"+this.model[this.field.key].storage_name
 
     // this.dataService.getDataById("employee", this.id).subscribe((res: any) => {
     //     console.log(res);
@@ -253,7 +256,12 @@ if(this.model.isEdit){
     //        })
        
        
-        
+    
+
+
+    // "filterParams": {
+    //     "values": ["Female","Male","Others"]
+    //     }
 }
  }
 

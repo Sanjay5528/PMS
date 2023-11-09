@@ -1,43 +1,226 @@
 {
-	"pageHeading":"Desigination",
-	"collectionName": "desigination",
-	"editMode":"popup",
-	"addRoute" : "/add/desigination",
-	"editRoute": "/edit/role",
-	"showbutton":true,
-	"rolebased":true,
-	"role_based":true,
-	"actions": [
-		{
-			"label": "Edit",
-			"formAction": "edit",
-			"icon": "edit"
-		},
-		{
-			"label": "Delete",
-			"formAction": "delete",
-			"icon": "delete"
+	"pageHeading": "Project Team",
+	"formType": "master-detail",
+	"isCustomFuction":true,
+	"addfields":"project_name",
+	"form": {
+		"collectionName": "project",
+		"fields": [
+			{
+				"type": "label-view",
+				"key": "client_name",
+				"props": {
+					"label": "Client Name",
+					"label_width": 100,
+					"value_width": 200,
+					"value_in_next_row": false,
+					"placeholder": "Client Name",
+					"required": true
+				}
+			}, {
+				"type": "label-view",
+				"key": "project_id",
+				"props": {
+					"label": "Project Id",
+					"label_width": 100,
+					"value_width": 200,
+					"value_in_next_row": false,
+					"placeholder": "Project Id",
+					"required": true
+				}
+			}, {
+				"type": "label-view",
+				"key": "project_name",
+				"props": {
+					"label": "Project Name",
+					"label_width": 100,
+					"value_width": 200,
+					"value_in_next_row": false,
+					"placeholder": "Project Name",
+					"required": true
+				}
+			},
+			{
+				"type": "label-view",
+				"key": "status",
+				"props": {
+					"label_width": 100,
+					"value_width": 200,
+					"value_in_next_row": true,
+					"label": "Project Status",
+					"placeholder": "Project Status",
+					"required": true
+				}
+			}
+		],
+		"buttons": {
+			"start": false,
+			"newEntry": false
 		}
-	],
-	"columnDefs": [
-		
-		{ 
-			"headerName": "Desigination Name", "field": "name" 
-		},
-	  { 
-		"headerName": "Desigination ID", "field": "_id" 
 	},
-	  { 
-		"headerName": "status", "field": "status" 
-	},{
-		"type": "rightAligned",
-		"headerName": "Actions",
-		"cellRenderer": "buttonRenderer",
-		"lockPosition": "right",
-		"cellRendererParams": {
-			"onClick": "this.onBtnClick1.bind(this)",
-			"label": "Click 1"
-		}
+	"detailForm": {
+		"collectionName": "project_team",
+		"mapColumn": "project_id",
+		"uniqueColumn": "team_id",
+		"keyColumn": "_id",
+		"isPopupEdit": true,
+		"fields": [
+			{
+				"fieldGroupClassName": "display-flex",
+				"fieldGroup": [
+					{
+						"type": "label-view",
+						"key": "project_name",
+						"props": {
+							"label": "Project Name",
+							"label_width": 100,
+							"value_width": 200,
+							"value_in_next_row": false,
+							"placeholder": "Project Name",
+							"required": true
+						}
+					},
+					{
+						"type": "input",
+						"key": "team_id",
+						"className": "flex-2",
+						"props": {
+							"label": "Team Id",
+							"placeholder": "Team Id",
+							"pattern": "^[a-zA-Z0-9-_]*$",
+							"required": true
+						},
+						
+						"expressions": {
+					   
+							"props.readonly": "model.isEdit"
+						}
+					},
+					 
+					{
+						"type": "select",
+						"key": "status",
+						"className": "flex-2",
+						"props": {
+							"label": "Team Status",
+							"options": [
+								{
+									"label": "Active",
+									"value": "Active"
+								},
+								{
+									"label": "Inactive",
+									"value": "Inactive"
+								}
+								 
+							],
+							"placeholder": "Team Status",
+							"required": true
+						},
+					
+						"expressions": {
+							"hide": "!model.isshow"
+						}
+						}
+				]
+			},
+			{
+				"type": "html-input",
+				"key": "teamdes",
+				"className": "flex-2",
+				"props": {
+					"label": "Team Description",
+					"required": true,
+					 
+					"maxlength": 500
+				}
+			},
+		   
+			{
+				"type": "button-input",
+				"key": "teammember",
+				"props": {
+					"label": "Team Members",
+					"labelPropTemplate": "{{teammembers}}",
+					"attributes": "teammember"
+					
+				}
+			}
+		],
+		"defaultValues": [
+			{
+				"colName": "status",
+				"type": "string",
+				"value": "A"
+			}
+		]
+	},
+	"detailListConfig": {
+		"sectionHeading": "Project Team",
+		"actions": [
+			{
+				"label": "Edit",
+				"icon": "edit",
+				"formAction": "edit",
+				"formName": "facility"
+			},
+			{
+				"label": "Delete",
+				"icon": "delete",
+				"formAction": "delete",
+				"formName": "facility"
+			},
+			{
+				"label": "Device",
+				"formAction": "listpopup",
+				"storage": true,
+				"icon": "add",
+				"formName": "device"
+			}
+		],
+		"addRoute": "add/project_team_member",
+		"editRoute": "edit/project_team_member",
+		"fields": [
+			{
+				"headerName": "Project Name",
+				"field": "project_name",
+				"sortable": true,
+				"filter": "agTextColumnFilter"
+			},
+			{
+				"headerName": "Project Team Id",
+				"field": "team_id",
+				"sortable": true,
+				"filter": "agTextColumnFilter"
+			},
+			{
+				"headerName": "Project Team Member ",
+				"field": "facility_type",
+				"sortable": true,
+				"filter": "agTextColumnFilter"
+			},
+			{
+				"headerName": "status",
+				"field": "status",
+				"sortable": true,
+				"filter": "agTextColumnFilter"
+			},
+			{
+				"type": "rightAligned",
+				"headerName": "Actions",
+				"cellRenderer": "buttonRenderer",
+				"lockPosition": "right",
+				"cellRendererParams": {
+					"onClick": "this.onBtnClick1.bind(this)",
+					"label": "Click 1"
+				}
+			}
+		],
+		"filterOptions": [],
+		"defaultFilter": []
+	},
+	"onCancelRoute": "/list/project",
+	"designConfig": {
+		"leftPanelWidth": "320px"
 	}
-	]
   }

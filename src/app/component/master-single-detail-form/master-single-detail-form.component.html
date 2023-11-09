@@ -110,7 +110,7 @@
           <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="20px" *ngIf="detailFields">
             <!-- here this button is should not in ngif  -->
           <button mat-button type="reset" (click)="closePopup(data)">Cancel</button>
-          <button mat-raised-button type="submit" color="primary" (click)="frmDetailSubmit($event);">{{(isDetailEditMode?'Update':'Add')}}</button>
+          <button mat-raised-button type="submit" color="primary" (click)="frmDetailSubmit($event);">{{(isDetailEditMode?'Update':'Save')}}</button>
     </div>
 </div>
 </ng-template> 

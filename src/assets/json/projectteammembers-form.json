@@ -1,98 +1,115 @@
 {
-  "pageHeading": "Project Team Members",
+  "pageHeading": "Team Members",
   "formType": "simple",
-  "editMode": "page",
-  "keyField": "_id",
+  "editMode": "popup",
+  "keyField": "roleid",
   "form": {
-    "collectionName": "projectteammembers",
-    "fields": [
-      {
-        "type": "input",
-        "key": "teammemberid",
-        "props": {
-          "label": "Team Member Id",
-          "placeholder": "Team Member Id",
-          "pattern": "^[a-zA-Z0-9-_]*$",
-          "required": true
+      "collectionName": "projectteam",
+      "fields": [
+          {
+              "type": "input",
+              "key": "role_id",
+              "props": {
+                  "label": "Project Role Id",
+                  "placeholder": "Project Role Id",
+                  "pattern": "^[a-zA-Z0-9-_]*$",
+                  "required":"true"
+              }
+          },{
+            "type": "select-input",
+            "key": "employee_name",
+            "props": {                      
+                "label": "Employee Name",
+                "placeholder": "Employee Name",
+                "labelPropTemplate": " {{first_name}}",
+                "multifilter":true,
+                "optionsDataSource": {
+                    "collectionName": "employee"
+                },
+                "labelProp": "first_name",
+                "valueProp": "first_name",
+                "required": true
+
+            }
         },
-        
-           "expressions": {
-                       
-             "props.readonly": "model.isEdit"
-          }
-      },
-     
-      {
-        "type": "multiselect-input",
-        "key": "firstname",
-        "props": {
-          "label": "Team Member Name",
-          "placeholder": "Team Member Name",
-          "labelPropTemplate": " {{firstname}}",
-          "optionsDataSource": {
-            "collectionName": "employee"
+         
+          
+          {
+              "key": "team_name",
+              "type": "select",
+              
+              "props": {
+                "label": "Team Name",
+               
+                "placeholder": "Team Name",
+                "required": true,
+                "options": [
+                  {
+                    "value": "UI/UX Designer",
+                    "label": "UI/UX Designer"
+                  },
+                  {
+                    "value": "UI Development",
+                    "label": "UI Development"
+                  },
+                  {
+                      "value": "API Development",
+                      "label": "API Development"
+                    },
+                    {
+                      "value": "DB Designer",
+                      "label": "DB Designer"
+                    },
+                    {
+                      "value": "Testing",
+                      "label": "Testing"
+                    }
+                     
+
+                ]
+              }
           },
-          "labelProp": "firstname",
-          "valueProp": "firstname",
-          "required": true
+          {
+              "key": "role_name",
+              "type": "select",
+              
+              "props": {
+                "label": "Role Name",
+               
+                "placeholder": "Role Name",
+                "required": true,
+                "options": [
+                  {
+                    "value": "Project Manager",
+                    "label": "Project Manager"
+                  },
+                  {
+                    "value": "Project Lead",
+                    "label": "Project Lead"
+                  },
+                  {
+                      "value": "Team Lead",
+                      "label": "Team Lead"
+                    },
+                    {
+                      "value": "Software Developer",
+                      "label": "Software Developer"
+                    },
+                    {
+                      "value": "Tester",
+                      "label": "Tester"
+                    },
+                    {
+                      "value": "DB Admin",
+                      "label": "DB Admin"
+                    }
+                     
+
+                ]
+              }
           }
          
-       
-      },
- 
-      
-      {
-        "type": "select-input",
-        "key": "projectname",
-        "props": {
-          "label": "Project Name",
-          "placeholder": "Project Name",
-          "labelPropTemplate": " {{projectname}}",
-          "optionsDataSource": {
-            "collectionName": "clients/project"
-          },
-          "labelProp": "projectname",
-          "valueProp": "projectname",
-          "required": true
-        }
-      },
-      {
-        
-        "key": "startdate",
-        "type": "datepicker-input",
-        
-        "props": {
-          "label": "Start Date",
-          "placeholder": "Start Date",
-           
-          "required": true
-        }
-      },
-      {
-        
-        "key": "enddate",
-        "type": "datepicker-input",
-        "parentKey": "startdate",
-        "parentCollectionName": "projecteammembers",
-        "props": {
-          "label": "End Date",
-          "placeholder": "End Date",
-           
-          "required": true
-        }
-      },
-      {
-        "type": "button-input",
-        "key": "projectrole",
-        "props": {
-            "label": "Project Role",
-            "labelPropTemplate": "{{projectrole}}",
-            "attributes": "projectrole"
-            
-        }
-    }
-       
-    ]
+      ]
   },
-  "onCancelRoute": "/list/projectteammembers"
+  "onCancelRoute": "/list/teammembers"
 }
