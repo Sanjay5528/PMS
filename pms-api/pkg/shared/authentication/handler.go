@@ -31,7 +31,7 @@ func LoginHandler(c *fiber.Ctx) error {
 	if err := c.BodyParser(loginRequest); err != nil {
 		return shared.BadRequest("Invalid params")
 	}
-	
+
 	if loginRequest.Id == "" {
 		shared.BadRequest("Invalid User ID")
 	}
@@ -62,13 +62,19 @@ func LoginHandler(c *fiber.Ctx) error {
 		userName = user["first_name"]
 	}
 
+	employeeId := user["employee_id"]
+	if employeeId == nil {
+		userName = user["employee_id"]
+	}
+
 	token := utils.GenerateJWTToken(claims, 24*60) //24*60
 
 	response := &LoginResponse{
-		Name:     userName.(string),
-		UserRole: user["role"].(string),
-		UserOrg:  org,
-		Token:    token,
+		Name:        userName.(string),
+		UserRole:    user["role"].(string),
+		Employee_id: user["employee_id"].(string),
+		UserOrg:     org,
+		Token:       token,
 	}
 
 	return shared.SuccessResponse(c, fiber.Map{

@@ -16,10 +16,11 @@ type LoginRequest struct {
 
 // LoginResponse - for Login Response
 type LoginResponse struct {
-	Name     string             `json:"name"`
-	UserRole interface{}        `json:"role"`
-	UserOrg  utils.Organization `json:"org" bson:"org"`
-	Token    string             `json:"token"`
+	Name        string             `json:"name"`
+	UserRole    interface{}        `json:"role"`
+	UserOrg     utils.Organization `json:"org" bson:"org"`
+	Employee_id string             `json:"employee_id" bson:"employee_id`
+	Token       string             `json:"token"`
 }
 
 // ResetPasswordRequestDto - Dto for reset password Request

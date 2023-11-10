@@ -38,20 +38,20 @@ func PostDocHandler(c *fiber.Ctx) error {
 	}
 	userToken := utils.GetUserTokenValue(c)
 
-	collectionName := CollectionNameGet(c.Params("model_name"), org.Id)
-	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
-	var errmsgs []string
-	if errmsg != nil {
-		for _, values := range errmsg {
-			errmsgs = append(errmsgs, values)
-		}
-		return shared.SendErrorResponse(c, errmsgs)
-	}
+	// collectionName := CollectionNameGet(c.Params("model_name"), org.Id)
+	// inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	// var errmsgs []string
+	// if errmsg != nil {
+	// 	for _, values := range errmsg {
+	// 		errmsgs = append(errmsgs, values)
+	// 	}
+	// 	return shared.SendErrorResponse(c, errmsgs)
+	// }
 
-	// var inputData map[string]interface{}
-	// c.BodyParser(&inputData)
+	var inputData map[string]interface{}
+	c.BodyParser(&inputData)
 
-	// collectionName := c.Params("model_name")
+	collectionName := c.Params("model_name")
 	inputData["created_on"] = time.Now()
 	inputData["created_by"] = userToken.UserId
 	inputData["status"] = "A"
@@ -237,6 +237,7 @@ func CollectionNameGet(model_name, orgId string) string {
 
 // todo not use
 func getDocByIddHandler(c *fiber.Ctx) error {
+	fmt.Println("nbjjggg")
 	orgId := c.Get("OrgId")
 	if orgId == "" {
 		return shared.BadRequest("Organization Id missing")
@@ -267,7 +268,7 @@ func getDocByIddHandler(c *fiber.Ctx) error {
 					{"enddate", 1},
 					{"project_id", 1},
 					{"startdate", 1},
-					{"taskname", "$results.taskname"},
+					{"taskname", "$results.task_name"},
 				},
 			},
 		},

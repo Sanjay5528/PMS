@@ -27,7 +27,7 @@ func SetupCRUDRoutes(app *fiber.App) {
 	r.Delete("/:collectionName", DeleteByAll)
 	r.Post("/filter/:collectionName", getDocsHandler)
 	// r.Get("/clients/:name", ActiveClientHandler)                          //todo
-	r.Get("filter/:collectionName/:projectid", getDocByIddHandler) //todod
+	r.Get("/filter/:collectionName/:projectid", getDocByIddHandler) //todod
 	// r.Get("filters/:collectionName/:clientname", getDocByClientIdHandler) //todo
 	// r.Post("/:collectionName/increment/columnName/value", updateIncrementalValue)
 }
@@ -56,19 +56,19 @@ func SetupBulkUploadRoutes(app *fiber.App) {
 	r.Get("/", helper.UploadbulkData)
 }
 
-// todo remove
-func SetupQueryRoutes(app *fiber.App) {
-	r := helper.CreateRouteGroup(app, "/query", "Raw Query API")
-	// r.Post("/:type/:collectionName", rawQueryHandler)
-	r.Get("/:collectionName/:colvalue/:key", ColvalHandler)
-	r.Get("/task/:assignedto", EmployeeTaskHandler)     //
-	r.Get("/timesheet/:timesheet_id", TimeSheetHandler) //
-	r.Get("/project/:projectid", ModuleTaskHandler)
-	r.Get("/projectname/:projectname", TeamMemberHandler) //
-	r.Get("/statename/:country", StateHandler)
-	r.Get("/:collectionName/:moduleid", getModuleByIdHandler) //
+// // todo remove
+// func SetupQueryRoutes(app *fiber.App) {
+// 	r := helper.CreateRouteGroup(app, "/query", "Raw Query API")
+// 	// r.Post("/:type/:collectionName", rawQueryHandler)
+// 	r.Get("/:collectionName/:colvalue/:key", ColvalHandler)
+// 	r.Get("/task/:assignedto", EmployeeTaskHandler)     //
+// 	r.Get("/timesheet/:timesheet_id", TimeSheetHandler) //
+// 	r.Get("/project/:projectid", ModuleTaskHandler)
+// 	r.Get("/projectname/:projectname", TeamMemberHandler) //
+// 	r.Get("/statename/:country", StateHandler)
+// 	r.Get("/:collectionName/:moduleid", getModuleByIdHandler) //
 
-}
+// }
 
 func SetupLookupRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/lookup", "Data Lookup API")

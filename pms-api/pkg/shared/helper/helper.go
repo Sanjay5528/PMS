@@ -289,7 +289,8 @@ func DatasetsConfig(c *fiber.Ctx) error {
 	var Response fiber.Map
 	// BuildPipeline -- Create a Filter Pipeline from Body Content
 	Data, Response := BuildPipeline(orgId, inputData)
-
+	// Set the DatasetName to _id for unique
+	Data.Id = inputData.DataSetName
 	// Params options -- options is  insert the data to Db
 	// if options empty is preview the data
 	if c.Params("options") == "Insert" {
@@ -350,8 +351,7 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 	pipelinestring := string(marshaldata)
 	// set the inputData.Pipeline  -- store the data form converted string pipeine
 	inputData.Pipeline = pipelinestring
-	// Set the DatasetName to _id for unique
-	inputData.Id = inputData.DataSetName
+
 	//
 	// Filter Params for to replace the string to convert to pipeline again
 	if len(inputData.FilterParams) > 0 {
