@@ -40,43 +40,43 @@ func PostDocHandler(c *fiber.Ctx) error {
 	userToken := utils.GetUserTokenValue(c)
 
 	//get the collection from model_config collection to find the model_name
-	collectionName, err := CollectionNameGet(c.Params("model_name"), org.Id)
-	if err != nil {
-		shared.BadRequest("Invalid CollectionName")
-	}
+	// collectionName, err := CollectionNameGet(c.Params("model_name"), org.Id)
+	// if err != nil {
+	// 	shared.BadRequest("Invalid CollectionName")
+	// }
 	// Validation the Insert Data from -- InsertValidateInDatamodel
-	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
-	//Get the Err message from -- InsertValidateInDatamodel
-	var errmsgs []string
-	if errmsg != nil {
-		for _, values := range errmsg {
-			errmsgs = append(errmsgs, values)
-		}
-		return shared.SendErrorResponse(c, errmsgs)
-	}
+	// inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	// //Get the Err message from -- InsertValidateInDatamodel
+	// var errmsgs []string
+	// if errmsg != nil {
+	// 	for _, values := range errmsg {
+	// 		errmsgs = append(errmsgs, values)
+	// 	}
+	// 	return shared.SendErrorResponse(c, errmsgs)
+	// }
 
-	// var inputData map[string]interface{}
-	// c.BodyParser(&inputData)
+	var inputData map[string]interface{}
+	c.BodyParser(&inputData)
 
-	// collectionName := c.Params("model_name")
+	collectionName := c.Params("model_name")
 
 	inputData["created_on"] = time.Now()
 	inputData["created_by"] = userToken.UserId
 	inputData["status"] = "A"
 	// user collection is here that time only password validation
-	if collectionName == "user" {
-		// to compare the password and comfirm password is same only   Genrate the Hased password
-		if inputData["password"].(string) != inputData["pwdConfirm"].(string) {
-			shared.BadRequest("Verify that the password and confirm password are the same.")
-		}
+	// if collectionName == "user" {
+	// 	// to compare the password and comfirm password is same only   Genrate the Hased password
+	// 	if inputData["password"].(string) != inputData["pwdConfirm"].(string) {
+	// 		shared.BadRequest("Verify that the password and confirm password are the same.")
+	// 	}
 
-		// if password marched to create the Hash Password
-		passwordHash, _ := helper.GeneratePasswordHash(inputData["password"].(string))
-		inputData["pwd"] = passwordHash
-		// remove the password and confirm password
-		delete(inputData, "password")
-		delete(inputData, "pwdConfirm")
-	}
+	// 	// if password marched to create the Hash Password
+	// 	passwordHash, _ := helper.GeneratePasswordHash(inputData["password"].(string))
+	// 	inputData["pwd"] = passwordHash
+	// 	// remove the password and confirm password
+	// 	delete(inputData, "password")
+	// 	delete(inputData, "pwdConfirm")
+	// }
 
 	// Insert he data to mongo Collection  name form params
 	res, err := database.GetConnection(org.Id).Collection(collectionName).InsertOne(ctx, inputData)
