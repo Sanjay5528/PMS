@@ -59,7 +59,7 @@ import { FormService } from "src/app/services/form.service";
     <h2 style="text-align: center;" class="page-title">Task</h2>
   </div>
   <div style="text-align-last: end">
-    <mat-icon mat-dialog-close>close</mat-icon>
+    <mat-icon mat-dialog-close  (click)="closedia()">close</mat-icon>
   </div>
 </mat-card-header>
 <mat-card-content style="padding-top: 10px">
@@ -70,14 +70,14 @@ import { FormService } from "src/app/services/form.service";
 </mat-card-content>
 <mat-card-actions>
     <div style="text-align-last: end; width: 100%">
-      <button style="margin: 5px" mat-button mat-dialog-close>
+      <button style="margin: 5px" mat-button mat-dialog-close  (click)="closedia()">
         Cancel
       </button>
       <button style="margin: 5px" mat-button (click)="resetBtn('reset')">
          Reset
       </button>
       <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button
-        color="warn"  (click)=" saveForm(this.config)">
+        color="warn"  (click)=" saveForm(this.config,'taskViewPopup')">
         Save
       </button>
     </div>
@@ -109,7 +109,7 @@ import { FormService } from "src/app/services/form.service";
   <h2 style="text-align: center;" class="page-title">Sub Modules</h2>
 </div>
 <div style="text-align-last: end">
-  <mat-icon mat-dialog-close>close</mat-icon>
+  <mat-icon mat-dialog-close  (click)="closedia()">close</mat-icon>
 </div>
 </mat-card-header>
 <mat-card-content style="padding-top: 10px">
@@ -121,14 +121,14 @@ import { FormService } from "src/app/services/form.service";
 
 <mat-card-actions>
   <div style="text-align-last: end; width: 100%">
-    <button style="margin: 5px" mat-button mat-dialog-close>
+    <button style="margin: 5px" mat-button mat-dialog-close (click)="closedia()">
       Cancel
     </button>
     <button style="margin: 5px" mat-button  (click)="resetBtn()">
        Reset
     </button>
     <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button
-      color="warn" (click)=" saveForm(this.config)">
+      color="warn" (click)=" saveForm(this.config,'modulesViewPopup')">
       Save
     </button>
   </div>
@@ -186,7 +186,9 @@ export class ButtonComponent implements ICellRendererAngularComp {
   refresh(_params?: any): boolean {
     return true;
   }
-
+  closedia(){
+localStorage.removeItem("projectmembers")
+  }
   //   onDelete($event: any) {
   //     // this.gridData = $event.api.getSelectedRows();
   //     // let a = $event.gridApi.getSelectedRows();
@@ -254,8 +256,10 @@ export class ButtonComponent implements ICellRendererAngularComp {
 
           this.formAction = "Add"
           this.config = frmConfig;
-          //  this.aggrid.saveForm(this.data)
+          
           this.fields = frmConfig.form.fields;
+          sessionStorage.setItem("project_id",this.gridData.project_id)
+          
           this.dialog.openDialog(this.taskViewPopup, "50%", null, data);
 
           // this.pageHeading = frmConfig.pageHeading;
@@ -325,11 +329,18 @@ export class ButtonComponent implements ICellRendererAngularComp {
   //     console.log("Object Assign isn't working");
   //   }
   // } 
-  saveForm(_data: any) {
+  saveForm(_data: any,val?:any) {
     debugger
     let values:any=this.form.value
+    if(val=="modulesViewPopup"){
     values.parentmodulename=this.gridData.modulename
     values.project_id=this.gridData.project_id
+  }else if(val=="taskViewPopup"){
+    values.moduleid=this.gridData.moduleid
+    
+    // values.parentmodulename=this.gridData.modulename
+    values.project_id=this.gridData.project_id
+  }
     // values.client_name=this.gridData.modulename
 
     this.dataService.save(this.config.form.collectionName,values).subscribe((data:any)=>{

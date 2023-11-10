@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { DataService } from './data.service';
 import { DialogService } from './dialog.service';
 import { HttpClient } from '@angular/common/http';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class HelperService implements OnInit {
     private dialogService: DialogService,
     public loc: PlatformLocation,
     private datepipe: DatePipe,
+    private jwtService:JwtHelperService,
     private httpClient: HttpClient) {
       this.selectedOrgId.asObservable()
    
@@ -184,9 +186,16 @@ export class HelperService implements OnInit {
     }
   }
   public getToken() {
-
-    return sessionStorage.getItem('token')
+    return sessionStorage.getItem('token') 
   }
+
+  public getdecodeToken(){
+    let token:any=this?.getToken()
+    let values:any= this.jwtService.decodeToken(token)
+    console.log(values);
+    return values
+  }
+
   getSelectedOrgId() {
     return sessionStorage.getItem("selectedOrgId")
   }
@@ -195,7 +204,11 @@ export class HelperService implements OnInit {
     return environment.OrgId//hostName[0]
   }
   getRole() {
-    return sessionStorage.getItem('role')
+    let value:any= sessionStorage.getItem('auth')
+    let data:any=JSON.parse(value)
+    console.log(data);
+    
+    return data.data.LoginResponse.role
   }
  
 

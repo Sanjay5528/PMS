@@ -242,7 +242,7 @@ export class TimesheetComponent implements OnInit {
     constructor(private dataService: DataService, private activatedRoute: ActivatedRoute, private route: Router, private dialogService: DialogService, private httpclient: HttpClient, private fb: FormBuilder, public jwtService: JwtHelperService,private formservice: FormService) {
     this.createFormControl()
     let data: any = localStorage.getItem('auth');
-    let name = JSON.parse(data).profile.employeeid;
+    // let name = JSON.parse(data).profile.employeeid;
      //this.valueGEt(name);
     
 
@@ -256,10 +256,18 @@ export class TimesheetComponent implements OnInit {
   ngOnInit() {
     debugger
     let data: any = localStorage.getItem('auth');
-    let name = JSON.parse(data).profile.employeeid
+    // let name = JSON.parse(data).profile.employeeid
     this.activatedRoute.params.subscribe(params => {
       this.calendarDate = params['date'];
+      const today =moment()
+      console.log(today);
+      
+    console.log(moment(this.calendarDate).diff(today)); // if value is leesser than 0 < -infity api call 2 // ? else normal condition api 2
+    console.log(moment(this.calendarDate).diff(new Date,'day'));
+    console.log(moment(this.calendarDate).diff(new Date,'d'));
+
     });
+    
 
     this.SelectedDate = this.calendarDate 
      console.log(this.calendarDate );

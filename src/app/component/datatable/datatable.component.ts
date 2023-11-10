@@ -159,14 +159,26 @@ export class DatatableComponent implements OnInit {
         let role_type: any;
         var role_filter: any;
         if (config?.rolebased) { // config . role == true  
-          role_type = this.DataService.getdetails().profile.role;
-          org_type_id = this.DataService.getdetails().profile.org_id;
+          role_type = this.DataService.getdetails().LoginResponse.role;
+          org_type_id = this.DataService.getdetails().LoginResponse.org_id;
           if (role_type !== "SA") {
 
             role_filter = {
               clause: "AND",
               conditions: [
                 {column: "org_id",operator: "EQUALS",type: "string",value: org_type_id,},
+              ],
+            };
+          }
+
+        }if (config?.individaulAccess) { // config . role == true  
+          let decodeToken:any=this.helperService.getdecodeToken()
+          if (role_type !== "SA") {
+// to use
+            role_filter = {
+              clause: "AND",
+              conditions: [
+                {column: config?.individaulAccessColumn,operator: "EQUALS",type: "string",value: decodeToken[config.valueColumnName]},
               ],
             };
           }
@@ -206,6 +218,14 @@ export class DatatableComponent implements OnInit {
               }
               return moment().format(e.format || "DD-MM-YYYY "); //? set curent date
             };
+          }
+          if(e.type=="role"){
+            // ! know lock is Done
+            console.log(e.value!==this.helperService.getRole());
+            
+            if(e.value!==this.helperService.getRole()){
+              e.lockVisible=true
+            }
           }
           if (e.type == "color") {
             e.cellStyle = (params: any) => {

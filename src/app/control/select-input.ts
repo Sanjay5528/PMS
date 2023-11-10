@@ -158,24 +158,45 @@ export class SelectInput extends FieldType<any> implements OnInit {
 //    });
 //   }
 
-//   if(this?.opt?.optionsDataSource?.multifilter){
-//     this?.opt?.multifilter_condition?.conditions.map((res:any)=>{
+  if(this?.opt?.multifilter&& this?.opt?.multifiltertype){
+    this?.opt?.multifilter_condition?.conditions.map((res:any)=>{
      
-//       // if(res?.value!=undefined && this?.field?.getdata){
-//        let value = sessionStorage.getItem(this.field.column)
-//         res.value=value
-//       // 
+      if(this?.opt?.multifiltertype=="local"){
+       let value = sessionStorage.getItem(this.opt.local_name)
+        res.value=value
+      }
     
-//     })
-//     let filter_condition={filter:[
-//       this.opt.multifilter_condition
-//     ]}
-//     this.dataService.getDataByFilter(this.opt?.optionsDataSource?.multifilter,filter_condition).subscribe((res:any)=>{
-//       // this.dataService.buildOptions(res.data[0].response, this.opt);
-//       console.log(res);
-      
-//     })
-// }
+    })
+    let filter_condition={filter:[
+      this.opt.multifilter_condition
+    ]}
+    this.dataService.getDataByFilter(this.opt?.Collections,filter_condition).subscribe((res:any)=>{
+      // this.dataService.buildOptions(res.data[0].response, this.opt);
+      console.log(res);
+let values :any[] =[]
+
+      res.data[0].response.forEach((element:any) => {
+        if(element&&element[this.opt.specification]){
+console.log(element[this.opt.specification]);
+
+          values.push(element[this.opt.specification])
+        }
+      });
+console.log(this.opt.innerArray);
+
+        // Update the options array within the subscription
+        let totalvalue:any[]=[]
+        values.forEach((data:any)=>{
+           data.map((data: any) => {
+            totalvalue.push( { label: data[this.opt.innerArray], value: data[this.opt.innerArray] });
+          });
+          
+        })
+        console.log(totalvalue);
+        this.field.props.options=totalvalue
+        this.optionsValue = totalvalue
+    })
+}
     if (this?.opt?.optionsDataSource?.collectionName!=undefined) {
       let name = this.opt.optionsDataSource.collectionName;
       this.dataService.getDataByFilter(name,{}).subscribe((res: any) => {
@@ -193,7 +214,10 @@ export class SelectInput extends FieldType<any> implements OnInit {
 
     if (this?.opt?.optionsDataSource?.collectionNameById!=undefined) {
       let name = this.opt.optionsDataSource.collectionNameById;
-      let id = sessionStorage.getItem("projectname");
+      let id :any
+      if(this.opt.type=="local"){
+       id= sessionStorage.getItem(this.opt.local_name);
+      }
       console.log(id);
       this.dataService.getDataById(name, id).subscribe((res: any) => {
         ;
@@ -231,6 +255,9 @@ export class SelectInput extends FieldType<any> implements OnInit {
                 res.value=val
               }
              }
+             if(this.opt.multifiltertype=="Local"){
+              res.value=sessionStorage.getItem(this.opt.local_name)
+            }
             })
             let filter_condition={filter:[
               this.opt.multifilter_condition
@@ -344,6 +371,9 @@ export class SelectInput extends FieldType<any> implements OnInit {
                   res.value=val
                 }
               // }
+            }
+            if(this.opt.multifiltertype=="Local"){
+              res.value=sessionStorage.getItem(this.opt.local_name)
             }
             })
             let filter_condition={filter:[
