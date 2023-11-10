@@ -24,9 +24,7 @@
 .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-placeholder {
   z-index: 1;
   position: absolute;
-  margin: -3px 4px;
 }
-
 input, textarea {
   background-color: #fff;
 }

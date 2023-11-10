@@ -399,6 +399,8 @@ export class DatasetComponent {
   }
 
   CustomColum(rawValue: any) {
+    console.log(this.custom_columns_fn);
+    
     if (rawValue.dataType == "Numberic") {
       // let data: any = this.options.map((value: any) => {
       //   if ((value.type in this.NumberictypeMapping)) {

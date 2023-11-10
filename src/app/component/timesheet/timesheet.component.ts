@@ -10,6 +10,7 @@ import * as moment from 'moment';
 import { DataService } from 'src/app/services/data.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { FormService } from 'src/app/services/form.service';
+import { HelperService } from 'src/app/services/helper.service';
 @Component({
   selector: 'app-timesheet',
   templateUrl: './timesheet.component.html',
@@ -40,7 +41,6 @@ export class TimesheetComponent implements OnInit {
   pageHeading: any;
   @ViewChild("editViewPopup", { static: true }) editViewPopup!: TemplateRef<any>;
   @Input('model') model: any = {}
-  pageForm!: FormGroup
   selectInfo: any;
   getTimesheetdata: any;
   formatedDate: any;
@@ -239,14 +239,8 @@ export class TimesheetComponent implements OnInit {
   
   public rowSelection: 'single' | 'multiple' = 'multiple';
    
-    constructor(private dataService: DataService, private activatedRoute: ActivatedRoute, private route: Router, private dialogService: DialogService, private httpclient: HttpClient, private fb: FormBuilder, public jwtService: JwtHelperService,private formservice: FormService) {
-    this.createFormControl()
-    let data: any = localStorage.getItem('auth');
-    // let name = JSON.parse(data).profile.employeeid;
-     //this.valueGEt(name);
-    
-
-  }
+    constructor(private dataService: DataService, private helperServices:HelperService, private activatedRoute: ActivatedRoute, private route: Router, private dialogService: DialogService, private httpclient: HttpClient, private fb: FormBuilder, public jwtService: JwtHelperService,private formservice: FormService) 
+    {}
 
 
 
@@ -255,16 +249,43 @@ export class TimesheetComponent implements OnInit {
  
   ngOnInit() {
     debugger
-    let data: any = localStorage.getItem('auth');
-    // let name = JSON.parse(data).profile.employeeid
+    
     this.activatedRoute.params.subscribe(params => {
+      let employee_id: any = this.helperServices.getEmp_id();
+      let role_id: any = this.helperServices.getRole();
       this.calendarDate = params['date'];
-      const today =moment()
-      console.log(today);
+      let DateDiff:any= moment(this.calendarDate).diff(new Date,'day')
+      let Normalquery:any={
+        start:0,end:1000,
+        filter:[]
+      }
+      let notcompletedQuery:any={
+        start:0,end:1000,
+        filter:[
+
+        ]
+      }
+      if(role_id!=="SA"){
+          if(DateDiff>0){
+            Normalquery.filter={
+              clause: "AND",
+              conditions: [
+
+                // greaterThanOrEqual GREATERTHANOREQUAL
+                // lessThanOrEqual   LESSTHANOREQUAL
+                {column: "employee_id",operator: "EQUALS",type: "string",value:employee_id },
+                {column: "scheduled_start_date",operator: "GREATERTHANOREQUAL",type: "string",value:employee_id },
+                {column: "scheduled_end_date",operator: "LESSTHANOREQUAL",type: "string",value:employee_id },
+
+              ],
+            }
+          }
+          else{
+
+          }
+        }
       
-    console.log(moment(this.calendarDate).diff(today)); // if value is leesser than 0 < -infity api call 2 // ? else normal condition api 2
-    console.log(moment(this.calendarDate).diff(new Date,'day'));
-    console.log(moment(this.calendarDate).diff(new Date,'d'));
+    // console.log(moment(this.calendarDate).diff(new Date,'d'));
 
     });
     
@@ -416,7 +437,7 @@ export class TimesheetComponent implements OnInit {
 
     
    
-   this.getsearch()
+  //  this.getsearch()
     //this.getUnScheduleData()
     //this.getDataUnschedule();
     // this.getTimesheet()
@@ -451,11 +472,7 @@ export class TimesheetComponent implements OnInit {
  
     
   
-  createFormControl() {
-    this.pageForm = this.fb.group({
-      description: ["", Validators.required]
-    })
-  }
+  
 
   onSelectionChanged($event: any) {
     this.selectedRow = $event.api.getSelectedRows()[0];
@@ -971,24 +988,24 @@ console.log(data,'data');
   }
 
 
-getsearch(){
-  let data: any = localStorage.getItem('auth');
+// getsearch(){
+//   let data: any = localStorage.getItem('auth');
  
-  let emp = JSON.parse(data).profile.employeeid
+//   let emp = JSON.parse(data).profile.employeeid
   
 
-  this.date = this.dateform.value.datepicker._d
-  let formatedDate = moment(this.date).format('YYYY-MM-DDT00:00:00.000+00:00');
- console.log("search",formatedDate)
+//   this.date = this.dateform.value.datepicker._d
+//   let formatedDate = moment(this.date).format('YYYY-MM-DDT00:00:00.000+00:00');
+//  console.log("search",formatedDate)
 
-    // ! UNDO
+//     // ! UNDO
 
-  // this.dataService.getunschedule(emp, formatedDate).subscribe((res: any) => {
-  //   this.listData = res.data
-  //   console.log('yyy', this.listData);
-  // }
-  // )
-}
+//   // this.dataService.getunschedule(emp, formatedDate).subscribe((res: any) => {
+//   //   this.listData = res.data
+//   //   console.log('yyy', this.listData);
+//   // }
+//   // )
+// }
 
 
  

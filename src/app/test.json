@@ -59,15 +59,15 @@
 		}
 	},
 	"detailForm": {
+        "customfilter":true,
+        "customkey":"project_id",
 		"collectionName": "project_team",
 		"mapColumn": "project_id",
 		"uniqueColumn": "team_id",
 		"keyColumn": "_id",
 		"isPopupEdit": true,
 		"fields": [
-			{
-				"fieldGroupClassName": "display-flex",
-				"fieldGroup": [
+		
 					{
 						"type": "label-view",
 						"key": "project_name",
@@ -81,9 +81,10 @@
 						}
 					},
 					{
+						"fieldGroupClassName": "display-flex",
+						"fieldGroup": [	{
 						"type": "input",
 						"key": "team_id",
-						"className": "flex-2",
 						"props": {
 							"label": "Team Id",
 							"placeholder": "Team Id",
@@ -95,38 +96,46 @@
 					   
 							"props.readonly": "model.isEdit"
 						}
-					},
-					 
-					{
-						"type": "select",
-						"key": "status",
-						"className": "flex-2",
-						"props": {
-							"label": "Team Status",
-							"options": [
-								{
-									"label": "Active",
-									"value": "Active"
-								},
-								{
-									"label": "Inactive",
-									"value": "Inactive"
-								}
-								 
-							],
-							"placeholder": "Team Status",
-							"required": true
-						},
+					}
 					
-						"expressions": {
-							"hide": "!model.isshow"
-						}
-						}
-				]
-			},
+					
+				
+			,
+			{
+				"key": "modules",
+				"type": "multiselect-input",
+				"className": "flex-6",
+				"props": {
+				  "label": "Select the Module",
+				  "placeholder": "Select the Module",
+				  "optionsDataSource": {
+					"collectionName": "modules"
+				  },
+				  "attributes":{
+					"type":"default",
+					"Takenvaluekey":"project_id",
+					"Takenlabelkey":"project_name"
+				  },
+				  "multifilter":true,
+				  "filtervalueKey":"project_id",
+				  "multifilter_condition": {
+					"clause": "AND",
+					"conditions": [
+					{
+						"column": "project_id",
+						"operator": "EQUALS",
+						"type": "string",
+						"value": ""
+					}
+					]
+				},
+				  "labelProp": "label",
+				  "valueProp": "value"
+				}
+			  }]},
 			{
 				"type": "html-input",
-				"key": "team_description",
+				"key": "teamdes",
 				"className": "flex-2",
 				"props": {
 					"label": "Team Description",
@@ -145,7 +154,31 @@
 					"attributes": "teammember"
 					
 				}
-			}
+			},{
+				"type": "select",
+				"key": "status",
+				"className": "flex-2",
+				"props": {
+					"label": "Team Status",
+					"options": [
+						{
+							"label": "Active",
+							"value": "Active"
+						},
+						{
+							"label": "Inactive",
+							"value": "Inactive"
+						}
+						 
+					],
+					"placeholder": "Team Status",
+					"required": true
+				},
+			
+				"expressions": {
+					"hide": "!model.isshow"
+				}
+				}
 		],
 		"defaultValues": [
 			{
@@ -161,21 +194,12 @@
 			{
 				"label": "Edit",
 				"icon": "edit",
-				"formAction": "edit",
-				"formName": "facility"
+				"formAction": "edit"
 			},
 			{
 				"label": "Delete",
 				"icon": "delete",
-				"formAction": "delete",
-				"formName": "facility"
-			},
-			{
-				"label": "Device",
-				"formAction": "listpopup",
-				"storage": true,
-				"icon": "add",
-				"formName": "device"
+				"formAction": "delete"
 			}
 		],
 		"addRoute": "add/project_team_member",
@@ -195,8 +219,10 @@
 			},
 			{
 				"headerName": "Project Team Member ",
-				"field": "facility_type",
+				"field": "teammember",
 				"sortable": true,
+                "type":"arraytostring",
+                "value":"employee_name",
 				"filter": "agTextColumnFilter"
 			},
 			{

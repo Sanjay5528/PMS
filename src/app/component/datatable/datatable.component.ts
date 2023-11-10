@@ -219,6 +219,11 @@ export class DatatableComponent implements OnInit {
               return moment().format(e.format || "DD-MM-YYYY "); //? set curent date
             };
           }
+          if(e.type == "name" ){
+            e.valueGetter = (params: any) => {
+              return  params.data["first_name"]+" "+params.data["last_name"]
+            }
+          }
           if(e.type=="role"){
             // ! know lock is Done
             console.log(e.value!==this.helperService.getRole());

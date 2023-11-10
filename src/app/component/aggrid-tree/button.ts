@@ -333,13 +333,20 @@ localStorage.removeItem("projectmembers")
     debugger
     let values:any=this.form.value
     if(val=="modulesViewPopup"){
+      // values.project_name=this.gridData.project_name
+      values.client_name= this.ParentComponent.response?.client_name
+      values.project_id= this.ParentComponent.response?.project_id
+      values.project_name= this.ParentComponent.response?.project_name
+    
     values.parentmodulename=this.gridData.modulename
-    values.project_id=this.gridData.project_id
+    // values.project_id=this.gridData.project_id
   }else if(val=="taskViewPopup"){
     values.moduleid=this.gridData.moduleid
-    
-    // values.parentmodulename=this.gridData.modulename
-    values.project_id=this.gridData.project_id
+    // values.project_name=this.gridData.project_name
+        // values.project_id=this.gridData.project_id
+        values.client_name= this.ParentComponent.response?.client_name
+      values.project_id= this.ParentComponent.response?.project_id
+      values.project_name= this.ParentComponent.response?.project_name
   }
     // values.client_name=this.gridData.modulename
 

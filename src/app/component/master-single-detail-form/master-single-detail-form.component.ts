@@ -151,6 +151,7 @@ export class MasterSingleDetailFormComponent {
       }
       if(this.config.isCustomFuction==true&&this.config.addfields){
       data[this.config.addfields] =this.model[this?.config?.addfields]
+      data["project_id"]=this.model["project_id"]
       }
       this.dialogService.openDialog(this.popupEdit, null, null, data)
     }

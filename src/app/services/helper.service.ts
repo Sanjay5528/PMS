@@ -205,11 +205,17 @@ export class HelperService implements OnInit {
   }
   getRole() {
     let value:any= sessionStorage.getItem('auth')
-    let data:any=JSON.parse(value)
-    console.log(data);
+    let parsedValue:any=JSON.parse(value)
+    console.log(parsedValue);
     
-    return data.data.LoginResponse.role
+    return parsedValue.data.LoginResponse.role
   }
  
-
+  getEmp_id() {
+    let value:any= sessionStorage.getItem('auth')
+    let parsedValue:any=JSON.parse(value)
+    console.log(parsedValue);
+    
+    return parsedValue.data.LoginResponse.employee_id
+  }
 }

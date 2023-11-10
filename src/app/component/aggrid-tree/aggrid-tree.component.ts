@@ -65,7 +65,7 @@ export class AggridTreeComponent {
     // },
     {
       headerName: 'Task Name',
-      field: 'taskname',
+      field: 'task_name',
       width: 40,
       editable: true,
       filter: 'agTextColumnFilter',
@@ -243,7 +243,7 @@ console.log(res.data,'1');
       //       const result = this.gridApi.applyServerSideTransaction(transaction);
       //   console.log(transaction, result)
 
-      // }
+    // }
     }
   }
 
@@ -324,7 +324,9 @@ console.log(res.data,'1');
   let values:any=this.form.value
   values.client_name= this.response?.client_name
   values.project_id= this.response?.project_id
-  values. parentmodulename= ""
+  values.project_name= this.response?.project_name
+
+  values.parentmodulename= ""
   this.dataService.save(this.config.form.collectionName,values).subscribe((data:any)=>{
     console.log(data);
     this.dialogService.closeModal();

@@ -5,6 +5,8 @@ import {
 import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
 import { DataService } from "../services/data.service";
+import { isEmpty } from "lodash";
+import { DialogService } from "../services/dialog.service";
 
 @Component({
   selector: "select-input",
@@ -51,7 +53,7 @@ export class SelectInput extends FieldType<any> implements OnInit {
   selectedValue: any = "";
   selectedObject: any;
   optionsValue:any;
-  constructor(public dataService: DataService) {
+  constructor(public dataService: DataService,public dialogServices:DialogService) {
     super();
   }
 
@@ -174,7 +176,8 @@ export class SelectInput extends FieldType<any> implements OnInit {
       // this.dataService.buildOptions(res.data[0].response, this.opt);
       console.log(res);
 let values :any[] =[]
-
+//? RESULTS Array of Object 
+if(this.opt.specification){
       res.data[0].response.forEach((element:any) => {
         if(element&&element[this.opt.specification]){
 console.log(element[this.opt.specification]);
@@ -182,7 +185,6 @@ console.log(element[this.opt.specification]);
           values.push(element[this.opt.specification])
         }
       });
-console.log(this.opt.innerArray);
 
         // Update the options array within the subscription
         let totalvalue:any[]=[]
@@ -195,6 +197,10 @@ console.log(this.opt.innerArray);
         console.log(totalvalue);
         this.field.props.options=totalvalue
         this.optionsValue = totalvalue
+      }
+      else{
+        
+      }
     })
 }
     if (this?.opt?.optionsDataSource?.collectionName!=undefined) {
@@ -245,7 +251,7 @@ console.log(this.opt.innerArray);
         console.log(parentControl);
         
         parentControl?.valueChanges.subscribe((val: any) => {
-          if(this?.opt?.Properties?.formVAlueChange){
+          if(this?.opt?.Properties?.formVAlueChange && val!==undefined){
             this.opt.multifilter_condition.conditions.map((res:any)=>{
              if(this.opt.multifiltertype=="Simple"){
               if(this.model.isEdit){
@@ -262,12 +268,18 @@ console.log(this.opt.innerArray);
             let filter_condition={filter:[
               this.opt.multifilter_condition
             ]}
-            console.log(filter_condition);
             let collectionName: any = this?.field?.parentCollectionName ? this?.field?.parentCollectionName : this.opt?.optionsDataSource?.collectionName;
             this.dataService.getDataByFilter(collectionName,filter_condition).subscribe((res:any)=>{
               // this.dataService.buildOptions(res.data[0].response, this.opt);
+        
               
-              console.log(res);
+              if(isEmpty(res?.data[0]?.response)&&val!==undefined){
+                let parentField:any= this.currentField.parentKey.toUpperCase().replace("_",' ')
+                let currentField:any= this.currentField.key.toUpperCase().replace("_",' ')
+
+                this.dialogServices.openSnackBar(`No Data ${currentField} Available ${parentField}`,"OK")
+                return
+              }
               if (this?.opt?.multifilterFieldName!==undefined) { //! To Take the value of array
                 let specificField: any = res?.data[0]?.response[0]?.[this?.opt?.multifilterFieldName];
                 if (specificField) {
@@ -275,6 +287,7 @@ console.log(this.opt.innerArray);
                 this.field.props.options = specificField.map((name: any) => {
                     return { label: name, value: name };
                 });
+                
                 if(this.model.isEdit){
                   this.valueSlected()
                 }
@@ -284,7 +297,10 @@ console.log(this.opt.innerArray);
            
             } else {
               // this.dataService.buildOptions(res.data[0].response, this.opt);
-              console.error("specificField is undefined");
+              this.field.props.options = res.data[0].response.map((values: any) => {
+                return { label: values[this.opt.changefield], value: values[this.opt.changefield] };
+            });
+            this.optionsValue = this.field.props.options 
             }
               
             })
@@ -338,9 +354,7 @@ console.log(this.opt.innerArray);
     //     );
     //   }
 
-    // }
-    console.log(this.model);
-    
+    // }    
     if (this.opt.onValueChangeUpdate) {
       this.field.form.controls[this.opt.onValueChangeUpdate.key].setValue(
         selectedObject[this.opt.onValueChangeUpdate.key]

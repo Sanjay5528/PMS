@@ -67,31 +67,38 @@ import{FormlyFieldset} from "./fieldsetform"
 import { OnlyDecimalDirective } from './decimal-directive';
 
 
-export function minlengthValidationMessage(err:any, field: FormlyFieldConfig) {
+export function minlengthValidationMessage(err:any, field: FormlyFieldConfig) {  console.log(field);
+
   return `Should NOT be shorter than ${field.props?.minLength} characters`;
 }
 
-export function maxlengthValidationMessage(err:any, field: FormlyFieldConfig) {
+export function maxlengthValidationMessage(err:any, field: FormlyFieldConfig) {  console.log(field);
+
   return `Should NOT be longer than ${field.props?.maxLength} characters`;
 }
 
-export function minValidationMessage(err:any, field: FormlyFieldConfig) {
+export function minValidationMessage(err:any, field: FormlyFieldConfig) {  console.log(field);
+
   return `Should be >= ${field.props?.min}`;
 }
 
-export function maxValidationMessage(err:any, field: FormlyFieldConfig) {
+export function maxValidationMessage(err:any, field: FormlyFieldConfig) {  console.log(field);
+
   return `Should be <= ${field.props?.max}`;
 }
 
-export function multipleOfValidationMessage(err:any, field: FormlyFieldConfig) {
+export function multipleOfValidationMessage(err:any, field: FormlyFieldConfig) {  console.log(field);
+
   return `Should be multiple of ${field.props?.step}`;
 }
 
-export function exclusiveMinimumValidationMessage(err:any, field: FormlyFieldConfig) {
+export function exclusiveMinimumValidationMessage(err:any, field: FormlyFieldConfig) {  console.log(field);
+
   return `Should be > ${field.props?.step}`;
 }
 
-export function exclusiveMaximumValidationMessage(err:any, field: FormlyFieldConfig) {
+export function exclusiveMaximumValidationMessage(err:any, field: FormlyFieldConfig) {  console.log(field);
+
   return `Should be < ${field.props?.step}`;
 }
 
@@ -100,11 +107,13 @@ export function patternValidationMessage(err:any, field: FormlyFieldConfig) {
   
   return `Invalid Format ${field.props?.label}`
 }
-export function uniqueItemsValidationMessag(err:any, field: FormlyFieldConfig) {
+export function uniqueItemsValidationMessag(err:any, field: FormlyFieldConfig) {  console.log(field);
+
   return `This ${field.props?.label} is already exists in database `
 }
 
-export function required(err:any, field: FormlyFieldConfig) {
+export function required(err:any, field: FormlyFieldConfig) {  console.log(field);
+
   return `This ${field.props?.label} is Required `
 }
 
@@ -131,19 +140,61 @@ const formlyConfig = {
 
   types: [
     { name: 'tab-input', component: Tab },
-    { name: 'select-input', component: SelectInput },
+    { name: 'select-input', component: SelectInput,validationMessages: [
+      { name: 'required', message: required },
+      { name: 'null', message: 'Should be null' },
+      { name: 'minlength', message: minlengthValidationMessage },
+      { name: 'maxlength', message: maxlengthValidationMessage },
+      { name: 'min', message: minValidationMessage },
+      { name: 'max', message: maxValidationMessage },
+      { name: 'multipleOf', message: multipleOfValidationMessage },
+      { name: 'exclusiveMinimum', message: exclusiveMinimumValidationMessage },
+      { name: 'exclusiveMaximum', message: exclusiveMaximumValidationMessage },
+      { name: 'uniqueItems', message: uniqueItemsValidationMessag },
+      { name: 'pattern', message: patternValidationMessage} 
+    ] },
     { name: 'html-input', component: HtmlInput },
-    { name: 'multiselect-input', component: MultiSelectInput },
+    { name: 'multiselect-input', component: MultiSelectInput ,validationMessages: [
+      { name: 'required', message: required },
+      { name: 'null', message: 'Should be null' },
+      { name: 'minlength', message: minlengthValidationMessage },
+      { name: 'maxlength', message: maxlengthValidationMessage },
+      { name: 'min', message: minValidationMessage },
+      { name: 'max', message: maxValidationMessage },
+      { name: 'multipleOf', message: multipleOfValidationMessage },
+      { name: 'exclusiveMinimum', message: exclusiveMinimumValidationMessage },
+      { name: 'exclusiveMaximum', message: exclusiveMaximumValidationMessage },
+      { name: 'uniqueItems', message: uniqueItemsValidationMessag },
+      { name: 'pattern', message: patternValidationMessage}
+    ]},
     { name: 'label-view', component: LabelView },
     { name: 'map', component: MapComponent },
     { name: 'logo', component: LogoComponent },
     { name: 'datetime-input', component: DateTimeInput },
     { name: 'date-input', component: DateInput,validationMessages: [
       { name: 'required', message: required },
-      { name: 'pattern', message: patternValidationMessage },    
+      { name: 'null', message: 'Should be null' },
+      { name: 'minlength', message: minlengthValidationMessage },
+      { name: 'maxlength', message: maxlengthValidationMessage },
+      { name: 'min', message: minValidationMessage },
+      { name: 'max', message: maxValidationMessage },
+      { name: 'multipleOf', message: multipleOfValidationMessage },
+      { name: 'exclusiveMinimum', message: exclusiveMinimumValidationMessage },
+      { name: 'exclusiveMaximum', message: exclusiveMaximumValidationMessage },
+      { name: 'uniqueItems', message: uniqueItemsValidationMessag },
+      { name: 'pattern', message: patternValidationMessage}
     ]},  {name: 'custom-decimal-input', component: CustomDecimalInputType , validationMessages: [
-      { name: 'required', message: required},
-      { name: 'pattern', message: patternValidationMessage },    
+      { name: 'required', message: required },
+      { name: 'null', message: 'Should be null' },
+      { name: 'minlength', message: minlengthValidationMessage },
+      { name: 'maxlength', message: maxlengthValidationMessage },
+      { name: 'min', message: minValidationMessage },
+      { name: 'max', message: maxValidationMessage },
+      { name: 'multipleOf', message: multipleOfValidationMessage },
+      { name: 'exclusiveMinimum', message: exclusiveMinimumValidationMessage },
+      { name: 'exclusiveMaximum', message: exclusiveMaximumValidationMessage },
+      { name: 'uniqueItems', message: uniqueItemsValidationMessag },
+      { name: 'pattern', message: patternValidationMessage}
     ],},
     { name: 'file-input', component: FileInput },
 
@@ -153,10 +204,31 @@ const formlyConfig = {
     { name: 'button-input', component: ButtonInput },
     { name: 'password-input', component: PasswordInput},
     { name: 'matprefix-input', component: MatPrefixInput, validationMessages: [
-      { name: 'required', message: required},
-      { name: 'pattern', message: patternValidationMessage },    
+      { name: 'required', message: required },
+      { name: 'null', message: 'Should be null' },
+      { name: 'minlength', message: minlengthValidationMessage },
+      { name: 'maxlength', message: maxlengthValidationMessage },
+      { name: 'min', message: minValidationMessage },
+      { name: 'max', message: maxValidationMessage },
+      { name: 'multipleOf', message: multipleOfValidationMessage },
+      { name: 'exclusiveMinimum', message: exclusiveMinimumValidationMessage },
+      { name: 'exclusiveMaximum', message: exclusiveMaximumValidationMessage },
+      { name: 'uniqueItems', message: uniqueItemsValidationMessag },
+      { name: 'pattern', message: patternValidationMessage}
     ]},
-    {name: 'select-autocomplete',component: FormlyFieldSelectAutocomplete},
+    {name: 'select-autocomplete',component: FormlyFieldSelectAutocomplete,validationMessage:[
+      { name: 'required', message: required },
+    { name: 'null', message: 'Should be null' },
+    { name: 'minlength', message: minlengthValidationMessage },
+    { name: 'maxlength', message: maxlengthValidationMessage },
+    { name: 'min', message: minValidationMessage },
+    { name: 'max', message: maxValidationMessage },
+    { name: 'multipleOf', message: multipleOfValidationMessage },
+    { name: 'exclusiveMinimum', message: exclusiveMinimumValidationMessage },
+    { name: 'exclusiveMaximum', message: exclusiveMaximumValidationMessage },
+    { name: 'uniqueItems', message: uniqueItemsValidationMessag },
+    { name: 'pattern', message: patternValidationMessage}
+    ]},
     { name: 'custompopup-input', component: CustomPopupInput},
     { name: 'time-input', component: TimeInput},
     { name: 'location', component: Location},
