@@ -43,6 +43,12 @@ func SuccessResponse(c *fiber.Ctx, data interface{}) error {
 	return c.JSON(&Success{Status: 200, Data: data})
 }
 
+func SuccessResponses(c *fiber.Ctx, data interface{}) error {
+
+	return c.Status(fiber.StatusOK).JSON(data)
+
+}
+
 func InternalServerError(m string) error {
 	return fiber.NewError(fiber.StatusInternalServerError, m)
 

@@ -4,10 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
 	"log"
 	"net/url"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -30,51 +28,66 @@ var updateOpts = options.Update().SetUpsert(true)
 var fileUploadPath = ""
 var ctx = context.Background()
 
+// PostDocHandler --METHOD Data insert to mongo Db with Proper Field Validation
 func PostDocHandler(c *fiber.Ctx) error {
+	//Get the orgId from Header
 	org, exists := helper.GetOrg(c)
 	if !exists {
 
 		return shared.BadRequest("Invalid Org Id")
 	}
+	// to  Get the User Details from Token
 	userToken := utils.GetUserTokenValue(c)
 
-	// collectionName := CollectionNameGet(c.Params("model_name"), org.Id)
-	// inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
-	// var errmsgs []string
-	// if errmsg != nil {
-	// 	for _, values := range errmsg {
-	// 		errmsgs = append(errmsgs, values)
-	// 	}
-	// 	return shared.SendErrorResponse(c, errmsgs)
-	// }
+	//get the collection from model_config collection to find the model_name
+	collectionName, err := CollectionNameGet(c.Params("model_name"), org.Id)
+	if err != nil {
+		shared.BadRequest("Invalid CollectionName")
+	}
+	// Validation the Insert Data from -- InsertValidateInDatamodel
+	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	//Get the Err message from -- InsertValidateInDatamodel
+	var errmsgs []string
+	if errmsg != nil {
+		for _, values := range errmsg {
+			errmsgs = append(errmsgs, values)
+		}
+		return shared.SendErrorResponse(c, errmsgs)
+	}
 
-	var inputData map[string]interface{}
-	c.BodyParser(&inputData)
+	// var inputData map[string]interface{}
+	// c.BodyParser(&inputData)
 
-	collectionName := c.Params("model_name")
+	// collectionName := c.Params("model_name")
+
 	inputData["created_on"] = time.Now()
 	inputData["created_by"] = userToken.UserId
 	inputData["status"] = "A"
+	// user collection is here that time only password validation
 	if collectionName == "user" {
-
+		// to compare the password and comfirm password is same only   Genrate the Hased password
 		if inputData["password"].(string) != inputData["pwdConfirm"].(string) {
-			shared.BadRequest("mis-matched Confirm Password ")
-		} else if inputData["password"].(string) != "" || inputData["pwdConfirm"].(string) != "" {
-			shared.BadRequest("Missing User Password ")
+			shared.BadRequest("Verify that the password and confirm password are the same.")
 		}
+
+		// if password marched to create the Hash Password
 		passwordHash, _ := helper.GeneratePasswordHash(inputData["password"].(string))
+		inputData["pwd"] = passwordHash
+		// remove the password and confirm password
 		delete(inputData, "password")
 		delete(inputData, "pwdConfirm")
-		inputData["pwd"] = passwordHash
-
 	}
 
+	// Insert he data to mongo Collection  name form params
 	res, err := database.GetConnection(org.Id).Collection(collectionName).InsertOne(ctx, inputData)
 	if err != nil {
-		return shared.BadRequest("Failed to insert data into the database: " + err.Error())
+		return shared.BadRequest("Failed to insert data into the database " + err.Error())
 	}
-
-	return shared.SuccessResponse(c, res.InsertedID)
+	// return shared.SuccessResponse(c, res.InsertedID)
+	return shared.SuccessResponse(c, fiber.Map{
+		"message":  "Insert Successfully",
+		"response": res.InsertedID,
+	})
 }
 
 func UserRegister(c *fiber.Ctx) error {
@@ -83,8 +96,10 @@ func UserRegister(c *fiber.Ctx) error {
 		return shared.BadRequest("Organization Id missing")
 	}
 
-	collectionName := CollectionNameGet(c.Params("model_name"), orgId)
-
+	collectionName, err := CollectionNameGet(c.Params("model_name"), orgId)
+	if err != nil {
+		return nil
+	}
 	inputData, errmsg := helper.InsertValidateInDatamodel("user", string(c.Body()), "pms")
 	var errmsgs []string
 	if errmsg != nil {
@@ -150,19 +165,21 @@ func GetDocByIdHandler(c *fiber.Ctx) error {
 // }
 
 func DeleteById(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
+	//Get the orgId from Header
+	org, exists := helper.GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
 	}
-	collectionName := c.Params("collectionName")
 
+	//Filter conditon for common
 	filter := helper.DocIdFilter(c.Params("id"))
-
-	if collectionName == "user_files" {
+	//user_files collection that time Delete S3 files
+	if c.Params("collectionName") == "user_files" {
 		return helper.DeleteFileIns3(c)
 	}
-
-	_, err := database.GetConnection(orgId).Collection(collectionName).DeleteOne(ctx, filter)
+	// Delete the Data from COllectionName
+	_, err := database.GetConnection(org.Id).Collection(c.Params("collectionName")).DeleteOne(ctx, filter)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Error deleting document"})
 	}
@@ -171,14 +188,16 @@ func DeleteById(c *fiber.Ctx) error {
 }
 
 func DeleteByAll(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
+	//Get the orgId from Header
+	org, exists := helper.GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
 	}
 	collectionName := c.Params("collectionName")
 
 	filter := bson.M{}
-	_, err := database.GetConnection(orgId).Collection(collectionName).DeleteMany(ctx, filter)
+	_, err := database.GetConnection(org.Id).Collection(collectionName).DeleteMany(ctx, filter)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Error deleting documents"})
 	}
@@ -193,26 +212,34 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 		return shared.BadRequest("Organization ID missing")
 	}
 
-	// collectionName := CollectionNameGet(orgID, c.Params("collectionName"))
+	// to  Get the User Details from Token
+	userToken := utils.GetUserTokenValue(c)
 
+	// collectionName,err := CollectionNameGet(orgID, c.Params("collectionName"))
+	// if err != nil{
+	// 	return shared.BadRequest("Invalid CollectionName")
+	// }
 	// Validate the input data based on the data model
 	// inputData, validationErrors := helper.UpdateValidateInDatamodel(collectionName, string(c.Body()), orgID)
 	// if validationErrors != nil {
-	// 	// Handle validation errors with status code 400 (Bad Request)
+	// //Handle validation errors with status code 400 (Bad Request)
 	// 	jsonstring, _ := json.Marshal(validationErrors)
 	// 	return shared.BadRequest(string(jsonstring))
 	// }
 
 	// updatedData := make(map[string]interface{})
 	// Data := helper.UpdateFieldsWithParentKey(inputData, "", updatedData)
-	var Data map[string]interface{}
-	c.BodyParser(&Data)
+
+	var UpdateData map[string]interface{}
+	c.BodyParser(&UpdateData)
 	update := bson.M{
-		"$set": Data,
+		"$set": UpdateData,
 	}
 
+	UpdateData["update_on"] = time.Now()
+	UpdateData["update_by"] = userToken.UserId
 	// Update data in the collection
-	_, err := database.GetConnection(orgID).Collection(c.Params("collectionName")).UpdateOne(ctx, helper.DocIdFilter(c.Params("id")), update)
+	_, err := database.GetConnection(orgID).Collection(c.Params("collectionName")).UpdateOne(ctx, helper.DocIdFilter(c.Params("id")), update, updateOpts)
 	if err != nil {
 		// Handle database update error with status code 500 (Internal Server Error)
 		return shared.BadRequest(err.Error())
@@ -221,21 +248,21 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, "Updated Successfully")
 }
 
-func CollectionNameGet(model_name, orgId string) string {
+func CollectionNameGet(model_name, orgId string) (string, error) {
 
-	var collectionName string
 	filter := bson.M{
-		"model_name": model_name,
+		"model_name":    model_name,
+		"is_collection": "Yes",
 	}
+
 	Response, err := helper.FindDocs(orgId, "model_config", filter)
 	if err != nil {
-		return ""
+		return "", nil
 	}
-	collectionName = Response["collection_name"].(string)
-	return collectionName
+
+	return Response["collection_name"].(string), nil
 }
 
-// todo not use
 func getDocByIddHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
 	if orgId == "" {
@@ -267,7 +294,7 @@ func getDocByIddHandler(c *fiber.Ctx) error {
 					{"enddate", 1},
 					{"project_id", 1},
 					{"startdate", 1},
-					{"taskname", "$results.taskname"},
+					{"task_name", "$results.task_name"},
 				},
 			},
 		},
@@ -1847,97 +1874,6 @@ func getUnscheduleIdHandler(c *fiber.Ctx) error {
 // 	}
 // 	return shared.SuccessResponse(c, response)
 // }
-
-func handleFileUpload(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	token := utils.GetUserTokenValue(c)
-	fmt.Println(token)
-	//var result []interface{}
-	//var urll string
-	var storageNames []interface{}
-	//fileURLs := make(map[string][]string)
-	InitS3Client()
-	employeeID := c.FormValue("id")
-	role := c.FormValue("role")
-	details_type := c.FormValue("details_type")
-
-	// Get the files from the form field "files"
-	form, err := c.MultipartForm()
-	if err != nil {
-		return shared.BadRequest("Failed to retrieve files from the request")
-	}
-
-	files := form.File["file"]
-
-	// Create a folder for the employee ID
-	employeeFolder := "./" + employeeID
-	err = os.MkdirAll(employeeFolder, 0755)
-	if err != nil {
-		return shared.BadRequest("Failed to create employee folder")
-	}
-
-	for _, file := range files {
-		// Create the local file
-		localFilePath := employeeFolder + "/" + file.Filename
-		localFile, err := os.Create(localFilePath)
-		if err != nil {
-			return shared.BadRequest("Failed to create local file")
-		}
-
-		// Open the uploaded file
-		uploadedFile, err := file.Open()
-		if err != nil {
-			localFile.Close() // Close the local file in case of an error
-			return shared.BadRequest("Failed to open uploaded file")
-		}
-
-		// Copy the content of the uploaded file to the local file
-		_, err = io.Copy(localFile, uploadedFile)
-		if err != nil {
-			localFile.Close() // Close the local file in case of an error
-			return shared.BadRequest("Failed to copy file content")
-		}
-
-		localFile.Close() // Close the local file after copying
-
-		// Upload the local file to S3
-		fileKey, urll := S3PdfFileUpload(s3Client, localFilePath, employeeID, role, details_type)
-		if err != nil {
-			return shared.BadRequest("Failed to upload file to S3")
-			fmt.Println(fileKey)
-		}
-		//fmt.Println(urll)
-
-		apiResponse := bson.M{"e_id": employeeID, "uploaded_by": token.UserId, "file_name": file.Filename, "storage_name": urll, "size": file.Size}
-		helper.InsertData(c, orgId, "user_files", apiResponse)
-
-		//result = append(result, apiResponse)
-		err = os.Remove(localFilePath)
-		if err != nil {
-			log.Println("Failed to delete the local PDF file:", err)
-		}
-
-		storageNames = append(storageNames, urll)
-	}
-	// _,err= database.GetConnection(orgId).Collection(role).UpdateOne(
-	// 	ctx,
-	// 	bson.M{role+"id": employeeID },
-	// 	bson.M{
-	// 		"$set": bson.M{
-	// 			details_type:storageNames ,
-
-	// 		},
-	// 	},
-	// 	 options.Update().SetUpsert(true))
-
-	// if err != nil {
-	// 	log.Print(err.Error())
-	// }
-	return shared.SuccessResponse(c, storageNames)
-}
 
 func getFileDetails(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")

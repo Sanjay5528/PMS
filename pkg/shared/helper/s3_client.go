@@ -2,7 +2,6 @@ package helper
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"log"
 	"mime/multipart"
@@ -62,13 +61,13 @@ func UploadFile(fileIn *multipart.FileHeader, key string) (bool, string) {
 		errContent = err.Error()
 		return isErrExist, errContent
 	}
-	_, err = s3Client.PutObjectWithContext(context.Background(), &s3.PutObjectInput{
+	_, err = s3Client.PutObjectWithContext(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(bucket),
 		Key:    aws.String(key),
 		Body:   bytes.NewReader(buf.Bytes()),
 		ACL:    aws.String("public-read"),
 	})
-	
+
 	if err != nil {
 		isErrExist = true
 		errContent = err.Error()
@@ -88,7 +87,7 @@ func FileUpload(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(422).JSON(fiber.Map{"errors": err.Error()})
 	}
-	
+
 	token := utils.GetUserTokenValue(c)
 	// year := time.Now().Year()
 	// currentYear := strconv.Itoa(year)
@@ -175,18 +174,23 @@ func GetFileDetails(c *fiber.Ctx) error {
 }
 
 func DeleteFileIns3(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
+	//Get the orgId from Header
+	org, exists := GetOrg(c)
+	if !exists {
 
+		return shared.BadRequest("Invalid Org Id")
+	}
+	// connect the S3 Sever
 	s3Client, bucket := initS3()
 
+	// params Id
 	ID := c.Params("id")
+
 	collectionName := c.Params("collectionName")
+	// Delete the User_files collection filter
 	filter := bson.M{"_id": ID}
 
-	// Define a MongoDB aggregation pipeline to retrieve file metadata
+	// Define a MongoDB aggregation pipeline to retrieve file storage_name
 	pipeline := bson.A{
 		bson.D{{"$match", bson.D{{"_id", ID}}}},
 		bson.D{{"$unset", "_id"}},
@@ -194,18 +198,18 @@ func DeleteFileIns3(c *fiber.Ctx) error {
 	}
 
 	// Retrieve file metadata from MongoDB
-	res, err := GetAggregateQueryResult(orgId, collectionName, pipeline)
+	res, err := GetAggregateQueryResult(org.Id, collectionName, pipeline)
 	// GetQueryResult(orgId, "user_files", pipeline, int64(0), int64(200), nil)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
 
 	// Delete the file metadata from MongoDB
-	_, err = database.GetConnection(orgId).Collection(collectionName).DeleteOne(ctx, filter)
+	_, err = database.GetConnection(org.Id).Collection(collectionName).DeleteOne(ctx, filter)
 	if err != nil {
 
 	}
-
+	// to get he storage to delete the s3
 	for _, obj := range res {
 		storageName, found := obj["storage_name"].(string)
 		if found {
@@ -214,6 +218,7 @@ func DeleteFileIns3(c *fiber.Ctx) error {
 			if err != nil {
 
 			}
+
 			// Wait until the object is deleted in S3
 			err = s3Client.WaitUntilObjectNotExists(&s3.HeadObjectInput{
 				Bucket: aws.String(bucket),

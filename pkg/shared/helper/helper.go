@@ -122,17 +122,17 @@ func InsertValidateInDatamodel(collectionName, inputJsonString, orgId string) (m
 
 	err := json.Unmarshal([]byte(inputJsonString), newStructValue)
 	if err != nil {
-		if unmarshalErr, ok := err.(*json.UnmarshalTypeError); ok {
-			expectedType := unmarshalErr.Type.String()
-			dataType := strings.TrimPrefix(expectedType, "*")
-			fieldName := unmarshalErr.Field
-			return nil, map[string]string{
-				"field":             fieldName,
-				"Expected DataType": dataType,
-			}
-		}
-
-		return nil, nil
+		// if unmarshalErr, ok := err.(*json.UnmarshalTypeError); ok {
+		// 	expectedType := unmarshalErr.Type.String()
+		// 	dataType := strings.TrimPrefix(expectedType, "*")
+		// 	fieldName := unmarshalErr.Field
+		// 	return nil, map[string]string{
+		// 		"field":             fieldName,
+		// 		"Expected DataType": dataType,
+		// 	}
+		// }
+// 
+		// return nil, nil
 	}
 
 	// loop through pointer to get the actual struct
@@ -146,9 +146,9 @@ func InsertValidateInDatamodel(collectionName, inputJsonString, orgId string) (m
 		return nil, map[string]string{"error": "Invalid JSON data: " + err.Error()}
 	}
 	//Check the field any extra field is here
-	// if err := vertifyInputStruct(rv, inputMap, validationErrors); err != nil {
-	// 	return nil, validationErrors
-	// }
+	if err := vertifyInputStruct(rv, inputMap, validationErrors); err != nil {
+		return nil, validationErrors
+	}
 	// fmt.Println(rv.Interface())
 	validationErrors = ValidateStruct(rv.Interface())
 	if len(validationErrors) > 0 {

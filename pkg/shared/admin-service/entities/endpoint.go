@@ -26,10 +26,11 @@ func SetupCRUDRoutes(app *fiber.App) {
 	r.Delete("/:collectionName/:id", DeleteById)
 	r.Delete("/:collectionName", DeleteByAll)
 	r.Post("/filter/:collectionName", getDocsHandler)
-	// r.Get("/clients/:name", ActiveClientHandler)                          //todo
-	// r.Get("filter/:collectionName/:projectid", getDocByIddHandler) //todod
-	// r.Get("filters/:collectionName/:clientname", getDocByClientIdHandler) //todo
-	// r.Post("/:collectionName/increment/columnName/value", updateIncrementalValue)
+
+	//Old pms code above the endpoint
+	r.Get("/clients/:name", ActiveClientHandler)                           //todo
+	r.Get("/filter/:collectionName/:projectid", getDocByIddHandler)        //todod
+	r.Get("/filters/:collectionName/:clientname", getDocByClientIdHandler) //todo
 }
 
 // temp
@@ -38,57 +39,59 @@ func Setuptokenfree(app *fiber.App) {
 	r.Post("/register", UserRegister)
 }
 
-//	func SetupGroupRoutes(app *fiber.App) {
-//		r := helper.CreateRouteGroup(app, "/group", "Data Lookup API")
-//		r.Get("/:groupname", helper.GroupDataBasedOnRules)
-//		r.Get("/testing/:modelName", helper.Testing)
-//	}
-//
+// create a group
+func SetupGroupRoutes(app *fiber.App) {
+	r := helper.CreateRouteGroup(app, "/group", "Data Lookup API")
+	r.Get("/:groupname", helper.GroupDataBasedOnRules)
+	r.Get("/testing/:modelName", helper.Testing)
+}
+
 // Data set
 func SetupDatasets(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/dataset", "Data Sets")
+	// !pending
 	r.Post("/config/:options?", helper.DatasetsConfig)
 	r.Post("/data/:datasetname", helper.DatasetsRetrieve)
 	r.Put("/:datasetname", helper.UpdateDataset)
 }
+
 func SetupBulkUploadRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/upload_bulk", "Bulk Api")
 	r.Get("/", helper.UploadbulkData)
 }
 
-// // todo remove
-// func SetupQueryRoutes(app *fiber.App) {
-// 	r := helper.CreateRouteGroup(app, "/query", "Raw Query API")
-// 	// r.Post("/:type/:collectionName", rawQueryHandler)
-// 	r.Get("/:collectionName/:colvalue/:key", ColvalHandler)
-// 	r.Get("/task/:assignedto", EmployeeTaskHandler)     //
-// 	r.Get("/timesheet/:timesheet_id", TimeSheetHandler) //
-// 	r.Get("/project/:projectid", ModuleTaskHandler)
-// 	r.Get("/projectname/:projectname", TeamMemberHandler) //
-// 	r.Get("/statename/:country", StateHandler)
-// 	r.Get("/:collectionName/:moduleid", getModuleByIdHandler) //
+// old pms code endpoint
+func SetupQueryRoutes(app *fiber.App) {
+	r := helper.CreateRouteGroup(app, "/query", "Raw Query API")
+	// r.Post("/:type/:collectionName", rawQueryHandler)
+	r.Get("/:collectionName/:colvalue/:key", ColvalHandler)
+	r.Get("/task/:assignedto", EmployeeTaskHandler)     //
+	r.Get("/timesheet/:timesheet_id", TimeSheetHandler) //
+	r.Get("/project/:projectid", ModuleTaskHandler)
+	r.Get("/projectname/:projectname", TeamMemberHandler) //
+	r.Get("/statename/:country", StateHandler)
+	r.Get("/:collectionName/:moduleid", getModuleByIdHandler) //
 
-// }
+}
 
+// old pms code
 func SetupLookupRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/lookup", "Data Lookup API")
 	// r.Post("/", DataLookupDocsHandler)
-	r.Get("/timesheet/:employee_id/:scheduledstartdate", TimeSheetByIdHandler)    //todo pending
-	r.Get("/task/:employee_id", taskHandler)                                      // todo pending
-	r.Put("/timesheet", postTimesheetDocHandler)                                  // todo pending
-	r.Get("/unschedule/:employee_id/:date", getUnscheduleIdHandler)               // todo pending
-	r.Get("/workedhour/:employee_id/:scheduledstartdate", TimeSheetByiiIdHandler) // todo pending
+	r.Get("/timesheet/:employee_id/:scheduledstartdate", TimeSheetByIdHandler)    
+	r.Get("/task/:employee_id", taskHandler)                                      
+	r.Put("/timesheet", postTimesheetDocHandler)                                  
+	r.Get("/unschedule/:employee_id/:date", getUnscheduleIdHandler)               
+	r.Get("/workedhour/:employee_id/:scheduledstartdate", TimeSheetByiiIdHandler) 
 	//r.Get("/:id",BlockidHandler)
 	//r.Get("/task/:employee_id/:scheduledstartdate",TimeSeetByIdHandler)
 }
 
 func SetupDownloadRoutes(app *fiber.App) {
-	//without JWT Token validation (without auth)
 	r := helper.CreateRouteGroup(app, "/file", "Upload APIs")
 	r.Post("/:folder/:refId", helper.FileUpload)
 	r.Get("/all/:category/:status/:page?/:limit?", getAllFileDetails)
 	r.Get("/:category/:refId", getFileDetails)
-	// r.Get("/:category/:refId/:fileName", fileDownload)
 }
 
 func SetupSharedDBRoutes(app *fiber.App) {
@@ -100,7 +103,6 @@ func SetupSharedDBRoutes(app *fiber.App) {
 func SetupUtilRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/util", "util APIs")
 	r.Get("/nextseq/:key", getNextSeqNumberHandler)
-	// r.Post("/getuploadurl", getPreSignedUploadUrlHandler)
 	r.Post("/send-simple-email", sendSimpleEmailHandler)
 	//// r.Post("/send-sms", sendSMS)
 }
