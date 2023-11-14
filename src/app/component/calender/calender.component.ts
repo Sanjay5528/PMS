@@ -62,8 +62,8 @@ export class CalenderComponent implements OnInit {
     debugger
     // let userPermissions = JSON.parse(data).role
     // let id =JSON.parse(data).profile.employeeid
-    let data: any = localStorage.getItem('auth');
-    let name = JSON.parse(data).profile.employeeid
+    // let data: any = localStorage.getItem('auth');
+    // let name = JSON.parse(data).profile.employeeid
     this.activatedRoute.params.subscribe(params => {
       this.calendarDate = params['date'];
     });
@@ -107,63 +107,63 @@ export class CalenderComponent implements OnInit {
     //   }); 
     // });  
     
-    this.getdata();
+    // this.getdata();
   }
  
 
-getdata(){
-  let data: any = localStorage.getItem('auth');
-  let userPermissions = JSON.parse(data).role
-     let id =JSON.parse(data).profile.employeeid
+// getdata(){
+//   // let data: any = localStorage.getItem('auth');
+//   // let userPermissions = JSON.parse(data).role
+//   //    let id =JSON.parse(data).profile.employeeid
     
-    //let name = JSON.parse(data).profile.employeeid
-    this.activatedRoute.params.subscribe(params => {
-      this.calendarDate = params['date'];
-    });
-     if (userPermissions === 'SA' || userPermissions === 'team lead') {
+//     //let name = JSON.parse(data).profile.employeeid
+//     this.activatedRoute.params.subscribe(params => {
+//       this.calendarDate = params['date'];
+//     });
+//      if (userPermissions === 'SA' || userPermissions === 'team lead') {
     
-    //   this.dataService.getData("timesheet").subscribe((res:any)=> {
+//     //   this.dataService.getData("timesheet").subscribe((res:any)=> {
   
-            // ! UNDO
+//             // ! UNDO
 
-    // // this.dataService.getcalendar(name).subscribe((res:any)=>{
-    //   var calendarApi = this.calendarComponent.getApi();   
-    //   res.data.forEach((item:any) => {
-    //     let changeStringToNumber = parseFloat(item.workedhours)
-    //     item.workedhours = changeStringToNumber;
-    //     if(item.formatedDate){
-    //       if(item.workedhours >= "8") {
-    //         // this.showGreen = true;
-    //         // this.showRed = false;
-    //         calendarApi.addEvent({
-    //           // id: item._id,
-    //           title: item.workedhours,
-    //           start: item.formatedDate,  
-    //           // textColor: "green",
-    //           // backgroundColor: "#0000",
-    //           // borderColor: "#0000",
-    //         });  
-    //       } else if(item.workedhours< "8") {
-    //         // this.showRed = true;
-    //         // this.showGreen = false;
-    //         calendarApi.addEvent({
-    //           // id: item._id,
-    //           title: item.workedhours,
-    //           start: item.formatedDate,  
-    //           // textColor: "green",
-    //           // backgroundColor: "#0000",
-    //           // borderColor: "#0000",
-    //         });
-    //       } else {
-    //         // this.router.navigate(['timesheet'])
-    //         console.log("hi")
-    //       }
-    //     }
-    //   }); 
-    // });  
+//     // // this.dataService.getcalendar(name).subscribe((res:any)=>{
+//     //   var calendarApi = this.calendarComponent.getApi();   
+//     //   res.data.forEach((item:any) => {
+//     //     let changeStringToNumber = parseFloat(item.workedhours)
+//     //     item.workedhours = changeStringToNumber;
+//     //     if(item.formatedDate){
+//     //       if(item.workedhours >= "8") {
+//     //         // this.showGreen = true;
+//     //         // this.showRed = false;
+//     //         calendarApi.addEvent({
+//     //           // id: item._id,
+//     //           title: item.workedhours,
+//     //           start: item.formatedDate,  
+//     //           // textColor: "green",
+//     //           // backgroundColor: "#0000",
+//     //           // borderColor: "#0000",
+//     //         });  
+//     //       } else if(item.workedhours< "8") {
+//     //         // this.showRed = true;
+//     //         // this.showGreen = false;
+//     //         calendarApi.addEvent({
+//     //           // id: item._id,
+//     //           title: item.workedhours,
+//     //           start: item.formatedDate,  
+//     //           // textColor: "green",
+//     //           // backgroundColor: "#0000",
+//     //           // borderColor: "#0000",
+//     //         });
+//     //       } else {
+//     //         // this.router.navigate(['timesheet'])
+//     //         console.log("hi")
+//     //       }
+//     //     }
+//     //   }); 
+//     // });  
 
-}
-}
+// }
+// }
 
   // handleCalendarToggle() {
   //   this.calendarVisible.update((bool) => !bool);

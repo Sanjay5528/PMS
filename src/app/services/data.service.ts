@@ -241,6 +241,34 @@ public imageupload(folder:any,refId:any,data: any) {
     }
     return data;
   }
+  public  getTimesheetdata(data: any, id: any) {
+    //console.log(format_date);
+    
+    return this.http.get(this.getWsBaseUrl() + 'lookup/timesheet/' + `${data}` + "/" + `${id}`,  data);
+  }
+  public getTimesheetdatabyadmin( data: any) {
+    
+    return this.http.get(this.getWsBaseUrl() + 'lookup/timesheet/SA/' + `${data}` );
+  }
+  public workhours(scheduledstartdate:any) {
+    
+    return this.http.get(this.getWsBaseUrl() + 'lookup/workedhour/SA/'+ `${scheduledstartdate}`);
+  }
+  public getunschedule(employee_id: any,date:any) {
+    
+    return this.http.get(this.getWsBaseUrl() + 'lookup/unschedule/' + `${employee_id}` + "/" + `${date}`);
+  }
+  public gettaskdata(employee_id: any) {
+    
+    return this.http.get(this.getWsBaseUrl() + 'lookup/task/' + `${employee_id}`);
+  }
+  public savetimesheet(data:any){
+    return this.http.put(this.getWsBaseUrl()+'lookup/timesheet',data)
+    }
+  public getworkhours(employee_id: any,scheduledstartdate:any) {
+    
+    return this.http.get(this.getWsBaseUrl() + 'lookup/workedhour/'+ `${employee_id}` + "/" + `${scheduledstartdate}`);
+  }
 
   public processText(exp: any, data: any) {
     if (data !== null) {

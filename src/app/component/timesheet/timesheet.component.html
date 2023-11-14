@@ -62,17 +62,19 @@
     </div>
   <div  *ngIf="this.userPermissions === 'SA' ">
 <div class="table">
-    <ag-grid-angular style="width: 99%; height: 65vh; "class="ag-theme-alpine" [columnDefs]="columnDefs"
+    <ag-grid-angular style="width: 99%; height: 65vh; "class="ag-theme-alpine" [columnDefs]="columnDefs" [singleClickEdit]="true"
         [defaultColDef]="defaultColDef" [rowData]="rowData" (gridReady)="onGridReady($event)"  [pagination]="true" [paginationPageSize]="10" 
-        (selectionChanged)="onSelectionChanged($event)"  (selectionChanged)="onSelectionChanged1($event)"  [rowSelection]="'multiple'"   
+        (selectionChanged)="onSelectionChanged($event)"       [getRowId]="getRowId"  [groupDisplayType]="groupDisplayType"
+        (selectionChanged)="onSelectionChanged1($event)"  [rowSelection]="'multiple'"   
         (cellValueChanged)="onCellValueChanged($event)"></ag-grid-angular>
 </div>
 </div>
 <div  *ngIf="this.userPermissions !== 'SA' ">
   <div class="table">
-      <ag-grid-angular style="width: 75%; height: 65vh; "class="ag-theme-alpine" [columnDefs]="columnDefs"
-          [defaultColDef]="defaultColDef" [rowData]="rowData" (gridReady)="onGridReady($event)"  [pagination]="true" [paginationPageSize]="10" 
-          (selectionChanged)="onSelectionChanged($event)"  (selectionChanged)="onSelectionChanged1($event)"  [rowSelection]="'multiple'"   
+      <ag-grid-angular style="width: 99%; height: 65vh; "class="ag-theme-alpine" [columnDefs]="columnDefs"
+          [defaultColDef]="defaultColDef" [rowData]="rowData" (gridReady)="onGridReady($event)" [singleClickEdit]="true" [pagination]="true" [paginationPageSize]="10" 
+          (selectionChanged)="onSelectionChanged($event)"      [getRowId]="getRowId" [groupDisplayType]="groupDisplayType"
+          (selectionChanged)="onSelectionChanged1($event)"  [rowSelection]="'multiple'"   
           (cellValueChanged)="onCellValueChanged($event)"></ag-grid-angular>
   </div>
   </div>

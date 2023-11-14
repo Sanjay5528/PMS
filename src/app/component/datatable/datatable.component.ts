@@ -230,6 +230,10 @@ export class DatatableComponent implements OnInit {
             
             if(e.value!==this.helperService.getRole()){
               e.lockVisible=true
+              // lockVisible: true,
+              e.hide=true
+
+              // hide:true
             }
           }
           if (e.type == "color") {

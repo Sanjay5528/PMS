@@ -1,252 +1,116 @@
 {
-	"pageHeading": "Project Team",
-	"formType": "master-detail",
-	"isCustomFuction":true,
-	"addfields":"project_name",
+	"pageHeading": "Designation ",
+	"formType": "simple",
+	"keyField": "_id",
 	"form": {
-		"collectionName": "project",
+		"collectionName": "designation",
 		"fields": [
 			{
-				"type": "label-view",
-				"key": "client_name",
-				"props": {
-					"label": "Client Name",
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": false,
-					"placeholder": "Client Name",
-					"required": true
-				}
-			}, {
-				"type": "label-view",
-				"key": "project_id",
-				"props": {
-					"label": "Project Id",
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": false,
-					"placeholder": "Project Id",
-					"required": true
-				}
-			}, {
-				"type": "label-view",
-				"key": "project_name",
-				"props": {
-					"label": "Project Name",
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": false,
-					"placeholder": "Project Name",
-					"required": true
-				}
-			},
-			{
-				"type": "label-view",
-				"key": "status",
-				"props": {
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": true,
-					"label": "Project Status",
-					"placeholder": "Project Status",
-					"required": true
-				}
-			}
-		],
-		"buttons": {
-			"start": false,
-			"newEntry": false
-		}
-	},
-	"detailForm": {
-        "customfilter":true,
-        "customkey":"project_id",
-		"collectionName": "project_team",
-		"mapColumn": "project_id",
-		"uniqueColumn": "team_id",
-		"keyColumn": "_id",
-		"isPopupEdit": true,
-		"fields": [
-		
+				"fieldGroupClassName": "display-flex",
+				"fieldGroup": [
 					{
 						"type": "label-view",
-						"key": "project_name",
+						"key": "_id",
+						"className": "flex-6",
 						"props": {
-							"label": "Project Name",
+							"label": "Designation ID",
 							"label_width": 100,
 							"value_width": 200,
-							"value_in_next_row": false,
-							"placeholder": "Project Name",
-							"required": true
+							"value_in_next_row": true
+						},
+						"hideExpression": "!model.isEdit"
+					},
+					{
+						"type": "label-view",
+						"key": "name",
+						"className": "flex-6",
+						"props": {
+							"label": "Designation Name",
+							"label_width": 100,
+							"value_width": 200,
+							"value_in_next_row": true
+						},
+						"hideExpression": "!model.isEdit"
+					}
+				]
+			},
+			{
+				"fieldGroupClassName": "display-flex",
+				"fieldGroup": [
+					{
+						"type": "input",
+						"key": "_id",
+						"className": "flex-1",
+						"props": {
+							"label": "Designation ID",
+							"placeholder": "Designation ID",
+							"required": true,
+							"maxLength": 10,
+							"pattern": "^[A-Z][a-zA-Z]{1,}$"
+						},
+						"hideExpression": "model.isEdit"
+					},{
+						"type": "number",
+						"key": "hierarchy",
+						"className": "flex-1",
+						"props": {
+							"label": "Hierarchy Order",
+							"placeholder": "Hierarchy Order",
+							"required": true,
+							"maxLength": 10				
 						}
 					},
 					{
-						"fieldGroupClassName": "display-flex",
-						"fieldGroup": [	{
 						"type": "input",
-						"key": "team_id",
-						"props": {
-							"label": "Team Id",
-							"placeholder": "Team Id",
-							"pattern": "^[a-zA-Z0-9-_]*$",
-							"required": true
+						"key": "name",
+						"className": "flex-5",
+						"templateOptions": {
+							"label": "Designation Name",
+							"maxLength": 50,
+							"required": true,
+							"placeholder": "Designation Name"
 						},
-						
-						"expressions": {
-					   
-							"props.readonly": "model.isEdit"
-						}
+						"hideExpression": "model.isEdit"
 					}
-					
-					
-				
-			,
+				]
+			},
 			{
-				"key": "modules",
-				"type": "multiselect-input",
-				"className": "flex-6",
-				"props": {
-				  "label": "Select the Module",
-				  "placeholder": "Select the Module",
-				  "optionsDataSource": {
-					"collectionName": "modules"
-				  },
-				  "attributes":{
-					"type":"default",
-					"Takenvaluekey":"project_id",
-					"Takenlabelkey":"project_name"
-				  },
-				  "multifilter":true,
-				  "filtervalueKey":"project_id",
-				  "multifilter_condition": {
-					"clause": "AND",
-					"conditions": [
-					{
-						"column": "project_id",
-						"operator": "EQUALS",
-						"type": "string",
-						"value": ""
-					}
-					]
-				},
-				  "labelProp": "label",
-				  "valueProp": "value"
-				}
-			  }]},
-			{
-				"type": "html-input",
-				"key": "teamdes",
-				"className": "flex-2",
-				"props": {
-					"label": "Team Description",
-					"required": true,
-					 
-					"maxlength": 500
+				"type": "textarea",
+				"key": "Description",
+				"templateOptions": {
+					"label": "Anything about this Designation",
+					"placeholder": "Description",
+					"rows": 5
 				}
 			},
-		   
 			{
-				"type": "button-input",
-				"key": "teammember",
-				"props": {
-					"label": "Team Members",
-					"labelPropTemplate": "{{teammembers}}",
-					"attributes": "teammember"
-					
-				}
-			},{
-				"type": "select",
 				"key": "status",
-				"className": "flex-2",
-				"props": {
-					"label": "Team Status",
+				"type": "select",
+				"defaultValue": "A",
+				"templateOptions": {
+					"label": "Status",
 					"options": [
 						{
 							"label": "Active",
-							"value": "Active"
+							"value": "A"
 						},
 						{
-							"label": "Inactive",
-							"value": "Inactive"
+							"label": "Disable",
+							"value": "D"
 						}
-						 
 					],
-					"placeholder": "Team Status",
 					"required": true
 				},
-			
-				"expressions": {
-					"hide": "!model.isshow"
-				}
-				}
+				"hideExpression": "!model.isEdit"
+			}
 		],
 		"defaultValues": [
 			{
 				"colName": "status",
-				"type": "string",
-				"value": "A"
+				"value": "A",
+				"type": "string"
 			}
 		]
 	},
-	"detailListConfig": {
-		"sectionHeading": "Project Team",
-		"actions": [
-			{
-				"label": "Edit",
-				"icon": "edit",
-				"formAction": "edit"
-			},
-			{
-				"label": "Delete",
-				"icon": "delete",
-				"formAction": "delete"
-			}
-		],
-		"addRoute": "add/project_team_member",
-		"editRoute": "edit/project_team_member",
-		"fields": [
-			{
-				"headerName": "Project Name",
-				"field": "project_name",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"headerName": "Project Team Id",
-				"field": "team_id",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"headerName": "Project Team Member ",
-				"field": "teammember",
-				"sortable": true,
-                "type":"arraytostring",
-                "value":"employee_name",
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"headerName": "status",
-				"field": "status",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"type": "rightAligned",
-				"headerName": "Actions",
-				"cellRenderer": "buttonRenderer",
-				"lockPosition": "right",
-				"cellRendererParams": {
-					"onClick": "this.onBtnClick1.bind(this)",
-					"label": "Click 1"
-				}
-			}
-		],
-		"filterOptions": [],
-		"defaultFilter": []
-	},
-	"onCancelRoute": "/list/project",
-	"designConfig": {
-		"leftPanelWidth": "320px"
-	}
-  }
+	"onCancelRoute": "/list/desigination"
+}

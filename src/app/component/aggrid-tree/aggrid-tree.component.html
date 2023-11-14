@@ -40,45 +40,6 @@
 </ng-template> -->
 
 <!-- !an do requriement here 1st task -->
-<ng-template #editViewPopup class="example-sidenav" mode="over" style="height: auto" let-data >
-  <!-- <div style="text-align-last: end">
-    <mat-icon (click)='this.dialogService.closeModal()'>close</mat-icon>
-  </div> -->
-  <div class="page">
-    <mat-card style="width: 98%; margin: auto">
-      <div style="text-align-last: end" >
-        <mat-icon (click)='this.dialogService.closeModal();this.form.reset()'>close</mat-icon>
-      </div>
-      <mat-card-header style="flex: 1 1 auto;">
-        <div  style="width: 100%">
-          <h2 style="text-align: center;" class="page-title">{{ pageHeading }} - {{ formAction }}</h2>
-        </div>
-      </mat-card-header>
-    
-      <mat-card-content style="padding-top: 10px">
-        <div>
-          <form [formGroup]="form">
-            <formly-form [model]="model" [fields]="fields" [form]="form"></formly-form>
-          </form>
-        </div>
-      </mat-card-content>
-      <mat-card-actions>
-        <div style="text-align-last: end; width: 100%">
-          <button style="margin: 5px" mat-button (click)='this.dialogService.closeModal();this.form.reset()' >Cancel</button>
-          <button style="margin: 5px" mat-button (click)="this.form.reset()" >Reset</button>
-          <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button color="warn" (click)="saveChild()">
-            {{ butText }}
-          </button>
-        </div>
-      </mat-card-actions>
-    </mat-card>
-    <div >
-      <!-- <mat-icon color="warn">error</mat-icon>
-      <span>Given ID is not valid</span> -->
-    </div>
-    
-  </div>
-</ng-template>
 
 <div fxLayout="column"  style="width:100%">
   
@@ -87,7 +48,7 @@
       <mat-icon style="font-size:35px;margin-top: 30px;" (click)="goBack()">keyboard_backspace</mat-icon>
     </div>
     <div fxLayout="column" fxFlex="95%" fxLayoutAlign="center center" style="margin-top: 10px;">
-      <h2 class="page-title">Modules</h2>
+      <h2 class="page-title">{{formName=="module"?"Module":formName}}</h2>
       
     </div>
   </div>
@@ -166,3 +127,49 @@
     </div>
   
 </div>
+
+
+
+
+
+
+
+<ng-template #editViewPopup class="example-sidenav" mode="over" style="height: auto" let-data >
+  <!-- <div style="text-align-last: end">
+    <mat-icon (click)='this.dialogService.closeModal()'>close</mat-icon>
+  </div> -->
+  <div class="page">
+    <mat-card style="width: 98%; margin: auto">
+      <div style="text-align-last: end" >
+        <mat-icon (click)='this.dialogService.closeModal();this.form.reset()'>close</mat-icon>
+      </div>
+      <mat-card-header style="flex: 1 1 auto;">
+        <div  style="width: 100%">
+          <h2 style="text-align: center;" class="page-title">{{ pageHeading }} - {{ formAction }}</h2>
+        </div>
+      </mat-card-header>
+    
+      <mat-card-content style="padding-top: 10px">
+        <div>
+          <form [formGroup]="form">
+            <formly-form [model]="model" [fields]="fields" [form]="form"></formly-form>
+          </form>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <div style="text-align-last: end; width: 100%">
+          <button style="margin: 5px" mat-button (click)='this.dialogService.closeModal();this.form.reset()' >Cancel</button>
+          <button style="margin: 5px" mat-button (click)="this.form.reset()" >Reset</button>
+          <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button color="warn" (click)="saveChild()">
+            {{ butText }}
+          </button>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+    <div >
+      <!-- <mat-icon color="warn">error</mat-icon>
+      <span>Given ID is not valid</span> -->
+    </div>
+    
+  </div>
+</ng-template>

@@ -47,65 +47,65 @@ export class AggridTreeComponent {
   pageHeading: any
   id: any
   response: any
-  columnDefs: (ColDef | ColGroupDef)[] = [
-    {
-      headerName: 'Parent Module Name',
-      field: 'parentmodulename',
-      width: 40,
-      filter: 'agTextColumnFilter',
-      rowGroup: true,
-      editable: true,
-      hide: true
-    },
+public  columnDefs: (ColDef | ColGroupDef)[] = [
     // {
-    //   headerName: 'Module Name',
-    //   field: 'modulename',
+    //   headerName: 'Parent Module Name',
+    //   field: 'parentmodulename',
     //   width: 40,
     //   filter: 'agTextColumnFilter',
+    //   rowGroup: true,
+    //   editable: true,
+    //   hide: true
     // },
-    {
-      headerName: 'Task Name',
-      field: 'task_name',
-      width: 40,
-      editable: true,
-      filter: 'agTextColumnFilter',
-    },
-    {
-      headerName: 'Start Date',
-      field: 'startdate',
-      width: 40,
-      editable: true,
-      filter: 'agTextColumnFilter',
-      cellEditor: 'datetime-input',
-      // cellRenderer: (data: { modified: any }) => {
-      //   return moment(data.modified).format("M/d/yyyy, h:mm ");
-      // },
-      valueFormatter: function (params) {
-        return moment(params.value).format('D/M/ YYYY');
-      },
+    // // {
+    // //   headerName: 'Module Name',
+    // //   field: 'modulename',
+    // //   width: 40,
+    // //   filter: 'agTextColumnFilter',
+    // // },
+    // {
+    //   headerName: 'Task Name',
+    //   field: 'task_name',
+    //   width: 40,
+    //   editable: true,
+    //   filter: 'agTextColumnFilter',
+    // },
+    // {
+    //   headerName: 'Start Date',
+    //   field: 'startdate',
+    //   width: 40,
+    //   editable: true,
+    //   filter: 'agTextColumnFilter',
+    //   cellEditor: 'datetime-input',
+    //   // cellRenderer: (data: { modified: any }) => {
+    //   //   return moment(data.modified).format("M/d/yyyy, h:mm ");
+    //   // },
+    //   valueFormatter: function (params) {
+    //     return moment(params.value).format('D/M/ YYYY');
+    //   },
 
-    },
-    {
-      headerName: 'End Date',
-      field: 'enddate',
-      width: 40,
-      editable: true,
-      filter: 'agTextColumnFilter',
-      cellEditor: 'datetime-input',
-      // cellRenderer: (data: { modified: any }) => {
-      //   return moment(data.modified).format("M/d/yyyy, h:mm ");
-      // },
-      valueFormatter: function (params) {
-        return moment(params.value).format('D/M/ YYYY');
-      },
-    },
-    {
+    // },
+    // {
+    //   headerName: 'End Date',
+    //   field: 'enddate',
+    //   width: 40,
+    //   editable: true,
+    //   filter: 'agTextColumnFilter',
+    //   cellEditor: 'datetime-input',
+    //   // cellRenderer: (data: { modified: any }) => {
+    //   //   return moment(data.modified).format("M/d/yyyy, h:mm ");
+    //   // },
+    //   valueFormatter: function (params) {
+    //     return moment(params.value).format('D/M/ YYYY');
+    //   },
+    // },
+    // {
 
-      field: 'Action',
-      width: 40,
-      cellRenderer: 'buttonRenderer'
+    //   field: 'Action',
+    //   width: 40,
+    //   cellRenderer: 'buttonRenderer'
 
-    },
+    // },
   ]
   selectedRow: any;
   formAction: any;
@@ -135,11 +135,13 @@ export class AggridTreeComponent {
     
     // this.getmodules()  
     this.route.params.subscribe(params => {
+      console.log(params);
+      this.formName=params['component']
+
       this.id = params['id'];
+      this.loadConfig(this.formName)
     });
     console.log(this.route.snapshot.routeConfig?.path);
-    this.formName='module'
-
     this.dataService.getDataById("project", this.id).subscribe((res: any) => {
       this.response = res.data[0]
       // sessionStorage.setItem("projectname", this.response.projectname)
@@ -148,32 +150,150 @@ export class AggridTreeComponent {
     
      
     })
-    // this.initializeFormControls();
   }
 
+loadConfig(formName:any){
 
-  // getmodules() {
+  if(formName=="module"){
+    this.autoGroupColumnDef={
+        headerName: "Parent Modules",
+        minWidth: 200
+  }
+  this.columnDefs.push(  
+    {
+    headerName: 'Parent Module Name',
+    field: 'parentmodulename',
+    width: 40,
+    filter: 'agTextColumnFilter',
+    rowGroup: true,
+    editable: true,
+    hide: true
+  },
+  // {
+  //   headerName: 'Module Name',
+  //   field: 'modulename',
+  //   width: 40,
+  //   filter: 'agTextColumnFilter',
+  // },
+  {
+    headerName: 'Task Name',
+    field: 'task_name',
+    width: 40,
+    editable: true,
+    filter: 'agTextColumnFilter',
+  },
+  {
+    headerName: 'Start Date',
+    field: 'startdate',
+    width: 40,
+    editable: true,
+    filter: 'agTextColumnFilter',
+    cellEditor: 'datetime-input',
+    // cellRenderer: (data: { modified: any }) => {
+    //   return moment(data.modified).format("M/d/yyyy, h:mm ");
+    // },
+    valueFormatter: function (params) {
+      return moment(params.value).format('D/M/ YYYY');
+    },
 
-  //   this.dataService.getDataByIdProject("project", this.response.projectid).subscribe((res: any) => {
-  //     this.tasklist = res.data[0];
-  //     console.log(this.tasklist, "sdh");
+  },
+  {
+    headerName: 'End Date',
+    field: 'enddate',
+    width: 40,
+    editable: true,
+    filter: 'agTextColumnFilter',
+    cellEditor: 'datetime-input',
+    // cellRenderer: (data: { modified: any }) => {
+    //   return moment(data.modified).format("M/d/yyyy, h:mm ");
+    // },
+    valueFormatter: function (params) {
+      return moment(params.value).format('D/M/ YYYY');
+    },
+  },
+  {
 
-  //   })
+    field: 'Action',
+    width: 40,
+    cellRenderer: 'buttonRenderer'
 
-  // }
+  })
+  }else if(formName=="Requirement"){
+    this.autoGroupColumnDef={
+      headerName: "Parent Requriement",
+      minWidth: 200
+}
+    this.columnDefs.push(  
+      {
+      headerName: 'Parent Requirement ID',
+      field: 'parentmodulename',
+      width: 40,
+      filter: 'agTextColumnFilter',
+      rowGroup: true,
+      editable: true,
+      hide: true
+    },  
+     {
+      headerName: 'Requirement Name',
+      field: 'requirement_name',
+      width: 40,
+      filter: 'agTextColumnFilter',
+    },
+    {
+      headerName: 'Sprint Id',
+      field: 'index',
+      width: 40,
+      // editable: true,
+      filter: 'agTextColumnFilter',
+    },
+    // {
+    //   headerName: 'Start Date',
+    //   field: 'startdate',
+    //   width: 40,
+    //   editable: true,
+    //   filter: 'agTextColumnFilter',
+    //   cellEditor: 'datetime-input',
+    //   // cellRenderer: (data: { modified: any }) => {
+    //   //   return moment(data.modified).format("M/d/yyyy, h:mm ");
+    //   // },
+    //   valueFormatter: function (params) {
+    //     return moment(params.value).format('D/M/ YYYY');
+    //   },
+  
+    // },
+    // {
+    //   headerName: 'End Date',
+    //   field: 'enddate',
+    //   width: 40,
+    //   editable: true,
+    //   filter: 'agTextColumnFilter',
+    //   cellEditor: 'datetime-input',
+    //   // cellRenderer: (data: { modified: any }) => {
+    //   //   return moment(data.modified).format("M/d/yyyy, h:mm ");
+    //   // },
+    //   valueFormatter: function (params) {
+    //     return moment(params.value).format('D/M/ YYYY');
+    //   },
+    // },
+    {
+  
+      field: 'Action',
+      width: 40,
+      cellRenderer: 'buttonRenderer'
+  
+    }
+    
+    )
+  }
 
+}
   getTreeData(data?:any) {
     debugger
 // ! UNDO
 console.log(this.response.project_id);
-
+if(this.formName=="module"){
     this.dataService.getModuleFilter("modules", this.response.project_id).subscribe((res: any) => {
-    console.log(res);
-    
       this.listData = []
-      console.log(this.listData, "hide");
-console.log(res.data,'1');
-
       for (let idx = 0; idx < res.data.length; idx++) {
         const row = res.data[idx];
         if (row.parentmodulename == "" || !row.parentmodulename) {
@@ -193,12 +313,57 @@ console.log(res.data,'1');
         // this.getmodules()
       }
     });
+  }else{
+      this.dataService.getDataByFilter("requirement",{}).subscribe((res:any) =>{
+        console.log(res);
+        this.listData = []
+        // for (let idx = 0; idx < res.data[0].response.length; idx++) {
+        //   const row = res.data[0].response[idx];
+        //   if (row.parentmodulename == "" || !row.parentmodulename) {
+        //     row.treePath = [row.modulename];
+        //   } else {
+        //     var parentNode = this.listData.find((d) => d.modulename == row.parentmodulename);
+        //     if (
+        //       parentNode &&
+        //       parentNode.treePath &&
+        //       !parentNode.treePath.includes(row.modulename)
+        //     ) {
+        //       row.treePath = [...parentNode.treePath];
+        //       row.treePath.push(row.modulename);
+        //     }
+        //   }
+        //   this.listData.push(row);
+        //   // this.getmodules()
+        // }
+        for (let idx = 0; idx < res.data[0].response.length; idx++) {
+          const row = res.data[0].response[idx];
+          if (row.parentmodulename == "" || !row.parentmodulename) {
+            row.treePath = [row.modulename];
+            row.index = (idx + 1).toString();
+          } else {
+            var parentNode = this.listData.find((d) => d.modulename == row.parentmodulename);
+            if (
+              parentNode &&
+              parentNode.treePath &&
+              !parentNode.treePath.includes(row.modulename)
+            ) {
+              row.treePath = [...parentNode.treePath];
+              row.treePath.push(row.modulename);
+              row.index = `${parentNode.index}.${parentNode.treePath.length}`;
+            }
+          }
+          this.listData.push(row);
+          // this.getmodules()
+        }
+        
+      })
+  }
 }
 
 
   public autoGroupColumnDef: ColDef = {
-    headerName: "Parent Modules",
-    minWidth: 200
+    
+   
     // ,
     // cellRendererParams: {
     //   suppressCount: true,
@@ -217,10 +382,6 @@ console.log(res.data,'1');
   public getTreePath: GetDataPath = (data: any) => {
     return data.treePath;
   };
-
-  // public getDataPath: GetDataPath = (data: any) => {
-  //   return data.parentmodulename;
-  // };
 
   close(event: any) {
     this.dialogService.closeModal();
@@ -277,8 +438,9 @@ console.log(res.data,'1');
 
   onAddButonClick(ctrl: any) {
     debugger
+    console.log(this.formName);
     
-    this.dataService.loadConfig("module").subscribe(async (config: any) => {
+    this.dataService.loadConfig(this.formName.toLowerCase()).subscribe(async (config: any) => {
       console.log(config);
       
       this.formAction='Add' 
@@ -324,7 +486,7 @@ console.log(res.data,'1');
   let values:any=this.form.value
   values.client_name= this.response?.client_name
   values.project_id= this.response?.project_id
-  values.project_name= this.response?.project_name
+  // values.project_name= this.response?.project_name
 
   values.parentmodulename= ""
   this.dataService.save(this.config.form.collectionName,values).subscribe((data:any)=>{
@@ -333,69 +495,7 @@ console.log(res.data,'1');
   })
   this.ngOnInit()
   }
-// try(res:any){
-//   let array= res.data
-//   console.log(array);
-//   debugger
-//   for (let index = 0; index < array.length; index++) {
-//     console.log(array[index]);
-//     let val :any[]=[array[index].modulename]
-//     let colany:any[]=array[index].modulename
-//     // colany.treePath= array[index].colonyname
-//     this.listData.push(val);
-
-
-//     let block :any=array[index].block
-
-//     if(Array.isArray(block)){
-//       if(block.length!=0){
-// for (let index1 = 0; index1 < block.length; index1++) {
-// let blockdata:any =block[index1]
-// let element:any  = block[index1].gate;
-// console.log(element,'block');
-// blockdata.treePath=[colany,blockdata.blockname];
-// this.listData.push(blockdata)
-// if(Array.isArray(element)){
-// if(element.length!=0){
-// for (let index2 = 0; index2 < element.length; index2++) {
-// const element1:any = element[index2];
-// element1.treePath=[colany,blockdata.blockname,element1.gatename];
-// console.log(element1,'gate');
-// this.listData.push(element1);
-// console.log(this.listData);
-
-// }
-// }else{
-//   console.log(element);
   
-// }
-// }
-
-// }
-//       }else{
-//         console.log(block);
-//         if(Array.isArray(block)){
-//           if(block.length!=0){
-// for (let index1 = 0; index1 < block.length; index1++) {
-//   const element = block[index1];
-//   console.log(element);
-  
-  
-// }
-//           }else{
-//             console.log(block);
-            
-//           }
-//         }
-        
-//       }
-//     }
-
-//   }
-
-
-
-// }
 
 
 
