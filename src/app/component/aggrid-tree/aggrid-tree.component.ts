@@ -221,6 +221,7 @@ loadConfig(formName:any){
   }else if(formName=="Requirement"){
     this.autoGroupColumnDef={
       headerName: "Parent Requriement",
+      // field:"index",
       minWidth: 200
 }
     this.columnDefs.push(  
@@ -316,11 +317,110 @@ if(this.formName=="module"){
   }else{
       this.dataService.getDataByFilter("requirement",{}).subscribe((res:any) =>{
         console.log(res);
-        this.listData = []
+        let data:any[]= []
+        for (let idx = 0; idx < res.data[0].response.length; idx++) {
+          const row = res.data[0].response[idx];
+          if (row.parentmodulename == "" || !row.parentmodulename) {
+            row.treePath = [row.requirement_name];
+          } 
+          else {
+            var parentNode = data.find((d) => d.requirement_name == row.parentmodulename);
+            if (parentNode &&parentNode.treePath &&!parentNode.treePath.includes(row.requirement_name)) {
+              row.treePath = [...parentNode.treePath];
+              row.treePath.push(row.requirement_name);
+            }
+          }
+          data.push(row);
+          // this.getmodules()
+        }
+      this.listData=data;
+        data.forEach((res:any)=>{
+          console.log(res);
+          let arr:any=res.treePath.length
+          console.log(arr,res.treePath);
+          if(arr !==0|| arr !== 1){
+            
+          }
+        })
+
+
+
+
+        // let values:any[]=res.data[0].response;
+        // console.log(values);
+        
+        // let parentdata:any[]=[]
+        // values.forEach((row:any,index:any) => {
+        //   if (row.parentmodulename == "" || !row.parentmodulename) {
+        //     row.treePath = [row.requirement_name];
+        //   row.index = parentdata.length+1
+        //   parentdata.push(row)
+        //   } 
+          
+        //   // else {
+        //   //   const parentNode = this.listData.find((d) => d.requirement_name == row.parentmodulename);
+        //   //   if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
+        //   //     row.treePath = [...parentNode.treePath, row.requirement_name];
+        //   //   }
+        //   // }
+        //   // this.listData.push(row);
+        // });
+        // console.log(parentdata);
+
+        // let childData:any[]=[]
+        // values.forEach((row:any,index:any) => {
+        //     const parentNode = parentdata.find((d) => d.requirement_name == row.parentmodulename);
+        //     if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
+        //       const parentIndex = parentdata.findIndex((item) =>item.requirement_name === parentNode.requirement_name)
+          
+        //       if (parentIndex !== -1) {
+        //         console.log(parentIndex);
+        //       }
+        //       row.treePath = [...parentNode.treePath, row.requirement_name];
+        //     }
+        //     let childparentIndex:any= childData.findIndex((item) =>item.parentmodulename === row.parentmodulename)
+        //     if(childparentIndex!==-1){
+        //       row.index=childparentIndex
+        //     }else{
+        //       row.index = 1
+        //     }
+        //    let childIndex:any= childData.findIndex((item) =>item.requirement_name === row.requirement_name)
+        //    if(childIndex == -1){
+        //      childData.push(row);
+        //    }
+
+        // });
+        // this.listData.push(...parentdata,...childData)
+       
+        // // for (let idx = 0; idx < res.data[0].response.length; idx++) {
+        // //   const row = res.data[0].response[idx];
+        
+        //   if (row.parentmodulename == "" || !row.parentmodulename) {
+        //     row.treePath = [row.requirement_name];
+        //   row.index = idx+1
+
+        //   } else {
+        //     const parentNode = this.listData.find((d) => d.requirement_name == row.parentmodulename);
+        
+        //     if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
+        //       row.treePath = [...parentNode.treePath, row.requirement_name];
+        //     }
+        //   }
+        
+          // Set index for the current row
+        
+          // Push the modified row to listData
+          // this.listData.push(row);
+          // this.getmodules()
+        // }
+        
+        console.log(this.listData);
+        
         // for (let idx = 0; idx < res.data[0].response.length; idx++) {
         //   const row = res.data[0].response[idx];
         //   if (row.parentmodulename == "" || !row.parentmodulename) {
         //     row.treePath = [row.modulename];
+        //     row.index = (idx + 1).toString();
         //   } else {
         //     var parentNode = this.listData.find((d) => d.modulename == row.parentmodulename);
         //     if (
@@ -330,31 +430,12 @@ if(this.formName=="module"){
         //     ) {
         //       row.treePath = [...parentNode.treePath];
         //       row.treePath.push(row.modulename);
+        //       row.index = `${parentNode.index}.${parentNode.treePath.length}`;
         //     }
         //   }
         //   this.listData.push(row);
         //   // this.getmodules()
         // }
-        for (let idx = 0; idx < res.data[0].response.length; idx++) {
-          const row = res.data[0].response[idx];
-          if (row.parentmodulename == "" || !row.parentmodulename) {
-            row.treePath = [row.modulename];
-            row.index = (idx + 1).toString();
-          } else {
-            var parentNode = this.listData.find((d) => d.modulename == row.parentmodulename);
-            if (
-              parentNode &&
-              parentNode.treePath &&
-              !parentNode.treePath.includes(row.modulename)
-            ) {
-              row.treePath = [...parentNode.treePath];
-              row.treePath.push(row.modulename);
-              row.index = `${parentNode.index}.${parentNode.treePath.length}`;
-            }
-          }
-          this.listData.push(row);
-          // this.getmodules()
-        }
         
       })
   }

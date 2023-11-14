@@ -57,25 +57,17 @@ import { FormService } from "src/app/services/form.service";
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
       </button>
       <mat-menu #Requirementmenu="matMenu">
-        <button mat-menu-item (click)="onClickMenuItem('edit', params.data)">
+      <button  mat-menu-item (click)="onClickRequirementMenuItem('addsubchild', params.data)">
+          <mat-icon>add</mat-icon>
+          <span>Sub Requriement</span>
+        </button>
+        <button mat-menu-item (click)="onClickRequirementMenuItem('edit', params.data)">
           <mat-icon>edit</mat-icon>
           <span>Edit</span>
         </button>
-        <button mat-menu-item (click)="onClickMenuItem('delete', params.data)">
+        <button mat-menu-item (click)="onClickRequirementMenuItem('delete', params.data)">
           <mat-icon>delete</mat-icon>
           <span>Delete</span>
-        </button>
-        <button  mat-menu-item (click)="onClickMenuItem('submodules', params.data)">
-          <mat-icon>task</mat-icon>
-          <span>Sub Modules</span>
-        </button>
-        <button mat-menu-item (click)="onClickMenuItem('task', params.data)">
-          <mat-icon>task</mat-icon>
-          <span>Task</span>
-        </button>
-        <button mat-menu-item (click)="onClickMenuItem('testcase', this)">
-          <mat-icon>description</mat-icon>
-          <span>Testcase</span>
         </button>
       </mat-menu>
     </div>
@@ -125,7 +117,7 @@ import { FormService } from "src/app/services/form.service";
           <div style="text-align-last: end; width: 100%">
             <button style="margin: 5px" mat-button  mat-dialog-close (click)="closedia()" > Cancel </button>
             <button style="margin: 5px" mat-button (click)="resetBtn()"> Reset </button>
-            <button  style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn" (click)="saveForm(this.config, 'modulesViewPopup')" > Save   </button>
+            <button  style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn" (click)="saveForm(this.parentRouteName, 'modulesViewPopup')" > Save   </button>
           </div>
         </mat-card-actions>
       </mat-card>
@@ -178,10 +170,7 @@ parentRouteName:any
     // console.log(this.ParentComponent.formName);
     // this.parentRouteName=this.ParentComponent.formName
     this.route.params.subscribe(params => {
-      console.log(params);
       this.parentRouteName=params['component']
-
-      // this.id = params['id'];
     });
   }
 
@@ -235,7 +224,7 @@ parentRouteName:any
       this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
         this.formAction = "Add";
         this.config = frmConfig;
-        this.model_heading="Sub Module Add"
+        this.model_heading="Sub Module - Add"
         this.fields = frmConfig.form.fields;
         this.dialog.openDialog(this.modulesViewPopup, "50%", "530px", {});
       });
@@ -249,7 +238,7 @@ parentRouteName:any
       });
     } else if (formAction == "edit" ) {
       if( data.parentmodulename==''){
-        this.model_heading="Module Edit"
+        this.model_heading="Module - Edit"
 
         this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
           this.formAction = "Edit";
@@ -258,7 +247,7 @@ parentRouteName:any
           this.dialog.openDialog(this.modulesViewPopup, "50%", "530px", data);
         });
       }else{
-        this.model_heading="Sub Module Edit"
+        this.model_heading="Sub Module - Edit"
 
         this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
           this.formAction = "Edit";
@@ -283,17 +272,21 @@ parentRouteName:any
     }
   }
   onClickRequirementMenuItem(formAction: any, data?: any) {
-    if (formAction == "addSubchild") {
+    console.log('dasdada',formAction);
+    
+    if (formAction == "addsubchild") {
      this.dataService.loadConfig(this.parentRouteName.toLowerCase()).subscribe((frmConfig: any) => {
        this.formAction = "Add";
+       console.log(frmConfig);
+       
        this.config = frmConfig;
-       this.model_heading="Sub Requirement Add"
+       this.model_heading="Sub Requirement - Add"
        this.fields = frmConfig.form.fields;
        this.dialog.openDialog(this.modulesViewPopup, "50%", "530px", {});
      });
    } else if (formAction == "edit" ) {
      if( data.parentmodulename==''){
-       this.model_heading="Requirement Edit"
+       this.model_heading="Requirement - Edit"
 
        this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
          this.formAction = "Edit";
@@ -302,7 +295,7 @@ parentRouteName:any
          this.dialog.openDialog(this.modulesViewPopup, "50%", "530px", data);
        });
      }else{
-       this.model_heading="Sub Requirement Edit"
+       this.model_heading="Sub Requirement - Edit"
 
        this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
          this.formAction = "Edit";
@@ -343,30 +336,37 @@ parentRouteName:any
   //     console.log("Object Assign isn't working");
   //   }
   // }
-  saveForm(_data: any, val?: any) {
+  saveForm(formName: any, val?: any) {
     debugger;
     let values: any = this.form.value;
+    if(formName=='Requirement'){
     if (val == "modulesViewPopup") {
-      // values.project_name=this.gridData.project_name
-      values.client_name = this.ParentComponent.response?.client_name;
       values.project_id = this.ParentComponent.response?.project_id;
-      values.project_name = this.ParentComponent.response?.project_name;
-
-      values.parentmodulename = this.gridData.modulename;
-      // values.project_id=this.gridData.project_id
-    } else if (val == "taskViewPopup") {
-      values.moduleid = this.gridData.moduleid;
-      // values.project_name=this.gridData.project_name
-      // values.project_id=this.gridData.project_id
-      values.client_name = this.ParentComponent.response?.client_name;
-      values.project_id = this.ParentComponent.response?.project_id;
-      values.project_name = this.ParentComponent.response?.project_name;
+      values.parentmodulename = this.gridData.requirement_name;
     }
     this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
         console.log(data);
         this.dialog.closeModal();
         this.form.reset();
       });
+    }else{
+      if (val == "modulesViewPopup") {
+        // values.project_name=this.gridData.project_name
+        // values.client_name = this.ParentComponent.response?.client_name;
+        values.project_id = this.ParentComponent.response?.project_id;
+        // values.project_name = this.ParentComponent.response?.project_name;
+  
+        values.parentmodulename = this.gridData.modulename;
+        // values.project_id=this.gridData.project_id
+      } else if (val == "taskViewPopup") {
+        values.moduleid = this.gridData.moduleid;
+        // values.project_name=this.gridData.project_name
+        // values.project_id=this.gridData.project_id
+        // values.client_name = this.ParentComponent.response?.client_name;
+        values.project_id = this.ParentComponent.response?.project_id;
+        // values.project_name = this.ParentComponent.response?.project_name;
+      } 
+    }
     //! To To in transion For time Save
     this.ParentComponent.ngOnInit();
   }
