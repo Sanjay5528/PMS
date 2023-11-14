@@ -598,7 +598,7 @@ func taskHandler(c *fiber.Ctx) error {
 				{"$lookup",
 					bson.D{
 						{"from", "timesheet"},
-						{"localField", "taskid"},
+						{"localField", "task_id"},
 						{"foreignField", "task_id"},
 						{"as", "result"},
 					},
@@ -618,24 +618,24 @@ func taskHandler(c *fiber.Ctx) error {
 					bson.D{
 						{"_id",
 							bson.D{
-								{"employeeid", "$employeeid"},
-								{"task_id", "$taskid"},
+								{"assigned_to", "$assigned_to"},
+								{"task_id", "$task_id"},
 							},
 						},
 						{"totalworkedhours", bson.D{{"$sum", "$result.workedhours"}}},
 						{"id", bson.D{{"$first", "$_id"}}},
-						{"allocatedhours", bson.D{{"$first", "$allocatedhours"}}},
-						{"employeeid", bson.D{{"$first", "$employeeid"}}},
-						{"taskid", bson.D{{"$first", "$taskid"}}},
-						{"projectname", bson.D{{"$first", "$projectname"}}},
+						{"allocated_hours", bson.D{{"$first", "$allocated_hours"}}},
+						{"assigned_to", bson.D{{"$first", "$assigned_to"}}},
+						{"task_id", bson.D{{"$first", "$task_id"}}},
+						{"project_name", bson.D{{"$first", "$project_name"}}},
 						{"moduleid", bson.D{{"$first", "$moduleid"}}},
-						{"scheduledstartdate", bson.D{{"$first", "$scheduledstartdate"}}},
-						{"scheduledenddate", bson.D{{"$first", "$scheduledenddate"}}},
-						{"taskname", bson.D{{"$first", "$taskname"}}},
+						{"scheduled_start_date", bson.D{{"$first", "$scheduled_start_date"}}},
+						{"scheduled_end_date", bson.D{{"$first", "$scheduled_end_date"}}},
+						{"taskname", bson.D{{"$first", "$task_name"}}},
 						{"assignedto", bson.D{{"$first", "$assignedto"}}},
 						{"remarks", bson.D{{"$last", "$result.remarks"}}},
 						{"status", bson.D{{"$first", "$status"}}},
-						{"Approval Status", bson.D{{"$first", "$Approval Status"}}},
+						{"approval_Status", bson.D{{"$first", "$approval_Status"}}},
 					},
 				},
 			},
@@ -648,7 +648,7 @@ func taskHandler(c *fiber.Ctx) error {
 
 	} else {
 		// fmt.Println(employee_id)
-		filter = append(filter, bson.D{{"$match", bson.D{{"employeeid", employee_id}}}})
+		filter = append(filter, bson.D{{"$match", bson.D{{"assigned_to", employee_id}}}})
 	}
 	response, err := helper.GetAggregateQueryResult(orgId, "task", filter)
 	if err != nil {
@@ -872,16 +872,17 @@ func TimeSheetByIdHandler(c *fiber.Ctx) error {
 	date, _ := time.Parse(time.RFC3339, scheduledstartdate)
 	day := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
 
-	fmt.Println("Formatted UTC:", day)
-
+	fmt.Println("Formatted :", day)
+	fmt.Println("employee_id :", employee_id)
 	var collectionName = "task"
 	var filter primitive.A
+	// !Parthi
 	filter = bson.A{
 		bson.D{
 			{"$lookup",
 				bson.D{
 					{"from", "timesheet"},
-					{"localField", "taskid"},
+					{"localField", "task_id"},
 					{"foreignField", "task_id"},
 					{"as", "result"},
 				},
@@ -901,21 +902,21 @@ func TimeSheetByIdHandler(c *fiber.Ctx) error {
 				bson.D{
 					{"_id",
 						bson.D{
-							{"employeeid", "$employeeid"},
-							{"task_id", "$taskid"},
+							{"assigned_to", "$assigned_to"},
+							{"task_id", "$task_id"},
 						},
 					},
 					{"totalworkedhours", bson.D{{"$sum", "$result.workedhours"}}},
 					{"id", bson.D{{"$first", "$_id"}}},
-					{"allocatedhours", bson.D{{"$first", "$allocatedhours"}}},
-					{"employeeid", bson.D{{"$first", "$employeeid"}}},
-					{"task_id", bson.D{{"$first", "$taskid"}}},
-					{"projectname", bson.D{{"$first", "$projectname"}}},
+					{"allocated_hours", bson.D{{"$first", "$allocated_hours"}}},
+					//{"employeeid", bson.D{{"$first", "$employeeid"}}},
+					{"task_id", bson.D{{"$first", "$task_id"}}},
+					{"project_name", bson.D{{"$first", "$project_name"}}},
 					{"moduleid", bson.D{{"$first", "$moduleid"}}},
-					{"scheduled_start_date", bson.D{{"$first", "$scheduledstartdate"}}},
-					{"scheduled_end_date", bson.D{{"$first", "$scheduledenddate"}}},
-					{"taskname", bson.D{{"$first", "$taskname"}}},
-					{"assignedto", bson.D{{"$first", "$assignedto"}}},
+					{"scheduled_start_date", bson.D{{"$first", "$scheduled_start_date"}}},
+					{"scheduled_end_date", bson.D{{"$first", "$scheduled_end_date"}}},
+					{"task_name", bson.D{{"$first", "$task_name"}}},
+					{"assigned_to", bson.D{{"$first", "$assigned_to"}}},
 					{"status", bson.D{{"$first", "$status"}}},
 					{"result", bson.D{{"$addToSet", "$result"}}},
 					{"formatteddate1", bson.D{{"$last", "$result.formatedDate"}}},
@@ -971,7 +972,7 @@ func TimeSheetByIdHandler(c *fiber.Ctx) error {
 		filter = filter
 	} else {
 		// fmt.Println(employee_id)
-		filter = append(filter, bson.D{{"$match", bson.D{{"employeeid", employee_id}}}})
+		filter = append(filter, bson.D{{"$match", bson.D{{"assigned_to", employee_id}}}})
 	}
 
 	response, err := helper.GetAggregateQueryResult(orgId, collectionName, filter)
@@ -1096,7 +1097,7 @@ func TimeSheetByiiIdHandler(c *fiber.Ctx) error {
 				{"$lookup",
 					bson.D{
 						{"from", "timesheet"},
-						{"localField", "taskid"},
+						{"localField", "task_id"},
 						{"foreignField", "task_id"},
 						{"as", "result"},
 					},
@@ -1134,7 +1135,7 @@ func TimeSheetByiiIdHandler(c *fiber.Ctx) error {
 	if employee_id == "SA" {
 		filter = filter
 	} else {
-		filter = append(filter, bson.D{{"$match", bson.D{{"employeeid", employee_id}}}})
+		filter = append(filter, bson.D{{"$match", bson.D{{"assigned_to", employee_id}}}})
 	}
 
 	response, err := helper.GetAggregateQueryResult(orgId, collectionName, filter)
@@ -1653,15 +1654,15 @@ func postTimesheetDocHandler(c *fiber.Ctx) error {
 	if len(response) == 0 {
 
 		helper.InsertData(c, orgId, "timesheet", inputData)
-		if inputData["Approval Status"] == "Approved" || inputData["Approval Status"] == "Rejected" || inputData["Approval Status"] == "Hold" {
+		if inputData["approval_Status"] == "Approved" || inputData["approval_Status"] == "Rejected" || inputData["approval_Status"] == "Hold" {
 			_, err = database.GetConnection(orgId).Collection("task").UpdateOne(
 				ctx,
-				bson.M{"taskid": inputData["task_id"]},
+				bson.M{"task_id": inputData["task_id"]},
 				bson.M{
 					"$set": bson.M{
 						//"totalworkedhours":  inputData["workedhours"],
 						//"status": inputData["status"],
-						"Approval Status": inputData["Approval Status"],
+						"approval_Status": inputData["approval_Status"],
 					},
 				},
 				options.Update().SetUpsert(true))
@@ -1671,12 +1672,12 @@ func postTimesheetDocHandler(c *fiber.Ctx) error {
 		} else {
 			_, err = database.GetConnection(orgId).Collection("task").UpdateOne(
 				ctx,
-				bson.M{"taskid": inputData["task_id"]},
+				bson.M{"task_id": inputData["task_id"]},
 				bson.M{
 					"$set": bson.M{
 						"totalworkedhours": inputData["workedhours"],
 						"status":           inputData["status"],
-						//"Approval Status":inputData["Approval Status"],
+						//"approval_Status":inputData["approval_Status"],
 
 					},
 				},
@@ -1707,12 +1708,12 @@ func postTimesheetDocHandler(c *fiber.Ctx) error {
 			}
 			_, err = database.GetConnection(orgId).Collection("task").UpdateOne(
 				ctx,
-				bson.M{"taskid": response[0]["task_id"]},
+				bson.M{"task_id": response[0]["task_id"]},
 				bson.M{
 					"$set": bson.M{
 						"totalworkedhours": res[0]["workedhours"],
 						"status":           res[0]["status"],
-						"Approval Status":  inputData["Approval Status"],
+						"approval_Status":  inputData["approval_Status"],
 					},
 				},
 				options.Update().SetUpsert(true))

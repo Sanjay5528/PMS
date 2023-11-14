@@ -65,10 +65,11 @@ func LoginHandler(c *fiber.Ctx) error {
 	token := utils.GenerateJWTToken(claims, 24*60) //24*60
 
 	response := &LoginResponse{
-		Name:     userName.(string),
-		UserRole: user["role"].(string),
-		UserOrg:  org,
-		Token:    token,
+		Name:       userName.(string),
+		UserRole:   user["role"].(string),
+		UserOrg:    org,
+		Token:      token,
+		EmployeeID: user["employee_id"].(string),
 	}
 
 	return shared.SuccessResponse(c, fiber.Map{
