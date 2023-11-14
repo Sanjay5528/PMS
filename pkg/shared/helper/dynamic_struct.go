@@ -108,11 +108,13 @@ func loadModels(models map[string][]Config, key string) interface{} {
 	for _, field := range models[key] {
 		fieldName := field.ColumnName
 		fieldType := TypeMap[field.Type]
-
+	
 		// Check if the type is already available in TypeMap.
 		if _, exists := TypeMap[field.Type]; !exists {
+
 			// Recursively load dependent models and their types.
 			fieldType = loadModels(models, field.Type)
+			
 		}
 
 		// Append the field definition to the dynamic struct.

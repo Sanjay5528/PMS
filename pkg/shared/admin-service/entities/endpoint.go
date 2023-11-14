@@ -17,7 +17,6 @@ func SetupAllRoutes(app *fiber.App) {
 	app.Static("/image", fileUploadPath)
 }
 
-// Basic Crud
 func SetupCRUDRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/entities/", "REST API")
 	r.Post("/:model_name", PostDocHandler)
@@ -78,11 +77,11 @@ func SetupQueryRoutes(app *fiber.App) {
 func SetupLookupRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/lookup", "Data Lookup API")
 	// r.Post("/", DataLookupDocsHandler)
-	r.Get("/timesheet/:employee_id/:scheduledstartdate", TimeSheetByIdHandler)    
-	r.Get("/task/:employee_id", taskHandler)                                      
-	r.Put("/timesheet", postTimesheetDocHandler)                                  
-	r.Get("/unschedule/:employee_id/:date", getUnscheduleIdHandler)               
-	r.Get("/workedhour/:employee_id/:scheduledstartdate", TimeSheetByiiIdHandler) 
+	r.Get("/timesheet/:employee_id/:scheduledstartdate", TimeSheetByIdHandler)
+	r.Get("/task/:employee_id", taskHandler)
+	r.Put("/timesheet", postTimesheetDocHandler)
+	r.Get("/unschedule/:employee_id/:date", getUnscheduleIdHandler)
+	r.Get("/workedhour/:employee_id/:scheduledstartdate", TimeSheetByiiIdHandler)
 	//r.Get("/:id",BlockidHandler)
 	//r.Get("/task/:employee_id/:scheduledstartdate",TimeSeetByIdHandler)
 }

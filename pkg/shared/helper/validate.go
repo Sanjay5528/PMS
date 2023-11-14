@@ -358,6 +358,7 @@ func ExtractNonEmptyFields(rv reflect.Value, fields reflect.StructField) (reflec
 
 // Insert
 func vertifyInputStruct(rv reflect.Value, inputMap map[string]interface{}, errMap map[string]string) error {
+ 
 	for rv.Kind() == reflect.Ptr || rv.Kind() == reflect.Interface {
 		rv = rv.Elem()
 	}
@@ -367,7 +368,7 @@ func vertifyInputStruct(rv reflect.Value, inputMap map[string]interface{}, errMa
 		// fieldTag := strings.ToLower(string(field.Tag.Get("json")))
 		fieldTag := string(field.Tag.Get("json"))
 		fieldValue := rv.Field(i)
-
+	
 		// Check if the JSON tag includes "omitempty".
 		omitempty := false
 		if strings.Contains(string(field.Tag.Get("json")), "omitempty") {
@@ -426,7 +427,7 @@ func vertifyInputStruct(rv reflect.Value, inputMap map[string]interface{}, errMa
 	if len(errMap) > 0 {
 		return fmt.Errorf("Missing fields")
 	}
-
+	 
 	return nil
 }
 

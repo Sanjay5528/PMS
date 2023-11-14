@@ -42,6 +42,7 @@ func main() {
 	if err := server.Listen(app); err != nil {
 		log.Panic(err)
 	}
+	
 	// }()
 
 	// Wait for a signal to gracefully shut down the background service

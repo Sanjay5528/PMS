@@ -22,22 +22,26 @@ type Success struct {
 	ErrorMsg string      `json:"error_msg"`
 }
 
+// type GlobalErrorHandlerResp struct {
+// 	Status  int         `json:"status"`
+// 	Message interface{} `json:"message"`
+// }
+
 func (e *Error) Error() string {
 	return e.Message
 }
 
-func EntityNotFound(m string) *Error {
-	return &Error{Status: 404, Code: "entity-not-found", Message: m}
+// func EntityNotFound(m string) *Error {
+// 	return &Error{Status: 404, Code: "entity-not-found", Message: m}
+// }
+
+func BadRequest(m interface{}) error {
+	return fiber.NewError(fiber.StatusInternalServerError, m.(string))
 }
 
-func BadRequest(m string) error {
-	return fiber.NewError(fiber.StatusBadRequest, m)
-
-}
-
-func Unexpected(m string) *Error {
-	return &Error{Status: 500, Code: "internal-server", Message: m}
-}
+// func Unexpected(m string) *Error {
+// 	return &Error{Status: 500, Code: "internal-server", Message: m}
+// }
 
 func SuccessResponse(c *fiber.Ctx, data interface{}) error {
 	return c.JSON(&Success{Status: 200, Data: data})

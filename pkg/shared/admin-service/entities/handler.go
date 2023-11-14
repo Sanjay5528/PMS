@@ -44,15 +44,14 @@ func PostDocHandler(c *fiber.Ctx) error {
 	if err != nil {
 		shared.BadRequest("Invalid CollectionName")
 	}
+
 	// Validation the Insert Data from -- InsertValidateInDatamodel
 	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
-	//Get the Err message from -- InsertValidateInDatamodel
-	var errmsgs []string
 	if errmsg != nil {
-		for _, values := range errmsg {
-			errmsgs = append(errmsgs, values)
+		// errmsg is map to string
+		for key, value := range errmsg {
+			return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
 		}
-		return shared.SendErrorResponse(c, errmsgs)
 	}
 
 	// var inputData map[string]interface{}
