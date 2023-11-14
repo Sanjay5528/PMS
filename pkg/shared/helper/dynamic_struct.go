@@ -312,7 +312,7 @@ func DataTypeChecking(ModelName, Types string) []bson.M {
 		pipeline = append(pipeline, bson.D{{"$match", bson.D{{"type", bson.D{{"$ne", Types}}}}}})
 	}
 
-	Response, err := GetAggregateQueryResult("amsort", "data_model", pipeline)
+	Response, err := GetAggregateQueryResult("pms", "data_model", pipeline)
 
 	if err != nil {
 		// Handle the error

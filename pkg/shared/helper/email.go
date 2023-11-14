@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 
+	"github.com/google/uuid"
 	mail "github.com/xhit/go-simple-mail/v2"
 	"go.mongodb.org/mongo-driver/bson"
 
@@ -113,4 +114,10 @@ func SendEmail(orgId string, to []string, cc []string, subject string, htmlBody 
 		return true
 	}
 
+}
+
+func GenerateAppaccesscode() string {
+	// Generate a UUID (Universally Unique Identifier).
+	uuidObj := uuid.New()
+	return uuidObj.String()
 }

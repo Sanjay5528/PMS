@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -14,6 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"gopkg.in/mail.v2"
 
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"kriyatec.com/pms-api/pkg/shared"
@@ -59,24 +61,30 @@ func PostDocHandler(c *fiber.Ctx) error {
 
 	// collectionName := c.Params("model_name")
 
+	// user collection is here that time only password validation
+	if collectionName == "user" {
+
+		err := OnboardingProcessing(inputData["_id"].(string))
+		if err != nil {
+			return shared.BadRequest("invalid user Id")
+		}
+		
+		// // to compare the password and comfirm password is same only   Genrate the Hased password
+		// if inputData["password"].(string) != inputData["pwdConfirm"].(string) {
+		// 	shared.BadRequest("Verify that the password and confirm password are the same.")
+		// }
+
+		// // if password marched to create the Hash Password
+		// passwordHash, _ := helper.GeneratePasswordHash(inputData["password"].(string))
+		// inputData["pwd"] = passwordHash
+		// // remove the password and confirm password
+		// delete(inputData, "password")
+		// delete(inputData, "pwdConfirm")
+	}
+
 	inputData["created_on"] = time.Now()
 	inputData["created_by"] = userToken.UserId
 	inputData["status"] = "A"
-	// user collection is here that time only password validation
-	if collectionName == "user" {
-		// to compare the password and comfirm password is same only   Genrate the Hased password
-		if inputData["password"].(string) != inputData["pwdConfirm"].(string) {
-			shared.BadRequest("Verify that the password and confirm password are the same.")
-		}
-
-		// if password marched to create the Hash Password
-		passwordHash, _ := helper.GeneratePasswordHash(inputData["password"].(string))
-		inputData["pwd"] = passwordHash
-		// remove the password and confirm password
-		delete(inputData, "password")
-		delete(inputData, "pwdConfirm")
-	}
-
 	// Insert he data to mongo Collection  name form params
 	res, err := database.GetConnection(org.Id).Collection(collectionName).InsertOne(ctx, inputData)
 	if err != nil {
@@ -1541,22 +1549,149 @@ func deleteDocumentByIDHandler(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, response)
 }
 
-func sendSimpleEmailHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
+func OnboardingProcessing(email string) error {
+
+	// Generate the 'decoding' value (replace this with your actual logic)
+	decoding := helper.GenerateAppaccesscode()
+	// Generate the URL with parameters  it call the back end api
+	link := fmt.Sprintf("http://localhost:4200/activate?accesskey=%s", decoding)
+
+	body := createOnBoardtemplate(link)
+	if err := SendEmailS(email, os.Getenv("CLIENT_EMAIL"), "Welcome to pms Onboarding", body); err == nil {
+		// If email sending was successful
+		if err := User_junked_files(email, decoding); err != nil {
+			log.Println("Failed to insert user junked files:", err)
+		} else {
+			log.Println("Email sent successfully")
+		}
+	} else {
+		return shared.BadRequest("Email sending failed:")
 	}
-	var requestData map[string]string
-	err := c.BodyParser(&requestData)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	result := helper.SendEmail(orgId, strings.Split(requestData["to"], ","), strings.Split(requestData["cc"], ","), requestData["subject"], requestData["body"])
-	if result {
-		return shared.SuccessResponse(c, "Email Sent")
-	}
-	return shared.BadRequest("Try again")
+	
+	return nil
 }
+
+// func SendSimpleEmailHandler(c *fiber.Ctx) error {
+// 	// bind the value in requestData
+// 	var requestData map[string]interface{}
+// 	err := c.BodyParser(&requestData)
+// 	if err != nil {
+// 		return shared.BadRequest(err.Error())
+// 	}
+
+// 	email := requestData["_id"].(string)
+// 	// Generate the 'decoding' value (replace this with your actual logic)
+// 	decoding := helper.GenerateAppaccesscode()
+
+// 	// Generate the URL with parameters  it call the back end api
+// 	link := fmt.Sprintf("http://localhost:4200/activate?accesskey=%s", decoding)
+
+// 	body := createOnBoardtemplate(link)
+
+// 	if err := SendEmailS(email, os.Getenv("CLIENT_EMAIL"), "Welcome to pms Onboarding", body); err == nil {
+// 		// If email sending was successful
+// 		if err := User_junked_files(email, decoding); err != nil {
+// 			log.Println("Failed to insert user junked files:", err)
+// 		} else {
+// 			log.Println("Email sent successfully")
+// 		}
+// 	} else {
+// 		log.Println("Email sending failed:", err)
+// 	}
+
+// 	return shared.SuccessResponse(c, requestData)
+// }
+
+// USER ON BOARDING TEMPLATE  //todo
+func createOnBoardtemplate(link string) string {
+
+	body := `
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Welcome to Our Onboarding Process</title>
+	</head>
+	<body>
+		<table cellpadding="0" cellspacing="0" width="100%" bgcolor="#f0f0f0">
+			<tr>
+				<td align="center">
+					<table cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
+						<tr>
+							<td align="center" bgcolor="#ffffff" style="padding: 40px 0 30px 0; border-top: 3px solid #007BFF;">
+								<h1>Welcome to Our Onboarding Process</h1>
+								<p>Thank you for choosing our services. We are excited to have you on board!</p>
+								<p>Please follow the steps below to get started:</p>
+								<ol>
+									<div>Step 1: Complete your profile</div>
+									<div>Step 2: Explore our platform</div>
+									<div>Step 3: Contact our support team if you have any questions</div>
+								</ol>
+								<p>Enjoy your journey with us!</p>
+								<p>
+								<a href="` + link + `" style="background-color: #007BFF; color: #fff; padding: 10px 20px; text-decoration: none; display: inline-block; border-radius: 5px;">Activation Now</a>
+								</p>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
+	</html>`
+
+	return body
+}
+
+func User_junked_files(requestmail string, apptoken string) error {
+	requestData := make(map[string]interface{})
+	requestData["_id"] = requestmail
+	requestData["access_key"] = apptoken
+	requestData["expire_on"] = time.Now()
+
+	_, err := database.GetConnection("pms").Collection("temporary_user").InsertOne(ctx, requestData)
+	if err != nil {
+		return shared.BadRequest("Failed to insert data into the database: " + err.Error())
+	}
+
+	return nil
+}
+
+func SendEmailS(recipientEmail string, senderEmail string, subject string, body string) error {
+	email := mail.NewMessage()
+	email.SetHeader("From", senderEmail)
+	email.SetHeader("To", recipientEmail)
+
+	email.SetHeader("Subject", subject)
+	email.SetBody("text/html", body)
+
+	sendinmail := mail.NewDialer("smtp.gmail.com", 587, senderEmail, os.Getenv("CLIENT_EMAIL_PASSWORD"))
+
+	err := sendinmail.DialAndSend(email)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// func sendSimpleEmailHandler(c *fiber.Ctx) error {
+// 	orgId := c.Get("OrgId")
+// 	if orgId == "" {
+// 		return shared.BadRequest("Organization Id missing")
+// 	}
+// 	var requestData map[string]string
+// 	err := c.BodyParser(&requestData)
+// 	if err != nil {
+// 		return shared.BadRequest(err.Error())
+// 	}
+// 	result := helper.SendEmail(orgId, strings.Split(requestData["to"], ","), strings.Split(requestData["cc"], ","), requestData["subject"], requestData["body"])
+// 	if result {
+// 		return shared.SuccessResponse(c, "Email Sent")
+// 	}
+// 	return shared.BadRequest("Try again")
+// }
 
 // // // Search EntitiesHandler - Get Entities
 // func DataLookupDocsHandler(c *fiber.Ctx) error {

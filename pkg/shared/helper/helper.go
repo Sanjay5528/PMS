@@ -72,45 +72,72 @@ func sharedDBEntityHandler(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, response)
 }
 
-// func UpdateUserPasswordAndDeleteTempData(c *fiber.Ctx) error {
+func UpdateUserPasswordAndDeleteTempData(c *fiber.Ctx) error {
 
-// 	var inputData map[string]interface{}
-// 	err := c.BodyParser(&inputData)
-// 	if err != nil {
-// 		return BadRequest("Error parsing request body: " + err.Error())
-// 	}
-// 	access_key := c.Params("access_key")
+	var inputData map[string]interface{}
+	err := c.BodyParser(&inputData)
+	if err != nil {
+		return shared.BadRequest("Error parsing request body: " + err.Error())
+	}
+	access_key := c.Params("access_key")
 
-// 	query := bson.M{"access_key": access_key}
-// 	//var response []primitive.M
-// 	response, err := FindDocs("amsort", "temporary_user", query)
-// 	if err != nil {
-// 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Failed to retrieve user", "error": err.Error()})
-// 	}
+	query := bson.M{"access_key": access_key}
+	//var response []primitive.M
+	response, err := FindDocs("pms", "temporary_user", query)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Failed to retrieve user", "error": err.Error()})
+	}
 
-// 	ID, idExists := response["_id"].(string)
-// 	if !idExists {
-// 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Invalid response format"})
-// 	}
+	ID, idExists := response["_id"].(string)
+	if !idExists {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Invalid response format"})
+	}
 
-// 	passwordHash, _ := GeneratePasswordHash(inputData["password"].(string))
-// 	delete(inputData, "password")
-// 	delete(inputData, "confirm_password")
-// 	update := bson.M{"$set": bson.M{"pwd": passwordHash}}
-// 	filter := bson.M{"_id": ID}
+	// passwordHash, _ := GeneratePasswordHash(inputData["password"].(string))
+	// delete(inputData, "password")
+	// delete(inputData, "confirm_password")
 
-// 	result, err := ExecuteFindAndModifyQuery("amsort", "user", filter, update)
-// 	if err != nil {
-// 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Failed to update document", "error": err.Error()})
-// 	}
-// 	_, err = ExecuteDeleteManyByIds("amsort", "temporary_user", filter)
-// 	if err != nil {
-// 		return BadRequest("Failed to Delete data into the database: " + err.Error())
+	// to compare the password and comfirm password is same only   Genrate the Hased password
+	if inputData["password"].(string) != inputData["confirm_password"].(string) {
+		shared.BadRequest("Verify that the password and confirm password are the same.")
+	}
 
-// 	}
+	// if password marched to create the Hash Password
+	passwordHash, _ := GeneratePasswordHash(inputData["password"].(string))
+	inputData["pwd"] = passwordHash
+	// remove the password and confirm password
+	delete(inputData, "password")
+	delete(inputData, "confirm_password")
 
-// 	return SuccessResponse(c, result)
-// }
+	update := bson.M{"$set": bson.M{"pwd": passwordHash}}
+	filter := bson.M{"_id": ID}
+
+	result, err := ExecuteFindAndModifyQuery("pms", "user", filter, update)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Failed to update document", "error": err.Error()})
+	}
+	_, err = ExecuteDeleteManyByIds("pms", "temporary_user", filter)
+	if err != nil {
+		return shared.BadRequest("Failed to Delete data into the database: " + err.Error())
+
+	}
+
+	return shared.SuccessResponse(c, result)
+}
+
+// Get the data without token
+func GetTemporaryUserDataByAccessKey(c *fiber.Ctx) error {
+	filter :=
+		bson.M{"access_key": c.Params("access_key")}
+
+	response, err := GetQueryResult("pms", "temporary_user", filter, int64(0), int64(2), nil)
+
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	return shared.SuccessResponse(c, response)
+
+}
 
 func InsertValidateInDatamodel(collectionName, inputJsonString, orgId string) (map[string]interface{}, map[string]string) {
 	var validationErrors = make(map[string]string)
@@ -131,7 +158,7 @@ func InsertValidateInDatamodel(collectionName, inputJsonString, orgId string) (m
 		// 		"Expected DataType": dataType,
 		// 	}
 		// }
-// 
+		//
 		// return nil, nil
 	}
 

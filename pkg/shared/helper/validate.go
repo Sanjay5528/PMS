@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 var validate = validator.New()
@@ -18,7 +19,23 @@ func InitCustomValidator() {
 	validate.RegisterValidation("between_age", ValidateDateRange)
 	validate.RegisterValidation("regexp", ValidateByCustomPattern)
 	validate.RegisterValidation("within_durations", validateWithinDurations)
+	validate.RegisterValidation("user-id", uservalidation)
+}
 
+func uservalidation(fl validator.FieldLevel) bool {
+	// user-validtion
+	email := fl.Field().String()
+	filter := bson.A{
+		bson.D{{"$match", bson.D{{"_id", email}}}},
+	}
+
+	response, _ := FindDocs("pms", "user", filter)
+	if len(response) < 0 {
+
+		return false
+
+	}
+	return true
 }
 
 // ValidateDateRange is a custom validation function for checking if a person's age falls within a specified range
@@ -358,7 +375,7 @@ func ExtractNonEmptyFields(rv reflect.Value, fields reflect.StructField) (reflec
 
 // Insert
 func vertifyInputStruct(rv reflect.Value, inputMap map[string]interface{}, errMap map[string]string) error {
- 
+
 	for rv.Kind() == reflect.Ptr || rv.Kind() == reflect.Interface {
 		rv = rv.Elem()
 	}
@@ -368,10 +385,10 @@ func vertifyInputStruct(rv reflect.Value, inputMap map[string]interface{}, errMa
 		// fieldTag := strings.ToLower(string(field.Tag.Get("json")))
 		fieldTag := string(field.Tag.Get("json"))
 		fieldValue := rv.Field(i)
-	
+
 		// Check if the JSON tag includes "omitempty".
 		omitempty := false
-		if strings.Contains(string(field.Tag.Get("json")), "omitempty") {
+		if strings.Contains(string(field.Tag.Get("validate")), "omitempty") {
 			omitempty = true
 		}
 
@@ -427,7 +444,7 @@ func vertifyInputStruct(rv reflect.Value, inputMap map[string]interface{}, errMa
 	if len(errMap) > 0 {
 		return fmt.Errorf("Missing fields")
 	}
-	 
+
 	return nil
 }
 

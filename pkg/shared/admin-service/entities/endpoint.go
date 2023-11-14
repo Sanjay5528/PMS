@@ -15,6 +15,14 @@ func SetupAllRoutes(app *fiber.App) {
 	SetupDatasets(app)
 	Setuptokenfree(app)
 	app.Static("/image", fileUploadPath)
+	SetupaccessUser(app)
+}
+
+// Without token access
+func SetupaccessUser(app *fiber.App) {
+	r := app.Group("/activation-api/")
+	r.Put("/generate-pwd/:access_key", helper.UpdateUserPasswordAndDeleteTempData)
+	r.Get("/:access_key", helper.GetTemporaryUserDataByAccessKey)
 }
 
 func SetupCRUDRoutes(app *fiber.App) {
@@ -102,6 +110,7 @@ func SetupSharedDBRoutes(app *fiber.App) {
 func SetupUtilRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/util", "util APIs")
 	r.Get("/nextseq/:key", getNextSeqNumberHandler)
-	r.Post("/send-simple-email", sendSimpleEmailHandler)
+	//email send
+	// r.Post("/send-simple-email", SendSimpleEmailHandler)
 	//// r.Post("/send-sms", sendSMS)
 }
