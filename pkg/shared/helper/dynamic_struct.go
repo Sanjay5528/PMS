@@ -146,13 +146,14 @@ func createDynamicTypes(data map[string][]Config) {
 
 }
 
-func ServerInitstruct(orgIDs []string) {
-	for _, orgID := range orgIDs {
+func ServerInitstruct(orgID string) {
+	
+	// for _, orgID := range orgIDs {
 		data := LoadDataModelFromDB(orgID)
 		// Create dynamic schema types based on the data model configuration.
 		createDynamicTypes(data)
 
-	}
+	// }
 }
 
 func CreateInstanceForCollection(collectionName string) (interface{}, map[string]string) {

@@ -13,7 +13,6 @@ func SetupAllRoutes(app *fiber.App) {
 	SetupDownloadRoutes(app)
 	SetupBulkUploadRoutes(app)
 	SetupDatasets(app)
-	Setuptokenfree(app)
 	app.Static("/image", fileUploadPath)
 	SetupaccessUser(app)
 }
@@ -28,7 +27,7 @@ func SetupaccessUser(app *fiber.App) {
 func SetupCRUDRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/entities/", "REST API")
 	r.Post("/:model_name", PostDocHandler)
-	r.Put("/:collectionName/:id?/", putDocByIDHandlers)
+	r.Put("/:model_name/:id?/", putDocByIDHandlers)
 	r.Get("/:collectionName/:id", GetDocByIdHandler)
 	r.Delete("/:collectionName/:id", DeleteById)
 	r.Delete("/:collectionName", DeleteByAll)
@@ -38,12 +37,6 @@ func SetupCRUDRoutes(app *fiber.App) {
 	r.Get("/clients/:name", ActiveClientHandler)                           //todo
 	r.Get("/filter/:collectionName/:projectid", getDocByIddHandler)        //todod
 	r.Get("/filters/:collectionName/:clientname", getDocByClientIdHandler) //todo
-}
-
-// temp
-func Setuptokenfree(app *fiber.App) {
-	r := app.Group("/user/")
-	r.Post("/register", UserRegister)
 }
 
 // create a group
@@ -56,7 +49,7 @@ func SetupGroupRoutes(app *fiber.App) {
 // Data set
 func SetupDatasets(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/dataset", "Data Sets")
-	// !pending
+	 
 	r.Post("/config/:options?", helper.DatasetsConfig)
 	r.Post("/data/:datasetname", helper.DatasetsRetrieve)
 	r.Put("/:datasetname", helper.UpdateDataset)

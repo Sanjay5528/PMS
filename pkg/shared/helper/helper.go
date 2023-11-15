@@ -44,6 +44,7 @@ func DocIdFilter(id string) bson.M {
 	if id == "" {
 		return bson.M{}
 	}
+
 	docId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return bson.M{"_id": id}
@@ -328,8 +329,7 @@ func DatasetsConfig(c *fiber.Ctx) error {
 
 		}
 	}
-
-	return shared.SuccessResponse(c, Response)
+	return c.JSON(Response)
 
 }
 
@@ -379,8 +379,8 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 	// set the inputData.Pipeline  -- store the data form converted string pipeine
 	inputData.Pipeline = pipelinestring
 
-	//
 	// Filter Params for to replace the string to convert to pipeline again
+
 	if len(inputData.FilterParams) > 0 {
 		inputData.Reference_pipeline = pipelinestring
 		pipelinestring := createFilterParams(inputData.FilterParams, pipelinestring)
@@ -395,6 +395,36 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 
 	}
 
+	// if len(inputData.FilterParams) > 0 {
+	// 	inputData.Reference_pipeline = pipelinestring
+	// 	pipelinestring := createFilterParams(inputData.FilterParams, pipelinestring)
+
+	// 	pipelinestringbson := []bson.M{}
+
+	// 	err := bson.UnmarshalExtJSON([]byte(pipelinestring), true, &pipelinestringbson)
+	// 	if err != nil {
+	// 		fmt.Println("Error parsing pipeline:", err)
+
+	// 	}
+
+	// 	// UpdateDatatypes -- To build the Pipeline from pipeline variable
+	// 	Datas := UpdateDatatypes(pipelinestringbson)
+	// 	// stringfilterpipeline := interfaceretrunstring(Datas)
+
+	// 	// if filter params here that time to replace the old pipeline
+
+	// 	Pipeline = []bson.M{}
+	// 	Pipeline = append(Pipeline, Datas...)
+	// 	inputData.Pipeline = pipelinestring
+
+	// 	// // convert the pipeline
+	// 	// err = bson.UnmarshalExtJSON([]byte(stringfilterpipeline), true, &Pipeline)
+	// 	// if err != nil {
+	// 	// 	fmt.Println("Error parsing pipeline:", err)
+
+	// 	// }
+
+	// }
 	//final pagination TO add the Filter
 	PagiantionPipeline := PagiantionPipeline(inputData.Start, inputData.End)
 	Pipeline = append(Pipeline, PagiantionPipeline)

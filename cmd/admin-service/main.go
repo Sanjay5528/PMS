@@ -12,7 +12,7 @@ import (
 	"kriyatec.com/pms-api/server"
 )
 
-var OrgID = []string{"pms"}
+var OrgID = "pms"
 
 func main() {
 	// Load environment variables from the .env file.
@@ -42,7 +42,7 @@ func main() {
 	if err := server.Listen(app); err != nil {
 		log.Panic(err)
 	}
-	
+
 	// }()
 
 	// Wait for a signal to gracefully shut down the background service

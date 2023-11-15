@@ -2,6 +2,7 @@ package entities
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -55,81 +56,40 @@ func PostDocHandler(c *fiber.Ctx) error {
 			return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
 		}
 	}
-
-	// var inputData map[string]interface{}
-	// c.BodyParser(&inputData)
-
-	// collectionName := c.Params("model_name")
-
 	// user collection is here that time only password validation
 	if collectionName == "user" {
-
+		// user collection only OnboadingProcessing for send the mail to activation --METHOD OnboardingProcessing
 		err := OnboardingProcessing(inputData["_id"].(string))
 		if err != nil {
 			return shared.BadRequest("invalid user Id")
 		}
-		
-		// // to compare the password and comfirm password is same only   Genrate the Hased password
-		// if inputData["password"].(string) != inputData["pwdConfirm"].(string) {
-		// 	shared.BadRequest("Verify that the password and confirm password are the same.")
-		// }
-
-		// // if password marched to create the Hash Password
-		// passwordHash, _ := helper.GeneratePasswordHash(inputData["password"].(string))
-		// inputData["pwd"] = passwordHash
-		// // remove the password and confirm password
-		// delete(inputData, "password")
-		// delete(inputData, "pwdConfirm")
 	}
 
 	inputData["created_on"] = time.Now()
 	inputData["created_by"] = userToken.UserId
 	inputData["status"] = "A"
+
 	// Insert he data to mongo Collection  name form params
 	res, err := database.GetConnection(org.Id).Collection(collectionName).InsertOne(ctx, inputData)
 	if err != nil {
 		return shared.BadRequest("Failed to insert data into the database " + err.Error())
 	}
+
+	// if Data model collection to insert the data in Db to automatically run then Struct for load the new struct without cut the server
+	// only Data model collection only we need to run the  ServerInitstruct
+	if collectionName == "data_model" {
+		// only Data to insert the Db that time only call the method
+		if res.InsertedID != nil {
+			// Goroutines for synchronized to load the struct without laging server
+			helper.ServerInitstruct(org.Id)
+		}
+	}
+
 	// return shared.SuccessResponse(c, res.InsertedID)
 	return shared.SuccessResponse(c, fiber.Map{
 		"message":  "Insert Successfully",
 		"response": res.InsertedID,
 	})
-}
-
-func UserRegister(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-
-	collectionName, err := CollectionNameGet(c.Params("model_name"), orgId)
-	if err != nil {
-		return nil
-	}
-	inputData, errmsg := helper.InsertValidateInDatamodel("user", string(c.Body()), "pms")
-	var errmsgs []string
-	if errmsg != nil {
-		for _, values := range errmsg {
-			errmsgs = append(errmsgs, values)
-		}
-		return shared.SendErrorResponse(c, errmsgs)
-	}
-	// fmt.Println(inputData)
-
-	inputData["created_on"] = time.Now()
-	// // inputData["created_by"] = userToken.UserId
-	passwordHash, _ := helper.GeneratePasswordHash(inputData["password"].(string))
-	delete(inputData, "password")
-	// // delete(inputData, "pwdConfirm")
-	inputData["pwd"] = passwordHash
-
-	res, err := database.GetConnection(orgId).Collection(collectionName).InsertOne(ctx, inputData)
-	if err != nil {
-		return shared.BadRequest("Failed to insert data into the database: " + err.Error())
-	}
-
-	return shared.SuccessResponse(c, res)
 }
 
 func GetDocByIdHandler(c *fiber.Ctx) error {
@@ -213,32 +173,34 @@ func DeleteByAll(c *fiber.Ctx) error {
 }
 
 func putDocByIDHandlers(c *fiber.Ctx) error {
-	// Get the organization ID from the request headers
-	orgID := c.Get("OrgId")
-	if orgID == "" {
-		return shared.BadRequest("Organization ID missing")
-	}
+	//Get the orgId from Header
+	org, exists := helper.GetOrg(c)
+	if !exists {
 
+		return shared.BadRequest("Invalid Org Id")
+	}
 	// to  Get the User Details from Token
 	userToken := utils.GetUserTokenValue(c)
 
-	// collectionName,err := CollectionNameGet(orgID, c.Params("collectionName"))
-	// if err != nil{
-	// 	return shared.BadRequest("Invalid CollectionName")
-	// }
+	collectionName, err := CollectionNameGet(org.Id, c.Params("collectionName"))
+	if err != nil {
+		return shared.BadRequest("Invalid CollectionName")
+	}
 	// Validate the input data based on the data model
-	// inputData, validationErrors := helper.UpdateValidateInDatamodel(collectionName, string(c.Body()), orgID)
-	// if validationErrors != nil {
-	// //Handle validation errors with status code 400 (Bad Request)
-	// 	jsonstring, _ := json.Marshal(validationErrors)
-	// 	return shared.BadRequest(string(jsonstring))
-	// }
+	inputData, validationErrors := helper.UpdateValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	if validationErrors != nil {
+		//Handle validation errors with status code 400 (Bad Request)
+		jsonstring, _ := json.Marshal(validationErrors)
+		return shared.BadRequest(string(jsonstring))
+	}
 
-	// updatedData := make(map[string]interface{})
-	// Data := helper.UpdateFieldsWithParentKey(inputData, "", updatedData)
+	updatedDatas := make(map[string]interface{})
+	// update for nested fields
+	UpdateData := helper.UpdateFieldsWithParentKey(inputData, "", updatedDatas)
 
-	var UpdateData map[string]interface{}
-	c.BodyParser(&UpdateData)
+	// var UpdateData map[string]interface{}
+	// c.BodyParser(&UpdateData)
+
 	update := bson.M{
 		"$set": UpdateData,
 	}
@@ -246,12 +208,18 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 	UpdateData["update_on"] = time.Now()
 	UpdateData["update_by"] = userToken.UserId
 	// Update data in the collection
-	_, err := database.GetConnection(orgID).Collection(c.Params("collectionName")).UpdateOne(ctx, helper.DocIdFilter(c.Params("id")), update, updateOpts)
+	res, err := database.GetConnection(org.Id).Collection(c.Params("model_name")).UpdateOne(ctx, helper.DocIdFilter(c.Params("id")), update, updateOpts)
 	if err != nil {
 		// Handle database update error with status code 500 (Internal Server Error)
 		return shared.BadRequest(err.Error())
 	}
 
+	if c.Params("model_name") == "data_model" {
+		if res.UpsertedID != nil {
+
+			helper.ServerInitstruct(org.Id)
+		}
+	}
 	return shared.SuccessResponse(c, "Updated Successfully")
 }
 
@@ -1550,7 +1518,6 @@ func deleteDocumentByIDHandler(c *fiber.Ctx) error {
 }
 
 func OnboardingProcessing(email string) error {
-
 	// Generate the 'decoding' value (replace this with your actual logic)
 	decoding := helper.GenerateAppaccesscode()
 	// Generate the URL with parameters  it call the back end api
@@ -1559,15 +1526,13 @@ func OnboardingProcessing(email string) error {
 	body := createOnBoardtemplate(link)
 	if err := SendEmailS(email, os.Getenv("CLIENT_EMAIL"), "Welcome to pms Onboarding", body); err == nil {
 		// If email sending was successful
-		if err := User_junked_files(email, decoding); err != nil {
+		if err := UserJunkedFiles(email, decoding); err != nil {
 			log.Println("Failed to insert user junked files:", err)
-		} else {
-			log.Println("Email sent successfully")
 		}
 	} else {
 		return shared.BadRequest("Email sending failed:")
 	}
-	
+
 	return nil
 }
 
@@ -1644,15 +1609,19 @@ func createOnBoardtemplate(link string) string {
 	return body
 }
 
-func User_junked_files(requestmail string, apptoken string) error {
-	requestData := make(map[string]interface{})
-	requestData["_id"] = requestmail
-	requestData["access_key"] = apptoken
-	requestData["expire_on"] = time.Now()
+func UserJunkedFiles(requestMail, appToken string) error {
+	requestData := bson.M{
+		"_id":        requestMail,
+		"access_key": appToken,
+		"expire_on":  time.Now(),
+	}
 
 	_, err := database.GetConnection("pms").Collection("temporary_user").InsertOne(ctx, requestData)
+
 	if err != nil {
-		return shared.BadRequest("Failed to insert data into the database: " + err.Error())
+		// Log the detailed error for debugging
+		log.Println("Failed to insert data into the database:", err.Error())
+		return shared.BadRequest("Failed to insert data into the database")
 	}
 
 	return nil
