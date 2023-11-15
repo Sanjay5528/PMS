@@ -11,10 +11,10 @@ import * as moment from 'moment';
   template: `
   <mat-form-field class="example-full-width" appearance="outline">
   <mat-label>{{field.props!['label']}}</mat-label>
-  <mat-error *ngIf="this.field.props.required">{{field.validation.messages['required']}}</mat-error>
   <input [readonly]="true" matInput  (dateChange)="currentPeriodClicked($event)"  [formControl]="formControl" [formlyAttributes]="field" [min]="minFromDate" [max]="maxFromDate" [matDatepicker]="frompicker" [required]="this.opt.required" />
   <mat-datepicker-toggle matSuffix [for]="frompicker" [disabled]="field.props?.readonly"></mat-datepicker-toggle>
   <mat-datepicker #frompicker  disabled="false" ></mat-datepicker>
+  <mat-error *ngIf="this?.formControl?.errors?.required">This {{ this.field.props?.label }} is required</mat-error>
 </mat-form-field> 
 `,
 })

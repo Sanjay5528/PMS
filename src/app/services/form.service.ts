@@ -715,26 +715,27 @@ console.log(ctrl);
       // this.helperService.validateAllFormFields(ctrl.form); I Dont what is it ?
       
       if (!ctrl.form.valid) {
-        function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
-          for (const key in controls) {
-              if (controls.hasOwnProperty(key)) {
-                  const control = controls[key];
+      //   function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
+      //     for (const key in controls) {
+      //         if (controls.hasOwnProperty(key)) {
+      //             const control = controls[key];
           
-                  if (control instanceof FormGroup) {
-                      invalidLabels += collectInvalidLabels(control.controls);
-                  } else if (control instanceof FormControl && control.status === 'INVALID') {
-                      // Access the label property assuming it exists in the control
-                      invalidLabels +=controls[key]._fields[0].props.label + ",";
-                  }else if(control instanceof FormArray && control.status === 'INVALID'){
-                    invalidLabels +=controls[key]._fields[0].props.label + ",";
-                  }
-              }
-          }
-          return invalidLabels;
-      }
-      
-      const invalidLabels:any = collectInvalidLabels(ctrl.form.controls);
-        ctrl.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
+      //             if (control instanceof FormGroup) {
+      //                 invalidLabels += collectInvalidLabels(control.controls);
+      //             } else if (control instanceof FormControl && control.status === 'INVALID') {
+      //                 // Access the label property assuming it exists in the control
+      //                 invalidLabels +=controls[key]._fields[0].props.label + ",";
+      //             }else if(control instanceof FormArray && control.status === 'INVALID'){
+      //               invalidLabels +=controls[key]._fields[0].props.label + ",";
+      //             }
+      //         }
+      //     } 
+      //     return invalidLabels;
+      // }
+      const invalidLabels:any = this.helperService.getDataValidatoion(ctrl.form.controls);
+      this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
+      // const invalidLabels:any = collectInvalidLabels(ctrl.form.controls);
+        // ctrl.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
        ctrl.form.markAllAsTouched();
         ctrl.butonflag=false
         return ;

@@ -145,27 +145,27 @@ if(roleIndex!==-1){
   return
 }
 console.log(existingData);
-const exists = existingData.some(item => item.employee_name === value.employee_name && item.team_name === value.team_name);
+const exists = existingData.some(item => item.employee_id === value.employee_id && item.team_name === value.team_name);
 
 // Basic check simple a person can play one role in on team
 const samePresonWithSameTaskName = existingData.findIndex(item => {
-  console.log(item.employee_name == value.employee_name && item.team_name == value.team_name,'final');
+  console.log(item.employee_id == value.employee_id && item.team_name == value.team_name,'final');
   
-  item.employee_name == value.employee_name && item.team_name == value.team_name});
+  item.employee_id == value.employee_id && item.team_name == value.team_name});
   
   console.log(samePresonWithSameTaskName);
   
   if(samePresonWithSameTaskName!==-1|| exists==true){
-alert(`This Employee ${value.employee_name } With this Role Exist ${value.role_name} on ${value.team_name}` )
+alert(`This Employee ${value.employee_id } With this Role Exist ${value.role_name} on ${value.team_name}` )
         // this.dialogService.openSnackBar(, "OK")
         return
       }
 
-      const samePreson = existingData.findIndex(item => item.employee_name === value.employee_name &&item.role_name === value.role_name&&item.team_name === value.team_name);
+      const samePreson = existingData.findIndex(item => item.employee_id === value.employee_id &&item.role_name === value.role_name&&item.team_name === value.team_name);
       console.log(samePreson);
       
       if(samePreson!==-1){
-alert(`This Employee ${value.employee_name } With this Role Exist ${value.role_name}` )
+alert(`This Employee ${value.employee_id } With this Role Exist ${value.role_name}` )
         // this.dialogService.openSnackBar(, "OK")
         return
       }

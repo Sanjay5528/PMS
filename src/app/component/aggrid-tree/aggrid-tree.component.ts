@@ -8,6 +8,9 @@ import {
   GetDataPath,
   GridApi,
   GridReadyEvent,
+  ICellEditorParams,
+  IRichCellEditorParams,
+  RichSelectParams,
   RowGroupingDisplayType,
 } from "ag-grid-community";
 import { DialogService } from 'src/app/services/dialog.service';
@@ -20,6 +23,9 @@ import "ag-grid-enterprise";
 import { ActionButtonComponent } from '../datatable/button';
 import { ButtonComponent } from './button';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { HelperService } from 'src/app/services/helper.service';
+import { Location } from '@angular/common';
+import { isEmpty } from 'lodash';
 
 @Component({
   selector: 'app-aggrid-tree',
@@ -120,15 +126,14 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
    
 
   constructor(public httpclient: HttpClient,  
-    public dialogService: DialogService, public route: ActivatedRoute,   public router: Router,
+    public dialogService: DialogService, public route: ActivatedRoute,public _location:Location,   public router: Router,private helperServices:HelperService,
     public dataService: DataService, public formservice: FormService,public formBuilder: FormBuilder) {
     this.components = {
       buttonRenderer: ButtonComponent
     }
-
+    this.context = { componentParent: this };
     
   } 
-
 
   ngOnInit() {
     debugger
@@ -138,12 +143,13 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
       console.log(params);
       this.formName=params['component']
 
-      this.id = params['id'];
       this.loadConfig(this.formName)
+      this.id = params['id'];
       this.dataService.getDataById("project", this.id).subscribe((res: any) => {
         this.response = res.data[0]
         // sessionStorage.setItem("projectname", this.response.projectname)
-  
+        this.sprintCellEditorParams('')
+        this.moduleCellEditorParams('')
         this.getTreeData()
       
        
@@ -162,15 +168,14 @@ loadConfig(formName:any){
         cellRendererParams: { suppressCount: true },
   }
   this.columnDefs.push(  
-    {
-    headerName: 'Parent Module Name',
-    field: 'parentmodulename',
-    width: 40,
-    filter: 'agTextColumnFilter',
-    rowGroup: true,
-    editable: true,
-    hide: true
-  },
+  //   {
+  //   headerName: 'Parent Module Name',
+  //   field: 'parentmodulename',
+  //   width: 40,
+  //   filter: 'agTextColumnFilter',
+  //   editable: true,
+  //   hide: true
+  // },
   {
     headerName: 'Requirement Name',
     field: 'requirement_id', //! TO Change into requirement_name
@@ -190,9 +195,6 @@ loadConfig(formName:any){
     width: 40,
     editable: false,
     filter: 'agDateColumnFilter',
-    // cellRenderer: (data: { modified: any }) => {
-    //   return moment(data.modified).format("M/d/yyyy, h:mm ");
-    // },
     valueFormatter: function (params) {
       return moment(params.value).format('D/M/ YYYY');
     },
@@ -204,9 +206,6 @@ loadConfig(formName:any){
     width: 40,
     editable: false,
     filter: 'agDateColumnFilter',
-    // cellRenderer: (data: { modified: any }) => {
-    //   return moment(data.modified).format("M/d/yyyy, h:mm ");
-    // },
     valueFormatter: function (params) {
       return moment(params.value).format('D/M/ YYYY');
     },
@@ -226,16 +225,17 @@ loadConfig(formName:any){
       cellRendererParams: { suppressCount: true },
 
 }
+    const Sprintvalue:any=  this.sprintCellEditorParams
+    const modelvalue:any=this.moduleCellEditorParams
     this.columnDefs.push(  
-      {
-      headerName: 'Parent Requirement ID',
-      field: 'parentmodulename',
-      width: 40,
-      filter: 'agTextColumnFilter',
-      rowGroup: true,
-      editable: true,
-      hide: true
-    },  
+    //   {
+    //   headerName: 'Parent Requirement ID',
+    //   field: 'parentmodulename',
+    //   width: 40,
+    //   filter: 'agTextColumnFilter',
+    //   editable: true,
+    //   hide: true
+    // },  
      {
       headerName: 'Requirement Name',
       field: 'requirement_name',
@@ -246,14 +246,22 @@ loadConfig(formName:any){
       headerName: 'Sprint Id',
       field: 'sprint_id',
       width: 40,
-      // editable: true,
+      editable: true,
       filter: 'agTextColumnFilter',
+      cellEditor: 'agRichSelectCellEditor',
+      cellEditorParams: {
+        values:Sprintvalue
+      },
     }, {
       headerName: 'Module Id',
       field: 'module_id',
       width: 40,
-      // editable: true,
-      filter: 'agTextColumnFilter',
+      editable: true,
+      filter: 'agTextColumnFilter', 
+      cellEditor: 'agRichSelectCellEditor',
+      cellEditorParams: {
+        values:modelvalue
+      },
     },
     // {
     //   headerName: 'Start Date',
@@ -296,6 +304,78 @@ loadConfig(formName:any){
   }
 
 }
+
+ValueToCompareRequriementSprint:any[]=[]
+OnlyValueRequriementSprint:any[]=[]
+
+ValueToCompareRequriementModules:any[]=[]
+OnlyValueRequriementModules:any[]=[]
+sprintCellEditorParams = (params: any) => {
+    if(params==true || !isEmpty(this.OnlyValueRequriementSprint)){
+    console.warn("Data Exist")
+    
+    return this.OnlyValueRequriementSprint
+  }else{
+  let filer:any={
+    start:0,end:1000,filter:[{
+      clause: "AND",
+        conditions: [
+          {column: "project_id",operator: "EQUALS",type: "string",value: this.response.project_id},
+        ],
+      
+    }]
+  }
+  this.dataService.getDataByFilter("sprint",filer).subscribe((res:any) =>{
+      if(isEmpty(res.data[0].response)){
+        this.dialogService.openSnackBar("There Were No Sprint To be Found","OK")
+        return
+      }
+    res.data[0].response.forEach((each:any)=>{
+    this.ValueToCompareRequriementSprint.push({label:each.name,value:each.id})
+    this.OnlyValueRequriementSprint.push(each.name)
+  })  
+})
+    return this.OnlyValueRequriementSprint
+}};
+
+
+
+moduleCellEditorParams = (params: any) => {
+  if(!isEmpty(this.OnlyValueRequriementModules)){
+  console.warn("Data Exists")
+  
+  return this.OnlyValueRequriementModules
+}else{
+let filer:any={
+  start:0,end:1000,filter:[{
+    clause: "AND",
+      conditions: [
+        {column: "project_id",operator: "EQUALS",type: "string",value: this.response.project_id},
+      ],
+    
+  }]
+}
+this.dataService.getDataByFilter("modules",filer).subscribe((res:any) =>{
+    if(isEmpty(res.data[0].response)){
+      this.dialogService.openSnackBar("There Were No Modules To be Found","OK")
+      return
+    }
+  res.data[0].response.forEach((each:any)=>{
+  this.ValueToCompareRequriementModules.push({label:each.modulename,value:each.moduleid})
+  this.OnlyValueRequriementModules.push(each.modulename)
+})  
+})
+  return this.OnlyValueRequriementModules
+}};
+
+
+
+
+
+
+
+
+
   getTreeData() {
     debugger
 // ! UNDO
@@ -324,7 +404,17 @@ if(this.formName=="module"){
       }
     });
   }else{
-      this.dataService.getDataByFilter("requirement",{}).subscribe((res:any) =>{
+    let filer:any={
+      start:0,end:1000,filter:[{
+        
+          clause: "AND",
+          conditions: [
+            {column: "project_id",operator: "EQUALS",type: "string",value: this.response.project_id},
+          ],
+        
+      }]
+    }
+      this.dataService.getDataByFilter("requirement",filer).subscribe((res:any) =>{
       
         let data:any[]= []     
         this.listData = []
@@ -449,16 +539,24 @@ if(childIndexable===undefined){
   }
   onCellValueChanged(params: any) {
     debugger
+    console.log(params);
+    
     let fieldName = params.colDef.field;
     this.valueChanged = params.value;
     let data: any = {};
     data[fieldName] = params.value;
 // ! UNDO
+if(fieldName=="sprint_id"){
+  let findValue:any=this.ValueToCompareRequriementSprint.find(val=>val.label==params.value)
+  console.log(findValue);
+  
+  data[fieldName] = findValue.value;
 
-    // this.dataService.updateModules(data,"entities/modules",params.data._id ).subscribe((res: any) => {
-    //   this.rowData = res.data;
+}
+    this.dataService.update("requirement",params.data._id,data ).subscribe((res: any) => {
+      this.rowData = res.data;
       
-    // });
+    });
   }
 
   /**gridReady for ag grid */
@@ -495,23 +593,26 @@ if(childIndexable===undefined){
   saveChild() { 
     if (!this.form.valid) {
       
-      function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
-        for (const key in controls) {
-            if (controls.hasOwnProperty(key)) {
-                const control = controls[key];
+    //   function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
+    //     for (const key in controls) {
+    //         if (controls.hasOwnProperty(key)) {
+    //             const control = controls[key];
         
-                if (control instanceof FormGroup) {
-                    invalidLabels += collectInvalidLabels(control.controls);
-                } else if (control instanceof FormControl && control.status === 'INVALID') {
-                    // Access the label property assuming it exists in the control
-                    invalidLabels +=controls[key]._fields[0].props.label + ",";
-                }
-            }
-        }
-        return invalidLabels;
-    }
-    const invalidLabels:any = collectInvalidLabels(this.form.controls);
+    //             if (control instanceof FormGroup) {
+    //                 invalidLabels += collectInvalidLabels(control.controls);
+    //             } else if (control instanceof FormControl && control.status === 'INVALID') {
+    //                 // Access the label property assuming it exists in the control
+    //                 invalidLabels +=controls[key]._fields[0].props.label + ",";
+    //             }
+    //         }
+    //     }
+    //     return invalidLabels;
+    // }
+    // const invalidLabels:any = collectInvalidLabels(this.form.controls);
+
+    const invalidLabels:any = this.helperServices.getDataValidatoion(this.form.controls);
       this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
+    // this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
      this.form.markAllAsTouched();
       return ;
     }
@@ -539,7 +640,8 @@ if(childIndexable===undefined){
 
   }
   goBack(){
-    this.router.navigate(['list/project'])
+    // this.router.navigate(['list/project'])
+    this._location.back();
   }
 
 

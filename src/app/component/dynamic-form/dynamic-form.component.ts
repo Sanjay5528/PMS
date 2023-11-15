@@ -6,6 +6,7 @@ import { FormService } from 'src/app/services/form.service';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { HelperService } from 'src/app/services/helper.service';
 
 
 @Component({
@@ -36,7 +37,7 @@ export class DynamicFormComponent {
     private route: ActivatedRoute,
     private router: Router,
     private formService: FormService,
-    
+    private helperService:HelperService,
     private dialogService: DialogService
   ) {
    
@@ -67,25 +68,25 @@ export class DynamicFormComponent {
   frmSubmit(event:any) {
 
     if (!this.form.valid) {
-      function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
-        for (const key in controls) {
-            if (controls.hasOwnProperty(key)) {
-                const control = controls[key];
+    //   function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
+    //     for (const key in controls) {
+    //         if (controls.hasOwnProperty(key)) {
+    //             const control = controls[key];
         
-                if (control instanceof FormGroup) {
-                    invalidLabels += collectInvalidLabels(control.controls);
-                } else if (control instanceof FormControl && control.status === 'INVALID') {
-                    // Access the label property assuming it exists in the control
-                    invalidLabels +=controls[key]._fields[0].props.label + ",";
-                }else if(control instanceof FormArray && control.status === 'INVALID'){
-                  invalidLabels +=controls[key]._fields[0].props.label + ",";
-                }
-            }
-        }
-        return invalidLabels;
-    }
+    //             if (control instanceof FormGroup) {
+    //                 invalidLabels += collectInvalidLabels(control.controls);
+    //             } else if (control instanceof FormControl && control.status === 'INVALID') {
+    //                 // Access the label property assuming it exists in the control
+    //                 invalidLabels +=controls[key]._fields[0].props.label + ",";
+    //             }else if(control instanceof FormArray && control.status === 'INVALID'){
+    //               invalidLabels +=controls[key]._fields[0].props.label + ",";
+    //             }
+    //         }
+    //     }
+    //     return invalidLabels;
+    // }
     
-    const invalidLabels:any = collectInvalidLabels(this.form.controls);
+    const invalidLabels:any = this.helperService.getDataValidatoion(this.form.controls);
       this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
      this.form.markAllAsTouched();
       this.butonflag=false

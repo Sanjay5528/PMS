@@ -10,6 +10,8 @@ import { FormService } from 'src/app/services/form.service';
 import { environment } from 'src/environments/environment';
 import { MasterButtonComponent } from './master-button';
 import { ColDef, FirstDataRenderedEvent, GetRowIdFunc, GetRowIdParams, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { HelperService } from 'src/app/services/helper.service';
+import { Location } from '@angular/common';
 
 
 @Component({
@@ -26,6 +28,8 @@ export class MasterSingleDetailFormComponent {
     private route: ActivatedRoute,
     private router: Router,
     public formService: FormService,
+    public helperService:HelperService,
+    private _location:Location,
     public dialogService: DialogService,
     private dataService: DataService
   ) {
@@ -164,6 +168,13 @@ export class MasterSingleDetailFormComponent {
   }
 
   SaveProjectTeam() {
+    if (!this.detailForm.valid) {
+        const invalidLabels:any = this.helperService.getDataValidatoion(this.detailForm.controls);
+        this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
+        this.detailForm.markAllAsTouched();
+        return
+      }
+  
     var data :any= this.detailForm.value
     if(data.teammember==undefined){
   return    this.dialogService.openSnackBar("Choose a Team Member Atleast one person","OK")
@@ -246,25 +257,25 @@ return
     console.log(this?.config);
     
     if (!this.detailForm.valid) {
-      function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
-        for (const key in controls) {
-            if (controls.hasOwnProperty(key)) {
-                const control = controls[key];
+    //   function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
+    //     for (const key in controls) {
+    //         if (controls.hasOwnProperty(key)) {
+    //             const control = controls[key];
         
-                if (control instanceof FormGroup) {
-                    invalidLabels += collectInvalidLabels(control.controls);
-                } else if (control instanceof FormControl && control.status === 'INVALID') {
-                    // Access the label property assuming it exists in the control
-                    invalidLabels +=controls[key]._fields[0].props.label + ",";
-                }else if(control instanceof FormArray && control.status === 'INVALID'){
-                  invalidLabels +=controls[key]._fields[0].props.label + ",";
-                }
-            }
-        }
-        return invalidLabels;
-    }
+    //             if (control instanceof FormGroup) {
+    //                 invalidLabels += collectInvalidLabels(control.controls);
+    //             } else if (control instanceof FormControl && control.status === 'INVALID') {
+    //                 // Access the label property assuming it exists in the control
+    //                 invalidLabels +=controls[key]._fields[0].props.label + ",";
+    //             }else if(control instanceof FormArray && control.status === 'INVALID'){
+    //               invalidLabels +=controls[key]._fields[0].props.label + ",";
+    //             }
+    //         }
+    //     }
+    //     return invalidLabels;
+    // }
     
-      const invalidLabels:any = collectInvalidLabels(this.detailForm.controls);
+      const invalidLabels:any = this.helperService.getDataValidatoion(this.detailForm.controls);
       this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
       this.detailForm.markAllAsTouched();
       return
@@ -287,18 +298,18 @@ return
     this.gridApi.deselectAll()
     this.dialogService.closeModal()
     if (Object.keys(data).length !== 0) {
-
       Object.assign(this.selectedRow, data)    // while file uploading,field get changed in grid
       this.detailForm.reset()
     }
   }
 
   goBack() {
-    // window.history.go(-1)
     if (this.config.onCancelRoute) {
       let url = [this.config.onCancelRoute]
-      // if (this.config.onCancelRouteParam)url.push(this.model[this.config.onCancelRouteParam]) //Todo 
       this.router.navigate(url)
+    }else{
+      // ? for Some Case we need to Go back Excat page
+      this._location.back()
     }
   }
 
@@ -403,19 +414,6 @@ return
     })
   }
 
-  //  openOtherForm($event:any,row:any,config:any)    // popup form will open clicking the icon
-  // {
-  //     
-  //     this.selectedRow = row
-  //     $event.preventDefault();
-  //     $event.stopPropagation();
-  //     this.otherFormName  = config.formName
-  //     if(config.icon=='arrow_upward'){
-  //     this.dialogService.openDialog(this.otherFormPopup, null,null,row)
-  //     }
-  //     else
-  //       this.getFile(row)  
-  //     }
 
   delete_record($event: any, row: any, config: any) {
     $event.preventDefault();

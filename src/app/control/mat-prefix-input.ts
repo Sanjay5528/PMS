@@ -23,7 +23,11 @@ import { DataService } from "../services/data.service";
         placeholder="{{ this.field.props.placeholder }}"
         [formControl]="FormControl"
         [formlyAttributes]="field"
-      />
+      />                
+      <mat-error *ngIf="this?.formControl?.errors?.required">This {{ this.field.props?.label }} is required</mat-error>
+      <mat-error *ngIf="this?.formControl?.errors?.pattern">This {{ this.field.props?.label }} is Pattern Not Match</mat-error>
+
+      <!-- errors.pattern -->
     </mat-form-field>
   `,
 })
@@ -76,6 +80,8 @@ export class MatPrefixInput extends FieldType<any> implements OnInit {
 
   onselect(event: any) {
     this.formControl.setValue(event.target.value)
+    console.log(this.formControl);
+    
     // this.model[this.currentField.parentKey]=this.prefix+event.target.value
    
   }

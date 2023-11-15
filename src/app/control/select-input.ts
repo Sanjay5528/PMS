@@ -276,6 +276,10 @@ console.log(element[this.opt.specification]);
               if(isEmpty(res?.data[0]?.response)&&val!==undefined){
                 let parentField:any= this.currentField.parentKey.toUpperCase().replace("_",' ')
                 let currentField:any= this.currentField.key.toUpperCase().replace("_",' ')
+                // ? To referesh the data
+                this.opt.options=[]
+                this.field.props.options =[]
+                // this.dialogServices.openSnackBar(`No Data ${currentField} Available ${parentField}:- ${val}`,"OK")
 
                 this.dialogServices.openSnackBar(`No Data ${currentField} Available ${parentField}`,"OK")
                 return

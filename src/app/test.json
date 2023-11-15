@@ -1,64 +1,198 @@
 {
 	"pageHeading": "Sprint",
-	"collectionName": "sprint",
-	"addRoute": "/add/sprint",
-	"editRoute": "/edit/sprint",
-	"keyField":"_id",
-    "showbutton": true,
-	"editMode" : "popup",
-  "actions": [
-    {
-      "label":"Edit",
-	  "formAction":"edit",
-      "icon":"edit"
-    },
-    {
-      "label": "Delete",
-	  "formAction":"delete",
-      "icon": "delete"
-    }
-  ],
-	"columnDefs": [
-    	{
-			"headerName": "Client Name",
-			"field": "client_name",
-			"filter": "agSetColumnFilter",
-			"sortable": true
-		},
-        {
-			"headerName": "Project Name",
-			"field": "project_name",
-            "filter": "agSetColumnFilter",
-            "sortable": true
-		},
-		
-        {
-			"headerName": "Sprint Id",
-			"field": "sprint_id",
-			"filter": "agNumberColumnFilter",
-			"sortable": true
-		},
-        {
-			"headerName": "Sprint Name",
-			"field": "sprint_name",
-			"filter": "agTextColumnFilter",
-			"sortable": true
-		},
-        {
-			"headerName": "Status",
-			"field": "status",
-			"filter": "agTextColumnFilter",
-			"sortable": true
-		},
-		 {
-        "type": "rightAligned",
-        "headerName": "Actions",
-        "cellRenderer": "buttonRenderer",
-        "lockPosition": "right",
-        "cellRendererParams": {
-          "onClick": "this.onBtnClick1.bind(this)",
-          "label": "Click 1"
-        }
-      }
-	]
+	"formType": "simple",
+	"editMode": "popup",
+	"keyField": "_id",
+	"Change_id": true,
+	"changekeyfield":"sprint_id",
+	"addkeyfield":"project_name",
+	"form": {
+		"collectionName": "sprint",
+		"fields": [
+			{
+				"fieldGroupClassName": "display-flex",
+				"fieldGroup": [
+					{
+						"type": "label-view",
+						"key": "client_name",
+						"className": "flex-6",
+						"props": {
+							"label": "Client Name",
+							"label_width": 100,
+							"value_width": 200,
+							"value_in_next_row": true
+						},
+						"hideExpression": "!model.isEdit"
+					},
+					{
+						"type": "label-view",
+						"key": "project_name",
+						"className": "flex-6",
+						"props": {
+							"label": "Project Name",
+							"label_width": 100,
+							"value_width": 200,
+							"value_in_next_row": true
+						},
+						"hideExpression": "!model.isEdit"
+					},
+					{
+						"type": "select-input",
+						"key": "client_id",
+						"className": "flex-6",
+						"props": {
+							"label": "Client Name",
+							"placeholder": "Client Name",
+							"labelPropTemplate": " {{client_name}}",
+							"optionsDataSource": {
+								"multifilter":true,
+								"collectionName": "client"
+							},
+							"multifilter_condition": {
+								"clause": "AND",
+								"conditions": [
+								{
+									"column": "_id",
+									"operator": "EQUALS",
+									"type": "string",
+									"value": ""
+								}
+								]
+							},
+							"labelProp": "client_name",
+							"valueProp": "client_id",
+							"required": true
+						},
+						"expressions": {
+							"hide": "model.isEdit "
+						
+						}
+					},                    
+					{
+						"type": "select-input",
+						"key": "project_name",
+						"className": "flex-6",
+						"parentKey": "client_name",
+						"parentCollectionName": "project",
+						"props": {
+							"changefield":"project_name",
+						"label": "Project Name",
+						"placeholder": "Project Name",
+						"Properties": { "formVAlueChange": true },
+						"multifiltertype": "Simple",
+						"multifilter_condition": {
+							"clause": "AND",
+							"conditions": [
+							{
+								"column": "client_name",
+								"operator": "EQUALS",
+								"type": "string",
+								"value": ""
+							}
+							]
+						},
+						"labelProp": "label",
+						"valueProp": "value",
+						"required": true
+						}
+					}
+				]
+			},	{
+				"fieldGroupClassName": "display-flex",
+				"fieldGroup": [
+					{
+					"type": "matprefix-input",
+					"key": "sprint_id",
+					"className": "flex-4",
+					"parentKey":"project_name",
+					"props": {
+						"type":"Linked",
+						"label": "Sprint Id",
+						"placeholder": "Sprint Id",
+						"pattern": "^[a-zA-Z0-9-_]*$",
+						"required": true
+					},
+					"hideExpression": "model.isEdit || !model.client_name||!model.project_name"
+				},{
+					"type": "input",
+					"key": "sprint_name",
+					"className": "flex-8",
+					"props": {
+						"label": "Sprint Name",
+						"placeholder": "Sprint Name",
+						"pattern": "^[a-zA-Z0-9-_]*$",
+						"required": true
+					},
+					"hideExpression": "model.isEdit || !model.client_name||!model.project_name"
+				}
+				
+				]
+			},
+			{"fieldGroupClassName": "display-flex",
+			"fieldGroup": [
+					{
+						"key": "start_date",
+						"type": "date-input", 
+						"className": "flex-6",
+						"props": {
+						"label": "Scheduled Start Date",
+						"placeholder": "Scheduled Start Date",
+						"type": "date",
+						"required": true
+						}
+					},
+					{
+						"key": "enddate",
+						"type": "date-input",
+						"className": "flex-6",
+						"parentKey": "start_date",
+						"props": {
+						"label": "Scheduled End Date",
+						"placeholder": "Scheduled End Date",
+						"type": "date",
+						"required": true
+						}
+					},
+					{
+						"type": "select",
+						"key": "status",
+						"className": "flex-6",
+						"props": {
+							"label": "Project Status",
+							"options": [
+								{
+									"label": "Active",
+									"value": "Active"
+								},
+								{
+									"label": "Inactive",
+									"value": "Inactive"
+								}
+								
+								
+							],
+							"placeholder": "Project Status",
+							"required": true
+						},
+					
+						"expressions": {
+							"hide": "!model.isshow"
+						}
+						}
+				]
+			},
+			{
+				"type": "html-input",
+				"key": "sprint_description",
+				"className": "flex-6",
+				"props": {
+					"label": "Sprint Description",
+					"required": true
+				},
+				
+				"maxlength": 500
+			}
+		]
+	},
+	"onCancelRoute": "/list/project"
 }

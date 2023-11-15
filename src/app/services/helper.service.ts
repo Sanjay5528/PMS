@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { DatePipe, PlatformLocation } from '@angular/common';
 
@@ -218,4 +218,27 @@ export class HelperService implements OnInit {
     
     return parsedValue.data.LoginResponse.employee_id
   }
+  getDataValidatoion(controls: any, invalidLabels: string = ''): any{
+    // function collectInvalidLabels {
+      for (const key in controls) {
+          if (controls.hasOwnProperty(key)) {
+              const control = controls[key];
+      
+              if (control instanceof FormGroup) {
+                  invalidLabels += this.getDataValidatoion(control.controls);
+              } else if (control instanceof FormControl && control.status === 'INVALID') {
+                  // Access the label property assuming it exists in the control
+                  invalidLabels +=controls[key]._fields[0].props.label + ",";
+              }else if(control instanceof FormArray && control.status === 'INVALID'){
+                invalidLabels +=controls[key]._fields[0].props.label + ",";
+              }
+          }
+      // }
+      console.log(invalidLabels);
+      
+    }
+    return invalidLabels;
+  
+  }
+
 }
