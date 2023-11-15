@@ -135,7 +135,9 @@ export class MasterSingleDetailFormComponent {
   }
 
   addForm(mode: any) {
-
+    if(this.config.localSet==true) {
+      sessionStorage.setItem(this.config.localSetField,this.model[this.config.localSetField])
+    }
     //! send the value in local storage 
     //! amd remove in componet destroy 
     if (this.isPopupEdit) {
@@ -292,6 +294,7 @@ return
   }
 
   goBack() {
+    // window.history.go(-1)
     if (this.config.onCancelRoute) {
       let url = [this.config.onCancelRoute]
       // if (this.config.onCancelRouteParam)url.push(this.model[this.config.onCancelRouteParam]) //Todo 
@@ -344,6 +347,24 @@ return
           }
         );
       }
+    } else if (item.formAction == "components") {
+      // console.log(this);
+       if (item.route_type == "CustomRoute") {
+        // ! item.Custom_Route To another Component
+        if(item.Custom_Key_filed&&item.Custom_Route)
+        // todo if this filed is missing it should take the _id
+        // let field = data[item.Custom_Key_filed] ? data[item.Custom_Key_filed] : data[_id];
+       
+        this.router.navigate([
+          `${item.Custom_Route}`,
+          data[item.Custom_Key_filed],
+        ]);
+      }else {
+        let type: any = this.route.snapshot.params["form"];
+        this.router.navigate([`${item.route}` + "/" + type + "/" + data._id]);
+      }
+      //! TO DO Changes
+      // this.router.navigate([`${item.route}` + "/" + data[this.config.keyField]])
     }
     else {
       this.selectedRow = data

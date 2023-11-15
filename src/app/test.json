@@ -1,84 +1,64 @@
 {
-	"pageHeading": "Client",
-	"collectionName": "client",
-	"editMode": "page",
-	"showbutton": true,
-	"keyField": "_id",
-	"screenWidth": "40%",
-	"actions": [
-	  {
-		"label": "Edit",
-		"icon": "edit",
-		"formName": "client"
-	  },{
-		"label": "Project",
-		"icon": "edit",
-		"type":"masterdetailsform",
-		"formName": "project",
-		"formAction":"list",
-		"route":"data/edit/client_project"
-	  },   {
-		"label": "Delete",
-		"icon": "delete",
-		"formName": "entities/client"
-	  }
-	],
-	"addRoute": "add/client",
-	"editRoute": "edit/client",
+	"pageHeading": "Sprint",
+	"collectionName": "sprint",
+	"addRoute": "/add/sprint",
+	"editRoute": "/edit/sprint",
+	"keyField":"_id",
+    "showbutton": true,
+	"editMode" : "popup",
+  "actions": [
+    {
+      "label":"Edit",
+	  "formAction":"edit",
+      "icon":"edit"
+    },
+    {
+      "label": "Delete",
+	  "formAction":"delete",
+      "icon": "delete"
+    }
+  ],
 	"columnDefs": [
-	  {
-		"headerName": "Client Id",
-		"field": "client_id",
-		"sortable": true,
-		"filter": "agTextColumnFilter"
-	   
-	  },
-	  {
-		"headerName": "Client Name",
-		"field": "client_name",
-		"sortable": true,
-		"filter": "agTextColumnFilter"
-	  },
-	  {
-		"headerName": "Client Type",
-		"field": "client_type",
-		"sortable": true,
-		"filter": "agTextColumnFilter"
-	  },
-	  {
-		"headerName": "Email",
-		"field": "email_id",
-		"sortable": true,
-		"filter": "agTextColumnFilter"
-	  },
-	  {
-		"headerName": "Industry",
-		"field": "industry_type_name",
-		"sortable": true,
-		"filter": "agTextColumnFilter"
-	  },
-	  {
-		"headerName": "Estabilished Year",
-		"field": "estabilished",
-		"sortable": true,
-		"filter": "agDateColumnFilter",
-		"type": "date"
-	  },
-	  {
-		"headerName": "Status",
-		"field": "status",
-		"sortable": true,
-		"filter": "agTextColumnFilter"
-	  },
-	  {
-		"type": "rightAligned",
-		"headerName": "Actions",
-		"cellRenderer": "buttonRenderer",
-		"lockPosition": "right",
-		"cellRendererParams": {
-		  "onClick": "this.onBtnClick1.bind(this)",
-		  "label": "Click 1"
-		}
-	  }
+    	{
+			"headerName": "Client Name",
+			"field": "client_name",
+			"filter": "agSetColumnFilter",
+			"sortable": true
+		},
+        {
+			"headerName": "Project Name",
+			"field": "project_name",
+            "filter": "agSetColumnFilter",
+            "sortable": true
+		},
+		
+        {
+			"headerName": "Sprint Id",
+			"field": "sprint_id",
+			"filter": "agNumberColumnFilter",
+			"sortable": true
+		},
+        {
+			"headerName": "Sprint Name",
+			"field": "sprint_name",
+			"filter": "agTextColumnFilter",
+			"sortable": true
+		},
+        {
+			"headerName": "Status",
+			"field": "status",
+			"filter": "agTextColumnFilter",
+			"sortable": true
+		},
+		 {
+        "type": "rightAligned",
+        "headerName": "Actions",
+        "cellRenderer": "buttonRenderer",
+        "lockPosition": "right",
+        "cellRendererParams": {
+          "onClick": "this.onBtnClick1.bind(this)",
+          "label": "Click 1"
+        }
+      }
 	]
-  }
+}

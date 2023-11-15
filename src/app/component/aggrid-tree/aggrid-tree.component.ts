@@ -171,12 +171,12 @@ loadConfig(formName:any){
     editable: true,
     hide: true
   },
-  // {
-  //   headerName: 'Module Name',
-  //   field: 'modulename',
-  //   width: 40,
-  //   filter: 'agTextColumnFilter',
-  // },
+  {
+    headerName: 'Requirement Name',
+    field: 'requirement_id', //! TO Change into requirement_name
+    width: 40,
+    filter: 'agTextColumnFilter',
+  },
   {
     headerName: 'Task Name',
     field: 'task_name',
@@ -188,9 +188,8 @@ loadConfig(formName:any){
     headerName: 'Start Date',
     field: 'startdate',
     width: 40,
-    editable: true,
-    filter: 'agTextColumnFilter',
-    cellEditor: 'datetime-input',
+    editable: false,
+    filter: 'agDateColumnFilter',
     // cellRenderer: (data: { modified: any }) => {
     //   return moment(data.modified).format("M/d/yyyy, h:mm ");
     // },
@@ -203,9 +202,8 @@ loadConfig(formName:any){
     headerName: 'End Date',
     field: 'enddate',
     width: 40,
-    editable: true,
-    filter: 'agTextColumnFilter',
-    cellEditor: 'datetime-input',
+    editable: false,
+    filter: 'agDateColumnFilter',
     // cellRenderer: (data: { modified: any }) => {
     //   return moment(data.modified).format("M/d/yyyy, h:mm ");
     // },
@@ -327,55 +325,76 @@ if(this.formName=="module"){
     });
   }else{
       this.dataService.getDataByFilter("requirement",{}).subscribe((res:any) =>{
+      
         let data:any[]= []     
         this.listData = []
+        for (let idx = 0; idx < res.data[0].response.length; idx++) {
+          const row = res.data[0].response[idx];
+        
+          if (row.parentmodulename == "" || !row.parentmodulename) {
+            row.treePath = [row.requirement_name];
+          } else {
+            const parentNode = data.find((d) => d.requirement_name == row.parentmodulename);
+            if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
+              row.treePath = [...parentNode.treePath];
+              row.treePath.push(row.requirement_name);
+            }
+          }
+        
+          data.push(row);
+        }
+        
+        let parentTreeData: any[] = [];
+        let childIndex: { [key: string]: number } = {};
+        let childArr: any[] = [];
+        
+        data.forEach((res: any) => {
+          const arrLength = res.treePath ? res.treePath.length : 0;
+          if (arrLength === 1) {
+            res.index = parentTreeData.length + 1;
+            res.parentIndex=res.index
+            res.index=res.index + " "+res.requirement_name
+            childIndex = {};
+            parentTreeData.push(res);
+          } else if (arrLength > 1) {
+            const parentKey = res.treePath.slice(0, -1).join('.');
+            const parentRequirementName = res.treePath[arrLength - 2];
+            const parent = data.find((d) => d.requirement_name === parentRequirementName);        
+            if (parent) {
+              if (!childIndex[parentKey]) {
+                childIndex[parentKey] = 1;
+              }
+console.log(parent.index,'parent.index');
+let index = parent.parentIndex + '.' + childIndex[parentKey]++;
+res.parentIndex=index
+        const childIndexable = childArr.find((d) => {        
+            console.log(d.index==index,'index',index,'d.index',d.index);
+            // console.log();
+          
+          d.index == index
+        });
+if(childIndexable===undefined){
+  let values:any=[...index]
+  console.log(values.find((d:any) => { Number.isInteger(d) }));
+  
+  res.index=index +" "+ res.requirement_name
 
-      for (let idx = 0; idx < res.data[0].response.length; idx++) {
-        const row = res.data[0].response[idx];
-      
-        if (row.parentmodulename == "" || !row.parentmodulename) {
-          row.treePath = [row.requirement_name];
-        } else {
-          const parentNode = data.find((d) => d.requirement_name == row.parentmodulename);
-          if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
-            row.treePath = [...parentNode.treePath];
-            row.treePath.push(row.requirement_name);
-          }
-        }
-      
-        data.push(row);
-      }
-      
-      let normalized: any[] = [];
-      let childIndex: { [key: string]: number } = {};
-      
-      data.forEach((res: any) => {
-        const arrLength = res.treePath ? res.treePath.length : 0;
-      
-        if (arrLength === 1) {
-          res.index = normalized.length + 1;
-          childIndex = {};
-          normalized.push(res);
-        } else if (arrLength > 1) {
-          const parentKey = res.treePath.slice(0, -1).join('.');
-      let parentrequrienmentName:any=res.treePath[arrLength-2]
-      let parentIndex:any=0
-        data.map((res:any)=>{
-if(res?.treePath?.includes(parentrequrienmentName)){
-  if(parentIndex==0){
-parentIndex=res.index
-  }
+}else{
+  let index=childIndex[parentKey]++ +1
+  res.index = parent.parentIndex + '.' + index;
 }
-      })
-          if (!childIndex[parentKey]) {
-            childIndex[parentKey] = 1;
+        console.log(childIndexable);
+        
+              childArr.push(res);
+            }
           }
-      
-          res.index = parentIndex + '.' + childIndex[parentKey]++;
-          normalized.push(res);
-        }
-      });      
-      this.listData=normalized;
+        });
+        childArr.forEach((value:any)=>{
+          
+        })
+        this.listData = [...parentTreeData, ...childArr];
+        
+   
       })
   }
 }

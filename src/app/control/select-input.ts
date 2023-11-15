@@ -24,7 +24,7 @@ import { DialogService } from "../services/dialog.service";
       >
         <mat-option
           *ngFor="let op of this.opt.options"
-          [value]="op[this.labelProp]"
+          [value]="op[this.valueProp]"
           (click)="selectionChange(op)"
         >
           <span [innerHTML]="op[this.labelProp]"></span>

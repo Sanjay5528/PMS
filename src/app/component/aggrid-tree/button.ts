@@ -345,6 +345,11 @@ parentRouteName:any
         values.project_id = this.ParentComponent.response?.project_id;
         // values.project_name = this.ParentComponent.response?.project_name;
       } 
+      this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
+        console.log(data);
+        this.dialog.closeModal();
+        this.form.reset();
+      });
     }
     //! To To in transion For time Save
     // this.ParentComponent.getTreeData(this.parentRouteName,true);

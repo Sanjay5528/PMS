@@ -169,9 +169,13 @@ export class FormService {
         return
       }
       //get the form data
+
       var data = ctrl.detailForm.value
       data[ctrl.config.detailForm.mapColumn] = ctrl.id
-      console.log(ctrl);
+      if(ctrl.config.mapColumnDiff==true){
+        data[ctrl.config.detailForm.mapColumn] = ctrl.model[ctrl.config.mapColumnfield]
+
+      }
       // TO CREATE the STRUCT
       if(ctrl.config.extraData){
         this.Create_struct(ctrl,data).then((val:any)=>{
@@ -263,11 +267,13 @@ export class FormService {
       }
       else{
       var findIndex = -1
-
+    
         if(ctrl.butText == "Add"){
           var defaultValues = ctrl.config.detailForm.defaultValues || []
           this.loadDefaultValues(defaultValues, data, ctrl.model)
-       
+          if(ctrl?.config?.detailForm?.Change_id){
+            data[ctrl?.config?.detailForm?.changekeyfield]=data[ctrl?.config?.detailForm?.addkeyfield]+"-"+data[ctrl?.config?.detailForm?.changekeyfield]
+          }
         this.dataService.save(ctrl.config.detailForm.collectionName,data).subscribe(
           res => {
             ctrl.isEditMode = false
@@ -734,25 +740,17 @@ console.log(ctrl);
         return ;
       }
       var data = ctrl.form.value
-      // let role_type:any =this.dataService.getdetails().profile.role
-      // if(ctrl?.config?.rolebased&& role_type!=="SA"){
-      //  data.org_id=this.dataService.getdetails().profile.org_id
-      // }
-
-      // if(ctrl?.config?.user&&role_type!=="SA"){
-      //   data.org_id=this.dataService.getdetails().profile.org_id 
-      //   data.user_type=role_type
-      // }
+      // ?SYSTEM USER
       let role_type:any =this.dataService.getdetails().role
       if(ctrl?.config?.rolebased&& role_type!=="SA"){
        data.org_id=this.dataService.getdetails().org_id
       }
-
+// ?SYSTEM USER
       if(ctrl?.config?.user&&role_type!=="SA"){
         data.org_id=this.dataService.getdetails().org_id 
         data.user_type=role_type
       }
-
+// ? PREFIX
       if(ctrl?.config?.Change_id){
 
         // data.org_id=this.dataService.getdetails().profile.org_id
@@ -769,12 +767,7 @@ console.log(ctrl);
           this.dataService.save(ctrl.collectionName,data).pipe(
             catchError((error:any) => {
               ctrl.butonflag=false
-              console.error('Error occurred:', error);
-              return error
-            })
-    )
-      .subscribe((res: any) => {
-            console.log(res);
+              return error }) ).subscribe((res: any) => {
             if(res){
               console.log(ctrl);
               if(ctrl?.config?.user){
@@ -795,7 +788,7 @@ console.log(ctrl);
           this.dataService.update(ctrl.collectionName,ctrl.id,data).pipe(
             catchError((error:any) => {
               ctrl.butonflag=false
-              console.error('Error occurred:', error);
+              // console.error('Error occurred:', error);
               return error
             })
     ).subscribe((res: any) => {

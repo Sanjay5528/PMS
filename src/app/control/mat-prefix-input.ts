@@ -47,10 +47,12 @@ export class MatPrefixInput extends FieldType<any> implements OnInit {
     this.currentField = this.field;    
     if (this.currentField.parentKey != "") {
       if(this?.opt?.type=="Simple"){
-        this.prefix=this.model[this.currentField.parentKey]+"-"      
-        this.model["ChangeKey"]=this.currentField.parentKey
+        this.prefix=this.model[this.currentField.parentKey]+"-" ; 
+        this.model["ChangeKey"]=this.currentField.parentKey; //todo remove
+      } if(this?.opt?.type=="local"){
+        this.prefix=sessionStorage.getItem(this.currentField.parentKey)+"-" ; 
+        // this.model["ChangeKey"]=this.currentField.parentKey; //todo remove
       }
-
       // (this.field.hooks as any).afterViewInit = (f: any) => {
       //   console.log(f);
       if(this?.opt?.type=="Linked"){
