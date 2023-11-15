@@ -140,16 +140,17 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
 
       this.id = params['id'];
       this.loadConfig(this.formName)
+      this.dataService.getDataById("project", this.id).subscribe((res: any) => {
+        this.response = res.data[0]
+        // sessionStorage.setItem("projectname", this.response.projectname)
+  
+        this.getTreeData()
+      
+       
+      })
     });
-    console.log(this.route.snapshot.routeConfig?.path);
-    this.dataService.getDataById("project", this.id).subscribe((res: any) => {
-      this.response = res.data[0]
-      // sessionStorage.setItem("projectname", this.response.projectname)
-
-      this.getTreeData()
-    
-     
-    })
+    // console.log(this.route.snapshot.routeConfig?.path);
+  
   }
 
 loadConfig(formName:any){
@@ -157,7 +158,8 @@ loadConfig(formName:any){
   if(formName=="module"){
     this.autoGroupColumnDef={
         headerName: "Parent Modules",
-        minWidth: 200
+        minWidth: 200,
+        cellRendererParams: { suppressCount: true },
   }
   this.columnDefs.push(  
     {
@@ -221,8 +223,10 @@ loadConfig(formName:any){
   }else if(formName=="Requirement"){
     this.autoGroupColumnDef={
       headerName: "Parent Requriement",
-      // field:"index",
-      minWidth: 200
+      field:"index",
+      minWidth: 200,
+      cellRendererParams: { suppressCount: true },
+
 }
     this.columnDefs.push(  
       {
@@ -242,7 +246,13 @@ loadConfig(formName:any){
     },
     {
       headerName: 'Sprint Id',
-      field: 'index',
+      field: 'sprint_id',
+      width: 40,
+      // editable: true,
+      filter: 'agTextColumnFilter',
+    }, {
+      headerName: 'Module Id',
+      field: 'module_id',
       width: 40,
       // editable: true,
       filter: 'agTextColumnFilter',
@@ -288,9 +298,10 @@ loadConfig(formName:any){
   }
 
 }
-  getTreeData(data?:any) {
+  getTreeData() {
     debugger
 // ! UNDO
+
 console.log(this.response.project_id);
 if(this.formName=="module"){
     this.dataService.getModuleFilter("modules", this.response.project_id).subscribe((res: any) => {
@@ -316,140 +327,61 @@ if(this.formName=="module"){
     });
   }else{
       this.dataService.getDataByFilter("requirement",{}).subscribe((res:any) =>{
-        console.log(res);
-        let data:any[]= []
-        for (let idx = 0; idx < res.data[0].response.length; idx++) {
-          const row = res.data[0].response[idx];
-          if (row.parentmodulename == "" || !row.parentmodulename) {
-            row.treePath = [row.requirement_name];
-          } 
-          else {
-            var parentNode = data.find((d) => d.requirement_name == row.parentmodulename);
-            if (parentNode &&parentNode.treePath &&!parentNode.treePath.includes(row.requirement_name)) {
-              row.treePath = [...parentNode.treePath];
-              row.treePath.push(row.requirement_name);
-            }
+        let data:any[]= []     
+        this.listData = []
+
+      for (let idx = 0; idx < res.data[0].response.length; idx++) {
+        const row = res.data[0].response[idx];
+      
+        if (row.parentmodulename == "" || !row.parentmodulename) {
+          row.treePath = [row.requirement_name];
+        } else {
+          const parentNode = data.find((d) => d.requirement_name == row.parentmodulename);
+          if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
+            row.treePath = [...parentNode.treePath];
+            row.treePath.push(row.requirement_name);
           }
-          data.push(row);
-          // this.getmodules()
         }
-      this.listData=data;
-        data.forEach((res:any)=>{
-          console.log(res);
-          let arr:any=res.treePath.length
-          console.log(arr,res.treePath);
-          if(arr !==0|| arr !== 1){
-            
+      
+        data.push(row);
+      }
+      
+      let normalized: any[] = [];
+      let childIndex: { [key: string]: number } = {};
+      
+      data.forEach((res: any) => {
+        const arrLength = res.treePath ? res.treePath.length : 0;
+      
+        if (arrLength === 1) {
+          res.index = normalized.length + 1;
+          childIndex = {};
+          normalized.push(res);
+        } else if (arrLength > 1) {
+          const parentKey = res.treePath.slice(0, -1).join('.');
+      let parentrequrienmentName:any=res.treePath[arrLength-2]
+      let parentIndex:any=0
+        data.map((res:any)=>{
+if(res?.treePath?.includes(parentrequrienmentName)){
+  if(parentIndex==0){
+parentIndex=res.index
+  }
+}
+      })
+          if (!childIndex[parentKey]) {
+            childIndex[parentKey] = 1;
           }
-        })
-
-
-
-
-        // let values:any[]=res.data[0].response;
-        // console.log(values);
-        
-        // let parentdata:any[]=[]
-        // values.forEach((row:any,index:any) => {
-        //   if (row.parentmodulename == "" || !row.parentmodulename) {
-        //     row.treePath = [row.requirement_name];
-        //   row.index = parentdata.length+1
-        //   parentdata.push(row)
-        //   } 
-          
-        //   // else {
-        //   //   const parentNode = this.listData.find((d) => d.requirement_name == row.parentmodulename);
-        //   //   if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
-        //   //     row.treePath = [...parentNode.treePath, row.requirement_name];
-        //   //   }
-        //   // }
-        //   // this.listData.push(row);
-        // });
-        // console.log(parentdata);
-
-        // let childData:any[]=[]
-        // values.forEach((row:any,index:any) => {
-        //     const parentNode = parentdata.find((d) => d.requirement_name == row.parentmodulename);
-        //     if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
-        //       const parentIndex = parentdata.findIndex((item) =>item.requirement_name === parentNode.requirement_name)
-          
-        //       if (parentIndex !== -1) {
-        //         console.log(parentIndex);
-        //       }
-        //       row.treePath = [...parentNode.treePath, row.requirement_name];
-        //     }
-        //     let childparentIndex:any= childData.findIndex((item) =>item.parentmodulename === row.parentmodulename)
-        //     if(childparentIndex!==-1){
-        //       row.index=childparentIndex
-        //     }else{
-        //       row.index = 1
-        //     }
-        //    let childIndex:any= childData.findIndex((item) =>item.requirement_name === row.requirement_name)
-        //    if(childIndex == -1){
-        //      childData.push(row);
-        //    }
-
-        // });
-        // this.listData.push(...parentdata,...childData)
-       
-        // // for (let idx = 0; idx < res.data[0].response.length; idx++) {
-        // //   const row = res.data[0].response[idx];
-        
-        //   if (row.parentmodulename == "" || !row.parentmodulename) {
-        //     row.treePath = [row.requirement_name];
-        //   row.index = idx+1
-
-        //   } else {
-        //     const parentNode = this.listData.find((d) => d.requirement_name == row.parentmodulename);
-        
-        //     if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
-        //       row.treePath = [...parentNode.treePath, row.requirement_name];
-        //     }
-        //   }
-        
-          // Set index for the current row
-        
-          // Push the modified row to listData
-          // this.listData.push(row);
-          // this.getmodules()
-        // }
-        
-        console.log(this.listData);
-        
-        // for (let idx = 0; idx < res.data[0].response.length; idx++) {
-        //   const row = res.data[0].response[idx];
-        //   if (row.parentmodulename == "" || !row.parentmodulename) {
-        //     row.treePath = [row.modulename];
-        //     row.index = (idx + 1).toString();
-        //   } else {
-        //     var parentNode = this.listData.find((d) => d.modulename == row.parentmodulename);
-        //     if (
-        //       parentNode &&
-        //       parentNode.treePath &&
-        //       !parentNode.treePath.includes(row.modulename)
-        //     ) {
-        //       row.treePath = [...parentNode.treePath];
-        //       row.treePath.push(row.modulename);
-        //       row.index = `${parentNode.index}.${parentNode.treePath.length}`;
-        //     }
-        //   }
-        //   this.listData.push(row);
-        //   // this.getmodules()
-        // }
-        
+      
+          res.index = parentIndex + '.' + childIndex[parentKey]++;
+          normalized.push(res);
+        }
+      });      
+      this.listData=normalized;
       })
   }
 }
 
 
-  public autoGroupColumnDef: ColDef = {
-    
-   
-    // ,
-    // cellRendererParams: {
-    //   suppressCount: true,
-    // },
-  };
+  public autoGroupColumnDef: ColDef = {};
 
   public defaultColDef: ColDef = {
     flex: 1,

@@ -275,7 +275,9 @@ return
     event.preventDefault();
     event.stopPropagation();
     this.formService.updateDetailFormData(this).then((res: any) => {
-      this.dialogService.closeModal()
+      // this.dialogService.closeModal()
+      this.dialogService.CloseALL()
+
     })
   }
 

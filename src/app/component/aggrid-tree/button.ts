@@ -72,7 +72,7 @@ import { FormService } from "src/app/services/form.service";
       </mat-menu>
     </div>
     
-    <ng-template #taskViewPopup>
+    <ng-template #taskViewPopup class="example-sidenav" mode="over" style="margin: auto">
       <mat-card>
         <mat-card-header style="flex: 1 1 auto;">
           <div style="width: 100%">
@@ -97,7 +97,7 @@ import { FormService } from "src/app/services/form.service";
       </mat-card>
     </ng-template>
    
-    <ng-template #modulesViewPopup let-data>
+    <ng-template #modulesViewPopup class="example-sidenav" mode="over" let-data>
       <mat-card>
         <mat-card-header style="flex: 1 1 auto;">
           <div style="width: 100%">
@@ -180,27 +180,6 @@ parentRouteName:any
   closedia() {
     localStorage.removeItem("projectmembers");
   }
-  //   onDelete($event: any) {
-  //     // this.gridData = $event.api.getSelectedRows();
-  //     // let a = $event.gridApi.getSelectedRows();
-  //     this.dataService
-  //       .getSupplierDelete(this.gridData._id)
-  //       .then((res: any) => {
-
-  //         // this.selectedRows = this.gridApi.remove.getSelectedRows();
-  //         if (res.success === 1) {
-  //           this.fullSupplier.getSupplier()
-  //           // alert(res.data);
-  //           this.cancel();
-
-  //           // this.data = res.data;
-  //         }
-  //       });
-  //     // this.fullSupplier.getSupplier();
-  //   }
-  delete() {
-    this.dialog.openDialog(this.popup, "20%", "20%", {});
-  }
 
   delete_button() {
     let row: any = this.data;
@@ -226,7 +205,7 @@ parentRouteName:any
         this.config = frmConfig;
         this.model_heading="Sub Module - Add"
         this.fields = frmConfig.form.fields;
-        this.dialog.openDialog(this.modulesViewPopup, "50%", "530px", {});
+        this.dialog.openDialog(this.modulesViewPopup,null, null, {});
       });
     } else if (formAction == "task") {
       this.dataService.loadConfig("task").subscribe((frmConfig: any) => {
@@ -234,7 +213,7 @@ parentRouteName:any
         this.config = frmConfig;
         this.fields = frmConfig.form.fields;
         sessionStorage.setItem("project_id", this.gridData.project_id);
-        this.dialog.openDialog(this.taskViewPopup, "50%", null, data);
+        this.dialog.openDialog(this.taskViewPopup,null, null, data);
       });
     } else if (formAction == "edit" ) {
       if( data.parentmodulename==''){
@@ -244,7 +223,7 @@ parentRouteName:any
           this.formAction = "Edit";
           this.config = frmConfig;
           this.fields = frmConfig.form.fields;
-          this.dialog.openDialog(this.modulesViewPopup, "50%", "530px", data);
+          this.dialog.openDialog(this.modulesViewPopup,null, null, data);
         });
       }else{
         this.model_heading="Sub Module - Edit"
@@ -253,7 +232,7 @@ parentRouteName:any
           this.formAction = "Edit";
           this.config = frmConfig;
           this.fields = frmConfig.form.fields;
-          this.dialog.openDialog(this.modulesViewPopup, "50%", "530px", data);
+          this.dialog.openDialog(this.modulesViewPopup,null, null, data);
         });
       }
     } else if (formAction == "delete") {
@@ -282,26 +261,26 @@ parentRouteName:any
        this.config = frmConfig;
        this.model_heading="Sub Requirement - Add"
        this.fields = frmConfig.form.fields;
-       this.dialog.openDialog(this.modulesViewPopup, "50%", "530px", {});
+       this.dialog.openDialog(this.modulesViewPopup,null, null, {});
      });
    } else if (formAction == "edit" ) {
      if( data.parentmodulename==''){
        this.model_heading="Requirement - Edit"
 
-       this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
+       this.dataService.loadConfig(this.parentRouteName.toLowerCase()).subscribe((frmConfig: any) => {
          this.formAction = "Edit";
          this.config = frmConfig;
          this.fields = frmConfig.form.fields;
-         this.dialog.openDialog(this.modulesViewPopup, "50%", "530px", data);
+         this.dialog.openDialog(this.modulesViewPopup,null, null, data);
        });
      }else{
        this.model_heading="Sub Requirement - Edit"
 
-       this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
+       this.dataService.loadConfig(this.parentRouteName.toLowerCase()).subscribe((frmConfig: any) => {
          this.formAction = "Edit";
          this.config = frmConfig;
          this.fields = frmConfig.form.fields;
-         this.dialog.openDialog(this.modulesViewPopup, "50%", "530px", data);
+         this.dialog.openDialog(this.modulesViewPopup,null, null, data);
        });
      }
    } else if (formAction == "delete") {
@@ -368,22 +347,10 @@ parentRouteName:any
       } 
     }
     //! To To in transion For time Save
-    this.ParentComponent.ngOnInit();
+    // this.ParentComponent.getTreeData(this.parentRouteName,true);
+    this.ParentComponent.ngOnInit()
   }
 
-  goBack(data?: any) {
-    debugger;
-    if (this.config.editMode == "page") {
-      this.router.navigate([`${this.config.onCancelRoute}`]);
-    } else if (this.config.editMode == "popup") {
-      this.router.navigate([`${this.config.onCancelRoute}`]);
-      if (data) {
-        this.onClose.emit(data);
-      } else {
-        this.onClose.emit({ action: this.formAction, data: this.model });
-      }
-    }
-  }
 
   resetBtn(data?: any) {
     debugger;
