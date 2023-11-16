@@ -497,13 +497,13 @@ if(this.formName=="module"){
                       childIndex[parentKey] = 1;
                     }
                       console.log(parent.index,'parent.index');
-                      let index = parent.parentIndex + '.' + childIndex[parentKey]++;
-                      res.parentIndex=index
+                      let CheckIndex = parent.parentIndex + '.' + childIndex[parentKey]++;
                       const childIndexable = childArr.find((d) => {        
-                         d.index == index
+                        d.parentIndex == CheckIndex
                       });
-                          if(childIndexable===undefined){
-                            res.index=index +" "+ res.requirement_name
+                      res.parentIndex=parseFloat(CheckIndex)
+                      if(childIndexable===undefined){
+                            res.index=CheckIndex +" "+ res.requirement_name
                            }else{
                             let index=childIndex[parentKey]++ +1
                             res.index = parent.parentIndex + '.' + index;
