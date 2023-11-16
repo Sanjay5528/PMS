@@ -189,9 +189,11 @@ console.log(element[this.opt.specification]);
         // Update the options array within the subscription
         let totalvalue:any[]=[]
         values.forEach((data:any)=>{
-           data.map((data: any) => {
-            totalvalue.push( { label: data[this.opt.innerArray], value: data[this.opt.innerArray] });
-          });
+          //  data.map((data: any) => {
+            let val:any={...data}
+            if(!isEmpty(val)){
+            totalvalue.push( { label:val[0][this.opt.innerArray], value:val[0][this.opt.innerArray] });
+          }
           
         })
         console.log(totalvalue);

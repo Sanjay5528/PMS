@@ -1,198 +1,102 @@
 {
-	"pageHeading": "Sprint",
+	"pageHeading": "Requirement",
 	"formType": "simple",
 	"editMode": "popup",
 	"keyField": "_id",
-	"Change_id": true,
-	"changekeyfield":"sprint_id",
-	"addkeyfield":"project_name",
 	"form": {
-		"collectionName": "sprint",
-		"fields": [
-			{
-				"fieldGroupClassName": "display-flex",
-				"fieldGroup": [
-					{
-						"type": "label-view",
-						"key": "client_name",
-						"className": "flex-6",
-						"props": {
-							"label": "Client Name",
-							"label_width": 100,
-							"value_width": 200,
-							"value_in_next_row": true
-						},
-						"hideExpression": "!model.isEdit"
-					},
-					{
-						"type": "label-view",
-						"key": "project_name",
-						"className": "flex-6",
-						"props": {
-							"label": "Project Name",
-							"label_width": 100,
-							"value_width": 200,
-							"value_in_next_row": true
-						},
-						"hideExpression": "!model.isEdit"
-					},
-					{
-						"type": "select-input",
-						"key": "client_id",
-						"className": "flex-6",
-						"props": {
-							"label": "Client Name",
-							"placeholder": "Client Name",
-							"labelPropTemplate": " {{client_name}}",
-							"optionsDataSource": {
-								"multifilter":true,
-								"collectionName": "client"
-							},
-							"multifilter_condition": {
-								"clause": "AND",
-								"conditions": [
-								{
-									"column": "_id",
-									"operator": "EQUALS",
-									"type": "string",
-									"value": ""
-								}
-								]
-							},
-							"labelProp": "client_name",
-							"valueProp": "client_id",
-							"required": true
-						},
-						"expressions": {
-							"hide": "model.isEdit "
-						
-						}
-					},                    
-					{
-						"type": "select-input",
-						"key": "project_name",
-						"className": "flex-6",
-						"parentKey": "client_name",
-						"parentCollectionName": "project",
-						"props": {
-							"changefield":"project_name",
-						"label": "Project Name",
-						"placeholder": "Project Name",
-						"Properties": { "formVAlueChange": true },
-						"multifiltertype": "Simple",
-						"multifilter_condition": {
-							"clause": "AND",
-							"conditions": [
-							{
-								"column": "client_name",
-								"operator": "EQUALS",
-								"type": "string",
-								"value": ""
-							}
-							]
-						},
-						"labelProp": "label",
-						"valueProp": "value",
-						"required": true
-						}
-					}
-				]
-			},	{
-				"fieldGroupClassName": "display-flex",
-				"fieldGroup": [
-					{
-					"type": "matprefix-input",
-					"key": "sprint_id",
-					"className": "flex-4",
-					"parentKey":"project_name",
-					"props": {
-						"type":"Linked",
-						"label": "Sprint Id",
-						"placeholder": "Sprint Id",
-						"pattern": "^[a-zA-Z0-9-_]*$",
-						"required": true
-					},
-					"hideExpression": "model.isEdit || !model.client_name||!model.project_name"
-				},{
+	  "collectionName": "requirement",
+	  "fields": [
+	
+				
+				{
 					"type": "input",
-					"key": "sprint_name",
-					"className": "flex-8",
+					"key": "requirement_name",				
+					"className": "flex-2",
 					"props": {
-						"label": "Sprint Name",
-						"placeholder": "Sprint Name",
-						"pattern": "^[a-zA-Z0-9-_]*$",
-						"required": true
-					},
-					"hideExpression": "model.isEdit || !model.client_name||!model.project_name"
-				}
-				
-				]
+					  "label": "Requirement Name",
+					  "placeholder": "Requirement Name",
+					  "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+					  "required": true
+					}
+				  },
+		
+		{
+		  "type": "html-input",
+		  "key": "requirement_description",
+		  "className": "flex-6",
+		  "props": {
+			  "label": "Requirement Description",
+			  "required": true
+		  },
+		  
+		  "maxlength": 2000
+	  },
+	  {
+		"fieldGroupClassName": "display-flex",
+		"fieldGroup": [
+	{
+		"type": "select-input",
+		"key": "sprint_id",
+		"className": "flex-6",
+		"props": {
+			"label": "Sprint Id",
+			"placeholder": "Sprint Id",
+			"labelPropTemplate": " {{id}}",
+			"optionsDataSource": {
+				"collectionName": "sprint"
 			},
-			{"fieldGroupClassName": "display-flex",
-			"fieldGroup": [
-					{
-						"key": "start_date",
-						"type": "date-input", 
-						"className": "flex-6",
-						"props": {
-						"label": "Scheduled Start Date",
-						"placeholder": "Scheduled Start Date",
-						"type": "date",
-						"required": true
-						}
-					},
-					{
-						"key": "enddate",
-						"type": "date-input",
-						"className": "flex-6",
-						"parentKey": "start_date",
-						"props": {
-						"label": "Scheduled End Date",
-						"placeholder": "Scheduled End Date",
-						"type": "date",
-						"required": true
-						}
-					},
-					{
-						"type": "select",
-						"key": "status",
-						"className": "flex-6",
-						"props": {
-							"label": "Project Status",
-							"options": [
-								{
-									"label": "Active",
-									"value": "Active"
-								},
-								{
-									"label": "Inactive",
-									"value": "Inactive"
-								}
-								
-								
-							],
-							"placeholder": "Project Status",
-							"required": true
-						},
-					
-						"expressions": {
-							"hide": "!model.isshow"
-						}
-						}
-				]
-			},
-			{
-				"type": "html-input",
-				"key": "sprint_description",
-				"className": "flex-6",
-				"props": {
-					"label": "Sprint Description",
-					"required": true
-				},
-				
-				"maxlength": 500
-			}
-		]
+		   
+			"labelProp": "id",
+			"valueProp": "id"
+		}
 	},
-	"onCancelRoute": "/list/project"
-}
+	{
+		"type": "select-input",
+		"key": "module_id",
+		"className": "flex-6",
+		"props": {
+			"label": "Module Name",
+			"placeholder": "Module Name",
+			"labelPropTemplate": " {{modulename}}",
+			"optionsDataSource": {
+				"collectionName": "modules"
+			},
+		   
+			"labelProp": "modulename",
+			"valueProp": "moduleid"
+		}
+	}
+]
+},
+			  {
+				  "key": "status",
+				  "type": "select",
+				  "defaultValue": "A",
+				  "templateOptions": {
+					  "label": "Status",
+					  "options": [
+						  {
+							  "label": "Active",
+							  "value": "A"
+						  },
+						  {
+							  "label": "Disable",
+							  "value": "D"
+						  }
+					  ],
+					  "required": true
+				  },
+				  "hideExpression": "!model.isEdit"
+			  }
+	   
+	  ],
+		  "defaultValues": [
+			  {
+				  "colName": "status",
+				  "value": "A",
+				  "type": "string"
+			  }
+		  ]
+	},
+	"onCancelRoute": "list/module"
+  }

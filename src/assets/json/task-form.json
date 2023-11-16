@@ -1,244 +1,102 @@
 {
-	"pageHeading": "Project Team",
-	"formType": "master-detail",
-	"isCustomFuction":true,
-	"addfields":"project_name",
+	"pageHeading": "Requirement",
+	"formType": "simple",
+	"editMode": "popup",
+	"keyField": "_id",
 	"form": {
-		"collectionName": "project",
-		"fields": [
-			{
-				"type": "label-view",
-				"key": "client_name",
-				"props": {
-					"label": "Client Name",
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": false,
-					"placeholder": "Client Name",
-					"required": true
-				}
-			}, {
-				"type": "label-view",
-				"key": "project_id",
-				"props": {
-					"label": "Project Id",
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": false,
-					"placeholder": "Project Id",
-					"required": true
-				}
-			}, {
-				"type": "label-view",
-				"key": "project_name",
-				"props": {
-					"label": "Project Name",
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": false,
-					"placeholder": "Project Name",
-					"required": true
-				}
-			},
-			{
-				"type": "label-view",
-				"key": "status",
-				"props": {
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": true,
-					"label": "Project Status",
-					"placeholder": "Project Status",
-					"required": true
-				}
-			}
-		],
-		"buttons": {
-			"start": false,
-			"newEntry": false
-		}
-	},
-	"detailForm": {
-        "customfilter":true,
-        "customkey":"project_id",
-		"collectionName": "project_team",
-		"mapColumn": "project_id",
-		"uniqueColumn": "team_id",
-		"keyColumn": "_id",
-		"isPopupEdit": true,
-		"fields": [
-		
-					{
-						"type": "label-view",
-						"key": "team_id",
-						"props": {
-							"label": "Team Id",
-							"label_width": 100,
-							"value_width": 200,
-							"value_in_next_row": false,
-							"placeholder": "Team Id",
-							"required": true
-						},
-                        "hideExpression": "!model.isEdit"
-
-					},
-					{
-						"fieldGroupClassName": "display-flex",
-						"fieldGroup": [	{
-						"type": "input",
-						"key": "team_id",
-						"props": {
-							"label": "Team Id",
-							"placeholder": "Team Id",
-							"pattern": "^[a-zA-Z0-9-_]*$",
-							"required": true
-						},
-                        "hideExpression": "model.isEdit"
-					}
-					
-					
+	  "collectionName": "requirement",
+	  "fields": [
+	
 				
-			,
-			{
-				"key": "modules",
-				"type": "multiselect-input",
-				"className": "flex-6",
-				"props": {
-				  "label": "Select the Module",
-				  "placeholder": "Select the Module",
-				  "optionsDataSource": {
-					"collectionName": "modules"
-				  },
-				  "attributes":{
-					"type":"default",
-					"Takenvaluekey":"moduleid",
-					"Takenlabelkey":"modulename"
-				  },
-				  "multifilter":true,
-				  "filtervalueKey":"project_id",
-				  "multifilter_condition": {
-					"clause": "AND",
-					"conditions": [
-					{
-						"column": "project_id",
-						"operator": "EQUALS",
-						"type": "string",
-						"value": ""
+				{
+					"type": "input",
+					"key": "requirement_name",				
+					"className": "flex-2",
+					"props": {
+					  "label": "Requirement Name",
+					  "placeholder": "Requirement Name",
+					  "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+					  "required": true
 					}
-					]
-				},
-				  "labelProp": "label",
-				  "valueProp": "value"
-				}
-			  }]},
-			{
-				"type": "html-input",
-				"key": "teamdes",
-				"className": "flex-2",
-				"props": {
-					"label": "Team Description",
-					"required": true,
-					 
-					"maxlength": 500
-				}
+				  },
+		
+		{
+		  "type": "html-input",
+		  "key": "requirement_description",
+		  "className": "flex-6",
+		  "props": {
+			  "label": "Requirement Description",
+			  "required": true
+		  },
+		  
+		  "maxlength": 2000
+	  },
+	  {
+		"fieldGroupClassName": "display-flex",
+		"fieldGroup": [
+	{
+		"type": "select-input",
+		"key": "sprint_id",
+		"className": "flex-6",
+		"props": {
+			"label": "Sprint Id",
+			"placeholder": "Sprint Id",
+			"labelPropTemplate": " {{id}}",
+			"optionsDataSource": {
+				"collectionName": "sprint"
 			},
 		   
-			{
-				"type": "button-input",
-				"key": "teammember",
-				"props": {
-					"label": "Team Members",
-					"labelPropTemplate": "{{teammembers}}",
-					"attributes": "teammember"
-					
-				}
-			},{
-				"type": "select",
-				"key": "status",
-				"className": "flex-2",
-				"props": {
-					"label": "Team Status",
-					"options": [
-						{
-							"label": "Active",
-							"value": "A"
-						},
-						{
-							"label": "Inactive",
-							"value": "I"
-						}
-						 
-					],
-					"placeholder": "Team Status",
-					"required": true
-				},
-			
-				"expressions": {
-					"hide": "!model.isshow"
-				}
-				}
-		] 
-		 
+			"labelProp": "id",
+			"valueProp": "id"
+		}
 	},
-	"detailListConfig": {
-		"sectionHeading": "Project Team",
-		"actions": [
-			{
-				"label": "Edit",
-				"icon": "edit",
-				"formAction": "edit"
+	{
+		"type": "select-input",
+		"key": "module_id",
+		"className": "flex-6",
+		"props": {
+			"label": "Module Name",
+			"placeholder": "Module Name",
+			"labelPropTemplate": " {{modulename}}",
+			"optionsDataSource": {
+				"collectionName": "modules"
 			},
-			{
-				"label": "Delete",
-				"icon": "delete",
-				"formAction": "delete"
-			}
-		],
-		"addRoute": "add/project_team_member",
-		"editRoute": "edit/project_team_member",
-		"fields": [
-			{
-				"headerName": "Module Name",
-				"field": "modules",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"headerName": "Project Team Id",
-				"field": "team_id",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"headerName": "Project Team Member ",
-				"field": "teammember",
-				"sortable": true,
-                "type":"arraytostring",
-                "value":"employee_id",
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"headerName": "status",
-				"field": "status",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"type": "rightAligned",
-				"headerName": "Actions",
-				"cellRenderer": "buttonRenderer",
-				"lockPosition": "right",
-				"cellRendererParams": {
-					"onClick": "this.onBtnClick1.bind(this)",
-					"label": "Click 1"
-				}
-			}
-		],
-		"filterOptions": [],
-		"defaultFilter": []
-	},
-	
-	"designConfig": {
-		"leftPanelWidth": "320px"
+		   
+			"labelProp": "modulename",
+			"valueProp": "moduleid"
+		}
 	}
+]
+},
+			  {
+				  "key": "status",
+				  "type": "select",
+				  "defaultValue": "A",
+				  "templateOptions": {
+					  "label": "Status",
+					  "options": [
+						  {
+							  "label": "Active",
+							  "value": "A"
+						  },
+						  {
+							  "label": "Disable",
+							  "value": "D"
+						  }
+					  ],
+					  "required": true
+				  },
+				  "hideExpression": "!model.isEdit"
+			  }
+	   
+	  ],
+		  "defaultValues": [
+			  {
+				  "colName": "status",
+				  "value": "A",
+				  "type": "string"
+			  }
+		  ]
+	},
+	"onCancelRoute": "list/module"
   }

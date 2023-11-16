@@ -67,12 +67,12 @@ import{FormlyFieldset} from "./fieldsetform"
 import { OnlyDecimalDirective } from './decimal-directive';
 
 
-export function minlengthValidationMessage(err:any, field: FormlyFieldConfig) {  console.log(field);
+export function minLengthValidationMessage(err:any, field: FormlyFieldConfig) {  console.log(field);
 
   return `Should NOT be shorter than ${field.props?.minLength} characters`;
 }
 
-export function maxlengthValidationMessage(err:any, field: FormlyFieldConfig) {  console.log(field);
+export function maxLengthValidationMessage(err:any, field: FormlyFieldConfig) {  console.log(field);
 
   return `Should NOT be longer than ${field.props?.maxLength} characters`;
 }
@@ -126,8 +126,8 @@ const formlyConfig = {
   validationMessages: [
     { name: 'required', message: required },
     { name: 'null', message: 'Should be null' },
-    { name: 'minlength', message: minlengthValidationMessage },
-    { name: 'maxlength', message: maxlengthValidationMessage },
+    { name: 'minLength', message: minLengthValidationMessage },
+    { name: 'maxLength', message: maxLengthValidationMessage },
     { name: 'min', message: minValidationMessage },
     { name: 'max', message: maxValidationMessage },
     { name: 'multipleOf', message: multipleOfValidationMessage },
@@ -143,8 +143,8 @@ const formlyConfig = {
     { name: 'select-input', component: SelectInput,validationMessages: [
       { name: 'required', message: required },
       { name: 'null', message: 'Should be null' },
-      { name: 'minlength', message: minlengthValidationMessage },
-      { name: 'maxlength', message: maxlengthValidationMessage },
+      { name: 'minLength', message: minLengthValidationMessage },
+      { name: 'maxLength', message: maxLengthValidationMessage },
       { name: 'min', message: minValidationMessage },
       { name: 'max', message: maxValidationMessage },
       { name: 'multipleOf', message: multipleOfValidationMessage },
@@ -157,8 +157,8 @@ const formlyConfig = {
     { name: 'multiselect-input', component: MultiSelectInput ,validationMessages: [
       { name: 'required', message: required },
       { name: 'null', message: 'Should be null' },
-      { name: 'minlength', message: minlengthValidationMessage },
-      { name: 'maxlength', message: maxlengthValidationMessage },
+      { name: 'minLength', message: minLengthValidationMessage },
+      { name: 'maxLength', message: maxLengthValidationMessage },
       { name: 'min', message: minValidationMessage },
       { name: 'max', message: maxValidationMessage },
       { name: 'multipleOf', message: multipleOfValidationMessage },
@@ -174,8 +174,8 @@ const formlyConfig = {
     { name: 'date-input', component: DateInput,validationMessages: [
       { name: 'required', message: required },
       { name: 'null', message: 'Should be null' },
-      { name: 'minlength', message: minlengthValidationMessage },
-      { name: 'maxlength', message: maxlengthValidationMessage },
+      { name: 'minLength', message: minLengthValidationMessage },
+      { name: 'maxLength', message: maxLengthValidationMessage },
       { name: 'min', message: minValidationMessage },
       { name: 'max', message: maxValidationMessage },
       { name: 'multipleOf', message: multipleOfValidationMessage },
@@ -186,8 +186,8 @@ const formlyConfig = {
     ]},  {name: 'custom-decimal-input', component: CustomDecimalInputType , validationMessages: [
       { name: 'required', message: required },
       { name: 'null', message: 'Should be null' },
-      { name: 'minlength', message: minlengthValidationMessage },
-      { name: 'maxlength', message: maxlengthValidationMessage },
+      { name: 'minLength', message: minLengthValidationMessage },
+      { name: 'maxLength', message: maxLengthValidationMessage },
       { name: 'min', message: minValidationMessage },
       { name: 'max', message: maxValidationMessage },
       { name: 'multipleOf', message: multipleOfValidationMessage },
@@ -206,8 +206,8 @@ const formlyConfig = {
     { name: 'matprefix-input', component: MatPrefixInput, validationMessages: [
       { name: 'required', message: required },
       { name: 'null', message: 'Should be null' },
-      { name: 'minlength', message: minlengthValidationMessage },
-      { name: 'maxlength', message: maxlengthValidationMessage },
+      { name: 'minLength', message: minLengthValidationMessage },
+      { name: 'maxLength', message: maxLengthValidationMessage },
       { name: 'min', message: minValidationMessage },
       { name: 'max', message: maxValidationMessage },
       { name: 'multipleOf', message: multipleOfValidationMessage },
@@ -219,8 +219,8 @@ const formlyConfig = {
     {name: 'select-autocomplete',component: FormlyFieldSelectAutocomplete,validationMessage:[
       { name: 'required', message: required },
     { name: 'null', message: 'Should be null' },
-    { name: 'minlength', message: minlengthValidationMessage },
-    { name: 'maxlength', message: maxlengthValidationMessage },
+    { name: 'minLength', message: minLengthValidationMessage },
+    { name: 'maxLength', message: maxLengthValidationMessage },
     { name: 'min', message: minValidationMessage },
     { name: 'max', message: maxValidationMessage },
     { name: 'multipleOf', message: multipleOfValidationMessage },

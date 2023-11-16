@@ -141,7 +141,10 @@ export class DataService {
   public dataSetSave(methodName:any,data:any){
     return this.http.post(this.getWsBaseUrl()+`dataset/config/${methodName}`, data);
   }
-
+  public dataset_Get_Data(dataSetName: string,filterData?:any) {
+    return this.http.post(this.getWsBaseUrl() + `data/${dataSetName}`,filterData);
+    
+  }
   
   public forgotPswd(data?: any, id?: any) {
     return this.http.post(this.getWsBaseUrl() + 'user/forget-password/' + `${id}`, data);
@@ -157,10 +160,7 @@ export class DataService {
     
   }
   
-  public dataset_Get_Data(dataSetID: string,filterData:any) {
-    return this.http.post(this.getWsBaseUrl() + `${dataSetID}`,filterData);
-    
-  }
+
 /**
  * This method USed To Get data Using Filter Condition
  * @filter

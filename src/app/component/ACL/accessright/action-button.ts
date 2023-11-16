@@ -12,7 +12,7 @@ import { DatePipe } from '@angular/common';
 
 
 @Component({
-  selector: 'app-button-renderer',
+  selector: 'appacc-button-renderer',
   template: `
 <style>
 ::ng-deep.mat-mdc-dialog-container .mdc-dialog__surface {

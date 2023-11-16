@@ -5,12 +5,16 @@ import {
   ColGroupDef,
   ColumnApi,
   FirstDataRenderedEvent,
+  GetContextMenuItemsParams,
   GetDataPath,
   GridApi,
+  GridOptions,
   GridReadyEvent,
   ICellEditorParams,
   IRichCellEditorParams,
+  MenuItemDef,
   RichSelectParams,
+  RowDataTransaction,
   RowGroupingDisplayType,
 } from "ag-grid-community";
 import { DialogService } from 'src/app/services/dialog.service';
@@ -51,7 +55,7 @@ export class AggridTreeComponent {
   @ViewChild("editViewPopup", { static: true }) editViewPopup!: TemplateRef<any>;
   @Input('model') model: any = {}
   pageHeading: any
-  id: any
+  id: any 
   response: any
 public  columnDefs: (ColDef | ColGroupDef)[] = [
     // {
@@ -135,6 +139,7 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
     
   } 
 
+  
   ngOnInit() {
     debugger
     
@@ -147,9 +152,12 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
       this.id = params['id'];
       this.dataService.getDataById("project", this.id).subscribe((res: any) => {
         this.response = res.data[0]
+        this.response.startdate=moment(this.response?.startdate).format('D/M/ YYYY')
+        this.response.enddate=moment(this.response?.enddate).format("D/M/ YYYY")
+
         // sessionStorage.setItem("projectname", this.response.projectname)
         this.sprintCellEditorParams('')
-        this.moduleCellEditorParams('')
+       this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;          
         this.getTreeData()
       
        
@@ -166,6 +174,9 @@ loadConfig(formName:any){
         headerName: "Parent Modules",
         minWidth: 200,
         cellRendererParams: { suppressCount: true },
+        sortable: false,
+    resizable: true,
+    filter: false
   }
   this.columnDefs.push(  
   //   {
@@ -214,6 +225,8 @@ loadConfig(formName:any){
 
     field: 'Action',
     width: 40,
+    sortable:false,
+    filter:false,
     cellRenderer: 'buttonRenderer'
 
   })
@@ -223,9 +236,11 @@ loadConfig(formName:any){
       field:"index",
       minWidth: 200,
       cellRendererParams: { suppressCount: true },
-
+      sortable: false,
+      resizable: true,
+      filter: false
 }
-    const Sprintvalue:any=  this.sprintCellEditorParams
+    const Sprintvalue:any=this.sprintCellEditorParams
     const modelvalue:any=this.moduleCellEditorParams
     this.columnDefs.push(  
     //   {
@@ -247,7 +262,7 @@ loadConfig(formName:any){
       field: 'sprint_id',
       width: 40,
       editable: true,
-      filter: 'agTextColumnFilter',
+      filter: 'agNumberColumnFilter',
       cellEditor: 'agRichSelectCellEditor',
       cellEditorParams: {
         values:Sprintvalue
@@ -262,6 +277,18 @@ loadConfig(formName:any){
       cellEditorParams: {
         values:modelvalue
       },
+    }, {
+      headerName: 'Test Case Count',
+      field: 'test_count',
+      width: 40,
+      editable: false,
+      filter: 'agNumberColumnFilter',
+    }, {
+      headerName: 'Task Count',
+      field: 'task_count',
+      width: 40,
+      editable: false,
+      filter: 'agNumberColumnFilter',
     },
     // {
     //   headerName: 'Start Date',
@@ -296,6 +323,8 @@ loadConfig(formName:any){
   
       field: 'Action',
       width: 40,
+      sortable:false,
+      filter:false,
       cellRenderer: 'buttonRenderer'
   
     }
@@ -305,7 +334,7 @@ loadConfig(formName:any){
 
 }
 
-ValueToCompareRequriementSprint:any[]=[]
+ValueToCompareRequriementSprint:any[]=[] 
 OnlyValueRequriementSprint:any[]=[]
 
 ValueToCompareRequriementModules:any[]=[]
@@ -331,8 +360,8 @@ sprintCellEditorParams = (params: any) => {
         return
       }
     res.data[0].response.forEach((each:any)=>{
-    this.ValueToCompareRequriementSprint.push({label:each.name,value:each.id})
-    this.OnlyValueRequriementSprint.push(each.name)
+    // this.ValueToCompareRequriementSprint.push({label:each.name,value:each.id})
+    this.OnlyValueRequriementSprint.push(each.id)
   })  
 })
     return this.OnlyValueRequriementSprint
@@ -340,12 +369,15 @@ sprintCellEditorParams = (params: any) => {
 
 
 
-moduleCellEditorParams = (params: any) => {
+  
+moduleCellEditorParams =  (params: any)  => {
   if(!isEmpty(this.OnlyValueRequriementModules)){
   console.warn("Data Exists")
   
   return this.OnlyValueRequriementModules
 }else{
+  console.log('data');
+  
 let filer:any={
   start:0,end:1000,filter:[{
     clause: "AND",
@@ -361,10 +393,18 @@ this.dataService.getDataByFilter("modules",filer).subscribe((res:any) =>{
       return
     }
   res.data[0].response.forEach((each:any)=>{
-  this.ValueToCompareRequriementModules.push({label:each.modulename,value:each.moduleid})
-  this.OnlyValueRequriementModules.push(each.modulename)
+
+  // Check if each.modulename is not already in OnlyValueRequriementModules
+if (!this.OnlyValueRequriementModules.includes(each.modulename)) {
+  this.ValueToCompareRequriementModules.push({ label: each.modulename, value: each.moduleid });
+  this.OnlyValueRequriementModules.push(each.modulename);
+}
+
 })  
 })
+if(params==true){
+  return this.ValueToCompareRequriementModules
+}
   return this.OnlyValueRequriementModules
 }};
 
@@ -380,7 +420,6 @@ this.dataService.getDataByFilter("modules",filer).subscribe((res:any) =>{
     debugger
 // ! UNDO
 
-console.log(this.response.project_id);
 if(this.formName=="module"){
     this.dataService.getModuleFilter("modules", this.response.project_id).subscribe((res: any) => {
       this.listData = []
@@ -415,22 +454,25 @@ if(this.formName=="module"){
       }]
     }
       this.dataService.getDataByFilter("requirement",filer).subscribe((res:any) =>{
-      
         let data:any[]= []     
         this.listData = []
         for (let idx = 0; idx < res.data[0].response.length; idx++) {
           const row = res.data[0].response[idx];
-        
-          if (row.parentmodulename == "" || !row.parentmodulename) {
-            row.treePath = [row.requirement_name];
-          } else {
-            const parentNode = data.find((d) => d.requirement_name == row.parentmodulename);
-            if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
-              row.treePath = [...parentNode.treePath];
-              row.treePath.push(row.requirement_name);
+            if(row && row?.module_id){
+              // Check if Data is Empty (it call function and return)
+              let datafound = this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;          
+              let findValue:any=datafound.find((val:any)=>val.value==row.module_id)
+              row.module_id = findValue?.label;
             }
-          }
-        
+            if (row.parentmodulename == "" || !row.parentmodulename) {
+              row.treePath = [row.requirement_name];
+            } else {
+              const parentNode = data.find((d) => d.requirement_name == row.parentmodulename);
+                  if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
+                    row.treePath = [...parentNode.treePath];
+                    row.treePath.push(row.requirement_name);
+                  }
+            }
           data.push(row);
         }
         
@@ -441,47 +483,38 @@ if(this.formName=="module"){
         data.forEach((res: any) => {
           const arrLength = res.treePath ? res.treePath.length : 0;
           if (arrLength === 1) {
-            res.index = parentTreeData.length + 1;
-            res.parentIndex=res.index
-            res.index=res.index + " "+res.requirement_name
-            childIndex = {};
-            parentTreeData.push(res);
+                res.index = parentTreeData.length + 1;
+                res.parentIndex=res.index
+                res.index=res.index + " "+res.requirement_name
+                childIndex = {};
+                parentTreeData.push(res);
           } else if (arrLength > 1) {
-            const parentKey = res.treePath.slice(0, -1).join('.');
-            const parentRequirementName = res.treePath[arrLength - 2];
-            const parent = data.find((d) => d.requirement_name === parentRequirementName);        
-            if (parent) {
-              if (!childIndex[parentKey]) {
-                childIndex[parentKey] = 1;
-              }
-console.log(parent.index,'parent.index');
-let index = parent.parentIndex + '.' + childIndex[parentKey]++;
-res.parentIndex=index
-        const childIndexable = childArr.find((d) => {        
-            console.log(d.index==index,'index',index,'d.index',d.index);
-            // console.log();
-          
-          d.index == index
-        });
-if(childIndexable===undefined){
-  let values:any=[...index]
-  console.log(values.find((d:any) => { Number.isInteger(d) }));
-  
-  res.index=index +" "+ res.requirement_name
-
-}else{
-  let index=childIndex[parentKey]++ +1
-  res.index = parent.parentIndex + '.' + index;
-}
-        console.log(childIndexable);
-        
-              childArr.push(res);
-            }
+              const parentKey = res.treePath.slice(0, -1).join('.');
+              const parentRequirementName = res.treePath[arrLength - 2];
+              const parent = data.find((d) => d.requirement_name === parentRequirementName);        
+                  if (parent) {
+                    if (!childIndex[parentKey]) {
+                      childIndex[parentKey] = 1;
+                    }
+                      console.log(parent.index,'parent.index');
+                      let index = parent.parentIndex + '.' + childIndex[parentKey]++;
+                      res.parentIndex=index
+                      const childIndexable = childArr.find((d) => {        
+                         d.index == index
+                      });
+                          if(childIndexable===undefined){
+                            res.index=index +" "+ res.requirement_name
+                           }else{
+                            let index=childIndex[parentKey]++ +1
+                            res.index = parent.parentIndex + '.' + index;
+                          }
+                    childArr.push(res);
+                  }
           }
         });
-        childArr.forEach((value:any)=>{
+        // childArr.forEach((value:any)=>{
           
-        })
+        // })
         this.listData = [...parentTreeData, ...childArr];
         
    
@@ -499,7 +532,15 @@ if(childIndexable===undefined){
     resizable: true,
     filter: true
   };
-
+public gridOptions: GridOptions = {
+  getDataPath:(data: any) => { 
+    return data.treePath;
+  },
+  autoGroupColumnDef:this.autoGroupColumnDef,
+treeData:true,
+groupDefaultExpanded:-1,
+animateRows:true,paginationPageSize:10
+}
   /** treepath  for ag grid */
   public getTreePath: GetDataPath = (data: any) => {
     return data.treePath;
@@ -546,8 +587,8 @@ if(childIndexable===undefined){
     let data: any = {};
     data[fieldName] = params.value;
 // ! UNDO
-if(fieldName=="sprint_id"){
-  let findValue:any=this.ValueToCompareRequriementSprint.find(val=>val.label==params.value)
+if(fieldName=="module_id"){
+  let findValue:any=this.ValueToCompareRequriementModules.find(val=>val.label==params.value)
   console.log(findValue);
   
   data[fieldName] = findValue.value;
@@ -592,27 +633,8 @@ if(fieldName=="sprint_id"){
  
   saveChild() { 
     if (!this.form.valid) {
-      
-    //   function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
-    //     for (const key in controls) {
-    //         if (controls.hasOwnProperty(key)) {
-    //             const control = controls[key];
-        
-    //             if (control instanceof FormGroup) {
-    //                 invalidLabels += collectInvalidLabels(control.controls);
-    //             } else if (control instanceof FormControl && control.status === 'INVALID') {
-    //                 // Access the label property assuming it exists in the control
-    //                 invalidLabels +=controls[key]._fields[0].props.label + ",";
-    //             }
-    //         }
-    //     }
-    //     return invalidLabels;
-    // }
-    // const invalidLabels:any = collectInvalidLabels(this.form.controls);
-
     const invalidLabels:any = this.helperServices.getDataValidatoion(this.form.controls);
       this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
-    // this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
      this.form.markAllAsTouched();
       return ;
     }
@@ -653,3 +675,103 @@ if(fieldName=="sprint_id"){
 
 
 
+
+// getContextMenuItems(
+//   params: GetContextMenuItemsParams
+// ): (string | MenuItemDef)[] {
+//   debugger
+//   var result: (string | MenuItemDef)[] = [
+//     // 'autoSizeAll',
+//     // 'resetColumns',
+//     // 'expandAll',
+//     // 'contractAll',
+//     'copy',
+//     'copyWithHeaders',
+//     'separator',
+//     // 'paste',
+//     {
+//       name: 'Changes Applicable to ',
+//       subMenu: [
+//         {
+//           name: 'Selected Data Only ',
+//           action: () => {
+//             if (params.context.componentParent.gridApi.getSelectedRows().length !== 0) {
+//               const columnApi = params.column?.getColId()
+//               params.context.componentParent.SelectedDataOnly(columnApi)
+//             } else {
+//               window.alert('No data Selected');
+//             }
+
+//           }
+//         }, {
+//           name: 'Apply All',
+//           action: () => {
+//             const columnApi = params.column?.getColId()
+//             params.context.componentParent.AllDAta(columnApi)
+//           }
+//         }]
+//     }
+//   ];
+//   return result;
+// }
+
+// SelectedDataOnly(columnKey: string) {
+//   debugger
+//   let value: any[] = []
+//   let total: any[] = this.gridApi.getSelectedRows()
+  
+//   for (const row of total) {
+//     console.log(row);
+    
+  
+//     value.push(row)
+
+//     // const transaction: RowDataTransaction = {
+//     //   update:
+//     //     [
+//     //       row
+//     //     ],
+//     // };
+//     // const result = this.gridApi.applyTransaction(transaction);
+//     // console.log(transaction, result)
+
+//   }
+//   console.log(value);
+//   // this.gridApi.setDataValue('sdadsa',[] )
+//   // this.gridApi.setRowData(value)
+//   this.gridApi.deselectAll()
+//   value.forEach((data: any) => {
+//   console.log(data);
+  
+//     // this.dataService.updateById("rate_card", data._id, row).subscribe((res: any) => {
+//     //   console.log(res);
+//     // })
+//   })
+// }
+// AllDAta(columnKey: string) {
+//   debugger
+//   let value: any[] = []
+//   this.gridApi.forEachLeafNode((node: any) => {
+//     console.log(node);
+  
+//     node.data.isEnabled = true
+//     // const transaction: RowDataTransaction = {
+//     //   update:
+//     //     [
+//     //       node.data
+//     //     ],
+//     // };
+//     // const result = this.gridApi.applyTransaction(transaction);
+//     // console.log(transaction, result)
+//     value.push(node.data)
+//   })
+//   this.gridApi.deselectAll()
+//   value.forEach((data: any) => {
+//     let row: any = {}
+    
+//     // this.dataService.updateById("rate_card", data._id, row).subscribe((res: any) => {
+//     //   console.log(res);
+//     // })
+//   })
+//   // this.gridApi.selectAll()
+// }

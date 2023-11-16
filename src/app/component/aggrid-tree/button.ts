@@ -69,6 +69,14 @@ import { FormService } from "src/app/services/form.service";
           <mat-icon>delete</mat-icon>
           <span>Delete</span>
         </button>
+         <button mat-menu-item (click)="onClickMenuItem('task', params.data)">
+          <mat-icon>task</mat-icon>
+          <span>Task</span>
+        </button>
+        <button mat-menu-item (click)="onClickMenuItem('testcase', this)">
+          <mat-icon>description</mat-icon>
+          <span>Testcase</span>
+        </button>
       </mat-menu>
     </div>
     
@@ -210,6 +218,8 @@ parentRouteName:any
     } else if (formAction == "task") {
       this.dataService.loadConfig("task").subscribe((frmConfig: any) => {
         this.formAction = "Add";
+        this.model_heading="Task - Add"
+
         this.config = frmConfig;
         this.fields = frmConfig.form.fields;
         sessionStorage.setItem("project_id", this.gridData.project_id);
@@ -221,7 +231,8 @@ parentRouteName:any
 
         this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
           this.formAction = "Edit";
-          this.config = frmConfig;
+         data.isEdit=true;
+         this.config = frmConfig;
           this.fields = frmConfig.form.fields;
           this.dialog.openDialog(this.modulesViewPopup,null, null, data);
         });
@@ -230,7 +241,8 @@ parentRouteName:any
 
         this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
           this.formAction = "Edit";
-          this.config = frmConfig;
+         data.isEdit=true;
+         this.config = frmConfig;
           this.fields = frmConfig.form.fields;
           this.dialog.openDialog(this.modulesViewPopup,null, null, data);
         });
@@ -264,6 +276,11 @@ parentRouteName:any
        this.dialog.openDialog(this.modulesViewPopup,null, null, {});
      });
    } else if (formAction == "edit" ) {
+    if(data && data?.module_id){
+    let findValue:any=this.ParentComponent.ValueToCompareRequriementModules.find(val=>val.label==data?.module_id)
+    console.log(findValue.value);
+    data.module_id= findValue.value;
+    }
      if( data.parentmodulename==''){
        this.model_heading="Requirement - Edit"
 
@@ -271,6 +288,7 @@ parentRouteName:any
          this.formAction = "Edit";
          this.config = frmConfig;
          this.fields = frmConfig.form.fields;
+         data.isEdit=true;
          this.dialog.openDialog(this.modulesViewPopup,null, null, data);
        });
      }else{
@@ -279,6 +297,7 @@ parentRouteName:any
        this.dataService.loadConfig(this.parentRouteName.toLowerCase()).subscribe((frmConfig: any) => {
          this.formAction = "Edit";
          this.config = frmConfig;
+         data.isEdit=true;
          this.fields = frmConfig.form.fields;
          this.dialog.openDialog(this.modulesViewPopup,null, null, data);
        });
