@@ -56,6 +56,7 @@ func PostDocHandler(c *fiber.Ctx) error {
 			return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
 		}
 	}
+	helper.UpdateDateObject(inputData)
 	// user collection is here that time only password validation
 	if collectionName == "user" {
 		// user collection only OnboadingProcessing for send the mail to activation --METHOD OnboardingProcessing

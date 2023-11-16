@@ -241,22 +241,21 @@ func CreateCusotmColumns(Data []bson.M, CustomColumns []CustomColumn, Basecollec
 
 	return aggregation
 }
-
 func CreateSelectedColumn(CustomColumns []SelectedListItem, BaseCollection string) []bson.M {
 	fieldsToProject := bson.M{}
 
 	for _, field := range CustomColumns {
-		fieldName := field.FieldName
+		// fieldName := field.FieldName
 
-		if BaseCollection != field.ParentCollectionName {
-			if field.ParentCollectionName != "" {
+		// if BaseCollection != field.ParentCollectionName {
+		// 	if field.ParentCollectionName != "" {
 
-				fieldName = field.ParentCollectionName + "." + fieldName
+		// 		fieldName = field.ParentCollectionName + "." + fieldName
 
-			}
-		}
+		// 	}
+		// }
 
-		fieldsToProject[fieldName] = 1
+		fieldsToProject[field.Field] = 1
 	}
 
 	expressions := []bson.M{

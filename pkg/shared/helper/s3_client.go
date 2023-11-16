@@ -117,6 +117,7 @@ func FileUpload(c *fiber.Ctx) error {
 		apiResponse := bson.M{"_id": id, "ref_id": refId, "uploaded_by": token.UserId, "folder": fileCategory, "file_name": file[0].Filename, "storage_name": storageName, "size": file[0].Size} // "extn": filepath.Ext(fileName),
 		//S3
 		InsertData(c, orgId, "user_files", apiResponse) //Without Struct
+
 		result = append(result, apiResponse)
 
 		// fmt.Printf("User Id %s, File Name:%s, Size:%d", "test", fileName, file[0].Size)

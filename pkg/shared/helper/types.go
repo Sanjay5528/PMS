@@ -71,11 +71,13 @@ type CustomColumn struct {
 }
 
 type SelectedListItem struct {
-	Name                 string `json:"name,omitempty" bson:"name,omitempty"`
-	FieldName            string `json:"field_name,omitempty" bson:"field_name,omitempty"`
-	ParentCollectionName string `json:"parentCollectionName,omitempty" bson:"parentCollectionName,omitempty"`
-	Type                 string `json:"type,omitempty" bson:"type,omitempty"`
-	Hide                 bool   `json:"hide,omitempty" bson:"hide,omitempty"`
+	// Name                 string `json:"name,omitempty" bson:"name,omitempty"`
+	// FieldName            string `json:"field_name,omitempty" bson:"field_name,omitempty"`
+	// ParentCollectionName string `json:"parentCollectionName,omitempty" bson:"parentCollectionName,omitempty"`
+	// Type                 string `json:"type,omitempty" bson:"type,omitempty"`
+	// Hide                 bool   `json:"hide,omitempty" bson:"hide,omitempty"`
+	Field      string `json:"field",bson:"field"`
+	HeaderName string `json:"headerName"bson:"headerName"`
 }
 
 type FilterParam struct {

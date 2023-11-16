@@ -363,6 +363,7 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 		Pipeline = append(Pipeline, filterPipelines)
 
 	}
+
 	//Project the pipeline
 	if len(inputData.SelectedList) > 0 {
 		selectedColumns := CreateSelectedColumn(inputData.SelectedList, inputData.DataSetBaseCollection)
@@ -386,6 +387,7 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 		pipelinestring := createFilterParams(inputData.FilterParams, pipelinestring)
 		// if filter params here that time to replace the old pipeline
 		inputData.Pipeline = pipelinestring
+
 		// convert the pipeline
 		err := bson.UnmarshalExtJSON([]byte(pipelinestring), true, &Pipeline)
 		if err != nil {
@@ -393,38 +395,32 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 
 		}
 
+		// := Datatypechanging(Pipeline)
 	}
 
 	// if len(inputData.FilterParams) > 0 {
 	// 	inputData.Reference_pipeline = pipelinestring
 	// 	pipelinestring := createFilterParams(inputData.FilterParams, pipelinestring)
+	// 	// if filter params here that time to replace the old pipeline
+	// 	// inputData.Pipeline = pipelinestring
 
-	// 	pipelinestringbson := []bson.M{}
-
-	// 	err := bson.UnmarshalExtJSON([]byte(pipelinestring), true, &pipelinestringbson)
+	// 	// convert the pipeline
+	// 	err := bson.UnmarshalExtJSON([]byte(pipelinestring), true, &Pipeline)
 	// 	if err != nil {
 	// 		fmt.Println("Error parsing pipeline:", err)
 
 	// 	}
 
-	// 	// UpdateDatatypes -- To build the Pipeline from pipeline variable
-	// 	Datas := UpdateDatatypes(pipelinestringbson)
-	// 	// stringfilterpipeline := interfaceretrunstring(Datas)
+	// 	// Datatypechanging -- To build the Pipeline from pipeline variable
 
-	// 	// if filter params here that time to replace the old pipeline
-
-	// 	Pipeline = []bson.M{}
-	// 	Pipeline = append(Pipeline, Datas...)
+	// 	// Datas := Datatypechanging(Pipeline)
+	// 	// // if filter params here that time to replace the old pipeline
+	// 	// Pipeline = []bson.M{}
+	// 	// Pipeline = append(Pipeline, Datas)
 	// 	inputData.Pipeline = pipelinestring
 
-	// 	// // convert the pipeline
-	// 	// err = bson.UnmarshalExtJSON([]byte(stringfilterpipeline), true, &Pipeline)
-	// 	// if err != nil {
-	// 	// 	fmt.Println("Error parsing pipeline:", err)
-
-	// 	// }
-
 	// }
+
 	//final pagination TO add the Filter
 	PagiantionPipeline := PagiantionPipeline(inputData.Start, inputData.End)
 	Pipeline = append(Pipeline, PagiantionPipeline)
@@ -433,6 +429,7 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 	if err != nil {
 		return DataSetConfiguration{}, nil
 	}
+
 	// this PreviewResponse
 	PreviewResponse := fiber.Map{
 		"status": "success",
@@ -456,6 +453,121 @@ func InsertDataDb(orgId string, inputData interface{}, collectionName string) (f
 	}
 	return InsertResponse, err
 }
+
+func Datatypechanging(Data []bson.M) bson.M {
+	// output := []bson.M{}
+	var Datareturn bson.M
+	for _, stage := range Data {
+		if matchStage, ok := stage["$match"].(bson.M); ok {
+			matchedPipeline := processMatchStage(matchStage)
+			Datareturn = bson.M{"$match": matchedPipeline}
+		}
+	}
+	return Datareturn
+}
+
+func processMatchStage(matchStage bson.M) interface{} {
+	var outputData interface{}
+	for key, value := range matchStage {
+		opertorevalues := processAndOrValue(key, value)
+		outputData = opertorevalues
+
+	}
+
+	return outputData
+}
+
+func processAndOrValue(key string, value interface{}) interface{} {
+	Finaloutput := []bson.M{}
+	switch key {
+	case "$and", "$or":
+		if array, ok := value.(primitive.A); ok {
+			// processedArray := make([]interface{}, len(array))
+			for _, item := range array {
+				switch dataType := item.(type) {
+
+				case primitive.M:
+
+					for keys, value := range dataType {
+
+						valuebroken := valuebroken(value)
+						// fmt.Println(keys, valuebroken)
+						fmt.Println(keys)
+						Finaloutput = append(Finaloutput, bson.M{keys: valuebroken})
+					}
+
+				}
+
+			}
+			// return processedArray
+		} else {
+			return value
+		}
+
+	}
+	return Finaloutput
+}
+func valuebroken(data interface{}) interface{} {
+	keyoutput := bson.M{}
+
+	switch dataType := data.(type) {
+
+	case primitive.M:
+
+		for key, value := range dataType {
+			// return createQueryPipeline(value)
+			pipeline := createQueryPipeline(value)
+			keyoutput[key] = pipeline
+		}
+
+	case primitive.A:
+
+		for key, value := range dataType {
+			// // return createQueryPipeline(value)
+			// pipeline := createQueryPipeline(value)
+			// keyoutput[key] = pipeline
+			fmt.Println(key, value)
+		}
+	}
+
+	return keyoutput
+}
+
+// for key, value := range data.(bson.M) {
+// 	// return createQueryPipeline(value)
+// 	pipeline := createQueryPipeline(value)
+// 	values := bson.M{key: pipeline}
+// 	keyoutput = values
+// }
+// func processValue(value interface{}) interface{} {
+// 	switch v := value.(type) {
+// 	case int:
+// 		return v
+// 	case float64:
+// 		return v
+// 	case string:
+// 		// Check if it's a date and time string
+// 		if t, err := time.Parse(time.RFC3339, v); err == nil {
+// 			return t
+// 		} else {
+// 			return v
+// 		}
+// 	case map[string]interface{}:
+// 		processedMap := make(map[string]interface{})
+// 		for key, val := range v {
+// 			processedMap[key] = processValue(val)
+// 		}
+// 		return processedMap
+// 	case []interface{}:
+// 		processedArray := make([]interface{}, len(v))
+// 		for i, item := range v {
+// 			processedArray[i] = processValue(item)
+// 		}
+// 		return processedArray
+// 	default:
+// 		return v
+// 	}
+// }
 
 // DatasetsRetrieve  -- METHOD PURPOSE Get the Filter pipeline in Db to show the data
 func DatasetsRetrieve(c *fiber.Ctx) error {
@@ -549,6 +661,7 @@ func UpdateDatatypes(pipeline []bson.M) []bson.M {
 
 Recusively call the  Method for Datatype converntiuon
 */
+
 func createQueryPipeline(data interface{}) interface{} {
 	// Check the Every DataType to incoming
 	switch dataType := data.(type) {
@@ -573,6 +686,7 @@ func createQueryPipeline(data interface{}) interface{} {
 		}
 		return outputArray
 	default:
+
 		// if return final interface{} to ge the convert the data type to  ConvertToDataType
 		return ConvertToDataType(data, reflect.TypeOf(data).String())
 	}

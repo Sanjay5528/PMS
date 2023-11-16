@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
 	"strconv"
 	"time"
 
@@ -213,7 +214,7 @@ func FindDocs(orgId, collection string, filter interface{}) (map[string]interfac
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			// Handle case when no document matches the filter
-			return nil, fmt.Errorf("No document found")
+			// return nil, fmt.Errorf("No document found")
 		}
 		// Handle other errors
 		return nil, err
@@ -294,6 +295,7 @@ func GenerateAggregationPipeline(condition ConditionGroup, basecollection string
 	//OpertorMap check we Sended In body to map
 	if operator, exists := operatorMap[condition.Operator]; exists {
 		conditionValue := ConvertToDataType(value, condition.Type)
+
 		if condition.Operator == "INRANGE" || condition.Operator == "IN_BETWEEN" {
 			if condition.Type == "date" || condition.Type == "time.Time" {
 				dateValues, isDate := value.([]interface{})
@@ -337,6 +339,21 @@ func GenerateAggregationPipeline(condition ConditionGroup, basecollection string
 
 			conditions = append(conditions, bson.M{column: bson.M{operator: value.([]interface{})}})
 
+		} else if condition.Operator == "EQUALS" && condition.Type == "time.Time" {
+
+			t, _ := conditionValue.(time.Time)
+			StartedDay := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)
+			endDate := time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 999999999, time.UTC)
+
+			filter := bson.M{
+				column: bson.M{
+					"$gte": StartedDay,
+					"$lte": endDate,
+				},
+			}
+
+			conditions = append(conditions, filter)
+
 		} else {
 
 			conditions = append(conditions, bson.M{column: bson.M{operator: conditionValue}})
@@ -349,6 +366,7 @@ func GenerateAggregationPipeline(condition ConditionGroup, basecollection string
 	} else if condition.Clause == "OR" {
 		conditions = append(conditions, bson.M{"$or": conditions})
 	}
+
 	return conditions
 }
 
@@ -384,7 +402,8 @@ func PagiantionPipeline(start, end int) bson.M {
 
 // ConvertToDataType --METHOD Build the Datatype from Paramters
 func ConvertToDataType(value interface{}, DataType string) interface{} {
-	if DataType == "time.Time" || DataType == "date" {
+
+	if DataType == "time.Time" {
 		if valStr, ok := value.(string); ok {
 			t, err := time.Parse(time.RFC3339, valStr)
 			if err == nil {
@@ -429,3 +448,43 @@ func UpdateDataToDb(orgId string, filter interface{}, Data interface{}, collecti
 
 	return UpdatetResponse, err
 }
+
+func UpdateDateObject(input map[string]interface{}) error {
+	for k, v := range input {
+		if v == nil {
+			continue
+		}
+		ty := reflect.TypeOf(v).Kind().String()
+		if ty == "string" {
+			val := reflect.ValueOf(v).String()
+			t, err := time.Parse(time.RFC3339, val)
+			if err == nil {
+				input[k] = t.UTC()
+			}
+		} else if ty == "map" {
+			return UpdateDateObject(v.(map[string]interface{}))
+		} else if ty == "slice" {
+			for _, e := range v.([]interface{}) {
+				if reflect.TypeOf(e).Kind().String() == "map" {
+					return UpdateDateObject(e.(map[string]interface{}))
+				}
+			}
+		}
+	}
+	return nil
+}
+
+// else if (condition.Operator == "EQUALS" || condition.Type == "time.Time") || (condition.Operator == "EQUALS" || condition.Type == "date") {
+
+// if valStr, ok := conditionValue.(string); ok {
+// 	t, _ := time.Parse(time.RFC3339, valStr)
+// 	StartedDay := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)
+// 	endDate := time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 999999999, time.UTC)
+// 	filter := bson.M{
+// 		"$gte": StartedDay,
+// 		"$lte": endDate,
+// 	}
+// 	conditions = append(conditions, bson.M{column: filter})
+// }
+
+// }
