@@ -88,7 +88,7 @@ func SetupLookupRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/lookup", "Data Lookup API")
 	// r.Post("/", DataLookupDocsHandler)
 
-	r.Get("/requriment/:object_id", RequrimentObjectproject)
+	r.Get("/requriment/", RequrimentObjectproject)
 
 	r.Get("/timesheet/:employee_id/:scheduledstartdate", TimeSheetByIdHandler)
 	r.Get("/task/:employee_id", taskHandler)

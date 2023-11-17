@@ -31,21 +31,40 @@ type FieldValuePair struct {
 	FieldName  string      `json:"fieldname" bson:"fieldname"`
 	FieldValue interface{} `json:"fieldvalue" bson:"fieldvalue"`
 }
+type FilterParams struct {
+	ParamsName     string `json:"ParamsName"`
+	ParamsDataType string `json:"parmsDataType"`
+}
 type FilterCondition struct {
 	Clause     string           `json:"clause,omitempty" bson:"clause,omitempty"`
-	Conditions []ConditionGroup `json:"conditions,omitempty" bson:"condition,omitempty"`
+	Conditions []ConditionGroup `json:"conditions,omitempty" bson:"conditions,omitempty"`
+}
+type ConditionGroup struct {
+	Operator             string           `json:"operator" bson:"operator"`
+	Column               string           `json:"column" bson:"column"`
+	ParentCollectionName string           `json:"parentCollectionName" bson:"parentCollectionName"`
+	Value_type           string           `json:"value_type" bson:"value_type"`
+	Type                 string           `json:"type" bson:"type"`
+	Value                interface{}      `json:"value" bson:"value"`
+	Clause               string           `json:"clause" bson:"clause"`
+	Conditions           []ConditionGroup `json:"conditions" bson:"conditions"`
 }
 
-type ConditionGroup struct {
-	Type                 string           `json:"type,omitempty" bson:"type,omitempty"`
-	Column               string           `json:"column,omitempty" bson:"column,omitempty"`
-	Operator             string           `json:"operator,omitempty" bson:"operator,omitempty"`
-	Value                interface{}      `json:"value,omitempty" bson:"value,omitempty"`
-	Clause               string           `json:"clause,omitempty" bson:"clause,omitempty"`
-	ValueType            interface{}      `json:"value_type,omitempty" bson:"value_type,omitempty"`
-	ParentCollectionName string           `json:"parentCollectionName,omitempty" bson:"parentCollectionName,omitempty"`
-	Conditions           []ConditionGroup `json:"conditions,omitempty" bson:"conditions,omitempty"`
-}
+// type FilterCondition struct {
+// 	Clause     string           `json:"clause,omitempty" bson:"clause,omitempty"`
+// 	Conditions []ConditionGroup `json:"conditions,omitempty" bson:"condition,omitempty"`
+// }
+
+// type ConditionGroup struct {
+// 	Type                 string           `json:"type,omitempty" bson:"type,omitempty"`
+// 	Column               string           `json:"column,omitempty" bson:"column,omitempty"`
+// 	Operator             string           `json:"operator,omitempty" bson:"operator,omitempty"`
+// 	Value                interface{}      `json:"value,omitempty" bson:"value,omitempty"`
+// 	Clause               string           `json:"clause,omitempty" bson:"clause,omitempty"`
+// 	ValueType            interface{}      `json:"value_type,omitempty" bson:"value_type,omitempty"`
+// 	ParentCollectionName string           `json:"parentCollectionName,omitempty" bson:"parentCollectionName,omitempty"`
+// 	Conditions           []ConditionGroup `json:"conditions,omitempty" bson:"conditions,omitempty"`
+// }
 
 type AggregationField struct {
 	Name                 string `json:"name,omitempty" bson:"name,omitempty"`
@@ -78,7 +97,6 @@ type CustomColumn struct {
 }
 
 type SelectedListItem struct {
-	 
 	Field      string `json:"field",bson:"field"`
 	HeaderName string `json:"headerName"bson:"headerName"`
 }

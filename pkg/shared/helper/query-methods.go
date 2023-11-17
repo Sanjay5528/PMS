@@ -248,7 +248,7 @@ func BuildAggregationPipeline(inputData []FilterCondition, BasecollectionName st
 func GenerateAggregationPipeline(condition ConditionGroup, basecollection string) []bson.M {
 	conditions := []bson.M{}
 
-	//* If Nested Conditions Here that time Recursively load the filter
+	// //* If Nested Conditions Here that time Recursively load the filter
 	if len(condition.Conditions) > 0 {
 		nestedConditions := []bson.M{}
 		for _, nestedCondition := range condition.Conditions {
@@ -360,12 +360,12 @@ func GenerateAggregationPipeline(condition ConditionGroup, basecollection string
 		}
 	}
 
-	//Caluse Binding
-	if condition.Clause == "AND" {
-		conditions = append(conditions, bson.M{"$and": conditions})
-	} else if condition.Clause == "OR" {
-		conditions = append(conditions, bson.M{"$or": conditions})
-	}
+	// //Caluse Binding
+	// if condition.Clause == "AND" {
+	// 	conditions = append(conditions, bson.M{"$and": conditions})
+	// } else if condition.Clause == "OR" {
+	// 	conditions = append(conditions, bson.M{"$or": conditions})
+	// }
 
 	return conditions
 }
