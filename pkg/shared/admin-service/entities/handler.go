@@ -47,10 +47,8 @@ func PostDocHandler(c *fiber.Ctx) error {
 	if err != nil {
 		shared.BadRequest("Invalid CollectionName")
 	}
-
 	var inputData map[string]interface{}
 	c.BodyParser(&inputData)
-
 	helper.UpdateDateObject(inputData)
 
 	// user collection is here that time only password validation
@@ -2076,6 +2074,8 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 				},
 			},
 		},
+		bson.D{{"$unset", "task"}},
+		bson.D{{"$unset", "testcase"}},
 	}
 
 	response, err := helper.GetAggregateQueryResult(org.Id, "requirement", filter)
