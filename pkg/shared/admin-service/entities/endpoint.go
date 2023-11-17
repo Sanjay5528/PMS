@@ -37,7 +37,7 @@ func SetupCRUDRoutes(app *fiber.App) {
 
 	//Old pms code above the endpoint
 	r.Get("/clients/:name", ActiveClientHandler)                           //todo
-	r.Get("/filter/:collectionName/:projectid", getDocByIddHandler)        //todod
+	r.Get("/filter/:collectionName/:projectid", getDocByIddHandler)        //remove
 	r.Get("/filters/:collectionName/:clientname", getDocByClientIdHandler) //todo
 }
 
@@ -51,7 +51,6 @@ func SetupGroupRoutes(app *fiber.App) {
 // Data set
 func SetupDatasets(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/dataset", "Data Sets")
-
 	r.Post("/config/:options?", helper.DatasetsConfig)
 	r.Post("/data/:datasetname", helper.DatasetsRetrieve)
 	r.Put("/:datasetname", helper.UpdateDataset)

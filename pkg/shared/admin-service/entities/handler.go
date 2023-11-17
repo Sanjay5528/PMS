@@ -249,7 +249,7 @@ func getDocByIddHandler(c *fiber.Ctx) error {
 	}
 	collectionName := c.Params("collectionName")
 	projectid := c.Params("projectid")
-
+	// module Collection
 	filter := bson.A{
 		bson.D{{"$match", bson.D{{"project_id", projectid}}}},
 		bson.D{
@@ -2081,8 +2081,7 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{{"$unset", "task"}},
-		bson.D{{"$unset", "testcase"}},
+		
 	}
 
 	response, err := helper.GetAggregateQueryResult(org.Id, "requirement", filter)
