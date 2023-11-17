@@ -300,7 +300,7 @@ func ProjectColumn(projectColumn []ProjectData, BaseCollection string) []bson.M 
 
 func MasterAggregationPipeline(request PaginationRequest, c *fiber.Ctx) []bson.M {
 	Pipeline := []bson.M{}
-
+	fmt.Println("insert")
 	if len(request.Filter) > 0 {
 		FilterConditions := BuildAggregationPipeline(request.Filter, "")
 		Pipeline = append(Pipeline, FilterConditions)
@@ -312,7 +312,7 @@ func MasterAggregationPipeline(request PaginationRequest, c *fiber.Ctx) []bson.M
 		sortConditions := buildSortConditions(request.Sort)
 		Pipeline = append(Pipeline, sortConditions)
 	}
-
+	fmt.Println("before", Pipeline)
 	return Pipeline
 }
 
@@ -440,12 +440,21 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 		pipelinestring := createFilterParams(inputData.FilterParams, pipelinestring)
 		// if filter params here that time to replace the old pipeline
 		// convert the pipeline
-		var doc []primitive.M
-		err := bson.UnmarshalExtJSON([]byte(pipelinestring), true, &doc)
+		// Parse the provided string into a slice of BSON documents for the pipeline.
+		pipelines := []primitive.M{}
+		err = json.Unmarshal([]byte(pipelinestring), &pipelines)
 		if err != nil {
+			// return shared.BadRequest("Cannot Find the String")
 
 		}
 
+		//finalpipeline -- Build the Final append filter pipeline
+		var finalpipeline []bson.M
+		//UpdateDatatypes -- To build the Pipeline from pipeline variable
+		Updatedpipeline := UpdateDatatypes(pipelines)
+
+		finalpipeline = append(finalpipeline, Updatedpipeline...)
+		Pipeline = finalpipeline
 		inputData.Pipeline = pipelinestring
 
 	}
@@ -485,122 +494,6 @@ func InsertDataDb(orgId string, inputData interface{}, collectionName string) (f
 	}
 	return InsertResponse, err
 }
-
-func Datatypechanging(Data []primitive.M) []bson.M {
-	var Datareturn []bson.M
-
-	for _, stage := range Data {
-		if matchStage, ok := stage["$match"].(bson.M); ok {
-			matchedPipeline := processMatchStage(matchStage)
-			Datareturn = append(Datareturn, bson.M{"$match": matchedPipeline})
-		}
-	}
-
-	return Datareturn
-}
-
-func processMatchStage(matchStage bson.M) interface{} {
-	var outputData interface{}
-	for key, value := range matchStage {
-		opertorevalues := processAndOrValue(key, value)
-		outputData = opertorevalues
-
-	}
-
-	return outputData
-}
-
-func processAndOrValue(key string, value interface{}) interface{} {
-	Finaloutput := []bson.M{}
-	switch key {
-	case "$and", "$or":
-		if array, ok := value.(primitive.A); ok {
-			// processedArray := make([]interface{}, len(array))
-			for _, item := range array {
-				switch dataType := item.(type) {
-
-				case primitive.M:
-
-					for keys, value := range dataType {
-
-						valuebroken := valuebroken(value)
-						// fmt.Println(keys, valuebroken)
-						fmt.Println(keys)
-						Finaloutput = append(Finaloutput, bson.M{keys: valuebroken})
-					}
-
-				}
-
-			}
-			// return processedArray
-		} else {
-			return value
-		}
-
-	}
-	return Finaloutput
-}
-func valuebroken(data interface{}) interface{} {
-	keyoutput := bson.M{}
-
-	switch dataType := data.(type) {
-
-	case primitive.M:
-
-		for key, value := range dataType {
-			// return createQueryPipeline(value)
-			pipeline := createQueryPipeline(value)
-			keyoutput[key] = pipeline
-		}
-
-	case primitive.A:
-
-		for key, value := range dataType {
-			// // return createQueryPipeline(value)
-			// pipeline := createQueryPipeline(value)
-			// keyoutput[key] = pipeline
-			fmt.Println(key, value)
-		}
-	}
-
-	return keyoutput
-}
-
-// for key, value := range data.(bson.M) {
-// 	// return createQueryPipeline(value)
-// 	pipeline := createQueryPipeline(value)
-// 	values := bson.M{key: pipeline}
-// 	keyoutput = values
-// }
-// func processValue(value interface{}) interface{} {
-// 	switch v := value.(type) {
-// 	case int:
-// 		return v
-// 	case float64:
-// 		return v
-// 	case string:
-// 		// Check if it's a date and time string
-// 		if t, err := time.Parse(time.RFC3339, v); err == nil {
-// 			return t
-// 		} else {
-// 			return v
-// 		}
-// 	case map[string]interface{}:
-// 		processedMap := make(map[string]interface{})
-// 		for key, val := range v {
-// 			processedMap[key] = processValue(val)
-// 		}
-// 		return processedMap
-// 	case []interface{}:
-// 		processedArray := make([]interface{}, len(v))
-// 		for i, item := range v {
-// 			processedArray[i] = processValue(item)
-// 		}
-// 		return processedArray
-// 	default:
-// 		return v
-// 	}
-// }
 
 // DatasetsRetrieve  -- METHOD PURPOSE Get the Filter pipeline in Db to show the data
 func DatasetsRetrieve(c *fiber.Ctx) error {
