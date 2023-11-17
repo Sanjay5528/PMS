@@ -361,11 +361,11 @@ func GenerateAggregationPipeline(condition ConditionGroup, basecollection string
 	}
 
 	// //Caluse Binding
-	// if condition.Clause == "AND" {
-	// 	conditions = append(conditions, bson.M{"$and": conditions})
-	// } else if condition.Clause == "OR" {
-	// 	conditions = append(conditions, bson.M{"$or": conditions})
-	// }
+	if condition.Clause == "AND" {
+		conditions = append(conditions, bson.M{"$and": conditions})
+	} else if condition.Clause == "OR" {
+		conditions = append(conditions, bson.M{"$or": conditions})
+	}
 
 	return conditions
 }
