@@ -144,26 +144,10 @@ export class FormService {
       console.log(ctrl);
       
       if (!ctrl.detailForm.valid) {
-        function collectInvalidLabels(controls: any, invalidLabels: string = ''): string {
-          for (const key in controls) {
-              if (controls.hasOwnProperty(key)) {
-                  const control = controls[key];
-          
-                  if (control instanceof FormGroup) {
-                      invalidLabels += collectInvalidLabels(control.controls);
-                  } else if (control instanceof FormControl && control.status === 'INVALID') {
-                      // Access the label property assuming it exists in the control
-                      invalidLabels +=controls[key]._fields[0].props.label + ",";
-                  }
-              }
-          }
-          return invalidLabels;
-      }
-      const invalidLabels:any = collectInvalidLabels(ctrl.detailForm.controls);
+       
+      const invalidLabels:any = this.helperService.getDataValidatoion(ctrl.detailForm.controls);
       this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
      ctrl.detailForm.markAllAsTouched();
-
-        // this.dialogService.openSnackBar("Error in detailed data or missing mandatory fields", "OK")
         ctrl.detailForm.fields[ctrl.detailDefaultFocusIndex].focus = true
         resolve(false)
         return
@@ -311,8 +295,13 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
   return
 }
 }
-          let id =data._id
+          // let id =data._id
+          if(ctrl.keyColumn == undefined){
+            ctrl.keyColumn='_id'
+          }
+          var id :any=ctrl.selectedRow[ctrl.keyColumn]
           delete data._id //? IdK
+
           this.dataService.update(ctrl.config.detailForm.collectionName, id,   data).subscribe(
             res => {
               ctrl.isEditMode = false

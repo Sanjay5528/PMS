@@ -191,6 +191,11 @@ export class DataService {
 public lookup(orgID:any){
   return this.http.get(this.getWsBaseUrl()+"query/"+orgID)
 }
+
+public lookupRequriment(project_id:any){
+  return this.http.get(this.getWsBaseUrl()+"lookup/requriment/"+project_id)
+}
+// lookup/requriment/
 /**
  * This method USed to verfiy the activation of the key in parms
  */

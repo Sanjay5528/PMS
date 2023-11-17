@@ -30,6 +30,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { HelperService } from 'src/app/services/helper.service';
 import { Location } from '@angular/common';
 import { isEmpty } from 'lodash';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-aggrid-tree',
@@ -45,9 +46,10 @@ export class AggridTreeComponent {
   public listData: any[] = []
   groupDefaultExpanded = -1;
   data: any[] = [];
-  selectedRows: any[] = []
+  selectedRows: any
   components: any;
-  
+  @ViewChild("drawer") drawer!: MatSidenav;
+
   context: any
   fields: FormlyFieldConfig[] = [];
   config: any
@@ -117,7 +119,6 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
 
     // },
   ]
-  selectedRow: any;
   formAction: any;
   formName: any;
   doAction: any;
@@ -279,13 +280,13 @@ loadConfig(formName:any){
       },
     }, {
       headerName: 'Test Case Count',
-      field: 'test_count',
+      field: 'testcasecount',
       width: 40,
       editable: false,
       filter: 'agNumberColumnFilter',
     }, {
       headerName: 'Task Count',
-      field: 'task_count',
+      field: 'taskcount',
       width: 40,
       editable: false,
       filter: 'agNumberColumnFilter',
@@ -443,6 +444,7 @@ if(this.formName=="module"){
       }
     });
   }else{
+    
     let filer:any={
       start:0,end:1000,filter:[{
         
@@ -453,11 +455,13 @@ if(this.formName=="module"){
         
       }]
     }
-      this.dataService.getDataByFilter("requirement",filer).subscribe((res:any) =>{
+      // this.dataService.getDataByFilter("requirement",filer)
+      this.dataService.lookupRequriment(this.response.project_id).subscribe((res:any) =>{
         let data:any[]= []     
         this.listData = []
-        for (let idx = 0; idx < res.data[0].response.length; idx++) {
-          const row = res.data[0].response[idx];
+        
+        for (let idx = 0; idx < res.data.response.length; idx++) {
+          const row = res.data.response[idx];
             if(row && row?.module_id){
               // Check if Data is Empty (it call function and return)
               let datafound = this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;          
@@ -545,7 +549,16 @@ animateRows:true,paginationPageSize:10
   public getTreePath: GetDataPath = (data: any) => {
     return data.treePath;
   };
+  cellClicked:any
+  onCellClicked(event: any){
+let clickCell:any=event.column.getColId()
+    if(clickCell== 'testcasecount'||clickCell=="taskcount"){
+      console.log(event.data);
+      this.cellClicked=clickCell
+      this.drawer.toggle()
+    }
 
+  }
   close(event: any) {
     this.dialogService.closeModal();
     this.gridApi.deselectAll();
@@ -573,10 +586,11 @@ animateRows:true,paginationPageSize:10
 
   onSelectionChanged(params: any) {
     debugger
-    let rowSelected = this.gridApi.getSelectedRows();
-    console.log("hiiii", rowSelected)
+    console.log(params);
+    
+    this.selectedRows= this.gridApi.getSelectedRows()[0];
 
-    // localStorage.setItem("project", JSON.stringify(rowSelected))
+    console.log("hiiii",this.selectedRows)
   }
   onCellValueChanged(params: any) {
     debugger

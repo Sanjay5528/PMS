@@ -14,6 +14,7 @@ import { DialogService } from "src/app/services/dialog.service";
 import { AggridTreeComponent } from "./aggrid-tree.component";
 import { FormGroup } from "@angular/forms";
 import { FormService } from "src/app/services/form.service";
+import { HelperService } from "src/app/services/helper.service";
 // import { DataService } from "../services/data.service";
 // import { DialogService } from "../services/dialog.service";
 // import { ProductComponent } from "./product.component";
@@ -69,13 +70,13 @@ import { FormService } from "src/app/services/form.service";
           <mat-icon>delete</mat-icon>
           <span>Delete</span>
         </button>
-         <button mat-menu-item (click)="onClickMenuItem('task', params.data)">
+         <button mat-menu-item (click)="onClickRequirementMenuItem('task', params.data)">
           <mat-icon>task</mat-icon>
           <span>Task</span>
         </button>
-        <button mat-menu-item (click)="onClickMenuItem('testcase', this)">
+        <button mat-menu-item (click)="onClickRequirementMenuItem('testcase', this)">
           <mat-icon>description</mat-icon>
-          <span>Testcase</span>
+          <span>Test Case </span>
         </button>
       </mat-menu>
     </div>
@@ -84,7 +85,7 @@ import { FormService } from "src/app/services/form.service";
       <mat-card>
         <mat-card-header style="flex: 1 1 auto;">
           <div style="width: 100%">
-            <h2 style="text-align: center;" class="page-title">Task</h2>
+          <h2 style="text-align: center;" class="page-title">{{model_heading}} </h2>
           </div>
           <div style="text-align-last: end">
             <mat-icon mat-dialog-close (click)="closedia()">close</mat-icon>
@@ -99,7 +100,8 @@ import { FormService } from "src/app/services/form.service";
           <div style="text-align-last: end; width: 100%">
             <button style="margin: 5px" mat-button mat-dialog-close (click)="closedia()">  Cancel </button>
             <button style="margin: 5px" mat-button (click)="resetBtn('reset')">  Reset </button>
-            <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button color="warn" (click)="saveForm(this.config, 'taskViewPopup')" >   Save  </button>
+            <button  style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn"  (click)="saveForm(this.parentRouteName, 'taskViewPopup')" *ngIf="continue_Save==true"> Continue & Save</button> 
+            <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button color="warn" (click)="this.continue_Save=false;saveForm(this.parentRouteName, 'taskViewPopup')" >   {{continue_Save==true?"Save & Close":"Save"}}  </button>
           </div>
         </mat-card-actions>
       </mat-card>
@@ -124,8 +126,9 @@ import { FormService } from "src/app/services/form.service";
         <mat-card-actions>
           <div style="text-align-last: end; width: 100%">
             <button style="margin: 5px" mat-button  mat-dialog-close (click)="closedia()" > Cancel </button>
-            <button style="margin: 5px" mat-button (click)="resetBtn()"> Reset </button>
-            <button  style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn" (click)="saveForm(this.parentRouteName, 'modulesViewPopup')" > Save   </button>
+            <button style="margin: 5px" mat-button (click)="resetBtn()"> Reset </button> 
+            <button style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn"  mat-button (click)="saveForm(this.parentRouteName, 'modulesViewPopup')" *ngIf="continue_Save==true"> Continue & Save</button> 
+            <button  style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn" (click)="this.continue_Save=false;saveForm(this.parentRouteName, 'modulesViewPopup')" > Save   </button>
           </div>
         </mat-card-actions>
       </mat-card>
@@ -159,11 +162,13 @@ export class ButtonComponent implements ICellRendererAngularComp {
   formName: any;
   butText = "Save";
   onClose: any;
-
+  continue_Save: any=false;
   constructor(
     public dataService: DataService,
-    private dialog: DialogService,
+    private dialogService: DialogService,
     private router: Router,
+
+    private helperServices: HelperService,
     private route:ActivatedRoute,
     public ParentComponent: AggridTreeComponent // private httpclient: HttpClient,
   ) // public aggrid: AggridTreeComponent,
@@ -187,6 +192,7 @@ parentRouteName:any
   }
   closedia() {
     localStorage.removeItem("projectmembers");
+    this.dialogService.CloseALL()
   }
 
   delete_button() {
@@ -201,11 +207,6 @@ parentRouteName:any
     //   this.cancel()
     // })
   }
-
-  cancel() {
-    this.dialog.dialogRef.close();
-  }
-  ctrl: any;
   onClickMenuItem(formAction: any, data?: any) {
      if (formAction == "submodules") {
       this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
@@ -213,7 +214,7 @@ parentRouteName:any
         this.config = frmConfig;
         this.model_heading="Sub Module - Add"
         this.fields = frmConfig.form.fields;
-        this.dialog.openDialog(this.modulesViewPopup,null, null, {});
+        this.dialogService.openDialog(this.modulesViewPopup,null, null, {});
       });
     } else if (formAction == "task") {
       this.dataService.loadConfig("task").subscribe((frmConfig: any) => {
@@ -223,7 +224,7 @@ parentRouteName:any
         this.config = frmConfig;
         this.fields = frmConfig.form.fields;
         sessionStorage.setItem("project_id", this.gridData.project_id);
-        this.dialog.openDialog(this.taskViewPopup,null, null, data);
+        this.dialogService.openDialog(this.taskViewPopup,null, null, data);
       });
     } else if (formAction == "edit" ) {
       if( data.parentmodulename==''){
@@ -234,7 +235,7 @@ parentRouteName:any
          data.isEdit=true;
          this.config = frmConfig;
           this.fields = frmConfig.form.fields;
-          this.dialog.openDialog(this.modulesViewPopup,null, null, data);
+          this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
         });
       }else{
         this.model_heading="Sub Module - Edit"
@@ -244,7 +245,7 @@ parentRouteName:any
          data.isEdit=true;
          this.config = frmConfig;
           this.fields = frmConfig.form.fields;
-          this.dialog.openDialog(this.modulesViewPopup,null, null, data);
+          this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
         });
       }
     } else if (formAction == "delete") {
@@ -254,7 +255,7 @@ parentRouteName:any
           .deleteDataById("module", data._id)
           .subscribe((res: any) => {
             console.log(res);
-            this.dialog.openSnackBar(res.message, "OK");
+            this.dialogService.openSnackBar(res.message, "OK");
           });
       }
     } else {
@@ -273,7 +274,7 @@ parentRouteName:any
        this.config = frmConfig;
        this.model_heading="Sub Requirement - Add"
        this.fields = frmConfig.form.fields;
-       this.dialog.openDialog(this.modulesViewPopup,null, null, {});
+       this.dialogService.openDialog(this.modulesViewPopup,null, null, {});
      });
    } else if (formAction == "edit" ) {
     if(data && data?.module_id){
@@ -289,7 +290,7 @@ parentRouteName:any
          this.config = frmConfig;
          this.fields = frmConfig.form.fields;
          data.isEdit=true;
-         this.dialog.openDialog(this.modulesViewPopup,null, null, data);
+         this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
        });
      }else{
        this.model_heading="Sub Requirement - Edit"
@@ -299,7 +300,7 @@ parentRouteName:any
          this.config = frmConfig;
          data.isEdit=true;
          this.fields = frmConfig.form.fields;
-         this.dialog.openDialog(this.modulesViewPopup,null, null, data);
+         this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
        });
      }
    } else if (formAction == "delete") {
@@ -309,13 +310,34 @@ parentRouteName:any
          .deleteDataById("requirement", data._id)
          .subscribe((res: any) => {
            console.log(res);
-           this.dialog.openSnackBar(res.message, "OK");
+           this.dialogService.openSnackBar(res.message, "OK");
          });
      }
-   } else {
-     this.data = this.gridData;
-     // this.router.navigate(["/list/testcase/" + `${this.data.moduleid}`]);
-   }
+   } else  if (formAction == "task") {
+     this.dataService.loadConfig("task").subscribe((frmConfig: any) => {
+      this.formAction = "Add";
+      this.config = frmConfig;     
+        this.model_heading="Task - Add"
+        sessionStorage.setItem("project_id", this.gridData.project_id);
+
+      // data.isEdit=true;
+      this.fields = frmConfig.form.fields;
+      this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
+    })
+   }else  if (formAction == "testcase") {
+      this.dataService.loadConfig('testcase').subscribe((vals: any) => {
+        this.formAction = "Add";
+        this.continue_Save=true
+        this.model_heading="Test Case - Add"
+        this.config = vals;
+        // data.isEdit=true;
+        this.fields = vals.form.fields;
+        this.dialogService.openDialog(this.taskViewPopup,null, null, data);
+      });
+  }else {
+    this.data = this.gridData;
+    // this.router.navigate(["/list/testcase/" + `${this.data.moduleid}`]);
+  }
  }
   // if (ctrl.config.form.collectionName == "modules") {
   //   if (ctrl.autoGroupColumnDef?.headerName == "Parent Modules") {
@@ -336,37 +358,61 @@ parentRouteName:any
   // }
   saveForm(formName: any, val?: any) {
     debugger;
+    if(!this.form.valid){
+      const invalidLabels:any = this.helperServices.getDataValidatoion(this.form.controls);
+      this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
+     this.form.markAllAsTouched();   
+    return
+    }
     let values: any = this.form.value;
     if(formName=='Requirement'){
-    if (val == "modulesViewPopup") {
+    if (val == "modulesViewPopup"&&(this.model_heading=="Sub Requirement - Add"||this.model_heading=="Requirement - Edit"
+||    this.model_heading=="Sub Requirement - Edit" )) {
       values.project_id = this.ParentComponent.response?.project_id;
       values.parentmodulename = this.gridData.requirement_name;
     }
+    else if(  this.model_heading=="Task - Add"){
+      values.project_id = this.ParentComponent.response?.project_id;
+      values.requirement_id = this.gridData._id;
+    }  else if(  this.model_heading=="Test Case - Add"){
+      values.project_id = this.ParentComponent.response?.project_id;
+      values.requirement_id = this.gridData._id;
+    }
     this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
         console.log(data);
-        this.dialog.closeModal();
+        if(this.continue_Save!==true){
+
+          this.dialogService.closeModal();
+        }
         this.form.reset();
       });
     }else{
-      if (val == "modulesViewPopup") {
-        // values.project_name=this.gridData.project_name
+       // values.project_name=this.gridData.project_name
         // values.client_name = this.ParentComponent.response?.client_name;
         values.project_id = this.ParentComponent.response?.project_id;
         // values.project_name = this.ParentComponent.response?.project_name;
   
         values.parentmodulename = this.gridData.modulename;
         // values.project_id=this.gridData.project_id
-      } else if (val == "taskViewPopup") {
-        values.moduleid = this.gridData.moduleid;
-        // values.project_name=this.gridData.project_name
-        // values.project_id=this.gridData.project_id
-        // values.client_name = this.ParentComponent.response?.client_name;
-        values.project_id = this.ParentComponent.response?.project_id;
-        // values.project_name = this.ParentComponent.response?.project_name;
-      } 
+      // if (val == "modulesViewPopup") {
+      //   // values.project_name=this.gridData.project_name
+      //   // values.client_name = this.ParentComponent.response?.client_name;
+      //   values.project_id = this.ParentComponent.response?.project_id;
+      //   // values.project_name = this.ParentComponent.response?.project_name;
+  
+      //   values.parentmodulename = this.gridData.modulename;
+      //   // values.project_id=this.gridData.project_id
+      // } else if (val == "taskViewPopup") {
+      //   values.moduleid = this.gridData.moduleid;
+      //   // values.project_name=this.gridData.project_name
+      //   // values.project_id=this.gridData.project_id
+      //   // values.client_name = this.ParentComponent.response?.client_name;
+      //   values.project_id = this.ParentComponent.response?.project_id;
+      //   // values.project_name = this.ParentComponent.response?.project_name;
+      // } 
       this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
         console.log(data);
-        this.dialog.closeModal();
+        this.dialogService.closeModal();
         this.form.reset();
       });
     }

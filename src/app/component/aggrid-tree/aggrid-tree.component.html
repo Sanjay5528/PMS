@@ -39,131 +39,196 @@
   </mat-card>
 </ng-template> -->
 
-<!-- !an do requriement here 1st task -->
-
-<div fxLayout="column"  style="width:100%">
+<!-- ! an do requriement here 1st task -->
+<mat-drawer-container class="example-container" [hasBackdrop]="true">
+  <mat-drawer #drawer mode="over" position="end" class="example-sidenav" >
+    <div *ngIf="cellClicked=='testcasecount'" style="margin-left: 20px;">
+      <span style="font-size: larger;font-style: italic;">{{selectedRows.requirement_name}} </span>
+      <!-- <h4>Test Case</h4> -->
+      <br>
+      <span style="font-size: small;font-style: normal;">Test Case <span style="font-size: small;border-radius: 50%;"> {{selectedRows.testcasecount}} </span> </span>
+      <div  class="keep-scrolling">
+    
+        <div *ngFor="let testCase of this.selectedRows?.testcase" class="mat-card-container" style="margin-bottom: 5px;">
+          <mat-card class="mat-card">
+            <mat-card-header>
+              <mat-card-title style="margin-top: 5px;">
+                <span style="font-size: large;font-weight: bold;">{{ testCase.test_case_name }}</span> <span style="font-size: medium;">  ( {{testCase.test_case_scenario}} )  </span> 
+              </mat-card-title>
+              <!-- <mat-card-subtitle>{{  }}</mat-card-subtitle> -->
+            </mat-card-header>
+            <mat-card-content style="margin-left: 30px;">
+              <!-- <p>{{  }}</p> -->
+              <p [innerHTML]="testCase.expected_result"></p>
+              <!-- <p>{{ testCase.test_data }}</p> -->
+            </mat-card-content>
+            <mat-card-actions>
+              <!-- Add actions if needed -->
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
   
-  <div fxLayout="row" fxLayoutAlign="center center" fxFlex="100%" style="width:100%;">
-    <div fxLayout="column" fxFlex="5%" class="back">
-      <mat-icon style="font-size:35px;margin-top: 30px;" (click)="goBack()">keyboard_backspace</mat-icon>
     </div>
-    <div fxLayout="column" fxFlex="95%" fxLayoutAlign="center center" style="margin-top: 10px;">
-      <h2 class="page-title">{{formName=="module"?"Module":formName}}</h2>
-      
-    </div>
-  </div>
-  <!-- margin-left: 26px;
-    width: 20%;
-    flex-direction: column;
-    box-sizing: border-box;
-    display: flex;
-    margin-top: 24px; -->
-   
-  <div fxLayout="row" class="form-container">
-      <!-- <div [ngStyle]="{'width': '20%' }"  fxLayout="column">
-        <div  style="margin-top: 10px;margin-left: 20px;">
-          
-           <div style="display: flex; margin-right: 30px;margin-bottom: 20px;">
-      <span>Client Name : <span style="font-weight: bold;margin-left: 10px;">{{response?.client_name}}</span></span>
-    </div>
-        <div style="display: flex; margin-right: 30px;margin-bottom: 20px;">
-          <span>Project Id : <span style="font-weight: bold;margin-left: 10px;">{{response?.project_id}}</span></span>
-        </div>
-        <div style="display: flex; margin-right: 30px;margin-bottom: 20px;">
-          <span>Project Name : <span
-            style="font-weight: bold;margin-left: 10px;">{{response?.project_name}}</span></span>
-        </div>
-       
-        <div style="display: flex; margin-right: 30px;margin-bottom: 20px;">
-          <span>Project Status : <span style="font-weight: bold;margin-left: 10px;">{{response?.status}}</span></span>
-        </div>
-        </div>
-      </div> -->
-      <div class="table-container" style="width:99%">
-        <div fxLayout="column">
-          <div fxFlex="auto">
-            <div fxLayout="row">
-              <div [ngStyle]="{'width': '48%' }" fxLayout="column">
-                <div style="margin-top: 10px; margin-left: 20px;">
-                  <div style="display: flex; margin-bottom: 2px; font-size: larger; color: black;">
-                    <span>
-                       <b>Project</b> <span style="font-size: large;color: black;"> > ></span> <span style="font-weight: bold; margin-left: 10px;">{{response?.project_name}}</span>         
-                      <span style="margin-left: 10px;">({{response?.project_id}})</span>
-                    </span>
-                  </div>
-                  <div style="display: flex; font-size:medium; color: grey;align-items: baseline;">
-                    <span style=" margin-bottom:  -7px;">From {{response?.client_name}}</span>
-                    <!-- <span style="margin-left: 10px;">({{response?.status}})</span> -->
-                    <span [ngStyle]="{'background-color': response?.status === 'A' ? 'green' : 'red', 'width': '10px', 'height': '10px', 'border-radius': '50%', 'display': 'inline-block', 'margin-right': '5px','margin-left':'5px'}"></span>
 
+    <div *ngIf="cellClicked=='taskcount'">
+      <span style="font-size: larger;font-style: italic;">{{selectedRows.requirement_name}} </span>
+      <!-- <h4>Test Case</h4> -->
+      <br>
+      <span style="font-size: small;font-style: normal;">Test Case <span style="font-size: small;border-radius: 50%;"> {{selectedRows.taskcount}} </span> </span>
+      <div  class="keep-scrolling">
+    
+        <div *ngFor="let testCase of this.selectedRows?.task" class="mat-card-container" style="margin-bottom: 5px;">
+          <mat-card class="mat-card">
+            <mat-card-header>
+              <mat-card-title style="margin-top: 5px;">
+                <span style="font-size: large;font-weight: bold;">{{ testCase.task_name }}</span> <span style="font-size: medium;">  ( {{testCase.allocated_hours}}  <span style="font-size: xx-small;">Hr</span> )  </span> 
+              </mat-card-title>
+              <!-- <mat-card-subtitle>{{  }}</mat-card-subtitle> -->
+            </mat-card-header>
+            <mat-card-content style="margin-left: 30px;">
+              <!-- <p>{{  }}</p> -->
+              <p [innerHTML]="testCase.description"></p>
+              <!-- <p>{{ testCase.test_data }}</p> -->
+            </mat-card-content>
+            <mat-card-actions>
+              <!-- Add actions if needed -->
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+  
+      
+          </div>
+  </mat-drawer>
+  <mat-drawer-content>
+    <div fxLayout="column"  style="width:100%">
+  
+      <div fxLayout="row" fxLayoutAlign="center center" fxFlex="100%" style="width:100%;">
+        <div fxLayout="column" fxFlex="5%" class="back">
+          <mat-icon style="font-size:35px;margin-top: 30px;" (click)="goBack()">keyboard_backspace</mat-icon>
+        </div>
+        <div fxLayout="column" fxFlex="95%" fxLayoutAlign="center center" style="margin-top: 10px;">
+          <h2 class="page-title">{{formName=="module"?"Module":formName}}</h2>
+          
+        </div>
+      </div>
+      <!-- margin-left: 26px;
+        width: 20%;
+        flex-direction: column;
+        box-sizing: border-box;
+        display: flex;
+        margin-top: 24px; -->
+       
+      <div fxLayout="row" class="form-container">
+          <!-- <div [ngStyle]="{'width': '20%' }"  fxLayout="column">
+            <div  style="margin-top: 10px;margin-left: 20px;">
+              
+               <div style="display: flex; margin-right: 30px;margin-bottom: 20px;">
+          <span>Client Name : <span style="font-weight: bold;margin-left: 10px;">{{response?.client_name}}</span></span>
+        </div>
+            <div style="display: flex; margin-right: 30px;margin-bottom: 20px;">
+              <span>Project Id : <span style="font-weight: bold;margin-left: 10px;">{{response?.project_id}}</span></span>
+            </div>
+            <div style="display: flex; margin-right: 30px;margin-bottom: 20px;">
+              <span>Project Name : <span
+                style="font-weight: bold;margin-left: 10px;">{{response?.project_name}}</span></span>
+            </div>
+           
+            <div style="display: flex; margin-right: 30px;margin-bottom: 20px;">
+              <span>Project Status : <span style="font-weight: bold;margin-left: 10px;">{{response?.status}}</span></span>
+            </div>
+            </div>
+          </div> -->
+          <div class="table-container" style="width:99%">
+            <div fxLayout="column">
+              <div fxFlex="auto">
+                <div fxLayout="row">
+                  <div [ngStyle]="{'width': '48%' }" fxLayout="column">
+                    <div style="margin-top: 10px; margin-left: 20px;">
+                      <div style="display: flex; margin-bottom: 2px; font-size: larger; color: black;">
+                        <span>
+                           <b>Project</b> <span style="font-size: large;color: black;"> > ></span> <span style="font-weight: bold; margin-left: 10px;">{{response?.project_name}}</span>         
+                          <span style="margin-left: 10px;">({{response?.project_id}})</span>
+                        </span>
+                      </div>
+                      <div style="display: flex; font-size:medium; color: grey;align-items: baseline;">
+                        <span style=" margin-bottom:  -7px;">From {{response?.client_name}}</span>
+                        <!-- <span style="margin-left: 10px;">({{response?.status}})</span> -->
+                        <span [ngStyle]="{'background-color': response?.status === 'A' ? 'green' : 'red', 'width': '10px', 'height': '10px', 'border-radius': '50%', 'display': 'inline-block', 'margin-right': '5px','margin-left':'5px'}"></span>
+    
+                      </div>
+                      <div style="display: flex; font-size: small; color: grey;">
+                        <span>{{response?.startdate}} to {{response?.enddate}}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div style="display: flex; font-size: small; color: grey;">
-                    <span>{{response?.startdate}} to {{response?.enddate}}</span>
+                  
+                  
+                  <div fxFlex="1 0 auto">
+                    <!-- <app-dynamic-filter  [showdefaultFilter]="showdefaultFilter" (filterValue)=" ' ' "></app-dynamic-filter> -->
                   </div>
+                  <!-- <div style="float:right;" fxLayout="column" fxFlex="10%">
+                    {{this.listData.length}} Record(s) found
+                  </div> -->
+                  <div>
+                    
+                  <div class="add-container">
+                    <button mat-raised-button color="primary"
+                      (click)="onAddButonClick($event)">
+                      <mat-icon>add</mat-icon>
+                      Add</button>
+                      <!-- <button class="icon" matTooltip="Add" mat-mini-fab (click)="onAddButonClick($event)"
+            style="margin-right: 20px; background: #90c0e5;   color: #080201;">
+            <mat-icon>add</mat-icon>
+          </button> -->
+                    </div>
                 </div>
               </div>
               
-              
-              <div fxFlex="1 0 auto">
-                <!-- <app-dynamic-filter  [showdefaultFilter]="showdefaultFilter" (filterValue)=" ' ' "></app-dynamic-filter> -->
-              </div>
-              <!-- <div style="float:right;" fxLayout="column" fxFlex="10%">
-                {{this.listData.length}} Record(s) found
-              </div> -->
-              <div>
-                
-              <div class="add-container">
-                <button mat-raised-button color="primary"
-                  (click)="onAddButonClick($event)">
-                  <mat-icon>add</mat-icon>
-                  Add</button>
-                  <!-- <button class="icon" matTooltip="Add" mat-mini-fab (click)="onAddButonClick($event)"
-        style="margin-right: 20px; background: #90c0e5;   color: #080201;">
-        <mat-icon>add</mat-icon>
-      </button> -->
-                </div>
+        <!-- [gridOptions]='gridOptions'    [treeData]="true"   [getDataPath]="getTreePath"
+         [pagination]="true"  [autoGroupColumnDef]="autoGroupColumnDef"
+         [animateRows]="true" [paginationPageSize]="10"
+         [groupDefaultExpanded]="groupDefaultExpanded" 
+      
+      -->
+      <ag-grid-angular 
+        style="width: 100%; height: calc(100vh - 250px); flex: 1 1 auto"
+        class="ag-theme-alpine"
+        [defaultColDef]="defaultColDef"
+        [columnDefs]="columnDefs" 
+        [rowData]="listData"
+        [getDataPath]="getTreePath"
+        [autoGroupColumnDef]="autoGroupColumnDef"
+        [groupDefaultExpanded]="groupDefaultExpanded" 
+        [gridOptions]='gridOptions' 
+        [context]="context"
+        [rowSelection]="'single'"
+        [components]="components" 
+        [paginationPageSize]="10"
+        [treeData]="true"
+        [pagination]="true"
+        [animateRows]="true"
+        (cellClicked)='onCellClicked($event)'
+        (selectionChanged)="onSelectionChanged($event)"
+        (cellValueChanged)="onCellValueChanged($event)"
+        (gridReady)="onGridReady($event)" 
+        ></ag-grid-angular>
+    
             </div>
           </div>
+          </div>
           
-    <!-- [gridOptions]='gridOptions'    [treeData]="true"   [getDataPath]="getTreePath"
-     [pagination]="true"  [autoGroupColumnDef]="autoGroupColumnDef"
-     [animateRows]="true" [paginationPageSize]="10"
-     [groupDefaultExpanded]="groupDefaultExpanded" 
-  
-  -->
-  <ag-grid-angular 
-    style="width: 100%; height: calc(100vh - 250px); flex: 1 1 auto"
-    class="ag-theme-alpine"
-    [defaultColDef]="defaultColDef"
-    [columnDefs]="columnDefs" 
-    [rowData]="listData"
-    [getDataPath]="getTreePath"
-    [autoGroupColumnDef]="autoGroupColumnDef"
-    [groupDefaultExpanded]="groupDefaultExpanded" 
-    [gridOptions]='gridOptions' 
-    [context]="context"
-    [rowSelection]="'single'"
-    [components]="components" 
-    [paginationPageSize]="10"
-    [treeData]="true"
-    [pagination]="true"
-    [animateRows]="true"
-    (selectionChanged)="onSelectionChanged($event)"
-    (cellValueChanged)="onCellValueChanged($event)"
-    (gridReady)="onGridReady($event)" 
-    ></ag-grid-angular>
-
+          <!-- <div *ngIf="isDataError">
+            <mat-icon color="warn" aria-label="Given ID is not valid">error</mat-icon>
+            <span>Given ID is not valid</span>
+          </div> -->
         </div>
-      </div>
-      </div>
       
-      <!-- <div *ngIf="isDataError">
-        <mat-icon color="warn" aria-label="Given ID is not valid">error</mat-icon>
-        <span>Given ID is not valid</span>
-      </div> -->
     </div>
-  
-</div>
+  </mat-drawer-content>
+</mat-drawer-container>
+
 
 
 

@@ -1,108 +1,63 @@
 {
-	"pageHeading": "Task",
+	"pageHeading": "Test Case Scenario",
 	"formType": "simple",
 	"editMode": "page",
 	"keyField": "_id",
 	"form": {
-		"collectionName": "task",
+		"collectionName": "testcase",
 		"fields": [
-			
 			{
-				"type": "input",
-				"key": "task_name",
+				"fieldGroupClassName": "display-flex",
+				"fieldGroup": [
+					{
+						"type": "input",
+						"key": "test_case_name",
+						"className": "flex-6",
+						"props": {
+							"label": "Test Case Name",
+							"required": true
+						}
+					},
+					{
+						"key": "test_case_scenario",
+						"type": "select",
+						"className": "flex-6",
+						"props": {
+							"label": "Test Case Scenario",
+							"options": [
+								{
+									"label": "Positive",
+									"value": "P"
+								},
+								{
+									"label": "Negative",
+									"value": "N"
+								}
+							],
+							"required": true
+						}
+					}
+				]
+			},
+			{
+				"type": "html-input",
+				"key": "test_data",
+				"className": "flex-6",
 				"props": {
-					"label": "Task Name",
-					"placeholder": "Task Name",
-					"pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+					"label": "Test Data",
+					"required": true
+				}
+			},
+			{
+				"type": "html-input",
+				"key": "expected_result",
+				"className": "flex-6",
+				"props": {
+					"label": "Expected Result",
 					"required": true
 				},
-				"expressions": {
-					"props.readonly": "model.isEdit"
-				}
-			},
-            {
-              "fieldGroupClassName": "display-flex",
-              "fieldGroup": [
-			{
-				"key": "scheduled_start_date",
-				"type": "date-input",			"className": "flex-6",
-
-				"props": {
-					"label": "Scheduled Start Date",
-					"placeholder": "Scheduled Start Date",
-					"required": true
-				}
-			},
-			{
-				"key": "scheduled_end_date",
-				"type": "date-input",			"className": "flex-6",
-
-				"parentKey": "scheduled_start_date",
-				"parentCollectionName": "task",
-				"props": {
-					"label": "Scheduled End Date",
-					"placeholder": "Scheduled End Date",
-					"required": true
-				}
-			}]},
-            {
-              "fieldGroupClassName": "display-flex",
-              "fieldGroup": [
-			{
-				"type": "number",
-				"key": "allocated_hours",			"className": "flex-6",
-
-				"props": {
-					"label": "Allocated Hours",
-					"placeholder": "Allocated Hours",
-					"pattern": "^(?:|[1-9][0-9]*)$",
-					"required": true
-				}
-			},
-
-			{
-				"type": "select-input",
-				"key": "assigned_to",			"className": "flex-6",
-
-				"props": {
-					"label": "Assigned To",
-					"placeholder": "Assigned To",
-					"multifilter": true,
-					"Collections":"project_team",
-					"multifiltertype": "local",
-					"specification":"teammember",
-					"labelField":"employee_nmae",
-					"valueField":"employee_id",
-					"innerArray":"employee_id",
-					"local_name":"project_id",
-					"multifilter_condition": {
-						"clause": "AND",
-						"conditions": [
-							{
-								"column": "project_id",
-								"operator": "EQUALS",
-								"type": "string",
-								"value": ""
-							}
-						]
-					},
-					"labelProp": "label",
-					"valueProp": "value",
-					"required": true
-				},"expressions": {
-					"hide": "model.isEdit"
-				}
-			}]},{
-                "type": "html-input",
-                "key": "description",
-                "className": "flex-6",
-                "props": {
-                    "label": "Task Description",
-                    "required": true
-                },
-                
-                "maxlength": 2000
-            }
+				"maxlength": 500
+			}
 		]
 	}
 }

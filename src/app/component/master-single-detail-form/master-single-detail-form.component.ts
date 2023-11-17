@@ -304,13 +304,13 @@ return
   }
 
   goBack() {
-    if (this.config.onCancelRoute) {
-      let url = [this.config.onCancelRoute]
-      this.router.navigate(url)
-    }else{
+    // if (this.config.onCancelRoute) {
+    //   let url = [this.config.onCancelRoute]
+    //   this.router.navigate(url)
+    // }else{
       // ? for Some Case we need to Go back Excat page
       this._location.back()
-    }
+    // }
   }
 
   onSelect(event: any) {
@@ -324,11 +324,6 @@ return
   }
 
 
-
-
-  showList() {
-    this.router.navigate([`/data/list/${this.formName}`]);
-  }
 
   showDetail(row: any, action: any, $event: any) {               //  new screen opens when clicking the icon
     $event.stopPropagation();
