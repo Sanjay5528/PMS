@@ -228,6 +228,22 @@ func validateWithinDurations(fl validator.FieldLevel) bool {
 	return false
 }
 
+func GetSchemValidationError(err error) (errMsg string, errorFields map[string]string) {
+	errorFields = map[string]string{}
+	if _, ok := err.(*validator.InvalidValidationError); ok {
+		errMsg = "Invalid Validation Error"
+		//fmt.Printf("Invalid Validation Error : %s", err.Error())
+		return
+	}
+
+	for _, err := range err.(validator.ValidationErrors) {
+		errMsg += fmt.Sprintf("%s validation failed for %s\n", err.Tag(), err.Field())
+		//fmt.Printf(errMsg)
+		errorFields[err.Namespace()] = err.Tag()
+	}
+	return
+}
+
 func ValidateStruct(inputStruct interface{}) map[string]string {
 	// Create a map to store validation errors
 	validationErrors := make(map[string]string)
@@ -374,7 +390,7 @@ func ExtractNonEmptyFields(rv reflect.Value, fields reflect.StructField) (reflec
 }
 
 // Insert
-func vertifyInputStruct(rv reflect.Value, inputMap map[string]interface{}, errMap map[string]string) error {
+func verifyInputStruct(rv reflect.Value, inputMap map[string]interface{}, errMap map[string]string) error {
 
 	for rv.Kind() == reflect.Ptr || rv.Kind() == reflect.Interface {
 		rv = rv.Elem()
@@ -382,8 +398,10 @@ func vertifyInputStruct(rv reflect.Value, inputMap map[string]interface{}, errMa
 
 	for i := 0; i < rv.NumField(); i++ {
 		field := rv.Type().Field(i)
+
 		// fieldTag := strings.ToLower(string(field.Tag.Get("json")))
 		fieldTag := string(field.Tag.Get("json"))
+		
 		fieldValue := rv.Field(i)
 
 		// Check if the JSON tag includes "omitempty".
@@ -402,7 +420,7 @@ func vertifyInputStruct(rv reflect.Value, inputMap map[string]interface{}, errMa
 		}
 
 		if field.Type.Kind() == reflect.Struct {
-			if err := vertifyInputStruct(rv.Field(i), inputMap, errMap); err != nil {
+			if err := verifyInputStruct(rv.Field(i), inputMap, errMap); err != nil {
 				return err
 			}
 			continue
@@ -413,7 +431,7 @@ func vertifyInputStruct(rv reflect.Value, inputMap map[string]interface{}, errMa
 			for key, value := range inputMap {
 				if key == fieldTag {
 					if kk, isMap := value.(map[string]interface{}); isMap {
-						if err := vertifyInputStruct(fieldValue.Elem(), kk, errMap); err != nil {
+						if err := verifyInputStruct(fieldValue.Elem(), kk, errMap); err != nil {
 							return err
 						}
 					}

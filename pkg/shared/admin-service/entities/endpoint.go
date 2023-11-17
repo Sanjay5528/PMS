@@ -13,6 +13,7 @@ func SetupAllRoutes(app *fiber.App) {
 	SetupDownloadRoutes(app)
 	SetupBulkUploadRoutes(app)
 	SetupDatasets(app)
+	SetupUtilRoutes(app)
 	app.Static("/image", fileUploadPath)
 	SetupaccessUser(app)
 }
@@ -49,7 +50,7 @@ func SetupGroupRoutes(app *fiber.App) {
 // Data set
 func SetupDatasets(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/dataset", "Data Sets")
-	 
+
 	r.Post("/config/:options?", helper.DatasetsConfig)
 	r.Post("/data/:datasetname", helper.DatasetsRetrieve)
 	r.Put("/:datasetname", helper.UpdateDataset)
@@ -103,6 +104,7 @@ func SetupSharedDBRoutes(app *fiber.App) {
 func SetupUtilRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/util", "util APIs")
 	r.Get("/nextseq/:key", getNextSeqNumberHandler)
+	r.Get("/totalcount/:collectionName", helper.Sequencecount)
 	//email send
 	// r.Post("/send-simple-email", SendSimpleEmailHandler)
 	//// r.Post("/send-sms", sendSMS)

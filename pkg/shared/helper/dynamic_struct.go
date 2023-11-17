@@ -70,6 +70,7 @@ func LoadDataModelFromDB(orgID string) map[string][]Config {
 						"column_name": "$column_name",
 						"type":        "$type",
 						"tag":         "$tag",
+						"json_field":  "$json_field",
 					},
 				},
 			},
@@ -108,13 +109,13 @@ func loadModels(models map[string][]Config, key string) interface{} {
 	for _, field := range models[key] {
 		fieldName := field.ColumnName
 		fieldType := TypeMap[field.Type]
-	
+
 		// Check if the type is already available in TypeMap.
 		if _, exists := TypeMap[field.Type]; !exists {
 
 			// Recursively load dependent models and their types.
 			fieldType = loadModels(models, field.Type)
-			
+
 		}
 
 		// Append the field definition to the dynamic struct.
@@ -147,11 +148,11 @@ func createDynamicTypes(data map[string][]Config) {
 }
 
 func ServerInitstruct(orgID string) {
-	
+
 	// for _, orgID := range orgIDs {
-		data := LoadDataModelFromDB(orgID)
-		// Create dynamic schema types based on the data model configuration.
-		createDynamicTypes(data)
+	data := LoadDataModelFromDB(orgID)
+	// Create dynamic schema types based on the data model configuration.
+	createDynamicTypes(data)
 
 	// }
 }

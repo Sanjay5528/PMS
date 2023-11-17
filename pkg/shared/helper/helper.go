@@ -3,6 +3,7 @@ package helper
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
@@ -140,6 +141,27 @@ func GetTemporaryUserDataByAccessKey(c *fiber.Ctx) error {
 
 }
 
+func convertToMap(rv reflect.Value) (map[string]interface{}, error) {
+	if rv.Kind() != reflect.Map {
+		return nil, errors.New("value is not a map")
+	}
+
+	result := make(map[string]interface{})
+
+	keys := rv.MapKeys()
+	for _, key := range keys {
+		keyString, ok := key.Interface().(string)
+		if !ok {
+			return nil, errors.New("map key is not a string")
+		}
+
+		value := rv.MapIndex(key).Interface()
+		result[keyString] = value
+	}
+
+	return result, nil
+}
+
 func InsertValidateInDatamodel(collectionName, inputJsonString, orgId string) (map[string]interface{}, map[string]string) {
 	var validationErrors = make(map[string]string)
 
@@ -173,17 +195,23 @@ func InsertValidateInDatamodel(collectionName, inputJsonString, orgId string) (m
 	if err := json.Unmarshal([]byte(inputJsonString), &inputMap); err != nil {
 		return nil, map[string]string{"error": "Invalid JSON data: " + err.Error()}
 	}
+
 	//Check the field any extra field is here
-	if err := vertifyInputStruct(rv, inputMap, validationErrors); err != nil {
-		return nil, validationErrors
-	}
-	// fmt.Println(rv.Interface())
-	validationErrors = ValidateStruct(rv.Interface())
-	if len(validationErrors) > 0 {
+	if err := verifyInputStruct(rv, inputMap, validationErrors); err != nil {
 		return nil, validationErrors
 	}
 
-	// fmt.Println(validationErrors)
+	// // fmt.Println(rv.Interface())
+	// validationErrors = ValidateStruct(rv.Interface())
+	// if len(validationErrors) > 0 {
+	// 	return nil, validationErrors
+	// }
+	// validationErr := validate.Struct(rv.Interface())
+	// if validationErr != nil { // validation failed
+	// 	_, errorFields := GetSchemValidationError(validationErr)
+	// 	return nil, errorFields
+	// }
+
 	var cleanedData map[string]interface{}
 	inputByte, _ := json.Marshal(rv.Interface())
 	json.Unmarshal(inputByte, &cleanedData)
@@ -381,7 +409,7 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 	inputData.Pipeline = pipelinestring
 
 	// Filter Params for to replace the string to convert to pipeline again
-
+	//!pending
 	if len(inputData.FilterParams) > 0 {
 		inputData.Reference_pipeline = pipelinestring
 		pipelinestring := createFilterParams(inputData.FilterParams, pipelinestring)
@@ -403,37 +431,44 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 	// 	pipelinestring := createFilterParams(inputData.FilterParams, pipelinestring)
 	// 	// if filter params here that time to replace the old pipeline
 	// 	// inputData.Pipeline = pipelinestring
-
 	// 	// convert the pipeline
-	// 	err := bson.UnmarshalExtJSON([]byte(pipelinestring), true, &Pipeline)
+	// 	// newpipeline := []bson.M{}
+	// 	err := json.Unmarshal([]byte(pipelinestring), &Pipeline)
 	// 	if err != nil {
 	// 		fmt.Println("Error parsing pipeline:", err)
 
 	// 	}
 
-	// 	// Datatypechanging -- To build the Pipeline from pipeline variable
+	// 	// // Datatypechanging -- To build the Pipeline from pipeline variable
+	// 	// Datas := Datatypechanging(newpipeline)
 
-	// 	// Datas := Datatypechanging(Pipeline)
+	// 	// // Clear the Pipeline
+	// 	// Pipeline = nil
 	// 	// // if filter params here that time to replace the old pipeline
-	// 	// Pipeline = []bson.M{}
 	// 	// Pipeline = append(Pipeline, Datas)
+
 	// 	inputData.Pipeline = pipelinestring
 
 	// }
 
-	//final pagination TO add the Filter
-	PagiantionPipeline := PagiantionPipeline(inputData.Start, inputData.End)
-	Pipeline = append(Pipeline, PagiantionPipeline)
+	// //final pagination TO add the Filter
+	// PagiantionPipeline := PagiantionPipeline(inputData.Start, inputData.End)
+	// Pipeline = append(Pipeline, PagiantionPipeline)
 	// Get the Data form Db
+	fmt.Println(Pipeline)
 	Response, err := GetAggregateQueryResult(orgId, inputData.DataSetBaseCollection, Pipeline)
 	if err != nil {
+		fmt.Println("Err",
+			err.Error(),
+		)
 		return DataSetConfiguration{}, nil
 	}
 
 	// this PreviewResponse
 	PreviewResponse := fiber.Map{
-		"status": "success",
-		"data":   Response,
+		"status":   "success",
+		"data":     Response,
+		"pipeline": Pipeline,
 	}
 
 	return inputData, PreviewResponse
@@ -718,4 +753,27 @@ func UpdateDataset(c *fiber.Ctx) error {
 	}
 
 	return shared.SuccessResponse(c, Response)
+}
+func Sequencecount(c *fiber.Ctx) error {
+	orgId := c.Get("OrgId")
+	if orgId == "" {
+		return shared.BadRequest("Organization Id missing")
+	}
+
+	Responses := fiber.Map{
+
+		"totoalDocs": Sequenceordercreate(orgId, c.Params("collectionName")),
+	}
+	return shared.SuccessResponse(c, Responses)
+}
+
+func Sequenceordercreate(OrgId, collectionName string) int64 {
+	res, err := database.GetConnection(OrgId).Collection(collectionName).CountDocuments(ctx, bson.M{})
+	if err != nil {
+		// Handle the error appropriately (log it, return a default value, etc.)
+		fmt.Println("Error counting documents:", err)
+		return 0
+	}
+	fmt.Println("totalcount", res)
+	return res
 }

@@ -281,10 +281,10 @@ func createFilterParams(FilterParams []FilterParam, Pipeline string) string {
 	for _, Filter := range FilterParams {
 
 		FindString := `{"ParamsName":"` + Filter.ParamsName + `","parmsDataType":"` + Filter.ParamsDataType + `"}`
-
 		Replacement := `"` + Filter.DefaultValue + `"`
 		filterPipeline = strings.ReplaceAll(filterPipeline, FindString, Replacement)
 
 	}
+
 	return filterPipeline
 }

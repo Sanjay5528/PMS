@@ -57,6 +57,7 @@ func PostDocHandler(c *fiber.Ctx) error {
 		}
 	}
 	helper.UpdateDateObject(inputData)
+
 	// user collection is here that time only password validation
 	if collectionName == "user" {
 		// user collection only OnboadingProcessing for send the mail to activation --METHOD OnboardingProcessing
@@ -64,6 +65,8 @@ func PostDocHandler(c *fiber.Ctx) error {
 		if err != nil {
 			return shared.BadRequest("invalid user Id")
 		}
+	} else if collectionName == "task" {
+		helper.Sequenceordercreate(org.Id, collectionName)
 	}
 
 	inputData["created_on"] = time.Now()
