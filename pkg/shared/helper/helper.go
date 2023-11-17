@@ -435,53 +435,25 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 	inputData.Pipeline = pipelinestring
 
 	// Filter Params for to replace the string to convert to pipeline again
-	//!pending
 	if len(inputData.FilterParams) > 0 {
 		inputData.Reference_pipeline = pipelinestring
 		pipelinestring := createFilterParams(inputData.FilterParams, pipelinestring)
 		// if filter params here that time to replace the old pipeline
-		inputData.Pipeline = pipelinestring
-
 		// convert the pipeline
-		err := bson.UnmarshalExtJSON([]byte(pipelinestring), true, &Pipeline)
+		var doc []primitive.M
+		err := bson.UnmarshalExtJSON([]byte(pipelinestring), true, &doc)
 		if err != nil {
-			fmt.Println("Error parsing pipeline:", err)
 
 		}
 
-		// := Datatypechanging(Pipeline)
+		inputData.Pipeline = pipelinestring
+
 	}
 
-	// if len(inputData.FilterParams) > 0 {
-	// 	inputData.Reference_pipeline = pipelinestring
-	// 	pipelinestring := createFilterParams(inputData.FilterParams, pipelinestring)
-	// 	// if filter params here that time to replace the old pipeline
-	// 	// inputData.Pipeline = pipelinestring
-	// 	// convert the pipeline
-	// 	// newpipeline := []bson.M{}
-	// 	err := json.Unmarshal([]byte(pipelinestring), &Pipeline)
-	// 	if err != nil {
-	// 		fmt.Println("Error parsing pipeline:", err)
+	//final pagination TO add the Filter
+	PagiantionPipeline := PagiantionPipeline(inputData.Start, inputData.End)
+	Pipeline = append(Pipeline, PagiantionPipeline)
 
-	// 	}
-
-	// 	// // Datatypechanging -- To build the Pipeline from pipeline variable
-	// 	// Datas := Datatypechanging(newpipeline)
-
-	// 	// // Clear the Pipeline
-	// 	// Pipeline = nil
-	// 	// // if filter params here that time to replace the old pipeline
-	// 	// Pipeline = append(Pipeline, Datas)
-
-	// 	inputData.Pipeline = pipelinestring
-
-	// }
-
-	// //final pagination TO add the Filter
-	// PagiantionPipeline := PagiantionPipeline(inputData.Start, inputData.End)
-	// Pipeline = append(Pipeline, PagiantionPipeline)
-	// Get the Data form Db
-	fmt.Println(Pipeline)
 	Response, err := GetAggregateQueryResult(orgId, inputData.DataSetBaseCollection, Pipeline)
 	if err != nil {
 		fmt.Println("Err",
@@ -492,9 +464,8 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 
 	// this PreviewResponse
 	PreviewResponse := fiber.Map{
-		"status":   "success",
-		"data":     Response,
-		"pipeline": Pipeline,
+		"status": "success",
+		"data":   Response,
 	}
 
 	return inputData, PreviewResponse
@@ -515,15 +486,16 @@ func InsertDataDb(orgId string, inputData interface{}, collectionName string) (f
 	return InsertResponse, err
 }
 
-func Datatypechanging(Data []bson.M) bson.M {
-	// output := []bson.M{}
-	var Datareturn bson.M
+func Datatypechanging(Data []primitive.M) []bson.M {
+	var Datareturn []bson.M
+
 	for _, stage := range Data {
 		if matchStage, ok := stage["$match"].(bson.M); ok {
 			matchedPipeline := processMatchStage(matchStage)
-			Datareturn = bson.M{"$match": matchedPipeline}
+			Datareturn = append(Datareturn, bson.M{"$match": matchedPipeline})
 		}
 	}
+
 	return Datareturn
 }
 

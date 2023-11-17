@@ -47,8 +47,15 @@ func PostDocHandler(c *fiber.Ctx) error {
 	if err != nil {
 		shared.BadRequest("Invalid CollectionName")
 	}
-	var inputData map[string]interface{}
-	c.BodyParser(&inputData)
+
+	// Validation the Insert Data from -- InsertValidateInDatamodel
+	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	if errmsg != nil {
+		// errmsg is map to string
+		for key, value := range errmsg {
+			return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
+		}
+	}
 	helper.UpdateDateObject(inputData)
 
 	// user collection is here that time only password validation

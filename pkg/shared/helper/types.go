@@ -35,6 +35,7 @@ type FilterParams struct {
 	ParamsName     string `json:"ParamsName"`
 	ParamsDataType string `json:"parmsDataType"`
 }
+
 type FilterCondition struct {
 	Clause     string           `json:"clause,omitempty" bson:"clause,omitempty"`
 	Conditions []ConditionGroup `json:"conditions,omitempty" bson:"conditions,omitempty"`
