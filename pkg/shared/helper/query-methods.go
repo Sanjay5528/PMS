@@ -234,7 +234,7 @@ func BuildAggregationPipeline(inputData []FilterCondition, BasecollectionName st
 	}
 
 	var clause bson.M
-	if len(matchConditions) > 0 {
+ 	if len(matchConditions) > 0 {
 		if inputData[0].Clause == "OR" {
 			clause = bson.M{"$or": matchConditions}
 		} else if inputData[0].Clause == "AND" {

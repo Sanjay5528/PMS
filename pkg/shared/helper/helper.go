@@ -171,8 +171,6 @@ func datatypeValidation(inputJsonString string) {
 	fmt.Println(mapdata)
 }
 
-
-
 func InsertValidateInDatamodel(collectionName, inputJsonString, orgId string) (map[string]interface{}, map[string]string) {
 	var validationErrors = make(map[string]string)
 
@@ -281,6 +279,25 @@ func UpdateValidateInDatamodel(collectionName string, inputJsonString, orgId str
 	return cleanedData, nil
 }
 
+// !pending
+func ProjectColumn(projectColumn []ProjectData, BaseCollection string) []bson.M {
+	fieldsToProject := bson.M{}
+
+	// for _, field := range projectColumn {
+
+	// 	// fieldsToProject[field.Field] = 1
+
+	// }
+
+	expressions := []bson.M{
+		{
+			"$project": fieldsToProject,
+		},
+	}
+
+	return expressions
+}
+
 func MasterAggregationPipeline(request PaginationRequest, c *fiber.Ctx) []bson.M {
 	Pipeline := []bson.M{}
 
@@ -288,7 +305,9 @@ func MasterAggregationPipeline(request PaginationRequest, c *fiber.Ctx) []bson.M
 		FilterConditions := BuildAggregationPipeline(request.Filter, "")
 		Pipeline = append(Pipeline, FilterConditions)
 	}
+	if len(request.ProjectData) > 0 {
 
+	}
 	if len(request.Sort) > 0 {
 		sortConditions := buildSortConditions(request.Sort)
 		Pipeline = append(Pipeline, sortConditions)

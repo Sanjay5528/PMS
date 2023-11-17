@@ -45,7 +45,7 @@ func SetupCRUDRoutes(app *fiber.App) {
 func SetupGroupRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/group", "Data Lookup API")
 	r.Get("/:groupname", helper.GroupDataBasedOnRules)
-	r.Get("/testing/:modelName", helper.Testing)
+
 }
 
 // Data set
@@ -66,6 +66,7 @@ func SetupTesting(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/testing", "Testing api")
 
 	r.Delete("/:model_name", helper.DeleteByDatamodel)
+	r.Get("/test/:modelName", helper.Testing)
 }
 
 // old pms code endpoint
@@ -86,6 +87,13 @@ func SetupQueryRoutes(app *fiber.App) {
 func SetupLookupRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/lookup", "Data Lookup API")
 	// r.Post("/", DataLookupDocsHandler)
+
+	r.Get("/requriment/:object_id",RequrimentObjectproject)
+
+
+
+
+
 	r.Get("/timesheet/:employee_id/:scheduledstartdate", TimeSheetByIdHandler)
 	r.Get("/task/:employee_id", taskHandler)
 	r.Put("/timesheet", postTimesheetDocHandler)

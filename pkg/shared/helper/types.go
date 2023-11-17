@@ -11,10 +11,17 @@ type PaginationRequest struct {
 	Filter           []FilterCondition `json:"filter,omitempty" bson:"filter,omitempty" validate:"omitempty"`
 	Sort             []SortCriteria    `json:"sort,omitempty" bson:"sort,omitempty" validate:"omitempty"`
 	Status           string            `json:"status,omitempty" bson:"status,omitempty" validate:"omitempty"`
+	ProjectData      []ProjectData     `json:"projectdata,omitempty" bson:"projectdata,omitempty"`
 	Groupname        string            `json:"group_name,omitempty" bson:"group_nam,omitempty" validate:"omitempty"`
 	GroupDescription string            `json:"groupDescription,omitempty" bson:"groupDescription,omitempty"`
 	GroupType        string            `json:"grouptype,omitempty" bson:"grouptype,omitempty"`
 }
+
+type ProjectData struct {
+	ParentCollectionName string `json:"parentCollectionName,omitempty" bson:"parentCollectionName,omitempty"`
+	Column               string `json:"column,omitempty" bson:"column,omitempty"`
+}
+
 type SortCriteria struct {
 	Sort  string `json:"sort"`
 	ColID string `json:"colId"`
@@ -71,11 +78,7 @@ type CustomColumn struct {
 }
 
 type SelectedListItem struct {
-	// Name                 string `json:"name,omitempty" bson:"name,omitempty"`
-	// FieldName            string `json:"field_name,omitempty" bson:"field_name,omitempty"`
-	// ParentCollectionName string `json:"parentCollectionName,omitempty" bson:"parentCollectionName,omitempty"`
-	// Type                 string `json:"type,omitempty" bson:"type,omitempty"`
-	// Hide                 bool   `json:"hide,omitempty" bson:"hide,omitempty"`
+	 
 	Field      string `json:"field",bson:"field"`
 	HeaderName string `json:"headerName"bson:"headerName"`
 }

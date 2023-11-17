@@ -49,15 +49,14 @@ func PostDocHandler(c *fiber.Ctx) error {
 	}
 
 	// Validation the Insert Data from -- InsertValidateInDatamodel
-	// inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
-	// if errmsg != nil {
-	// 	// errmsg is map to string
-	// 	for key, value := range errmsg {
-	// 		return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
-	// 	}
-	// }
-	var inputData map[string]interface{}
-	c.BodyParser(&inputData)
+	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	if errmsg != nil {
+		// errmsg is map to string
+		for key, value := range errmsg {
+			return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
+		}
+	}
+
 	helper.UpdateDateObject(inputData)
 
 	// user collection is here that time only password validation
@@ -2042,4 +2041,63 @@ func taskAllocHandler(c *fiber.Ctx) error {
 		return shared.BadRequest(err.Error())
 	}
 	return shared.SuccessResponse(c, response)
+}
+
+func RequrimentObjectproject(c *fiber.Ctx) error {
+	//Get the orgId from Header
+	org, exists := helper.GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
+	}
+
+	var objectIDFromHex = func(hex string) primitive.ObjectID {
+		objectID, err := primitive.ObjectIDFromHex(hex)
+		if err != nil {
+			log.Println(err)
+		}
+		return objectID
+	}
+
+	filter := bson.A{
+		bson.D{{"$match", bson.D{{"_id", objectIDFromHex(c.Params("object_id"))}}}},
+		bson.D{{"$addFields", bson.D{{"_id", bson.D{{"$toString", "$_id"}}}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "task"},
+					{"localField", "_id"},
+					{"foreignField", "requirement_id"},
+					{"as", "task"},
+				},
+			},
+		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "testcase"},
+					{"localField", "_id"},
+					{"foreignField", "requirement_id"},
+					{"as", "testcase"},
+				},
+			},
+		},
+		bson.D{
+			{"$addFields",
+				bson.D{
+					{"taskcount", bson.D{{"$size", "$task"}}},
+					{"testcasecount", bson.D{{"$size", "$testcase"}}},
+				},
+			},
+		},
+	}
+
+	response, err := helper.GetAggregateQueryResult(org.Id, "requirement", filter)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	return shared.SuccessResponse(c, fiber.Map{
+		"response": response,
+		// "pipeline": filter,
+	})
 }

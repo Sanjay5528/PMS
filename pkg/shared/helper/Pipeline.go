@@ -245,15 +245,7 @@ func CreateSelectedColumn(CustomColumns []SelectedListItem, BaseCollection strin
 	fieldsToProject := bson.M{}
 
 	for _, field := range CustomColumns {
-		// fieldName := field.FieldName
-
-		// if BaseCollection != field.ParentCollectionName {
-		// 	if field.ParentCollectionName != "" {
-
-		// 		fieldName = field.ParentCollectionName + "." + fieldName
-
-		// 	}
-		// }
+		 
 
 		fieldsToProject[field.Field] = 1
 	}
