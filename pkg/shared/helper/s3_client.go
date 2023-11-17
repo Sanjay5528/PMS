@@ -264,3 +264,29 @@ func UploadbulkData(c *fiber.Ctx) error {
 
 	return nil
 }
+
+func DeleteByDatamodel(c *fiber.Ctx) error {
+	//Get the orgId from Header
+	org, exists := GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
+	}
+	collectionName := c.Params("model_name")
+
+	// Delete the User_files collection filter
+	filter := bson.M{"model_name": collectionName}
+	// Delete the file metadata from MongoDB
+	_, err := database.GetConnection(org.Id).Collection("model_config").DeleteOne(ctx, filter)
+	if err != nil {
+
+	}
+
+	// Delete the file metadata from MongoDB
+	_, err = database.GetConnection(org.Id).Collection("data_model").DeleteMany(ctx, filter)
+	if err != nil {
+
+	}
+
+	return shared.SuccessResponse(c, "Delete Successfully")
+}

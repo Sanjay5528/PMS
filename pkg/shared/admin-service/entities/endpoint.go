@@ -13,6 +13,7 @@ func SetupAllRoutes(app *fiber.App) {
 	SetupDownloadRoutes(app)
 	SetupBulkUploadRoutes(app)
 	SetupDatasets(app)
+	SetupTesting(app)
 	SetupUtilRoutes(app)
 	app.Static("/image", fileUploadPath)
 	SetupaccessUser(app)
@@ -60,6 +61,12 @@ func SetupBulkUploadRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/upload_bulk", "Bulk Api")
 	r.Get("/", helper.UploadbulkData)
 }
+func SetupTesting(app *fiber.App) {
+
+	r := helper.CreateRouteGroup(app, "/testing", "Testing api")
+
+	r.Delete("/:model_name", helper.DeleteByDatamodel)
+}
 
 // old pms code endpoint
 func SetupQueryRoutes(app *fiber.App) {
@@ -104,7 +111,7 @@ func SetupSharedDBRoutes(app *fiber.App) {
 func SetupUtilRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/util", "util APIs")
 	r.Get("/nextseq/:key", getNextSeqNumberHandler)
-	r.Get("/totalcount/:collectionName", helper.Sequencecount)
+
 	//email send
 	// r.Post("/send-simple-email", SendSimpleEmailHandler)
 	//// r.Post("/send-sms", sendSMS)

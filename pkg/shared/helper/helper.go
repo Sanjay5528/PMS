@@ -162,6 +162,17 @@ func convertToMap(rv reflect.Value) (map[string]interface{}, error) {
 	return result, nil
 }
 
+func datatypeValidation(inputJsonString string) {
+	var mapdata map[string]interface{}
+
+	// marhasalData, _ := json.Marshal(inputJsonString)
+
+	json.Unmarshal([]byte(inputJsonString), mapdata)
+	fmt.Println(mapdata)
+}
+
+
+
 func InsertValidateInDatamodel(collectionName, inputJsonString, orgId string) (map[string]interface{}, map[string]string) {
 	var validationErrors = make(map[string]string)
 
@@ -172,6 +183,7 @@ func InsertValidateInDatamodel(collectionName, inputJsonString, orgId string) (m
 
 	err := json.Unmarshal([]byte(inputJsonString), newStructValue)
 	if err != nil {
+		// datatypeValidation(inputJsonString)
 		// if unmarshalErr, ok := err.(*json.UnmarshalTypeError); ok {
 		// 	expectedType := unmarshalErr.Type.String()
 		// 	dataType := strings.TrimPrefix(expectedType, "*")
@@ -201,16 +213,11 @@ func InsertValidateInDatamodel(collectionName, inputJsonString, orgId string) (m
 		return nil, validationErrors
 	}
 
-	// // fmt.Println(rv.Interface())
-	// validationErrors = ValidateStruct(rv.Interface())
-	// if len(validationErrors) > 0 {
-	// 	return nil, validationErrors
-	// }
-	// validationErr := validate.Struct(rv.Interface())
-	// if validationErr != nil { // validation failed
-	// 	_, errorFields := GetSchemValidationError(validationErr)
-	// 	return nil, errorFields
-	// }
+	validationErr := validate.Struct(rv.Interface())
+	if validationErr != nil { // validation failed
+		_, errorFields := GetSchemValidationError(validationErr)
+		return nil, errorFields
+	}
 
 	var cleanedData map[string]interface{}
 	inputByte, _ := json.Marshal(rv.Interface())
@@ -754,26 +761,17 @@ func UpdateDataset(c *fiber.Ctx) error {
 
 	return shared.SuccessResponse(c, Response)
 }
-func Sequencecount(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
 
-	Responses := fiber.Map{
+func Sequenceordercreate(OrgId, collectionName, name string) string {
 
-		"totoalDocs": Sequenceordercreate(orgId, c.Params("collectionName")),
-	}
-	return shared.SuccessResponse(c, Responses)
-}
-
-func Sequenceordercreate(OrgId, collectionName string) int64 {
 	res, err := database.GetConnection(OrgId).Collection(collectionName).CountDocuments(ctx, bson.M{})
 	if err != nil {
-		// Handle the error appropriately (log it, return a default value, etc.)
+
 		fmt.Println("Error counting documents:", err)
-		return 0
+
 	}
-	fmt.Println("totalcount", res)
-	return res
+
+	concatenated := fmt.Sprintf("%s%s%d", "T", name[:3], res)
+
+	return concatenated
 }
