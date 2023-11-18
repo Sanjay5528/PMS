@@ -42,10 +42,7 @@ func PostDocHandler(c *fiber.Ctx) error {
 	// to  Get the User Details from Token
 	userToken := utils.GetUserTokenValue(c)
 
-	 
-	
-	 
-	collectionName :=c.Params("model_name")
+	collectionName := c.Params("model_name")
 	var inputData map[string]interface{}
 	c.BodyParser(&inputData)
 	helper.UpdateDateObject(inputData)
@@ -1433,75 +1430,82 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 	}
 
 	filter :=
-	bson.A{
-		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
-		bson.D{{"$addFields", bson.D{{"_id", bson.D{{"$toString", "$_id"}}}}}},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "task"},
-					{"localField", "_id"},
-					{"foreignField", "requirement_id"},
-					{"as", "taskresult"},
+		bson.A{
+			bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
+			bson.D{{"$addFields", bson.D{{"_id", bson.D{{"$toString", "$_id"}}}}}},
+			bson.D{
+				{"$lookup",
+					bson.D{
+						{"from", "task"},
+						{"localField", "_id"},
+						{"foreignField", "requirement_id"},
+						{"as", "taskresult"},
+					},
 				},
 			},
-		},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "testcase"},
-					{"localField", "_id"},
-					{"foreignField", "requirement_id"},
-					{"as", "tasecaseresult"},
+			bson.D{
+				{"$lookup",
+					bson.D{
+						{"from", "testcase"},
+						{"localField", "_id"},
+						{"foreignField", "requirement_id"},
+						{"as", "tasecaseresult"},
+					},
 				},
 			},
-		},
-		bson.D{{"$match", bson.D{{"taskresult.status", bson.D{{"$ne", "Completed"}}}}}},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "employee"},
-					{"localField", "taskresult.assigned_to"},
-					{"foreignField", "employee_id"},
-					{"as", "employeeResult"},
+			bson.D{{"$match", bson.D{{"taskresult.status", bson.D{{"$ne", "Completed"}}}}}},
+			bson.D{
+				{"$lookup",
+					bson.D{
+						{"from", "employee"},
+						{"localField", "taskresult.assigned_to"},
+						{"foreignField", "employee_id"},
+						{"as", "employeeResult"},
+					},
 				},
 			},
-		},
-		bson.D{
-			{"$addFields",
-				bson.D{
-					{"number_of_Task_count", bson.D{{"$size", "$taskresult"}}},
-					{"number_of_TestCase_count", bson.D{{"$size", "$tasecaseresult"}}},
-					{"employee_name",
-						bson.D{
-							{"$reduce",
-								bson.D{
-									{"input", "$employeeResult"},
-									{"initialValue", ""},
-									{"in",
-										bson.D{
-											{"$concat",
-												bson.A{
-													"$$value",
-													bson.D{
-														{"$cond",
-															bson.A{
-																bson.D{
-																	{"$eq",
-																		bson.A{
-																			"$$value",
-																			"",
+			bson.D{
+				{"$addFields",
+					bson.D{
+						{"number_of_Task_count", bson.D{{"$size", "$taskresult"}}},
+						{"number_of_TestCase_count", bson.D{{"$size", "$tasecaseresult"}}},
+					},
+				},
+			},
+			bson.D{
+				{"$addFields",
+					bson.D{
+						{"taskresult.employee_name",
+							bson.D{
+								{"$reduce",
+									bson.D{
+										{"input", "$employeeResult"},
+										{"initialValue", ""},
+										{"in",
+											bson.D{
+												{"$concat",
+													bson.A{
+														"$$value",
+														bson.D{
+															{"$cond",
+																bson.A{
+																	bson.D{
+																		{"$eq",
+																			bson.A{
+																				"$$value",
+																				"",
+																			},
 																		},
 																	},
+																	"",
+																	" ",
 																},
-																"",
-																" ",
 															},
 														},
+														"$$this.first_name",
+														" ",
+														"$$this.last_name",
 													},
-													"$$this.first_name",
-													" ",
-													"$$this.last_name",
 												},
 											},
 										},
@@ -1512,8 +1516,8 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 					},
 				},
 			},
-		},
-	}
+			bson.D{{"$unset", "employeeResult"}},
+		}
 	response, err := helper.GetAggregateQueryResult(org.Id, "requirement", filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
