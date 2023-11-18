@@ -1,63 +1,50 @@
 {
-	"pageHeading": "Test Case Scenario",
-	"formType": "simple",
-	"editMode": "page",
-	"keyField": "_id",
-	"form": {
-		"collectionName": "testcase",
-		"fields": [
-			{
-				"fieldGroupClassName": "display-flex",
-				"fieldGroup": [
-					{
-						"type": "input",
-						"key": "test_case_name",
-						"className": "flex-6",
-						"props": {
-							"label": "Test Case Name",
-							"required": true
-						}
-					},
-					{
-						"key": "test_case_scenario",
-						"type": "select",
-						"className": "flex-6",
-						"props": {
-							"label": "Test Case Scenario",
-							"options": [
-								{
-									"label": "Positive",
-									"value": "P"
-								},
-								{
-									"label": "Negative",
-									"value": "N"
-								}
-							],
-							"required": true
-						}
-					}
-				]
-			},
-			{
-				"type": "html-input",
-				"key": "test_data",
-				"className": "flex-6",
-				"props": {
-					"label": "Test Data",
-					"required": true
-				}
-			},
-			{
-				"type": "html-input",
-				"key": "expected_result",
-				"className": "flex-6",
-				"props": {
-					"label": "Expected Result",
-					"required": true
-				},
-				"maxlength": 500
-			}
-		]
-	}
-}
+	"pageHeading": "Project Role",
+	"collectionName": "project_role",
+	"editMode": "popup",
+	"addRoute": "/add/project_role",
+	"editRoute": "/edit/project_role",
+	"showbutton": true,
+	"actions": [
+	  {
+		"label": "Edit",
+		"formAction": "edit",
+		"icon": "edit"
+	  },
+	  {
+		"label": "Delete",
+		"formAction": "delete",
+		"icon": "delete"
+	  }
+	],
+	"columnDefs": [
+		{
+			"headerName": "ID",
+			"field": "_id"
+		  },  {
+		"headerName": "Name",
+		"field": "name"
+	  },
+	
+	  {
+		"headerName": "Hierarchy Order", 
+		"field": "hierarchy",
+		"sortable":true
+	  },
+	  {
+		"headerName": "status",
+		"field": "status"
+	  },
+	  {
+		"type": "rightAligned",
+		"headerName": "Actions",
+		"cellRenderer": "buttonRenderer",
+		"lockPosition": "right",
+		"cellRendererParams": {
+		  "onClick": "this.onBtnClick1.bind(this)",
+		  "label": "Click 1"
+		}
+	  }
+	]
+  }
+  

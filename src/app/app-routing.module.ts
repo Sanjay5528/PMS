@@ -103,7 +103,10 @@ const routes: Routes = [
 
     ]
   },
-
+{
+  path:"Check",
+  component:ExpansionComponent
+},
   {
     path: "add",
     component: DefaultLayoutComponent,

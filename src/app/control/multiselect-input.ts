@@ -44,7 +44,7 @@ import { DialogService } from '../services/dialog.service';
   [bindValue]="valueProp"
   [formControl]="FormControl"     
   [formlyAttributes]="field"
-  
+  appearance="outline"
   >
   <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index" style="height: 25px;">
     <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected" [ngModelOptions]="{standalone: true}"/>
@@ -103,10 +103,11 @@ export class MultiSelectInput extends FieldType<any> implements OnInit {
 
     if (this.opt.optionsDataSource.collectionName) {
       let name = this.opt.optionsDataSource.collectionName
-      let query:any={
-start:0,end:1000,filter:[]
-      }
-      if(this.opt.multifilter==true){
+      let query:any={}
+      if(this.opt.multifilter==true){ 
+        query ={
+        start:0,end:1000,filter:[]
+              }
         this?.opt?.multifilter_condition?.conditions.map((res:any)=>{
      
           if(this?.opt?.multifiltertype=="local"){
@@ -117,8 +118,8 @@ start:0,end:1000,filter:[]
           }
         
         })
+        query.filter.push(this.opt.multifilter_condition)
       }
-      query.filter.push(this.opt.multifilter_condition)
       this.dataService.getDataByFilter(name,query).subscribe((res: any) => {
         let values:any=res.data[0].response
         console.log(res.data);

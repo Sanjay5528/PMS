@@ -170,7 +170,7 @@ export class SelectInput extends FieldType<any> implements OnInit {
     
     })
     let filter_condition={filter:[
-      this.opt.multifilter_condition
+      {...this.opt.multifilter_condition}
     ]}
     this.dataService.getDataByFilter(this.opt?.Collections,filter_condition).subscribe((res:any)=>{
       // this.dataService.buildOptions(res.data[0].response, this.opt);

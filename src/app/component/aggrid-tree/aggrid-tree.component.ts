@@ -139,8 +139,36 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
     this.context = { componentParent: this };
     
   } 
+datefunction(date:any){
+  return moment(date).format("DD-MM-YYYY  ")
+}
+reassignemployee:any
+reassign(employeeID:any){
+  let filer:any={
+    start:0,end:1000,filter:[{
+      clause: "AND",
+        conditions: [
+          {column: "employee_id",operator: "NOTEQUAL",type: "string",value: employeeID},
+        ],
+      
+    }]
+  }
+  this.dataService.getDataByFilter("employee",filer).subscribe((res:any) =>{
+      if(isEmpty(res.data[0].response)){
+        this.dialogService.openSnackBar("There Were No Employee To be Found","OK")
+        return
+      }
+      console.log(res);
+      
+      this.reassignemployee=res.data[0].response
+  //   res.data[0].response.forEach((each:any)=>{
+  //   // this.ValueToCompareRequriementSprint.push({label:each.name,value:each.id})
+  //   // this.OnlyValueRequriementSprint.push(each.id)
 
-  
+  // })
+  // return data  
+})
+}
   ngOnInit() {
     debugger
     
@@ -149,6 +177,15 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
       console.log(params);
       this.formName=params['component']
 
+      if(this.formName == "module"){
+this.pageHeading= "Module"
+      }else if(this.formName=="Requirement"){
+        this.pageHeading= "Requirement"
+
+      }else if(this.formName=="Team_Member"){
+        this.pageHeading= "Team Member"
+
+      }
       this.loadConfig(this.formName)
       this.id = params['id'];
       this.dataService.getDataById("project", this.id).subscribe((res: any) => {
@@ -159,7 +196,11 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
         // sessionStorage.setItem("projectname", this.response.projectname)
         this.sprintCellEditorParams('')
        this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;          
-        this.getTreeData()
+        // if(this.formName=="Team_Member"){
+        //   this.getList()
+        // }else{
+          this.getTreeData()
+        // }
       
        
       })
@@ -167,6 +208,13 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
     // console.log(this.route.snapshot.routeConfig?.path);
   
   }
+// gridChange:any=false
+getList(){
+  this.dataService.getDataByFilter("",{}).subscribe((res:any)=>{
+    console.log(res);
+    
+  })
+}
 
 loadConfig(formName:any){
 
@@ -280,13 +328,13 @@ loadConfig(formName:any){
       },
     }, {
       headerName: 'Test Case Count',
-      field: 'testcasecount',
+      field: 'number_of_TestCase_count',
       width: 40,
       editable: false,
       filter: 'agNumberColumnFilter',
     }, {
       headerName: 'Task Count',
-      field: 'taskcount',
+      field: 'number_of_Task_count',
       width: 40,
       editable: false,
       filter: 'agNumberColumnFilter',
@@ -331,6 +379,27 @@ loadConfig(formName:any){
     }
     
     )
+  }else if(formName=="Team_Member"){
+    // this.gridChange=true;
+    this.columnDefs.push(	
+			{
+				"headerName": "Team Id",
+				"field": "team_id",
+				"sortable": true,
+				"filter": "agTextColumnFilter"
+			},	{
+				"headerName": "Team Name",
+				"field": "team_name",
+				"sortable": true,
+				"filter": "agTextColumnFilter"
+			},
+			{
+				"headerName": "status",
+				"field": "status",
+				"sortable": true,
+				"filter": "agTextColumnFilter"
+			}
+      )
   }
 
 }
@@ -443,7 +512,7 @@ if(this.formName=="module"){
         // this.getmodules()
       }
     });
-  }else{
+  }else if(this.formName=="Requirement"){
     
     let filer:any={
       start:0,end:1000,filter:[{
@@ -523,7 +592,29 @@ if(this.formName=="module"){
         
    
       })
+  }else if(this.formName=="Team_Member"){
+    this.dataService.getModuleFilter("project_team", this.response.project_id).subscribe((res: any) => {
+      this.listData = []
+      for (let idx = 0; idx < res.data.length; idx++) {
+        const row = res.data[idx];
+        if (row.parentteamName == "" || !row.parentteamName) {
+          row.treePath = [row.modulename];
+        } else {
+          var parentNode = this.listData.find((d) => d.teamname == row.parentteamName);
+          if (
+            parentNode &&
+            parentNode.treePath &&
+            !parentNode.treePath.includes(row.teamname)
+          ) {
+            row.treePath = [...parentNode.treePath];
+            row.treePath.push(row.teamname);
+          }
+        }
+        this.listData.push(row);
+      }
+    });
   }
+
 }
 
 
@@ -552,7 +643,7 @@ animateRows:true,paginationPageSize:10
   cellClicked:any
   onCellClicked(event: any){
 let clickCell:any=event.column.getColId()
-    if(clickCell== 'testcasecount'||clickCell=="taskcount"){
+    if(clickCell== 'number_of_TestCase_count'||clickCell=="number_of_Task_count"){
       console.log(event.data);
       this.cellClicked=clickCell
       this.drawer.toggle()

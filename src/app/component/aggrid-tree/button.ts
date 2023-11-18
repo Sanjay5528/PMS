@@ -80,7 +80,25 @@ import { HelperService } from "src/app/services/helper.service";
         </button>
       </mat-menu>
     </div>
-    
+    <div  *ngIf="parentRouteName=='Team_Member'">
+      <button mat-icon-button [matMenuTriggerFor]="Team_Membermenu">
+        <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
+      </button>
+      <mat-menu #Team_Membermenu="matMenu">
+      <button  mat-menu-item (click)="onclickTEamMembers('addsubchild', params.data)">
+          <mat-icon>add</mat-icon>
+          <span>Team Member</span>
+        </button>
+        <button mat-menu-item (click)="onclickTEamMembers('edit', params.data)">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-menu-item (click)="onclickTEamMembers('delete', params.data)">
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+    </div>
     <ng-template #taskViewPopup class="example-sidenav" mode="over" style="margin: auto">
       <mat-card>
         <mat-card-header style="flex: 1 1 auto;">
@@ -338,6 +356,9 @@ parentRouteName:any
     this.data = this.gridData;
     // this.router.navigate(["/list/testcase/" + `${this.data.moduleid}`]);
   }
+ }
+ onclickTEamMembers(formAction:any,data?:any){
+
  }
   // if (ctrl.config.form.collectionName == "modules") {
   //   if (ctrl.autoGroupColumnDef?.headerName == "Parent Modules") {

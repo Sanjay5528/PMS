@@ -176,9 +176,9 @@ export class MasterSingleDetailFormComponent {
       }
   
     var data :any= this.detailForm.value
-    if(data.teammember==undefined){
-  return    this.dialogService.openSnackBar("Choose a Team Member Atleast one person","OK")
-    }
+  //   if(data.teammember==undefined){
+  // return    this.dialogService.openSnackBar("Choose a Team Member Atleast one person","OK")
+  //   }
     data.project_id=this.model["project_id"]
     
     data.project_name=this.model["project_name"]

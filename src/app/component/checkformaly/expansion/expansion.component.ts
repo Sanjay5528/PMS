@@ -13,6 +13,7 @@ export class ExpansionComponent  {
 expanisionpanel:any[]=[]
 opt:any
 field:any
+arr:any[]=[]
 constructor(public dataservices:DataService){
   // todo
   // this.opt=this.field.props
@@ -39,7 +40,8 @@ this.dataservices.getDataByFilter("designation",{start:0,end:100}).subscribe((xy
       })
       if(!isEmpty(Checkboxarr)){
         this.expanisionpanel.push(designation.name)
-        this.childData[designation.name]=        Checkboxarr
+        this.arr.push(false)
+        this.childData[designation.name]=Checkboxarr
       }
     });
     console.log(this.childData);
@@ -51,13 +53,41 @@ this.dataservices.getDataByFilter("designation",{start:0,end:100}).subscribe((xy
 // console.log(startTime,endTime);
 
 }
-onParentCheckboxChange(values: string,event:any) {
+onParentCheckboxChange(values: string,event:any,index:any) {
   console.log(event);
-  
+this.arr[index]=event.srcElement.checked
+if(event.srcElement.checked==true){
+
+  event.stopPropagation();
+
+}
   for (let checkBoxData of this.childData[values]) {
     checkBoxData.checked = event.srcElement.checked
   }
+
   console.log( this.childData[values]);
   
+}
+
+ChildCheckBox(values:any,event:any,index:any){
+console.log(event.srcElement.checked);
+  event.stopPropagation();
+  console.log(values);
+  if(event.srcElement.checked==false){
+    this.arr[index]=event.srcElement.checked
+  }
+  console.log( this.childData[values]);
+  if(event.srcElement.checked==true){
+
+    
+    for (let checkBoxData of this.childData[values]) {
+    if(  checkBoxData.checked ==false ){
+      this.arr[index]=false
+    }else{
+      this.arr[index]=true
+    }
+    }
+  }
+
 }
 }
