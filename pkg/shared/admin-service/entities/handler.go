@@ -42,22 +42,12 @@ func PostDocHandler(c *fiber.Ctx) error {
 	// to  Get the User Details from Token
 	userToken := utils.GetUserTokenValue(c)
 
-	//get the collection from model_config collection to find the model_name
-	collectionName, err := CollectionNameGet(c.Params("model_name"), org.Id)
-	if err != nil {
-		shared.BadRequest("Invalid CollectionName")
-	}
-
-	// Validation the Insert Data from -- InsertValidateInDatamodel
-	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
-	if errmsg != nil {
-		// errmsg is map to string
-		for key, value := range errmsg {
-			return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
-		}
-	}
 	 
-
+	
+	 
+	collectionName :=c.Params("model_name")
+	var inputData map[string]interface{}
+	c.BodyParser(&inputData)
 	helper.UpdateDateObject(inputData)
 
 	// user collection is here that time only password validation
