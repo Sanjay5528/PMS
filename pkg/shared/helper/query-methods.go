@@ -216,7 +216,7 @@ func FindDocs(orgId, collection string, filter interface{}) (map[string]interfac
 			// Handle case when no document matches the filter
 			// return nil, fmt.Errorf("No document found")
 		}
-		// Handle other errors
+		 
 		return nil, err
 	}
 

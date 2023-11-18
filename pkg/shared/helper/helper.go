@@ -74,6 +74,7 @@ func sharedDBEntityHandler(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, response)
 }
 
+// UpdateUserPasswordAndDeleteTempData   --METHOD user password update with Hashing for user collection
 func UpdateUserPasswordAndDeleteTempData(c *fiber.Ctx) error {
 
 	var inputData map[string]interface{}
@@ -81,6 +82,7 @@ func UpdateUserPasswordAndDeleteTempData(c *fiber.Ctx) error {
 	if err != nil {
 		return shared.BadRequest("Error parsing request body: " + err.Error())
 	}
+	// accesKey from params
 	access_key := c.Params("access_key")
 
 	query := bson.M{"access_key": access_key}
@@ -94,10 +96,6 @@ func UpdateUserPasswordAndDeleteTempData(c *fiber.Ctx) error {
 	if !idExists {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Invalid response format"})
 	}
-
-	// passwordHash, _ := GeneratePasswordHash(inputData["password"].(string))
-	// delete(inputData, "password")
-	// delete(inputData, "confirm_password")
 
 	// to compare the password and comfirm password is same only   Genrate the Hased password
 	if inputData["password"].(string) != inputData["confirm_password"].(string) {

@@ -42,20 +42,11 @@ func PostDocHandler(c *fiber.Ctx) error {
 	// to  Get the User Details from Token
 	userToken := utils.GetUserTokenValue(c)
 
-	//get the collection from model_config collection to find the model_name
-	collectionName, err := CollectionNameGet(c.Params("model_name"), org.Id)
-	if err != nil {
-		shared.BadRequest("Invalid CollectionName")
-	}
+	
+	collectionName := c.Params("model_name")
+	var inputData map[string]interface{}
+	c.BodyParser(&inputData)
 
-	// Validation the Insert Data from -- InsertValidateInDatamodel
-	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
-	if errmsg != nil {
-		// errmsg is map to string
-		for key, value := range errmsg {
-			return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
-		}
-	}
 	helper.UpdateDateObject(inputData)
 
 	// user collection is here that time only password validation
@@ -71,7 +62,7 @@ func PostDocHandler(c *fiber.Ctx) error {
 
 	inputData["created_on"] = time.Now()
 	inputData["created_by"] = userToken.UserId
-	inputData["status"] = "A"
+	// inputData["status"] = "A"
 
 	// Insert he data to mongo Collection  name form params
 	res, err := database.GetConnection(org.Id).Collection(collectionName).InsertOne(ctx, inputData)
@@ -377,129 +368,6 @@ func getDocByIdHandler(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, response)
 }
 
-func getModuleByIdHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	collectionName := c.Params("collectionName")
-	moduleid := c.Params("moduleid")
-	var collection string
-	if collectionName == "testcase" {
-		collection = "testcase"
-	} else {
-		collection = "modules"
-	}
-	filter := bson.A{
-		bson.D{{"$match", bson.D{{"moduleid", moduleid}}}},
-	}
-	response, err := helper.GetAggregateQueryResult(orgId, collection, filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-func ModuleTaskHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	projectid := c.Params("projectid")
-	// fmt.Println(projectid)
-	var collectionName = "modules"
-	filter := bson.A{
-		bson.D{{"$match", bson.D{{"projectid", projectid}}}},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "task"},
-					{"localField", "moduleid"},
-					{"foreignField", "moduleid"},
-					{"as", "results"},
-				},
-			},
-		},
-
-		bson.D{
-			{"$project",
-				bson.D{
-					{"_id", 0},
-					{"enddate", 1},
-					{"startdate", 1},
-					{"parentmodulename", 1},
-					{"modulename", 1},
-					{"taskname", "$results.taskname"},
-				},
-			},
-		},
-	}
-
-	response, err := helper.GetAggregateQueryResult(orgId, collectionName, filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-func TeamRoleHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	teamid := c.Params("teamid")
-
-	var collectionName = "projectteam"
-	filter := bson.A{
-		bson.D{{"$match", bson.D{{"teamid", teamid}}}},
-		bson.D{
-			{"$unwind",
-				bson.D{
-					{"path", "$projectrole"},
-					{"preserveNullAndEmptyArrays", true},
-				},
-			},
-		},
-		bson.D{
-			{"$project",
-				bson.D{
-					{"_id", 0},
-					{"name", "$projectrole.projectrolename"},
-				},
-			},
-		},
-	}
-
-	response, err := helper.GetAggregateQueryResult(orgId, collectionName, filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-func TeamMemberHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	projectname := c.Params("projectname")
-	decodedProjectName, err := url.QueryUnescape(projectname)
-	if err != nil {
-		// fmt.Println("Error decoding:", err)
-	}
-	project := strings.Replace(decodedProjectName, "%20", " ", -1)
-	// fmt.Println("Decoded Project Name:", project)
-	var collectionName = "projectteammembers"
-
-	filter := bson.A{
-		bson.D{{"$match", bson.D{{"projectname", project}}}},
-	}
-	response, err := helper.GetAggregateQueryResult(orgId, collectionName, filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
 // todo
 func ActiveClientHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
@@ -520,165 +388,6 @@ func ActiveClientHandler(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, response)
 }
 
-func StateHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	country := c.Params("country")
-	decodedProjectName, err := url.QueryUnescape(country)
-	if err != nil {
-		// fmt.Println("Error decoding:", err)
-	}
-	countryname := strings.Replace(decodedProjectName, "%20", " ", -1)
-	// fmt.Println("Decoded country Name:", countryname)
-	var collectionName = "country"
-
-	filter :=
-		bson.A{
-			bson.D{{"$match", bson.D{{"country_name", countryname}}}},
-			bson.D{
-				{"$project",
-					bson.D{
-						{"_id", 0},
-						{"states", 1},
-					},
-				},
-			},
-			bson.D{
-				{"$unwind",
-					bson.D{
-						{"path", "$states"},
-						{"includeArrayIndex", "string"},
-						{"preserveNullAndEmptyArrays", false},
-					},
-				},
-			},
-		}
-	response, err := helper.GetAggregateQueryResult(orgId, collectionName, filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-// parent collection Task -- timesheet
-func taskHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	employee_id := c.Params("employee_id")
-	// fmt.Println("employee_id", employee_id)
-	var filter primitive.A
-	filter =
-		bson.A{
-			//	bson.D{{"$match", bson.D{{"employeeid", employee_id}}}}, //"KT120"
-			bson.D{
-				{"$lookup",
-					bson.D{
-						{"from", "timesheet"},
-						{"localField", "task_id"},
-						{"foreignField", "task_id"},
-						{"as", "result"},
-					},
-				},
-			},
-			bson.D{
-				{"$unwind",
-					bson.D{
-						{"path", "$result"},
-						{"includeArrayIndex", "string"},
-						{"preserveNullAndEmptyArrays", true},
-					},
-				},
-			},
-			bson.D{
-				{"$group",
-					bson.D{
-						{"_id",
-							bson.D{
-								{"assigned_to", "$assigned_to"},
-								{"task_id", "$task_id"},
-							},
-						},
-						{"totalworkedhours", bson.D{{"$sum", "$result.workedhours"}}},
-						{"id", bson.D{{"$first", "$_id"}}},
-						{"allocated_hours", bson.D{{"$first", "$allocated_hours"}}},
-						{"assigned_to", bson.D{{"$first", "$assigned_to"}}},
-						{"task_id", bson.D{{"$first", "$task_id"}}},
-						{"project_name", bson.D{{"$first", "$project_name"}}},
-						{"moduleid", bson.D{{"$first", "$moduleid"}}},
-						{"scheduled_start_date", bson.D{{"$first", "$scheduled_start_date"}}},
-						{"scheduled_end_date", bson.D{{"$first", "$scheduled_end_date"}}},
-						{"taskname", bson.D{{"$first", "$task_name"}}},
-						{"assignedto", bson.D{{"$first", "$assignedto"}}},
-						{"remarks", bson.D{{"$last", "$result.remarks"}}},
-						{"status", bson.D{{"$first", "$status"}}},
-						{"approval_Status", bson.D{{"$first", "$approval_Status"}}},
-					},
-				},
-			},
-			bson.D{{"$unset", "_id"}},
-			bson.D{{"$set", bson.D{{"_id", "$id"}}}},
-			bson.D{{"$unset", "id"}},
-		}
-	if employee_id == "SA" {
-		filter = filter
-
-	} else {
-		// fmt.Println(employee_id)
-		filter = append(filter, bson.D{{"$match", bson.D{{"assigned_to", employee_id}}}})
-	}
-	response, err := helper.GetAggregateQueryResult(orgId, "task", filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-func BlockidHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	id := c.Params("id")
-
-	// decodedProjectName, err := url.QueryUnescape(schemaname)
-	// if err != nil {
-	// 	fmt.Println("Error decoding:", err)
-	// }
-	// project := strings.Replace(decodedProjectName, "%20", " ", -1)
-	// fmt.Println("Decoded Project Name:", project)
-	var collectionName = "block"
-	var collectionName1 = "colony"
-	var collectionName2 = "gate"
-
-	docId, err := primitive.ObjectIDFromHex(id)
-	filter := bson.A{
-		bson.D{{"$match", bson.D{{"_id", docId}}}},
-	}
-	//filter := bson.M{"_id": docId}
-	response, err := helper.GetAggregateQueryResult(orgId, collectionName, filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	// fmt.Println("docId", response)
-	//fmt.Println(response)
-	response1, err := helper.GetAggregateQueryResult(orgId, collectionName1, filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	// fmt.Println("docId", response1)
-	response2, err := helper.GetAggregateQueryResult(orgId, collectionName2, filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	// fmt.Println("docId", response2)
-	combinedResponse := append(response, response1...)
-	combinedResponse1 := append(combinedResponse, response2...)
-	return shared.SuccessResponse(c, combinedResponse1)
-}
 func colonyHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
 	if orgId == "" {
@@ -791,55 +500,6 @@ func EmployeeTaskHandler(c *fiber.Ctx) error {
 	}
 	return shared.SuccessResponse(c, response)
 }
-func TimeSheetHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	timesheet_id := c.Params("timesheet_id")
-
-	// decodedProjectName, err := url.QueryUnescape(schemaname)
-	// if err != nil {
-	// 	fmt.Println("Error decoding:", err)
-	// }
-	// project := strings.Replace(decodedProjectName, "%20", " ", -1)
-	// fmt.Println("Decoded Project Name:", project)
-	var collectionName = "timesheet"
-
-	filter := bson.A{
-		bson.D{{"$match", bson.D{{"timesheet_id", timesheet_id}}}},
-	}
-	response, err := helper.GetAggregateQueryResult(orgId, collectionName, filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-func ColvalHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	collectionName := c.Params("collectionName") //:collectionName/:colvalue/:key
-	colvalue := c.Params("colvalue")
-	key := c.Params("key")
-
-	decodedkeyName, err := url.QueryUnescape(key)
-	if err != nil {
-		// fmt.Println("Error decoding:", err)
-	}
-	keyname := strings.Replace(decodedkeyName, "%20", " ", -1)
-	// fmt.Println("Decoded Key Name:", keyname)
-
-	filter := bson.A{
-		bson.D{{"$match", bson.D{{colvalue, keyname}}}},
-	}
-	response, err := helper.GetAggregateQueryResult(orgId, collectionName, filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
 
 func TimeSheetByIdHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
@@ -856,7 +516,7 @@ func TimeSheetByIdHandler(c *fiber.Ctx) error {
 	fmt.Println("employee_id :", employee_id)
 	var collectionName = "task"
 	var filter primitive.A
-	// !Parthi
+
 	filter = bson.A{
 		bson.D{
 			{"$lookup",
@@ -1123,285 +783,6 @@ func TimeSheetByiiIdHandler(c *fiber.Ctx) error {
 		return shared.BadRequest(err.Error())
 	}
 	return shared.SuccessResponse(c, response)
-}
-func TimeSeetByIdHandler(c *fiber.Ctx) error {
-
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	// fmt.Println("orgId", orgId)
-	employee_id := c.Params("employee_id")
-	scheduledstartdate := c.Params("scheduledstartdate")
-
-	date, _ := time.Parse(time.RFC3339, scheduledstartdate)
-	day := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
-	//day, _ := time.Parse(time.RFC3339, inputData["date"].(string))
-	fmt.Println("Formatted UC:", day)
-	//fmt.Println("Formatted UC:", day1)
-
-	var collectionName = "task"
-
-	filter := bson.A{
-		bson.D{{"$match", bson.D{{"employeeid", employee_id}}}},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "timesheet"},
-					{"localField", "taskid"},
-					{"foreignField", "task_id"},
-					{"as", "result"},
-				},
-			},
-		},
-		bson.D{{"$addFields", bson.D{{"resultSize", bson.D{{"$size", "$result"}}}}}},
-	}
-	response, err := helper.GetAggregateQueryResult(orgId, "task", filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	//fmt.Println("response UC:", response)
-	for _, res1 := range response {
-		// fmt.Println(res1["resultSize"], "gg")
-		if res1["resultSize"] == 0 {
-			// fmt.Println(res1["resultSize"], "gg")
-			filter1 :=
-				bson.A{
-					bson.D{
-						{"$lookup",
-							bson.D{
-								{"from", "timesheet"},
-								{"localField", "taskid"},
-								{"foreignField", "task_id"},
-								{"as", "result"},
-							},
-						},
-					},
-					bson.D{
-						{"$unwind",
-							bson.D{
-								{"path", "$result"},
-								{"includeArrayIndex", "string"},
-								{"preserveNullAndEmptyArrays", true},
-							},
-						},
-					},
-					bson.D{
-						{"$group",
-							bson.D{
-								{"_id",
-									bson.D{
-										{"employeeid", "$employeeid"},
-										{"task_id", "$taskid"},
-									},
-								},
-								{"totalworkedhours", bson.D{{"$sum", "$result.workedhours"}}},
-								{"id", bson.D{{"$first", "$_id"}}},
-								{"allocatedhours", bson.D{{"$first", "$allocatedhours"}}},
-								{"employeeid", bson.D{{"$first", "$employeeid"}}},
-								{"task_id", bson.D{{"$first", "$taskid"}}},
-								{"projectname", bson.D{{"$first", "$projectname"}}},
-								{"moduleid", bson.D{{"$first", "$moduleid"}}},
-								{"scheduled_start_date", bson.D{{"$first", "$scheduledstartdate"}}},
-								{"scheduled_end_date", bson.D{{"$first", "$scheduledenddate"}}},
-								{"taskname", bson.D{{"$first", "$taskname"}}},
-								{"assignedto", bson.D{{"$first", "$assignedto"}}},
-								{"actual_start_date", bson.D{{"$min", "$result.created_on"}}},
-								{"status", bson.D{{"$first", "$status"}}},
-							},
-						},
-					},
-					bson.D{{"$unset", "_id"}},
-					bson.D{
-						{"$match",
-							bson.D{
-								{"$and",
-									bson.A{
-										bson.D{{"employeeid", employee_id}},
-										bson.D{{"scheduled_start_date", bson.D{{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 23, 0, 0, 0, time.UTC)}}}},
-										bson.D{{"status", bson.D{{"$ne", "Completed"}}}},
-									},
-								},
-							},
-						},
-					},
-				}
-			response1, err := helper.GetAggregateQueryResult(orgId, collectionName, filter1)
-			if err != nil {
-				return shared.BadRequest(err.Error())
-			}
-			// fmt.Println("SS", response1)
-			return shared.SuccessResponse(c, response1)
-		} else {
-			filter :=
-				bson.A{
-					bson.D{
-						{"$lookup",
-							bson.D{
-								{"from", "timesheet"},
-								{"localField", "taskid"},
-								{"foreignField", "task_id"},
-								{"as", "result"},
-							},
-						},
-					},
-					bson.D{
-						{"$unwind",
-							bson.D{
-								{"path", "$result"},
-								{"includeArrayIndex", "string"},
-								{"preserveNullAndEmptyArrays", true},
-							},
-						},
-					},
-					bson.D{
-						{"$group",
-							bson.D{
-								{"_id",
-									bson.D{
-										{"employeeid", "$employeeid"},
-										{"task_id", "$taskid"},
-									},
-								},
-								{"totalworkedhours", bson.D{{"$sum", "$result.workedhours"}}},
-								{"id", bson.D{{"$first", "$_id"}}},
-								{"allocatedhours", bson.D{{"$first", "$allocatedhours"}}},
-								{"employeeid", bson.D{{"$first", "$employeeid"}}},
-								{"task_id", bson.D{{"$first", "$taskid"}}},
-								{"projectname", bson.D{{"$first", "$projectname"}}},
-								{"moduleid", bson.D{{"$first", "$moduleid"}}},
-								{"scheduled_start_date", bson.D{{"$first", "$scheduledstartdate"}}},
-								{"scheduled_end_date", bson.D{{"$first", "$scheduledenddate"}}},
-								{"taskname", bson.D{{"$first", "$taskname"}}},
-								{"assignedto", bson.D{{"$first", "$assignedto"}}},
-								{"actual_start_date", bson.D{{"$min", "$result.created_on"}}},
-								{"status", bson.D{{"$first", "$status"}}},
-								{"result", bson.D{{"$addToSet", "$result"}}},
-							},
-						},
-					},
-					bson.D{{"$unset", "_id"}},
-					bson.D{
-						{"$unwind",
-							bson.D{
-								{"path", "$result"},
-								{"includeArrayIndex", "string"},
-								{"preserveNullAndEmptyArrays", true},
-							},
-						},
-					},
-					bson.D{
-						{"$set",
-							bson.D{
-								{"formatedDate", "$result.formatedDate"},
-								{"workedhours", "$result.workedhours"},
-							},
-						},
-					},
-					bson.D{
-						{"$addFields",
-							bson.D{
-								{"hasFormattedDate",
-									bson.D{
-										{"$cond",
-											bson.D{
-												{"if",
-													bson.D{
-														{"$and",
-															bson.A{
-																bson.D{
-																	{"$gte",
-																		bson.A{
-																			"$formatedDate",
-																			time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC),
-																		},
-																	},
-																},
-																bson.D{
-																	{"$lte",
-																		bson.A{
-																			"$formatedDate",
-																			time.Date(date.Year(), date.Month(), date.Day(), 23, 59, 0, 0, time.UTC),
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-												{"then", true},
-												{"else", false},
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-					bson.D{
-						{"$addFields",
-							bson.D{
-								{"workedhours",
-									bson.D{
-										{"$cond",
-											bson.D{
-												{"if",
-													bson.D{
-														{"$eq",
-															bson.A{
-																"$hasFormattedDate",
-																true,
-															},
-														},
-													},
-												},
-												{"then", "$workedhours"},
-												{"else", "$$REMOVE"},
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-					bson.D{
-						{"$match",
-							bson.D{
-								{"$and",
-									bson.A{
-										bson.D{{"employeeid", employee_id}},
-										bson.D{
-											{"$or",
-												bson.A{
-													bson.D{{"formattedDate", bson.D{{"$exists", false}}}},
-													bson.D{
-														{"$and",
-															bson.A{
-																bson.D{{"formattedDate", bson.D{{"$exists", true}}}},
-																bson.D{{"hasFormattedDate", true}},
-															},
-														},
-													},
-												},
-											},
-										},
-										bson.D{{"scheduled_start_date", bson.D{{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 23, 0, 0, 0, time.UTC)}}}},
-										bson.D{{"status", bson.D{{"$ne", "Completed"}}}},
-									},
-								},
-							},
-						},
-					},
-				}
-			response, err := helper.GetAggregateQueryResult(orgId, collectionName, filter)
-			if err != nil {
-				return shared.BadRequest(err.Error())
-			}
-			// fmt.Println("SSU", response)
-			return shared.SuccessResponse(c, response)
-		}
-	}
-	return nil
 }
 
 // getDocsHandler --METHOD get the data from Db with pagination
@@ -2050,39 +1431,88 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 		return shared.BadRequest("Invalid Org Id")
 	}
 
-	filter := bson.A{
-		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
-		bson.D{{"$addFields", bson.D{{"_id", bson.D{{"$toString", "$_id"}}}}}},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "task"},
-					{"localField", "_id"},
-					{"foreignField", "requirement_id"},
-					{"as", "task"},
+	filter :=
+		bson.A{
+			bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
+			bson.D{{"$addFields", bson.D{{"_id", bson.D{{"$toString", "$_id"}}}}}},
+			bson.D{
+				{"$lookup",
+					bson.D{
+						{"from", "task"},
+						{"localField", "_id"},
+						{"foreignField", "requirement_id"},
+						{"as", "taskresult"},
+					},
 				},
 			},
-		},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "testcase"},
-					{"localField", "_id"},
-					{"foreignField", "requirement_id"},
-					{"as", "testcase"},
+			bson.D{
+				{"$lookup",
+					bson.D{
+						{"from", "testcase"},
+						{"localField", "_id"},
+						{"foreignField", "requirement_id"},
+						{"as", "tasecaseresult"},
+					},
 				},
 			},
-		},
-		bson.D{
-			{"$addFields",
-				bson.D{
-					{"taskcount", bson.D{{"$size", "$task"}}},
-					{"testcasecount", bson.D{{"$size", "$testcase"}}},
+			bson.D{{"$match", bson.D{{"taskresult", bson.D{{"$elemMatch", bson.D{{"status", bson.D{{"$ne", "Completed"}}}}}}}}}},
+			bson.D{
+				{"$lookup",
+					bson.D{
+						{"from", "employee"},
+						{"localField", "taskresult.assigned_to"},
+						{"foreignField", "employee_id"},
+						{"as", "employeeResult"},
+					},
 				},
 			},
-		},
-		
-	}
+			bson.D{
+				{"$addFields",
+					bson.D{
+						{"number of Task count", bson.D{{"$size", "$taskresult"}}},
+						{"number of Tasecase count", bson.D{{"$size", "$tasecaseresult"}}},
+						{"employee_name",
+							bson.D{
+								{"$reduce",
+									bson.D{
+										{"input", "$employeeResult"},
+										{"initialValue", ""},
+										{"in",
+											bson.D{
+												{"$concat",
+													bson.A{
+														"$$value",
+														bson.D{
+															{"$cond",
+																bson.A{
+																	bson.D{
+																		{"$eq",
+																			bson.A{
+																				"$$value",
+																				"",
+																			},
+																		},
+																	},
+																	"",
+																	" ",
+																},
+															},
+														},
+														"$$this.first_name",
+														" ",
+														"$$this.last_name",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
 
 	response, err := helper.GetAggregateQueryResult(org.Id, "requirement", filter)
 	if err != nil {
