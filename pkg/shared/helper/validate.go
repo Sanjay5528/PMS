@@ -28,13 +28,19 @@ func uservalidation(fl validator.FieldLevel) bool {
 	filter := bson.A{
 		bson.D{{"$match", bson.D{{"_id", email}}}},
 	}
-
-	response, _ := FindDocs("pms", "user", filter)
-	if len(response) < 0 {
+	response, _ := GetQueryResult("pms", "user", filter, int64(0), int64(200), nil)
+	if len(response[0]) < 0 {
 
 		return false
 
 	}
+
+	// response, _ := FindOneDocument("pms", "user", filter)
+	// if len(response) < 0 {
+
+	// 	return false
+
+	// }
 	return true
 }
 
@@ -401,7 +407,7 @@ func verifyInputStruct(rv reflect.Value, inputMap map[string]interface{}, errMap
 
 		// fieldTag := strings.ToLower(string(field.Tag.Get("json")))
 		fieldTag := string(field.Tag.Get("json"))
-		
+
 		fieldValue := rv.Field(i)
 
 		// Check if the JSON tag includes "omitempty".

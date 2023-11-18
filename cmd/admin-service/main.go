@@ -43,15 +43,5 @@ func main() {
 		log.Panic(err)
 	}
 
-	// }()
-
-	// Wait for a signal to gracefully shut down the background service
-	// time.Sleep(time.Hour * 24)
-
-	// Signal the background service to shut down gracefully
-	// cancel()
-
-	// Wait for the background service to finish
-	// wg.Wait()
 
 }

@@ -21,3 +21,10 @@ type UserToken struct {
 	OrgId   string `json:"uo_id" bson:"uo_id"`
 	OrgType string `json:"uo_type" bson:"uo_type"`
 }
+
+type EmailTemplete struct {
+	Title        string `json:"title" bson:"title"`
+	EmailType    string `json:"emailtype" bson:"emailtype"`
+	BodyTemplate string `json:"body_template" bson:"body_template"`
+	Link         string `json:"link" bson:"link"`
+}

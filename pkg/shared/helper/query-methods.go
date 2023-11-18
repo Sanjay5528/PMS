@@ -116,55 +116,29 @@ func ExecuteFindAndModifyQuery(orgId string, collectionName string, filter inter
 	return result, nil
 }
 
-//?  delete
-// func GetReportQueryResult(orgId string, collectioinName string, req ReportRequest) ([]bson.M, error) {
-// 	//build filter query
-// 	query := make(map[string]interface{})
-// 	//Check emp id
-// 	if req.EmpId != "" {
-// 		query["eid"] = req.EmpId
-// 	}
 
-// 	//check emp id
-// 	if len(req.EmpIds) > 0 {
-// 		query["eid"] = bson.M{"$in": req.EmpIds}
-// 	}
-// 	//if date filter presented or not
-// 	if req.DateColumn == "" { // start & end filter
-// 		if !req.StartDate.IsZero() && !req.EndDate.IsZero() {
-// 			query["start_date"] = bson.M{"$gte": req.StartDate, "$lte": req.EndDate}
-// 			query["end_date"] = bson.M{"$gte": req.StartDate, "$lte": req.EndDate}
-// 		} else if !req.StartDate.IsZero() && req.EndDate.IsZero() {
-// 			query["start_date"] = bson.M{"$gte": req.StartDate}
-// 		} else if req.StartDate.IsZero() && !req.EndDate.IsZero() {
-// 			query["end_date"] = bson.M{"$lte": req.EndDate}
-// 		}
-// 	} else { // in between date filter
-// 		if !req.StartDate.IsZero() && !req.EndDate.IsZero() {
-// 			query[req.DateColumn] = bson.M{"$gte": req.StartDate, "$lte": req.EndDate}
-// 		} else if !req.StartDate.IsZero() && req.EndDate.IsZero() {
-// 			query[req.DateColumn] = bson.M{"$gte": req.StartDate}
-// 		} else if req.StartDate.IsZero() && !req.EndDate.IsZero() {
-// 			query[req.DateColumn] = bson.M{"$lte": req.EndDate}
-// 		}
-// 	}
-// 	if req.Type != "" {
-// 		query["type"] = req.Type
-// 	}
-// 	if req.Status != "" {
-// 		query["status"] = req.Status
-// 	}
-// 	return GetQueryResult(orgId, collectioinName, query, int64(0), int64(200), nil)
-// }
-//?
-// func getCondition(field string, value string) bson.M {
-// 	condition := []string{"$" + field, value}
-// 	return bson.M{
-// 		"$sum": bson.M{
-// 			"$cond": []interface{}{bson.M{"$eq": condition}, 1, 0},
-// 		},
-// 	}
-// }
+// Sequenceordercreate  --METHOD to concat the total count the documnet in db and name
+func Sequenceordercreate(OrgId, collectionName, name string) string {
+
+	res, err := database.GetConnection(OrgId).Collection(collectionName).CountDocuments(ctx, bson.M{})
+	if err != nil {
+
+		fmt.Println("Error counting documents:", err)
+
+	}
+
+	concatenated := fmt.Sprintf("%s%s%d", "T", name[:3], res)
+
+	return concatenated
+}
+
+
+
+
+
+
+
+
 
 func Updateformodel(c *fiber.Ctx) error {
 
@@ -207,22 +181,7 @@ func Updateformodel(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(response)
 }
 
-func FindDocs(orgId, collection string, filter interface{}) (map[string]interface{}, error) {
-
-	var result map[string]interface{}
-	err := database.GetConnection(orgId).Collection(collection).FindOne(ctx, filter).Decode(&result)
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			// Handle case when no document matches the filter
-			// return nil, fmt.Errorf("No document found")
-		}
-		 
-		return nil, err
-	}
-
-	return result, nil
-}
-
+// BuildAggregationPipeline  --METHOD build the Aggregation to appending processing
 func BuildAggregationPipeline(inputData []FilterCondition, BasecollectionName string) bson.M {
 	var matchConditions []bson.M
 
@@ -232,7 +191,7 @@ func BuildAggregationPipeline(inputData []FilterCondition, BasecollectionName st
 			matchConditions = append(matchConditions, Finals...)
 		}
 	}
-
+	// finla caluse to add
 	var clause bson.M
 	if len(matchConditions) > 0 {
 		if inputData[0].Clause == "OR" {
@@ -241,14 +200,15 @@ func BuildAggregationPipeline(inputData []FilterCondition, BasecollectionName st
 			clause = bson.M{"$and": matchConditions}
 		}
 	}
-
+	// return the with match
 	return bson.M{"$match": clause}
 }
 
+// GenerateAggregationPipeline  -- METHOD build the Aggregation
 func GenerateAggregationPipeline(condition ConditionGroup, basecollection string) []bson.M {
 	conditions := []bson.M{}
 
-	// //* If Nested Conditions Here that time Recursively load the filter
+	//   If Nested Conditions Here that time Recursively load the filter
 	if len(condition.Conditions) > 0 {
 		// nestedConditions := []bson.M{}
 		for _, nestedCondition := range condition.Conditions {
@@ -360,7 +320,7 @@ func GenerateAggregationPipeline(condition ConditionGroup, basecollection string
 		}
 	}
 
-	// //Caluse Binding
+	//Clause Binding
 	if condition.Clause == "AND" {
 		conditions = append(conditions, bson.M{"$and": conditions})
 	} else if condition.Clause == "OR" {
@@ -473,18 +433,18 @@ func UpdateDateObject(input map[string]interface{}) error {
 	}
 	return nil
 }
+func FindDocs(orgId, collection string, filter interface{}) (map[string]interface{}, error) {
 
-// else if (condition.Operator == "EQUALS" || condition.Type == "time.Time") || (condition.Operator == "EQUALS" || condition.Type == "date") {
+	var result map[string]interface{}
+	err := database.GetConnection(orgId).Collection(collection).FindOne(ctx, filter).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			// Handle case when no document matches the filter
+			// return nil, fmt.Errorf("No document found")
+		}
+		 
+		return nil, err
+	}
 
-// if valStr, ok := conditionValue.(string); ok {
-// 	t, _ := time.Parse(time.RFC3339, valStr)
-// 	StartedDay := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)
-// 	endDate := time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 999999999, time.UTC)
-// 	filter := bson.M{
-// 		"$gte": StartedDay,
-// 		"$lte": endDate,
-// 	}
-// 	conditions = append(conditions, bson.M{column: filter})
-// }
-
-// }
+	return result, nil
+}

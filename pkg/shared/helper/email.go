@@ -3,6 +3,7 @@ package helper
 import (
 	"context"
 	"crypto/tls"
+	"regexp"
 
 	"github.com/google/uuid"
 	mail "github.com/xhit/go-simple-mail/v2"
@@ -115,9 +116,8 @@ func SendEmail(orgId string, to []string, cc []string, subject string, htmlBody 
 	}
 
 }
+func Generateuniquekey() string {
 
-func GenerateAppaccesscode() string {
-	// Generate a UUID (Universally Unique Identifier).
-	uuidObj := uuid.New()
-	return uuidObj.String()
+	return regexp.MustCompile(`[^a-zA-Z0-9 ]+`).ReplaceAllString(uuid.New().String(), "")
+
 }

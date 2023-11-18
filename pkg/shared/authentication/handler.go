@@ -39,37 +39,41 @@ func LoginHandler(c *fiber.Ctx) error {
 	filter := bson.M{
 		"_id": loginRequest.Id,
 	}
-
-	user, err := helper.FindDocs(org.Id, "user", filter)
+	user, err := helper.GetQueryResult("pms", "user", filter, int64(0), int64(200), nil)
 	if err != nil {
-
-		return shared.BadRequest("Invalid user ID")
+		return shared.BadRequest(err.Error())
 	}
 
-	if !helper.CheckPassword(loginRequest.Password, primitive.Binary(user["pwd"].(primitive.Binary)).Data) {
+	// user, err := helper.FindOneDocument(org.Id, "user", filter)
+	// if err != nil {
+
+	// 	return shared.BadRequest("Invalid user ID")
+	// }
+
+	if !helper.CheckPassword(loginRequest.Password, primitive.Binary(user[0]["pwd"].(primitive.Binary)).Data) {
 		return shared.BadRequest("Invalid User Password")
 	}
 
 	// If the password is valid, generate a JWT token
 	claims := utils.GetNewJWTClaim()
-	claims["id"] = user["_id"]
-	claims["role"] = user["role"]
+	claims["id"] = user[0]["_id"]
+	claims["role"] = user[0]["role"]
 	claims["uo_id"] = org.Id
 	claims["uo_type"] = org.Type
 
-	userName := user["name"]
+	userName := user[0]["name"]
 	if userName == nil {
-		userName = user["first_name"]
+		userName = user[0]["first_name"]
 	}
 
 	token := utils.GenerateJWTToken(claims, 24*60) //24*60
 
 	response := &LoginResponse{
 		Name:       userName.(string),
-		UserRole:   user["role"].(string),
+		UserRole:   user[0]["role"].(string),
 		UserOrg:    org,
 		Token:      token,
-		EmployeeID: user["employee_id"].(string),
+		EmployeeID: user[0]["employee_id"].(string),
 	}
 
 	return shared.SuccessResponse(c, fiber.Map{

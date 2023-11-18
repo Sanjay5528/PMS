@@ -3,23 +3,18 @@ package helper
 import "time"
 
 type PaginationRequest struct {
-	Start            int               `json:"start,omitempty" bson:"start,omitempty" validate:"omitempty"`
-	End              int               `json:"end,omitempty" bson:"end,omitempty" validate:"omitempty"`
-	CreatedBy        string            `json:"createdby,omitempty"`
-	CreatedOn        time.Time         `json:"createdon,omitempty"`
-	FilterColumns    []FieldValuePair  `json:"filterColumns,omitempty" bson:"filterColumns,omitempty" validate:"omitempty"`
-	Filter           []FilterCondition `json:"filter,omitempty" bson:"filter,omitempty" validate:"omitempty"`
-	Sort             []SortCriteria    `json:"sort,omitempty" bson:"sort,omitempty" validate:"omitempty"`
-	Status           string            `json:"status,omitempty" bson:"status,omitempty" validate:"omitempty"`
-	ProjectData      []ProjectData     `json:"projectdata,omitempty" bson:"projectdata,omitempty"`
-	Groupname        string            `json:"group_name,omitempty" bson:"group_nam,omitempty" validate:"omitempty"`
-	GroupDescription string            `json:"groupDescription,omitempty" bson:"groupDescription,omitempty"`
-	GroupType        string            `json:"grouptype,omitempty" bson:"grouptype,omitempty"`
-}
+	Start         int               `json:"start,omitempty" bson:"start,omitempty" validate:"omitempty"`
+	End           int               `json:"end,omitempty" bson:"end,omitempty" validate:"omitempty"`
+	CreatedBy     string            `json:"createdby,omitempty"`
+	CreatedOn     time.Time         `json:"createdon,omitempty"`
+	FilterColumns []FieldValuePair  `json:"filterColumns,omitempty" bson:"filterColumns,omitempty" validate:"omitempty"`
+	Filter        []FilterCondition `json:"filter,omitempty" bson:"filter,omitempty" validate:"omitempty"`
+	Sort          []SortCriteria    `json:"sort,omitempty" bson:"sort,omitempty" validate:"omitempty"`
+	Status        string            `json:"status,omitempty" bson:"status,omitempty" validate:"omitempty"`
 
-type ProjectData struct {
-	ParentCollectionName string `json:"parentCollectionName,omitempty" bson:"parentCollectionName,omitempty"`
-	Column               string `json:"column,omitempty" bson:"column,omitempty"`
+	Groupname        string `json:"group_name,omitempty" bson:"group_nam,omitempty" validate:"omitempty"`
+	GroupDescription string `json:"groupDescription,omitempty" bson:"groupDescription,omitempty"`
+	GroupType        string `json:"grouptype,omitempty" bson:"grouptype,omitempty"`
 }
 
 type SortCriteria struct {

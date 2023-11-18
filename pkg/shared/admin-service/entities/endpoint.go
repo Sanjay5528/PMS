@@ -21,8 +21,8 @@ func SetupAllRoutes(app *fiber.App) {
 // SetupaccessUser --METHOD  Onboarding Processing function without token use
 func SetupaccessUser(app *fiber.App) {
 	r := app.Group("/activation-api/")
-	r.Put("/generate-pwd/:access_key", helper.UpdateUserPasswordAndDeleteTempData)
-	r.Get("/:access_key", helper.GetTemporaryUserDataByAccessKey)
+	r.Put("/generate-pwd/:access_key", helper.UpdateUserPasswordAndremoveTempData)
+	r.Get("/:access_key", helper.RetrieveTemporaryUserDataByAccessKey)
 }
 
 func SetupCRUDRoutes(app *fiber.App) {

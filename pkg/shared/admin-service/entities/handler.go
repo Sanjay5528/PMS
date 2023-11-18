@@ -41,26 +41,47 @@ func PostDocHandler(c *fiber.Ctx) error {
 	}
 	// to  Get the User Details from Token
 	userToken := utils.GetUserTokenValue(c)
+	// // //get the collection from model_config collection to find the model_name
+	// collectionName, err := CollectionNameGet(c.Params("model_name"), org.Id)
+	// if err != nil {
+	// 	shared.BadRequest("Invalid CollectionName")
+	// }
+
+	// // Validation the Insert Data from -- InsertValidateInDatamodel
+	// inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	// if errmsg != nil {
+	// 	// errmsg is map to string
+	// 	for key, value := range errmsg {
+	// 		return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
+	// 	}
+	// }
 
 	collectionName := c.Params("model_name")
 	var inputData map[string]interface{}
 	c.BodyParser(&inputData)
+
+	// to paras the Datatype
 	helper.UpdateDateObject(inputData)
+
+	if inputData["_id"] == "" || inputData["_id"] == nil {
+		inputData["_id"] = helper.Generateuniquekey()
+	}
 
 	// user collection is here that time only password validation
 	if collectionName == "user" {
 		// user collection only OnboadingProcessing for send the mail to activation --METHOD OnboardingProcessing
-		err := OnboardingProcessing(inputData["_id"].(string))
+		err := OnboardingProcessing(org.Id, inputData["_id"].(string), "onboarding", "user")
 		if err != nil {
 			return shared.BadRequest("invalid user Id")
 		}
 	} else if collectionName == "task" {
+		// if task here to task id will change to order based insert
 		inputData["task_id"] = helper.Sequenceordercreate(org.Id, collectionName, inputData["task_name"].(string))
 	}
 
 	inputData["created_on"] = time.Now()
 	inputData["created_by"] = userToken.UserId
-	inputData["status"] = "A"
+	// inputData["status"] = "A"
 
 	// Insert he data to mongo Collection  name form params
 	res, err := database.GetConnection(org.Id).Collection(collectionName).InsertOne(ctx, inputData)
@@ -222,13 +243,17 @@ func CollectionNameGet(model_name, orgId string) (string, error) {
 		"model_name":    model_name,
 		"is_collection": "Yes",
 	}
-
-	Response, err := helper.FindDocs(orgId, "model_config", filter)
+	Response, err := helper.GetQueryResult(orgId, "model_config", filter, int64(0), int64(200), nil)
 	if err != nil {
-		return "", nil
+		return "", shared.BadRequest(err.Error())
 	}
 
-	return Response["collection_name"].(string), nil
+	// Response, err := helper.FindOneDocument(orgId, "model_config", filter)
+	// if err != nil {
+	// 	return "", nil
+	// }
+
+	return Response[0]["collection_name"].(string), nil
 }
 
 func getDocByIddHandler(c *fiber.Ctx) error {
@@ -900,55 +925,43 @@ func deleteDocumentByIDHandler(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, response)
 }
 
-func OnboardingProcessing(email string) error {
+// !pending
+// OnboardingProcessing  -- METHOD Onboarding processing for user and send the email
+func OnboardingProcessing(OrgId, email, emailtype, category string) error {
 	// Generate the 'decoding' value (replace this with your actual logic)
-	decoding := helper.GenerateAppaccesscode()
-	// Generate the URL with parameters  it call the back end api
-	link := fmt.Sprintf("http://localhost:4200/activate?accesskey=%s", decoding)
-
-	body := createOnBoardtemplate(link)
-	if err := SendEmailS(email, os.Getenv("CLIENT_EMAIL"), "Welcome to pms Onboarding", body); err == nil {
-		// If email sending was successful
-		if err := UserJunkedFiles(email, decoding); err != nil {
-			log.Println("Failed to insert user junked files:", err)
-		}
-	} else {
-		return shared.BadRequest("Email sending failed:")
+	decoding := helper.Generateuniquekey()
+	query := bson.A{
+		bson.D{
+			{"$match",
+				bson.D{
+					{"title", "user"},
+					{"emailtype", "Onboarding"},
+				},
+			},
+		},
 	}
+	response, err := helper.GetAggregateQueryResult(OrgId, "email_template", query)
+	if err != nil {
+		return nil
+	}
+
+	Link := fmt.Sprintf("%s%s%s", response[0]["link"].(string), `=`, decoding)
+	fmt.Println(Link)
+	// Generate the URL with parameters  it call the back end api
+	// link := fmt.Sprintf("http://localhost:4200/activate?accesskey=%s", decoding)
+
+	// body := createOnBoardtemplate(link)
+	// if err := SendEmailS(email, os.Getenv("CLIENT_EMAIL"), "Welcome to pms Onboarding", body); err == nil {
+	// 	// If email sending was successful
+	// 	if err := UsertemporaryStoringData(email, decoding); err != nil {
+	// 		log.Println("Failed to insert user junked files:", err)
+	// 	}
+	// } else {
+	// 	return shared.BadRequest("Email sending failed:")
+	// }
 
 	return nil
 }
-
-// func SendSimpleEmailHandler(c *fiber.Ctx) error {
-// 	// bind the value in requestData
-// 	var requestData map[string]interface{}
-// 	err := c.BodyParser(&requestData)
-// 	if err != nil {
-// 		return shared.BadRequest(err.Error())
-// 	}
-
-// 	email := requestData["_id"].(string)
-// 	// Generate the 'decoding' value (replace this with your actual logic)
-// 	decoding := helper.GenerateAppaccesscode()
-
-// 	// Generate the URL with parameters  it call the back end api
-// 	link := fmt.Sprintf("http://localhost:4200/activate?accesskey=%s", decoding)
-
-// 	body := createOnBoardtemplate(link)
-
-// 	if err := SendEmailS(email, os.Getenv("CLIENT_EMAIL"), "Welcome to pms Onboarding", body); err == nil {
-// 		// If email sending was successful
-// 		if err := User_junked_files(email, decoding); err != nil {
-// 			log.Println("Failed to insert user junked files:", err)
-// 		} else {
-// 			log.Println("Email sent successfully")
-// 		}
-// 	} else {
-// 		log.Println("Email sending failed:", err)
-// 	}
-
-// 	return shared.SuccessResponse(c, requestData)
-// }
 
 // USER ON BOARDING TEMPLATE  //todo
 func createOnBoardtemplate(link string) string {
@@ -978,7 +991,7 @@ func createOnBoardtemplate(link string) string {
 								</ol>
 								<p>Enjoy your journey with us!</p>
 								<p>
-								<a href="` + link + `" style="background-color: #007BFF; color: #fff; padding: 10px 20px; text-decoration: none; display: inline-block; border-radius: 5px;">Activation Now</a>
+								<a href="{{link}}" style="background-color: #007BFF; color: #fff; padding: 10px 20px; text-decoration: none; display: inline-block; border-radius: 5px;">Activation Now</a>
 								</p>
 							</td>
 						</tr>
@@ -992,7 +1005,8 @@ func createOnBoardtemplate(link string) string {
 	return body
 }
 
-func UserJunkedFiles(requestMail, appToken string) error {
+// + link +
+func UsertemporaryStoringData(requestMail, appToken string) error {
 	requestData := bson.M{
 		"_id":        requestMail,
 		"access_key": appToken,

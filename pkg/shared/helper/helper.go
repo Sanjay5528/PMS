@@ -3,11 +3,9 @@ package helper
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
-	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -74,25 +72,26 @@ func sharedDBEntityHandler(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, response)
 }
 
-// UpdateUserPasswordAndDeleteTempData   --METHOD user password update with Hashing for user collection
-func UpdateUserPasswordAndDeleteTempData(c *fiber.Ctx) error {
-
+// UpdateUserPasswordAndremoveTempData   --METHOD user password update with Hashing for user collection
+func UpdateUserPasswordAndremoveTempData(c *fiber.Ctx) error {
+	// to value bind the from body
 	var inputData map[string]interface{}
 	err := c.BodyParser(&inputData)
 	if err != nil {
 		return shared.BadRequest("Error parsing request body: " + err.Error())
 	}
+
 	// accesKey from params
 	access_key := c.Params("access_key")
 
 	query := bson.M{"access_key": access_key}
-	//var response []primitive.M
-	response, err := FindDocs("pms", "temporary_user", query)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Failed to retrieve user", "error": err.Error()})
-	}
 
-	ID, idExists := response["_id"].(string)
+	response, err := GetQueryResult("pms", "temporary_user", query, int64(0), int64(200), nil)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	// get he _id from response temporary_user collection
+	ID, idExists := response[0]["_id"].(string)
 	if !idExists {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Invalid response format"})
 	}
@@ -108,7 +107,7 @@ func UpdateUserPasswordAndDeleteTempData(c *fiber.Ctx) error {
 	// remove the password and confirm password
 	delete(inputData, "password")
 	delete(inputData, "confirm_password")
-
+	// to set the new hashing pasword
 	update := bson.M{"$set": bson.M{"pwd": passwordHash}}
 	filter := bson.M{"_id": ID}
 
@@ -116,6 +115,7 @@ func UpdateUserPasswordAndDeleteTempData(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Failed to update document", "error": err.Error()})
 	}
+
 	_, err = ExecuteDeleteManyByIds("pms", "temporary_user", filter)
 	if err != nil {
 		return shared.BadRequest("Failed to Delete data into the database: " + err.Error())
@@ -125,8 +125,8 @@ func UpdateUserPasswordAndDeleteTempData(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, result)
 }
 
-// Get the data without token
-func GetTemporaryUserDataByAccessKey(c *fiber.Ctx) error {
+// RetrieveTemporaryUserDataByAccessKey  --METHOD Get the data without token
+func RetrieveTemporaryUserDataByAccessKey(c *fiber.Ctx) error {
 	filter :=
 		bson.M{"access_key": c.Params("access_key")}
 
@@ -137,36 +137,6 @@ func GetTemporaryUserDataByAccessKey(c *fiber.Ctx) error {
 	}
 	return shared.SuccessResponse(c, response)
 
-}
-
-func convertToMap(rv reflect.Value) (map[string]interface{}, error) {
-	if rv.Kind() != reflect.Map {
-		return nil, errors.New("value is not a map")
-	}
-
-	result := make(map[string]interface{})
-
-	keys := rv.MapKeys()
-	for _, key := range keys {
-		keyString, ok := key.Interface().(string)
-		if !ok {
-			return nil, errors.New("map key is not a string")
-		}
-
-		value := rv.MapIndex(key).Interface()
-		result[keyString] = value
-	}
-
-	return result, nil
-}
-
-func datatypeValidation(inputJsonString string) {
-	var mapdata map[string]interface{}
-
-	// marhasalData, _ := json.Marshal(inputJsonString)
-
-	json.Unmarshal([]byte(inputJsonString), mapdata)
-	fmt.Println(mapdata)
 }
 
 func InsertValidateInDatamodel(collectionName, inputJsonString, orgId string) (map[string]interface{}, map[string]string) {
@@ -231,15 +201,15 @@ func UpdateValidateInDatamodel(collectionName string, inputJsonString, orgId str
 
 	err := json.Unmarshal([]byte(inputJsonString), &newStructFields)
 	if err != nil {
-		if unmarshalErr, ok := err.(*json.UnmarshalTypeError); ok {
-			expectedType := unmarshalErr.Type.String()
-			dataType := strings.TrimPrefix(expectedType, "*")
-			fieldName := unmarshalErr.Field
-			return nil, map[string]string{
-				"field":             fieldName,
-				"Expected DataType": dataType,
-			}
-		}
+		// if unmarshalErr, ok := err.(*json.UnmarshalTypeError); ok {
+		// 	expectedType := unmarshalErr.Type.String()
+		// 	dataType := strings.TrimPrefix(expectedType, "*")
+		// 	fieldName := unmarshalErr.Field
+		// 	return nil, map[string]string{
+		// 		"field":             fieldName,
+		// 		"Expected DataType": dataType,
+		// 	}
+		// }
 		return nil, map[string]string{"error": "Failed to unmarshal input JSON"}
 	}
 
@@ -277,74 +247,48 @@ func UpdateValidateInDatamodel(collectionName string, inputJsonString, orgId str
 	return cleanedData, nil
 }
 
-// !pending
-func ProjectColumn(projectColumn []ProjectData, BaseCollection string) []bson.M {
-	fieldsToProject := bson.M{}
-
-	// for _, field := range projectColumn {
-
-	// 	// fieldsToProject[field.Field] = 1
-
-	// }
-
-	expressions := []bson.M{
-		{
-			"$project": fieldsToProject,
-		},
-	}
-
-	return expressions
-}
-
 func MasterAggregationPipeline(request PaginationRequest, c *fiber.Ctx) []bson.M {
 	Pipeline := []bson.M{}
-	fmt.Println("insert")
+
 	if len(request.Filter) > 0 {
 		FilterConditions := BuildAggregationPipeline(request.Filter, "")
 		Pipeline = append(Pipeline, FilterConditions)
 	}
-	if len(request.ProjectData) > 0 {
 
-	}
 	if len(request.Sort) > 0 {
 		sortConditions := buildSortConditions(request.Sort)
 		Pipeline = append(Pipeline, sortConditions)
 	}
-	fmt.Println("before", Pipeline)
+
 	return Pipeline
 }
 
 func GroupDataBasedOnRules(c *fiber.Ctx) error {
-	OrgId := c.Get("OrgId")
-	if OrgId == "" {
-		return shared.BadRequest("Organization Id missing")
+	//Get the orgId from Header
+	org, exists := GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
 	}
 
 	filter := bson.M{"group_name": c.Params("groupname")}
 
-	// var response map[string]interface{}
-	response, err := FindDocs(OrgId, "group", filter)
+	response, err := GetQueryResult(org.Id, "model_config", filter, int64(0), int64(200), nil)
 	if err != nil {
-		return err
+		return shared.BadRequest(err.Error())
 	}
+	delete(response[0], "_id")
+	delete(response[0], "group_name")
+	delete(response[0], "grouptype")
+	delete(response[0], "ref_collection")
+	delete(response[0], "status")
 
-	delete(response, "_id")
-	delete(response, "group_name")
-	delete(response, "grouptype")
-	delete(response, "ref_collection")
-	delete(response, "status")
-
-	fmt.Println(response["filter"])
-	// responses := response["filter"].(Primitive.A)
-	// result := PaginationRequest{
-	// 	Filter: responses,
-	// }
 	var result PaginationRequest
 	hello, _ := json.Marshal(response)
 
 	if err := json.Unmarshal(hello, &result); err != nil {
 		fmt.Println("Error:", err)
-		// return
+
 	}
 
 	return c.JSON(result)
@@ -352,10 +296,11 @@ func GroupDataBasedOnRules(c *fiber.Ctx) error {
 
 // DatasetsConfig -- METHOD PURPOSE handle requests related to dataset configuration, including building aggregation pipelines
 func DatasetsConfig(c *fiber.Ctx) error {
-	//Get the OrgId from Header
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
+	///Get the orgId from Header
+	org, exists := GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
 	}
 	//TO Bind the Value from Body
 	var inputData DataSetConfiguration
@@ -368,14 +313,14 @@ func DatasetsConfig(c *fiber.Ctx) error {
 
 	var Response fiber.Map
 	// BuildPipeline -- Create a Filter Pipeline from Body Content
-	Data, Response := BuildPipeline(orgId, inputData)
+	Data, Response := BuildPipeline(org.Id, inputData)
 	// Set the DatasetName to _id for unique
 	Data.Id = inputData.DataSetName
 	// Params options -- options is  insert the data to Db
 	// if options empty is preview the data
 	if c.Params("options") == "Insert" {
 		var err error
-		Response, err = InsertDataDb(orgId, Data, "dataset_config")
+		Response, err = InsertDataDb(org.Id, Data, "dataset_config")
 		if err != nil {
 			return shared.BadRequest("Failed to insert data into the database")
 
@@ -437,12 +382,11 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 		inputData.Reference_pipeline = pipelinestring
 		pipelinestring := createFilterParams(inputData.FilterParams, pipelinestring)
 		// if filter params here that time to replace the old pipeline
-		// convert the pipeline
 		// Parse the provided string into a slice of BSON documents for the pipeline.
 		pipelines := []primitive.M{}
 		err = json.Unmarshal([]byte(pipelinestring), &pipelines)
 		if err != nil {
-			// return shared.BadRequest("Cannot Find the String")
+			fmt.Println("Cannot Find the String")
 
 		}
 
@@ -495,24 +439,30 @@ func InsertDataDb(orgId string, inputData interface{}, collectionName string) (f
 
 // DatasetsRetrieve  -- METHOD PURPOSE Get the Filter pipeline in Db to show the data
 func DatasetsRetrieve(c *fiber.Ctx) error {
-	//OrgId oming from Header
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
+	///Get the orgId from Header
+	org, exists := GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
 	}
 	//Params
 	datasetname := c.Params("datasetname")
 
 	filter := bson.M{"dataSetName": datasetname}
 	// Find the Data from Db
-	response, err := FindDocs(orgId, "dataset_config", filter)
+	// response, err := FindOneDocument(orgId, "dataset_config", filter)
+	// if err != nil {
+	// 	return shared.BadRequest("Invalid  Params value")
+	// }
+
+	response, err := GetQueryResult(org.Id, "dataset_config", filter, int64(0), int64(200), nil)
 	if err != nil {
 		return shared.BadRequest("Invalid  Params value")
 	}
 
 	var ResponseData map[string]interface{}
 	//Marshal the data from find the Document
-	marshaldata, err := json.Marshal(response)
+	marshaldata, err := json.Marshal(response[0])
 	if err != nil {
 		return shared.BadRequest("Failed to Marshal ")
 	}
@@ -556,7 +506,7 @@ func DatasetsRetrieve(c *fiber.Ctx) error {
 	finalpipeline = append(finalpipeline, PagiantionPipeline)
 
 	// To Get the Data from Db
-	Response, err := GetAggregateQueryResult(orgId, CollectionName, finalpipeline)
+	Response, err := GetAggregateQueryResult(org.Id, CollectionName, finalpipeline)
 	if err != nil {
 		shared.InternalServerError(err.Error())
 	}
@@ -644,16 +594,3 @@ func UpdateDataset(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, Response)
 }
 
-func Sequenceordercreate(OrgId, collectionName, name string) string {
-
-	res, err := database.GetConnection(OrgId).Collection(collectionName).CountDocuments(ctx, bson.M{})
-	if err != nil {
-
-		fmt.Println("Error counting documents:", err)
-
-	}
-
-	concatenated := fmt.Sprintf("%s%s%d", "T", name[:3], res)
-
-	return concatenated
-}

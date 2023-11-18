@@ -64,6 +64,7 @@ func buildSortConditions(sortCriteria []SortCriteria) bson.M {
 	return sortConditions
 }
 
+// ExecuteLookupQueryData  --METHOD create a lookup aggreation and lookup filter
 func ExecuteLookupQueryData(Data DataSetConfiguration, basecollectionName string) []bson.M {
 	var lookupDataPipeline []bson.M
 	var previousAs string
@@ -76,7 +77,7 @@ func ExecuteLookupQueryData(Data DataSetConfiguration, basecollectionName string
 			if LookupData.FromCollection == previousAs {
 				localField = previousAs + "." + LookupData.FromCollectionField
 			}
-
+			// build the lookup
 			lookupStage := bson.M{
 				"$lookup": bson.M{
 					"from":         LookupData.ToCollection,
@@ -85,8 +86,9 @@ func ExecuteLookupQueryData(Data DataSetConfiguration, basecollectionName string
 					"as":           LookupData.ToCollection,
 				},
 			}
+			// to append the Lookup
 			lookupDataPipeline = append(lookupDataPipeline, lookupStage)
-
+			// unwind the array from lookup data as
 			unwindStage := bson.M{
 				"$unwind": "$" + LookupData.ToCollection,
 			}
@@ -95,7 +97,7 @@ func ExecuteLookupQueryData(Data DataSetConfiguration, basecollectionName string
 
 			previousAs = LookupData.ToCollection
 			currentCollection = LookupData.ToCollection
-
+			// lookup Filter
 			if len(LookupData.Filter) > 0 {
 				filterPipeline := BuildAggregationPipeline(LookupData.Filter, basecollectionName)
 				lookupDataPipeline = append(lookupDataPipeline, filterPipeline)
@@ -106,9 +108,10 @@ func ExecuteLookupQueryData(Data DataSetConfiguration, basecollectionName string
 	return lookupDataPipeline
 }
 
+// CreateAggregationStage  --METHOD create aggregation stage
 func CreateAggregationStage(column CustomColumn, Basecollection string) bson.M {
 	var Pipeline bson.M
-	// switch column.DataSetCustomAggregateFnName {
+
 	if column.DataSetCustomAggregateFnName == "CONCAT" {
 		Pipeline = addFieldsStage(column.DataSetCustomColumnName, bson.M{
 			"$concat": generateConcat(column.DataSetCustomField, Basecollection)})
@@ -134,6 +137,7 @@ func CreateAggregationStage(column CustomColumn, Basecollection string) bson.M {
 	return Pipeline
 }
 
+// buildDynamicAggregationPipeline   --METHOD Create a aggreation
 func buildDynamicAggregationPipeline(Aggregation []Aggregation) []bson.M {
 	pipeline := []bson.M{}
 
@@ -245,7 +249,6 @@ func CreateSelectedColumn(CustomColumns []SelectedListItem, BaseCollection strin
 	fieldsToProject := bson.M{}
 
 	for _, field := range CustomColumns {
-		 
 
 		fieldsToProject[field.Field] = 1
 	}
