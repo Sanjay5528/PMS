@@ -80,12 +80,13 @@ import { HelperService } from "src/app/services/helper.service";
         </button>
       </mat-menu>
     </div>
-    <div  *ngIf="parentRouteName=='Team_Member'">
+    
+    <div  *ngIf="parentRouteName=='projectteam'">
       <button mat-icon-button [matMenuTriggerFor]="Team_Membermenu">
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
       </button>
       <mat-menu #Team_Membermenu="matMenu">
-      <button  mat-menu-item (click)="onclickTEamMembers('addsubchild', params.data)">
+      <button  mat-menu-item *ngIf="params?.data?.team_id" (click)="onclickTEamMembers('addsubchild', params.data)">
           <mat-icon>add</mat-icon>
           <span>Team Member</span>
         </button>
@@ -99,6 +100,7 @@ import { HelperService } from "src/app/services/helper.service";
         </button>
       </mat-menu>
     </div>
+
     <ng-template #taskViewPopup class="example-sidenav" mode="over" style="margin: auto">
       <mat-card>
         <mat-card-header style="flex: 1 1 auto;">
@@ -198,8 +200,6 @@ parentRouteName:any
     debugger;
     this.gridData = params.data;
     this.params = params;
-    // console.log(this.ParentComponent.formName);
-    // this.parentRouteName=this.ParentComponent.formName
     this.route.params.subscribe(params => {
       this.parentRouteName=params['component']
     });
@@ -358,7 +358,59 @@ parentRouteName:any
   }
  }
  onclickTEamMembers(formAction:any,data?:any){
+  // 
+  if (formAction == "addsubchild") {
+    this.dataService.loadConfig("teamaddmember").subscribe((frmConfig: any) => {
+      this.formAction = "Add";
+      console.log(frmConfig);
+      
+      this.config = frmConfig;
+      this.model_heading="Team Member - Add"
+      this.fields = frmConfig.form.fields;
+      this.dialogService.openDialog(this.modulesViewPopup,null, null, {});
+    });
+  } else if (formAction == "edit" ) {
+   if(data && data?.module_id){
+   let findValue:any=this.ParentComponent.ValueToCompareRequriementModules.find(val=>val.label==data?.module_id)
+   console.log(findValue.value);
+   data.module_id= findValue.value;
+   }
+    if( data.parentmodulename==''){
+      this.model_heading="Team Specification - Edit"
 
+      this.dataService.loadConfig(this.parentRouteName.toLowerCase()).subscribe((frmConfig: any) => {
+        this.formAction = "Edit";
+        this.config = frmConfig;
+        this.fields = frmConfig.form.fields;
+        data.isEdit=true;
+        this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
+      });
+    }else{
+      this.model_heading="Team Member - Edit"
+
+      this.dataService.loadConfig("teamaddmember").subscribe((frmConfig: any) => {
+        this.formAction = "Edit";
+        this.config = frmConfig;
+        data.isEdit=true;
+        this.fields = frmConfig.form.fields;
+        this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
+      });
+    }
+  } else if (formAction == "delete") {
+    if (confirm("Do you wish to delete this record?")) {
+      // !Look Up delete
+      this.dataService
+        .deleteDataById("team_specification", data._id)
+        .subscribe((res: any) => {
+          console.log(res);
+          this.dialogService.openSnackBar(res.message, "OK");
+        });
+    }
+  } 
+  else {
+   this.data = this.gridData;
+   // this.router.navigate(["/list/testcase/" + `${this.data.moduleid}`]);
+ }
  }
   // if (ctrl.config.form.collectionName == "modules") {
   //   if (ctrl.autoGroupColumnDef?.headerName == "Parent Modules") {
@@ -407,13 +459,17 @@ parentRouteName:any
         }
         this.form.reset();
       });
-    }else{
+    }else  {
        // values.project_name=this.gridData.project_name
         // values.client_name = this.ParentComponent.response?.client_name;
         values.project_id = this.ParentComponent.response?.project_id;
         // values.project_name = this.ParentComponent.response?.project_name;
-  
-        values.parentmodulename = this.gridData.modulename;
+        if (this.gridData.modulename) {
+          values.parentmodulename = this.gridData.modulename;
+      } else if (this.gridData.team_id) {
+          values.parentmodulename = this.gridData.team_id;
+      }
+      values.status='A'
         // values.project_id=this.gridData.project_id
       // if (val == "modulesViewPopup") {
       //   // values.project_name=this.gridData.project_name

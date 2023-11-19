@@ -209,6 +209,7 @@
          [groupDefaultExpanded]="groupDefaultExpanded" 
       
       -->
+        <!-- [gridOptions]='gridOptions'  -->
       <!-- <div *ngIf="!gridChange"> -->
         <ag-grid-angular 
         style="width: 100%; height: calc(100vh - 250px); flex: 1 1 auto"
@@ -219,7 +220,6 @@
         [getDataPath]="getTreePath"
         [autoGroupColumnDef]="autoGroupColumnDef"
         [groupDefaultExpanded]="groupDefaultExpanded" 
-        [gridOptions]='gridOptions' 
         [context]="context"
         [rowSelection]="'single'"
         [components]="components" 

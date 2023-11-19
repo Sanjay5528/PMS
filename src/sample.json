@@ -1,50 +1,16 @@
 {
-	"pageHeading": "Project Role",
-	"collectionName": "project_role",
-	"editMode": "popup",
-	"addRoute": "/add/project_role",
-	"editRoute": "/edit/project_role",
-	"showbutton": true,
-	"actions": [
-	  {
-		"label": "Edit",
-		"formAction": "edit",
-		"icon": "edit"
+	"type": "select-input",
+	"key": "sprint_id",
+	"className": "flex-2",
+	"props": {
+	  "label": "Sprint Id",
+	  "placeholder": "Sprint Id",
+	  "labelPropTemplate": " {{id}}",
+	  "optionsDataSource": {
+		"collectionName": "sprint"
 	  },
-	  {
-		"label": "Delete",
-		"formAction": "delete",
-		"icon": "delete"
-	  }
-	],
-	"columnDefs": [
-		{
-			"headerName": "ID",
-			"field": "_id"
-		  },  {
-		"headerName": "Name",
-		"field": "name"
-	  },
-	
-	  {
-		"headerName": "Hierarchy Order", 
-		"field": "hierarchy",
-		"sortable":true
-	  },
-	  {
-		"headerName": "status",
-		"field": "status"
-	  },
-	  {
-		"type": "rightAligned",
-		"headerName": "Actions",
-		"cellRenderer": "buttonRenderer",
-		"lockPosition": "right",
-		"cellRendererParams": {
-		  "onClick": "this.onBtnClick1.bind(this)",
-		  "label": "Click 1"
-		}
-	  }
-	]
+	  "required":true,
+	  "labelProp": "id",
+	  "valueProp": "id"
+	}
   }
-  

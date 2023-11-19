@@ -80,6 +80,7 @@ import { ButtonComponent } from './aggrid-tree/button';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalenderComponent } from './calender/calender.component';
 import { ExpansionComponent } from './checkformaly/expansion/expansion.component';
+import { DropDownAgggrid } from './master-single-detail-form/dropdownAggrid';
 
 
 
@@ -128,7 +129,7 @@ const appearance: any = {
      CalenderComponent,
      ProjectteamComponent,
      TimesheetComponent,
-     ExpansionComponent
+     ExpansionComponent,DropDownAgggrid
   ],
   imports: [
     NgSelectModule,

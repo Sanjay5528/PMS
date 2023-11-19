@@ -361,10 +361,16 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
     //     } 
     //   }
     // });
+    
     {
+      console.log(e,'e');
+      console.log(e.type,'type');
+
       if (e.type == "datetime" || e.type == "date") {
         e.valueGetter = (params: any) => {
           if (params.data && params.data[e.field]) {
+            console.log('dasd');
+            
             return moment(params.data[e.field]).format(
               e.format || "DD-MM-YYYY "
             );
@@ -395,7 +401,7 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
       }
       if (e.width) {
         e["width"] = e.width;
-      }
+      } 
       // if (e.type == "set_Filter" && e.filter == "agSetColumnFilter") {
       //   if (e.Diffkey == true) {
       //     e.filterParams = {

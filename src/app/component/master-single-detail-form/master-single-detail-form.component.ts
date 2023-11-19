@@ -12,6 +12,7 @@ import { MasterButtonComponent } from './master-button';
 import { ColDef, FirstDataRenderedEvent, GetRowIdFunc, GetRowIdParams, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { HelperService } from 'src/app/services/helper.service';
 import { Location } from '@angular/common';
+import{DropDownAgggrid}from'./dropdownAggrid'
 
 
 @Component({
@@ -36,6 +37,7 @@ export class MasterSingleDetailFormComponent {
     this.context = { componentParent: this };
     this.components = {
       buttonRenderer: MasterButtonComponent,
+      multiSelect:DropDownAgggrid
     };
   }
 

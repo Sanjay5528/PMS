@@ -82,35 +82,7 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
     //   editable: true,
     //   filter: 'agTextColumnFilter',
     // },
-    // {
-    //   headerName: 'Start Date',
-    //   field: 'startdate',
-    //   width: 40,
-    //   editable: true,
-    //   filter: 'agTextColumnFilter',
-    //   cellEditor: 'datetime-input',
-    //   // cellRenderer: (data: { modified: any }) => {
-    //   //   return moment(data.modified).format("M/d/yyyy, h:mm ");
-    //   // },
-    //   valueFormatter: function (params) {
-    //     return moment(params.value).format('D/M/ YYYY');
-    //   },
-
-    // },
-    // {
-    //   headerName: 'End Date',
-    //   field: 'enddate',
-    //   width: 40,
-    //   editable: true,
-    //   filter: 'agTextColumnFilter',
-    //   cellEditor: 'datetime-input',
-    //   // cellRenderer: (data: { modified: any }) => {
-    //   //   return moment(data.modified).format("M/d/yyyy, h:mm ");
-    //   // },
-    //   valueFormatter: function (params) {
-    //     return moment(params.value).format('D/M/ YYYY');
-    //   },
-    // },
+    
     // {
 
     //   field: 'Action',
@@ -182,7 +154,7 @@ this.pageHeading= "Module"
       }else if(this.formName=="Requirement"){
         this.pageHeading= "Requirement"
 
-      }else if(this.formName=="Team_Member"){
+      }else if(this.formName=="projectteam"){
         this.pageHeading= "Team Member"
 
       }
@@ -192,11 +164,13 @@ this.pageHeading= "Module"
         this.response = res.data[0]
         this.response.startdate=moment(this.response?.startdate).format('D/M/ YYYY')
         this.response.enddate=moment(this.response?.enddate).format("D/M/ YYYY")
-
+        if(this.formName=="Requirement"){
+          this.sprintCellEditorParams('')
+          this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
+        }
         // sessionStorage.setItem("projectname", this.response.projectname)
-        this.sprintCellEditorParams('')
-       this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;          
-        // if(this.formName=="Team_Member"){
+        
+        // if(this.formName=="projectteam"){
         //   this.getList()
         // }else{
           this.getTreeData()
@@ -209,12 +183,6 @@ this.pageHeading= "Module"
   
   }
 // gridChange:any=false
-getList(){
-  this.dataService.getDataByFilter("",{}).subscribe((res:any)=>{
-    console.log(res);
-    
-  })
-}
 
 loadConfig(formName:any){
 
@@ -256,8 +224,12 @@ loadConfig(formName:any){
     editable: false,
     filter: 'agDateColumnFilter',
     valueFormatter: function (params) {
-      return moment(params.value).format('D/M/ YYYY');
-    },
+      if(params.value){
+
+        return moment(params.value).format('D/M/ YYYY');
+      }
+      return ''
+        },
 
   },
   {
@@ -267,8 +239,12 @@ loadConfig(formName:any){
     editable: false,
     filter: 'agDateColumnFilter',
     valueFormatter: function (params) {
-      return moment(params.value).format('D/M/ YYYY');
-    },
+      if(params.value){
+
+        return moment(params.value).format('D/M/ YYYY');
+      }
+      return ''  
+      },
   },
   {
 
@@ -379,26 +355,84 @@ loadConfig(formName:any){
     }
     
     )
-  }else if(formName=="Team_Member"){
+  }else if(formName=="projectteam"){
     // this.gridChange=true;
+    this.autoGroupColumnDef={
+      headerName: "Team Specification Name",
+      field:"name",
+      // minWidth: 200,
+      cellRendererParams: { suppressCount: true },
+      sortable: false,
+      resizable: true,
+      filter: false
+}
     this.columnDefs.push(	
-			{
-				"headerName": "Team Id",
-				"field": "team_id",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},	{
-				"headerName": "Team Name",
-				"field": "team_name",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"headerName": "status",
-				"field": "status",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			}
+				
+		{ 
+			"headerName": "Employee Name", "field": "user_id" 
+		},
+	  { 
+		"headerName": "Project Role", "field": "role_id" 
+	},
+  {
+    headerName: 'Start Date',
+    field: 'scheduled_start_date',
+    width: 40,
+    editable: false,
+    filter: 'agDateColumnFilter',
+    valueFormatter: function (params) {
+      if(params.value){
+
+        return moment(params.value).format('D/M/ YYYY');
+      }
+      return ''
+    },
+
+  },
+  {
+    headerName: 'End Date',
+    field: 'scheduled_end_date',
+    width: 40,
+    editable: false,
+    filter: 'agDateColumnFilter',
+    valueFormatter: function (params) {
+      if(params.value){
+
+        return moment(params.value).format('D/M/ YYYY');
+      }
+      return ''    
+    },
+  },
+	  { 
+		"headerName": "status", "field": "status" 
+	}
+  ,
+    {
+  
+      field: 'Action',
+      width: 40,
+      sortable:false,
+      filter:false,
+      cellRenderer: 'buttonRenderer'
+  
+    }
+  // {
+	// 			"headerName": "Team Id",
+	// 			"field": "team_id",
+	// 			"sortable": true,
+	// 			"filter": "agTextColumnFilter"
+	// 		},	{
+	// 			"headerName": "Team Name",
+	// 			"field": "team_name",
+	// 			"sortable": true,
+	// 			"filter": "agTextColumnFilter"
+	// 		},
+	// 		{
+	// 			"headerName": "status",
+	// 			"field": "status",
+	// 			"sortable": true,
+	// 			"filter": "agTextColumnFilter"
+	// 		}
       )
   }
 
@@ -514,16 +548,7 @@ if(this.formName=="module"){
     });
   }else if(this.formName=="Requirement"){
     
-    let filer:any={
-      start:0,end:1000,filter:[{
-        
-          clause: "AND",
-          conditions: [
-            {column: "project_id",operator: "EQUALS",type: "string",value: this.response.project_id},
-          ],
-        
-      }]
-    }
+   
       // this.dataService.getDataByFilter("requirement",filer)
       this.dataService.lookupRequriment(this.response.project_id).subscribe((res:any) =>{
         let data:any[]= []     
@@ -592,24 +617,38 @@ if(this.formName=="module"){
         
    
       })
-  }else if(this.formName=="Team_Member"){
-    this.dataService.getModuleFilter("project_team", this.response.project_id).subscribe((res: any) => {
+  }else if(this.formName=="projectteam"){
+     let Projectfiler:any={
+      start:0,end:1000,filter:[{
+        
+          clause: "AND",
+          conditions: [
+            {column: "project_id",operator: "EQUALS",type: "string",value: this.response.project_id},
+          ],
+        
+      }]
+    }
+    this.dataService.getDataByFilter("team_specification", Projectfiler).subscribe((res: any) => {
       this.listData = []
-      for (let idx = 0; idx < res.data.length; idx++) {
-        const row = res.data[idx];
-        if (row.parentteamName == "" || !row.parentteamName) {
-          row.treePath = [row.modulename];
+      console.log(res);
+      
+      for (let idx = 0; idx < res.data[0].response.length; idx++) {
+        const row = res.data[0].response[idx];
+        if (row.parentmodulename == "" || !row.parentmodulename) {
+          row.treePath = [row.team_id];
         } else {
-          var parentNode = this.listData.find((d) => d.teamname == row.parentteamName);
+          var parentNode = this.listData.find((d) => d.team_id == row.parentmodulename);
           if (
             parentNode &&
             parentNode.treePath &&
-            !parentNode.treePath.includes(row.teamname)
+            !parentNode.treePath.includes(row.team_id)
           ) {
             row.treePath = [...parentNode.treePath];
-            row.treePath.push(row.teamname);
+            row.treePath.push(row.user_id);
           }
         }
+        console.log(row);
+        
         this.listData.push(row);
       }
     });
@@ -625,17 +664,17 @@ if(this.formName=="module"){
     minWidth: 100,
     sortable: true,
     resizable: true,
-    filter: true
+    filter: true,
   };
-public gridOptions: GridOptions = {
-  getDataPath:(data: any) => { 
-    return data.treePath;
-  },
-  autoGroupColumnDef:this.autoGroupColumnDef,
-treeData:true,
-groupDefaultExpanded:-1,
-animateRows:true,paginationPageSize:10
-}
+// public gridOptions: GridOptions = {
+//   getDataPath:(data: any) => { 
+//     return data.treePath;
+//   },
+//   autoGroupColumnDef:this.autoGroupColumnDef,
+// treeData:true,
+// groupDefaultExpanded:-1,
+// animateRows:true,paginationPageSize:10
+// }
   /** treepath  for ag grid */
   public getTreePath: GetDataPath = (data: any) => {
     return data.treePath;
@@ -717,8 +756,7 @@ if(fieldName=="module_id"){
     console.log(this.formName);
     
     this.dataService.loadConfig(this.formName.toLowerCase()).subscribe(async (config: any) => {
-      console.log(config);
-      
+      console.log(config);      
       this.formAction='Add' 
       this.config = config
       this.fields = config.form.fields
@@ -727,7 +765,7 @@ if(fieldName=="module_id"){
       this.formAction = 'Add';
       this.butText = 'Save';   //buttons based on the id
 
-    this.dialogService.openDialog(this.editViewPopup, "50%", '530px', {});
+    this.dialogService.openDialog(this.editViewPopup, null, null, {});
       
      
 
