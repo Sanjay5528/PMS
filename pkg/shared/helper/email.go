@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 
+	"github.com/toorop/go-dkim"
 	mail "github.com/xhit/go-simple-mail/v2"
 	"go.mongodb.org/mongo-driver/bson"
 
@@ -26,6 +27,7 @@ func SendEmail(orgId string, to []string, cc []string, subject string, htmlBody 
 	if config.Host == "" {
 		config = Init(orgId)
 	}
+
 	server := mail.NewSMTPClient()
 	// SMTP Server
 	server.Host = config.Host
@@ -76,26 +78,26 @@ func SendEmail(orgId string, to []string, cc []string, subject string, htmlBody 
 		SetBody(mail.TextHTML, htmlBody)
 
 	// also you can add body from []byte with SetBodyData, example:
-	// email.SetBodyData(mail.TextHTML, []byte(htmlBody))
+	email.SetBodyData(mail.TextHTML, []byte(htmlBody))
 	// or alternative part
-	// email.AddAlternativeData(mail.TextHTML, []byte(htmlBody))
+	email.AddAlternativeData(mail.TextHTML, []byte(htmlBody))
 
 	// add inline
-	// email.Attach(&mail.File{FilePath: "/path/to/image.png", Name:"Gopher.png", Inline: true})
+	email.Attach(&mail.File{FilePath: "/path/to/image.png", Name: "Gopher.png", Inline: true})
 
 	// you can add dkim signature to the email.
 	// to add dkim, you need a private key already created one.
 	// if privateKey != "" {
-	// 	options := dkim.NewSigOptions()
-	// 	options.PrivateKey = []byte(privateKey)
-	// 	options.Domain = "example.com"
-	// 	options.Selector = "default"
-	// 	options.SignatureExpireIn = 3600
-	// 	options.Headers = []string{"from", "date", "mime-version", "received", "received"}
-	// 	options.AddSignatureTimestamp = true
-	// 	options.Canonicalization = "relaxed/relaxed"
+		options := dkim.NewSigOptions()
+		// options.PrivateKey = []byte(privateKey)
+		options.Domain = "example.com"
+		options.Selector = "default"
+		options.SignatureExpireIn = 3600
+		options.Headers = []string{"from", "date", "mime-version", "received", "received"}
+		options.AddSignatureTimestamp = true
+		options.Canonicalization = "relaxed/relaxed"
 
-	// 	email.SetDkim(options)
+		email.SetDkim(options)
 	// }
 
 	// always check error after send

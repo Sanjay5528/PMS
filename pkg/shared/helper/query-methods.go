@@ -484,7 +484,6 @@ func GenerateSequence(key interface{}, OrgID string) string {
 	flag, unsersocreID := GetkeyfromSequencestring(key.(string))
 
 	// Define a BSON filter to find the sequence document based on the extracted identifier.
-
 	filter := bson.D{{"_id", unsersocreID}}
 	// If the key contains the sequence identifier, query the sequence collection.
 	if flag {
@@ -493,10 +492,9 @@ func GenerateSequence(key interface{}, OrgID string) string {
 		if err != nil {
 			fmt.Println("Error:", err.Error())
 		}
-
 		// Update the sequence collection to increment the start value.
 		updateSequeenceCollection(DocIdFilter(unsersocreID), OrgID)
-
+ 
 		// Return the formatted sequence value.
 		return fmt.Sprintf("%s%d", Response["prefix"].(string), Response["startvalue"].(int32))
 	} else {

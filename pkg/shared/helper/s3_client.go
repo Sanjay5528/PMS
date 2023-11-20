@@ -100,27 +100,29 @@ func FileUpload(c *fiber.Ctx) error {
 
 	var result []interface{}
 	for _, file := range request.File {
-		// fmt.Println(file)
-		fileNew := file[0]
 
-		fileExtn := filepath.Ext(file[0].Filename)
-		fileName := strings.TrimSuffix(file[0].Filename, fileExtn)
-		fileName = fileName + "__" + time.Now().Format("2006-01-02-15-04-05") + fileExtn
-		isErrorExist, errContent := UploadFile(fileNew, folderName+"/"+fileName)
-		if isErrorExist {
-			log.Print(errContent)
-			return c.Status(422).JSON(fiber.Map{"errors": errContent})
+		fileList := file
+
+		for _, pathOfFile := range fileList {
+			fileExtn := filepath.Ext(pathOfFile.Filename)
+			fileName := strings.TrimSuffix(pathOfFile.Filename, fileExtn)
+			fileName = fileName + "__" + time.Now().Format("2006-01-02-15-04-05") + fileExtn
+			isErrorExist, errContent := UploadFile(pathOfFile, folderName+"/"+fileName)
+			if isErrorExist {
+				log.Print(errContent)
+				return c.Status(422).JSON(fiber.Map{"errors": errContent})
+			}
+			//Save file name to the DB
+			id := uuid.New().String()
+			storageName := folderName + "/" + fileName
+			apiResponse := bson.M{"_id": id, "ref_id": refId, "uploaded_by": token.UserId, "folder": fileCategory, "file_name": pathOfFile.Filename, "storage_name": storageName, "size": pathOfFile.Size} // "extn": filepath.Ext(fileName),
+
+			InsertData(c, orgId, "user_files", apiResponse)
+
+			result = append(result, apiResponse)
+
 		}
-		//Save file name to the DB
-		id := uuid.New().String()
-		storageName := folderName + "/" + fileName
-		apiResponse := bson.M{"_id": id, "ref_id": refId, "uploaded_by": token.UserId, "folder": fileCategory, "file_name": file[0].Filename, "storage_name": storageName, "size": file[0].Size} // "extn": filepath.Ext(fileName),
-		//S3
-		InsertData(c, orgId, "user_files", apiResponse) //Without Struct
 
-		result = append(result, apiResponse)
-
-		// fmt.Printf("User Id %s, File Name:%s, Size:%d", "test", fileName, file[0].Size)
 	}
 	return shared.SuccessResponse(c, result)
 }

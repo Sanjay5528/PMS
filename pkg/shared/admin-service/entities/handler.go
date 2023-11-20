@@ -533,7 +533,7 @@ func OnboardingProcessing(orgId, email, emailtype, category string) error {
 
 	}
 
-	if err := SendEmailS(email, os.Getenv("CLIENT_EMAIL"), "Welcome to pms Onboarding", replacestring(Response[0]["template"].(string), fmt.Sprintf("%s%s%s", Response[0]["link"].(string), `=`, decoding))); err == nil {
+	if err := SimpleEmailHandler(email, os.Getenv("CLIENT_EMAIL"), "Welcome to pms Onboarding", replacestring(Response[0]["template"].(string), fmt.Sprintf("%s%s%s", Response[0]["link"].(string), `=`, decoding))); err == nil {
 		// If email sending was successful
 		if err := UsertemporaryStoringData(email, decoding); err != nil {
 			log.Println("Failed to insert user junked files:", err)
@@ -611,7 +611,7 @@ func UsertemporaryStoringData(requestMail, appToken string) error {
 	return nil
 }
 
-func SendEmailS(recipientEmail string, senderEmail string, subject string, body string) error {
+func SimpleEmailHandler(recipientEmail string, senderEmail string, subject string, body string) error {
 	email := mail.NewMessage()
 	email.SetHeader("From", senderEmail)
 	email.SetHeader("To", recipientEmail)
@@ -639,14 +639,14 @@ func SendEmailS(recipientEmail string, senderEmail string, subject string, body 
 // 	if err != nil {
 // 		return shared.BadRequest(err.Error())
 // 	}
-// 	result := helper.SendEmail(orgId, strings.Split(requestData["to"], ","), strings.Split(requestData["cc"], ","), requestData["subject"], requestData["body"])
-// 	if result {
-// 		return shared.SuccessResponse(c, "Email Sent")
+// 	res := helper.SendEmail(orgId, strings.Split(requestData["to"], ","), strings.Split(requestData["cc"], ","), requestData["subject"], requestData["body"])
+// 	if res {
+// 		// return shared.SuccessResponse(c, "Email Sent")
 // 	}
 // 	return shared.BadRequest("Try again")
 // }
 
-// // // Search EntitiesHandler - Get Entities
+// // Search EntitiesHandler - Get Entities
 // func DataLookupDocsHandler(c *fiber.Ctx) error {
 // 	orgId := c.Get("OrgId")
 // 	if orgId == "" {
