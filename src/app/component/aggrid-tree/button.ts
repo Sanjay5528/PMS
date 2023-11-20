@@ -465,7 +465,7 @@ parentRouteName:any
         values.project_id = this.ParentComponent.response?.project_id;
         // values.project_name = this.ParentComponent.response?.project_name;
         if (this.gridData.modulename) {
-          values.parentmodulename = this.gridData.modulename;
+          values.parentmoduleid = this.gridData.module_id;
       } else if (this.gridData.team_id) {
           values.parentmodulename = this.gridData.team_id;
       }

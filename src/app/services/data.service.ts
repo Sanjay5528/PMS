@@ -191,9 +191,8 @@ export class DataService {
 public lookup(orgID:any){
   return this.http.get(this.getWsBaseUrl()+"query/"+orgID)
 }
-
-public lookupRequriment(project_id:any){
-  return this.http.get(this.getWsBaseUrl()+"lookup/requriment/"+project_id)
+public lookupTreeData(collection_name:any,project_id:any){
+  return this.http.get(this.getWsBaseUrl()+"lookup/"+collection_name+"/"+project_id)
 }
 // lookup/requriment/
 /**

@@ -19,7 +19,7 @@ import { DataService } from "../services/data.service";
       <span matPrefix>{{ prefix }}</span>
       <input
         (change)="onselect($event)"
-        matInput
+        matInput [pattern]="this.opt.pattern"
         placeholder="{{ this.field.props.placeholder }}"
         [formControl]="FormControl"
         [formlyAttributes]="field"
@@ -79,8 +79,10 @@ export class MatPrefixInput extends FieldType<any> implements OnInit {
   }
 
   onselect(event: any) {
+    // let pathcData:any=this.prefix+event.target.value
     this.formControl.setValue(event.target.value)
     console.log(this.formControl);
+    console.log(this.field);
     
     // this.model[this.currentField.parentKey]=this.prefix+event.target.value
    

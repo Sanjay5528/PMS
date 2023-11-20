@@ -335,7 +335,11 @@ return
   onActionButtonClick($event: any, item: any, data: any) {
     console.log(data, item);
     if (item.formAction == "listpopup") {
-      console.log('actions');
+      if(item.add===true) {
+        if(item.type == "local"){
+          sessionStorage.setItem(item.local_label,data[item.field])
+        }
+      }
       this.dataService.loadScreenConfigJson(item.formName).subscribe((xyz: any) => {
         console.log(xyz);
 
@@ -394,15 +398,29 @@ return
 
   }
 
-  saveChild(data: any, value?: any) {
+  saveChild(config:any,data: any, value?: any) {
     console.log(data);
+    if (!this.valueformGrupo.valid) {      
+        const invalidLabels:any = this.helperService.getDataValidatoion(this.valueformGrupo.controls);
+        this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
+        this.valueformGrupo.markAllAsTouched();
+        return
+      }
+      console.log(this.valueformGrupo.value);
+      let values = this.valueformGrupo.value
+      values.facility_id = data._id // facitlity add
+      values.org_id = data.org_id // Org ID add
+      values.status = "Active"
+      console.log(values);
+      if(config.change_id==true &&config.changeKeyField ){
+        let key:any=this.selectedRow[config.addValue]
+console.log(key);
+console.log(values[config.changeKeyField]);
 
-    console.log(this.valueformGrupo.value);
-    let values = this.valueformGrupo.value
-    values.facility_id = data._id // facitlity add
-    values.org_id = data.org_id // Org ID add
-    values.status = "Active"
-    console.log(values);
+        values[config.changeKeyField]=key+"-"+values[config.changeKeyField]
+      }
+values.project_id=data.project_id
+values.release_id=data._id
 
     console.log(this.otherdetails);
     this.dataService.save(this.otherdetails.form.collectionName, values).subscribe((data: any) => {

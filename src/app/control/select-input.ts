@@ -49,10 +49,10 @@ export class SelectInput extends FieldType<any> implements OnInit {
   //default prop setting
   valueProp = "id";
   labelProp = "name";
-  dropdown: any;
+  // dropdown: any;
   selectedValue: any = "";
   selectedObject: any;
-  optionsValue:any;
+  // optionsValue:any;
   constructor(public dataService: DataService,public dialogServices:DialogService) {
     super();
   }
@@ -169,6 +169,7 @@ export class SelectInput extends FieldType<any> implements OnInit {
       }
     
     })
+    
     let filter_condition={filter:[
       {...this.opt.multifilter_condition}
     ]}
@@ -198,10 +199,23 @@ console.log(element[this.opt.specification]);
         })
         console.log(totalvalue);
         this.field.props.options=totalvalue
-        this.optionsValue = totalvalue
+        // this.optionsValue = totalvalue     
+           this.opt.options=totalvalue
+
       }
       else{
-        
+        res.data[0].response.forEach((data:any)=>{
+          console.log(data);
+          let datas:any={}
+          datas[this.labelProp]=data[this.labelProp]
+          datas[this.valueProp]=data[this.valueProp]
+          values.push(datas)
+        })
+        // this.dropdown=values
+        // this.optionsValue=values
+        this.opt.options=values
+        // this.dataService.buildOptions(res.data[0].response, this.opt);
+
       }
     })
 }
@@ -306,7 +320,7 @@ console.log(element[this.opt.specification]);
               this.field.props.options = res.data[0].response.map((values: any) => {
                 return { label: values[this.opt.changefield], value: values[this.opt.changefield] };
             });
-            this.optionsValue = this.field.props.options 
+            this.opt.options = this.field.props.options 
             }
               
             })
@@ -455,8 +469,8 @@ console.log(element[this.opt.specification]);
         this.field.props.options = unmatchedNames.map((name: any) => {
           return { label: name.model_name, value: name.model_name };
         });
-        this.optionsValue = this.field.props.options;
-        console.log(this.optionsValue)
+        this.opt.options = this.field.props.options;
+        console.log(this.opt.options)
       });
     }
    

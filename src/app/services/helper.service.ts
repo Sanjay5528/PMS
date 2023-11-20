@@ -237,7 +237,9 @@ export class HelperService implements OnInit {
       console.log(invalidLabels);
       
     }
-    return invalidLabels;
+    var n =invalidLabels.lastIndexOf(",")
+    var value=invalidLabels.substring(0,n)
+    return value;
   
   }
 

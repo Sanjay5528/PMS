@@ -375,7 +375,7 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
               e.format || "DD-MM-YYYY "
             );
           }
-          return moment().format(e.format || "DD-MM-YYYY "); //? set curent date
+          return ' '
         };
       }
       if (e.type == "color") {

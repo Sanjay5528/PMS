@@ -81,6 +81,7 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalenderComponent } from './calender/calender.component';
 import { ExpansionComponent } from './checkformaly/expansion/expansion.component';
 import { DropDownAgggrid } from './master-single-detail-form/dropdownAggrid';
+import { NestedtablesComponent } from './nestedtables/nestedtables.component';
 
 
 
@@ -129,7 +130,7 @@ const appearance: any = {
      CalenderComponent,
      ProjectteamComponent,
      TimesheetComponent,
-     ExpansionComponent,DropDownAgggrid
+     ExpansionComponent,DropDownAgggrid, NestedtablesComponent
   ],
   imports: [
     NgSelectModule,

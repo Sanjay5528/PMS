@@ -165,17 +165,19 @@
                     <div style="margin-top: 10px; margin-left: 20px;">
                       <div style="display: flex; margin-bottom: 2px; font-size: larger; color: black;">
                         <span>
-                           <b>Project</b> <span style="font-size: large;color: black;"> > ></span> <span style="font-weight: bold; margin-left: 10px;">{{response?.project_name}}</span>         
+                           <b>Project</b> <span style="font-size: large;color: black;"> > ></span> <span style="font-weight: bold; margin-left: 10px;">{{response?.project_name?response?.project_name:response?.regression_id }}</span>         
                           <span style="margin-left: 10px;">({{response?.project_id}})</span>
                         </span>
                       </div>
                       <div style="display: flex; font-size:medium; color: grey;align-items: baseline;">
-                        <span style=" margin-bottom:  -7px;">From {{response?.client_name}}</span>
+                        <span style=" margin-bottom:  -7px;" *ngIf="response?.client_name">From {{response?.client_name}}</span>
+                        <span style=" margin-bottom:  -7px;" *ngIf="response?.sprint_id">Sprint {{response?.sprint_id}}</span>
+
                         <!-- <span style="margin-left: 10px;">({{response?.status}})</span> -->
                         <span [ngStyle]="{'background-color': response?.status === 'A' ? 'green' : 'red', 'width': '10px', 'height': '10px', 'border-radius': '50%', 'display': 'inline-block', 'margin-right': '5px','margin-left':'5px'}"></span>
     
                       </div>
-                      <div style="display: flex; font-size: small; color: grey;">
+                      <div style="display: flex; font-size: small; color: grey;" *ngIf="response?.enddate">
                         <span>{{response?.startdate}} to {{response?.enddate}}</span>
                       </div>
                     </div>
@@ -189,8 +191,8 @@
                     {{this.listData.length}} Record(s) found
                   </div> -->
                   <div>
-                    
-                  <div class="add-container">
+                    {{addbutton}}
+                  <div class="add-container" *ngIf="!addbutton">
                     <button mat-raised-button color="primary"
                       (click)="onAddButonClick($event)">
                       <mat-icon>add</mat-icon>
@@ -209,7 +211,7 @@
          [groupDefaultExpanded]="groupDefaultExpanded" 
       
       -->
-        <!-- [gridOptions]='gridOptions'  -->
+        <!--   -->
       <!-- <div *ngIf="!gridChange"> -->
         <ag-grid-angular 
         style="width: 100%; height: calc(100vh - 250px); flex: 1 1 auto"
@@ -217,14 +219,12 @@
         [defaultColDef]="defaultColDef"
         [columnDefs]="columnDefs" 
         [rowData]="listData"
-        [getDataPath]="getTreePath"
-        [autoGroupColumnDef]="autoGroupColumnDef"
+        [gridOptions]='gridOptions'
         [groupDefaultExpanded]="groupDefaultExpanded" 
         [context]="context"
         [rowSelection]="'single'"
         [components]="components" 
         [paginationPageSize]="10"
-        [treeData]="true"
         [pagination]="true"
         [animateRows]="true"
         (cellClicked)='onCellClicked($event)'

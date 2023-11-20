@@ -1,20 +1,680 @@
+[{
+  "_id": "655367fb3a7b38e10629c786"
+  ,
+  "requirement_name": "dfsdf",
+  "requirement_description": "dasdasdsdds",
+  "project_id": "testclientname-P1",
+  "created_on": {
+    "$date": "2023-11-14T12:28:43.716Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "parentmodulename": "",
+  "client_name": "testclientname",
+  "sprint_id": "2",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-16T05:26:37.122Z"
+  },
+  "module_id": "M2"
+},
 {
-	"key": "team_type",
-	"type": "multiselect-input",
-	"className": "flex-6",
-	"props": {
-	  "label": "Select the Team Type",
-	  "placeholder": "Select the Team Type",
-	  "optionsDataSource": {
-		"collectionName": "project_role"
-	  },
-	  "attributes":{
-		"type":"default",
-		"Takenvaluekey":"_id",
-		"Takenlabelkey":"name"
-	  },
-						"multifilter_condition": {},
-	  "labelProp": "label",
-	  "valueProp": "value"
-	}
+  "_id": "655369103a7b38e10629c787"
+  ,
+  "client_name": "testclientname",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "",
+  "created_on": {
+    "$date": "2023-11-14T12:33:20.818Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "dasdasd",
+  "requirement_description": "dasdasd",
+  "module_id": "MS2",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-16T05:57:10.661Z"
   }
+},
+{
+  "_id": "65536b5a3a7b38e10629c788"
+  ,
+  "created_on": {
+    "$date": "2023-11-14T12:43:06.025Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "sdadasd",
+  "requirement_description": "dsadsdasddasd",
+  "project_id": "testclientname-P1"
+},
+{
+  "_id": "65536c763a7b38e10629c789"
+  ,
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "dsffdsdfdsf",
+  "requirement_description": "fsdddddddddddddddddddddddddddddddddddddddd",
+  "project_id": "testclientname-P1",
+  "created_on": {
+    "$date": "2023-11-14T12:47:50.752Z"
+  }
+},
+{
+  "_id": "65536c883a7b38e10629c78a"
+  ,
+  "requirement_description": "sfdddddddddddd",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "dfsdf",
+  "created_on": {
+    "$date": "2023-11-14T12:48:08.557Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "fdssfddf",
+  "sprint_id": "2",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-16T04:40:24.452Z"
+  },
+  "module_id": "M1"
+},
+{
+  "_id": "6553b8a6c5b3e85357798ada"
+  ,
+  "project_id": "testclientname-P1",
+  "parentmodulename": "fdssfddf",
+  "created_on": {
+    "$date": "2023-11-14T18:12:54.644Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "sadsad",
+  "requirement_description": "dasdasdadasdads",
+  "module_id": "m2",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-16T04:33:27.732Z"
+  }
+},
+{
+  "_id": "6553b8bbc5b3e85357798adb"
+  ,
+  "requirement_name": "sdffdsfds",
+  "requirement_description": "fsdfdfdsfdfs",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "sadsad",
+  "created_on": {
+    "$date": "2023-11-14T18:13:15.616Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "module_id": "MSMS1",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-16T05:43:17.503Z"
+  }
+},
+{
+  "_id": "6553bdd9c5b3e85357798adc"
+  ,
+  "requirement_description": "dasnjknadsodmoiasmdoasmdoklasd",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "sdffdsfds",
+  "created_on": {
+    "$date": "2023-11-14T18:35:05.371Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "dasdas"
+},
+{
+  "_id": "6553be5cc5b3e85357798add"
+  ,
+  "created_on": {
+    "$date": "2023-11-14T18:37:16.503Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "dasdasd",
+  "requirement_description": "mdjaoisd8<div><br></div>",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "dasdasd"
+},
+{
+  "_id": "6553c0d5c5b3e85357798ade"
+  ,
+  "requirement_name": "sdasdasddasddas",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "dasdasd",
+  "created_on": {
+    "$date": "2023-11-14T18:47:49.538Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A"
+},
+{
+  "_id": "6553c15dc5b3e85357798adf"
+  ,
+  "requirement_name": "cgfcfg",
+  "requirement_description": "rdrtfh",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "sdasdasddasddas",
+  "created_on": {
+    "$date": "2023-11-14T18:50:05.048Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A"
+},
+{
+  "_id": "6553c1b2c5b3e85357798ae0"
+  ,
+  "requirement_description": "dassadajjaodsod",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "sdadasd",
+  "created_on": {
+    "$date": "2023-11-14T18:51:30.052Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "sda"
+},
+{
+  "_id": "6553c202c5b3e85357798ae1"
+  ,
+  "project_id": "testclientname-P1",
+  "parentmodulename": "sda",
+  "created_on": {
+    "$date": "2023-11-14T18:52:50.712Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "asdasdasdsd",
+  "requirement_description": "9djaksnjndasd"
+},
+{
+  "_id": "6553c23dc5b3e85357798ae2"
+  ,
+  "parentmodulename": "asdasdasdsd",
+  "created_on": {
+    "$date": "2023-11-14T18:53:49.475Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "czcxcz",
+  "requirement_description": "sadsadasdsd",
+  "project_id": "testclientname-P1"
+},
+{
+  "_id": "65544a5ba0c1e077ca1fd0a7"
+  ,
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "fsdfdfsd",
+  "requirement_description": "dfsfdsf",
+  "client_name": "testclientname",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "",
+  "created_on": {
+    "$date": "2023-11-15T04:34:35.725Z"
+  }
+},
+{
+  "_id": "65544a73a0c1e077ca1fd0a8"
+  ,
+  "parentmodulename": "",
+  "created_on": {
+    "$date": "2023-11-15T04:34:59.197Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "sdffdsdf",
+  "requirement_description": "fdsfsdfdfddfsd",
+  "client_name": "testclientname",
+  "project_id": "testclientname-P1"
+},
+{
+  "_id": "65544e824af95609ae8ced38"
+  ,
+  "created_on": {
+    "$date": "2023-11-15T04:52:18.348Z"
+  },
+  "created_by": "parthiban@kriyatec.com",
+  "status": "A",
+  "requirement_description": "ergregregreg",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "",
+  "requirement_name": "regregregsdasdadsasd",
+  "client_name": "testclientname"
+},
+{
+  "_id": "65544f1c4af95609ae8ced39"
+  ,
+  "parentmodulename": "",
+  "requirement_name": "regregreg",
+  "client_name": "testclientname",
+  "created_on": {
+    "$date": "2023-11-15T04:54:52.264Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_description": "ergregregreg",
+  "project_id": "testclientname-P1"
+},
+{
+  "_id": "65545a983efcd720aed2b649"
+  ,
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "sdfsdfsdf",
+  "requirement_description": "sfdfsdfsdfsdf",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "sdadasd",
+  "created_on": {
+    "$date": "2023-11-15T05:43:52.625Z"
+  }
+},
+{
+  "_id": "65545ab23efcd720aed2b64a"
+  ,
+  "requirement_name": "sdasdsddasddddddddd",
+  "requirement_description": "dsaasddsasd",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "sda",
+  "created_on": {
+    "$date": "2023-11-15T05:44:18.689Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A"
+},
+{
+  "_id": "65547ad13efcd720aed2b654"
+  ,
+  "status": "A",
+  "requirement_name": "Authentication",
+  "requirement_description": "authentication",
+  "client_name": "testclientname",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "",
+  "created_on": {
+    "$date": "2023-11-15T08:01:21.639Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com"
+},
+{
+  "_id": "65547bc93efcd720aed2b655"
+  ,
+  "created_on": {
+    "$date": "2023-11-15T08:05:29.567Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "Provide Login Screen",
+  "requirement_description": "<span>Login Screen Should Contain User Id and Password Input Box</span><br><ul><li><span>Provide Remember Me Check Box</span></li><li><span>Provide Forget Password Link&#160;</span></li><li><span><br></span></li></ul>",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "Authentication"
+},
+{
+  "_id": "65547c093efcd720aed2b656"
+  ,
+  "status": "A",
+  "requirement_name": "Show Forget Password Pop Up",
+  "requirement_description": "Get the Email Id From the input box&#160;",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "Authentication",
+  "created_on": {
+    "$date": "2023-11-15T08:06:33.348Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com"
+},
+{
+  "_id": "65547f053efcd720aed2b657"
+  ,
+  "requirement_description": "Email To Be Trigger And Message Should Shown",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "Show Forget Password Pop Up",
+  "created_on": {
+    "$date": "2023-11-15T08:19:17.116Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "Email To Be Trigger"
+},
+{
+  "_id": "65560fc861352108752b8f4e"
+  ,
+  "project_id": "testclientname-P1",
+  "parentmodulename": "asdasdasdsd",
+  "created_on": {
+    "$date": "2023-11-16T12:49:12.466Z"
+  },
+  "status": "A",
+  "requirement_name": "sadasdsd",
+  "module_id": "M1",
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "requirement_description": "adada",
+  "sprint_id": "2"
+},
+{
+  "_id": "6556e6ca708092f87ad4e9b6"
+  ,
+  "requirement_description": "Authentication",
+  "project_id": "testclientID-R1",
+  "parentmodulename": "",
+  "created_on": {
+    "$date": "2023-11-17T04:06:34.298Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "Authentication",
+  "sprint_id": "R01-3",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-20T10:38:13.341Z"
+  },
+  "module_id": "M1"
+},
+{
+  "_id": "6556e6d5708092f87ad4e9b7"
+  ,
+  "requirement_name": "Login",
+  "requirement_description": "Login",
+  "project_id": "testclientID-R1",
+  "parentmodulename": "Authentication",
+  "created_on": {
+    "$date": "2023-11-17T04:06:45.423Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "sprint_id": "R01-3",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-20T10:38:15.786Z"
+  },
+  "module_id": "M1"
+},
+{
+  "_id": "6556e6ed708092f87ad4e9b8"
+  ,
+  "created_on": {
+    "$date": "2023-11-17T04:07:09.649Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "Forget Password",
+  "requirement_description": "Forget Password",
+  "project_id": "testclientID-R1",
+  "parentmodulename": "Authentication",
+  "sprint_id": "R01-1",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-20T08:12:01.696Z"
+  },
+  "module_id": "M1"
+},
+{
+  "_id": "6556e718708092f87ad4e9b9"
+  ,
+  "requirement_description": "Remember me",
+  "project_id": "testclientID-R1",
+  "parentmodulename": "Login",
+  "created_on": {
+    "$date": "2023-11-17T04:07:52.321Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "Remember me",
+  "sprint_id": "R01-3",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-20T10:38:17.250Z"
+  },
+  "module_id": "M2"
+},
+{
+  "_id": "6556e72f708092f87ad4e9ba"
+  ,
+  "requirement_name": "Mail the otp",
+  "requirement_description": "Mail the otp",
+  "project_id": "testclientID-R1",
+  "parentmodulename": "Forget Password",
+  "created_on": {
+    "$date": "2023-11-17T04:08:15.028Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "sprint_id": "R01-3",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-20T08:12:02.909Z"
+  },
+  "module_id": "M1"
+},
+{
+  "_id": "6556e770708092f87ad4e9bb"
+  ,
+  "requirement_description": "Direct SignIn",
+  "project_id": "testclientID-R1",
+  "parentmodulename": "Authentication",
+  "created_on": {
+    "$date": "2023-11-17T04:09:20.187Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "Direct SignIn"
+},
+{
+  "_id": "6556e7bc708092f87ad4e9bc"
+  ,
+  "created_on": {
+    "$date": "2023-11-17T04:10:36.707Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "Using Social Media",
+  "requirement_description": "Using Gmail Facebook Insagram",
+  "project_id": "testclientID-R1",
+  "parentmodulename": "Direct SignIn",
+  "sprint_id": "R01-3",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-20T07:40:46.113Z"
+  }
+},
+{
+  "_id": "6556e7e5708092f87ad4e9bd"
+  ,
+  "requirement_name": "Automatically Sign in",
+  "requirement_description": "Automatically Sign in",
+  "project_id": "testclientID-R1",
+  "parentmodulename": "Remember me",
+  "created_on": {
+    "$date": "2023-11-17T04:11:17.800Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "sprint_id": "R01-3",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-20T10:38:18.897Z"
+  },
+  "module_id": "M2"
+},
+{
+  "_id": "6556e93c708092f87ad4e9be"
+  ,
+  "created_on": {
+    "$date": "2023-11-17T04:17:00.720Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "Multiple Account Sign Need",
+  "requirement_description": "Multiple Account Sign Need",
+  "project_id": "testclientID-R1",
+  "parentmodulename": "Remember me",
+  "sprint_id": "R01-3",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-20T10:38:20.038Z"
+  },
+  "module_id": "M1"
+},
+{
+  "_id": "6556e951708092f87ad4e9bf"
+  ,
+  "created_on": {
+    "$date": "2023-11-17T04:17:21.008Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "Dashboard",
+  "requirement_description": "Dashboard",
+  "project_id": "testclientID-R1",
+  "parentmodulename": ""
+},
+{
+  "_id": "6556e972708092f87ad4e9c0"
+  ,
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "Master Detail of Product",
+  "requirement_description": "Master Detail of Product",
+  "project_id": "testclientID-R1",
+  "parentmodulename": "Dashboard",
+  "created_on": {
+    "$date": "2023-11-17T04:17:54.291Z"
+  },
+  "sprint_id": "R01-3",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-20T08:12:08.357Z"
+  },
+  "module_id": "M1"
+},
+{
+  "_id": "6556e984708092f87ad4e9c1"
+  ,
+  "requirement_name": "Master Detail of Company",
+  "requirement_description": "Master Detail of Company",
+  "project_id": "testclientID-R1",
+  "parentmodulename": "Dashboard",
+  "created_on": {
+    "$date": "2023-11-17T04:18:12.911Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "sprint_id": "R01-3",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-20T08:12:11.690Z"
+  },
+  "module_id": "M3"
+},
+{
+  "_id": "6556e9ac708092f87ad4e9c2"
+  ,
+  "created_on": {
+    "$date": "2023-11-17T04:18:52.759Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "Specify the top rating Product",
+  "requirement_description": "Specify the top rating Product&#160;",
+  "project_id": "testclientID-R1",
+  "parentmodulename": "Master Detail of Product",
+  "sprint_id": "R01-3",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-20T08:12:10.259Z"
+  },
+  "module_id": "M2"
+},
+{
+  "_id": "6556e9be708092f87ad4e9c3"
+  ,
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "Specify the top rating Company",
+  "requirement_description": "Specify the top rating Company",
+  "project_id": "testclientID-R1",
+  "parentmodulename": "Master Detail of Company",
+  "created_on": {
+    "$date": "2023-11-17T04:19:10.458Z"
+  },
+  "sprint_id": "R01-3",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-20T08:12:13.163Z"
+  },
+  "module_id": "M3"
+},
+{
+  "_id": "6556f19c708092f87ad4e9c5",
+  "status": "A",
+  "requirement_name": "Need Cache For Verification",
+  "requirement_description": "Need Cache For Verification Number",
+  "project_id": "testclientID-R1",
+  "parentmodulename": "Forget Password",
+  "created_on": {
+    "$date": "2023-11-17T04:52:44.965Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "sprint_id": "R01-3",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-20T08:12:04.682Z"
+  },
+  "module_id": "M1"
+},
+{
+  "_id": "655358fc3a7b38e10629c785",
+  "requirement_description": "1.1dasdasdasdadasd",
+  "client_name": "testclientname",
+  "project_id": "testclientname-P1",
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "sanjay",
+  "parentmodulename": "",
+  "created_on": {
+    "$date": "2023-11-14T11:24:44.296Z"
+  },
+  "sprint_id": "1",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-16T05:26:35.979Z"
+  },
+  "module_id": "M1"
+},
+{
+  "_id": "6557441618544aaf12fdb059",
+  "sprint_id": "1",
+  "module_id": "MSMS1",
+  "parentmodulename": "",
+  "created_on": {
+    "$date": "2023-11-17T10:44:38.750Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "status": "A",
+  "requirement_name": "sadasd",
+  "requirement_description": "dassdasd",
+  "project_id": "testclientID-R1"
+},
+{
+  "_id": "65536c8e3a7b38e10629c78b",
+  "status": "A",
+  "requirement_name": "dasdsad",
+  "requirement_description": "dassssssssssss",
+  "project_id": "testclientname-P1",
+  "parentmodulename": "fdssfddf",
+  "created_on": {
+    "$date": "2023-11-14T12:48:14.787Z"
+  },
+  "created_by": "sanjay123sanjay12@gmial.com",
+  "module_id": "m2",
+  "update_by": "sanjay123sanjay12@gmial.com",
+  "update_on": {
+    "$date": "2023-11-16T05:27:45.743Z"
+  },
+  "sprint_id": "1"
+}]

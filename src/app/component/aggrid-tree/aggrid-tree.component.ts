@@ -95,11 +95,11 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
   formName: any;
   doAction: any;
   valueChanged: any;
-  rowData: any;
+  // rowData: any;
   collectionName: any;
   butText = 'Save'
   onClose: any;
-  
+  addbutton:boolean=false
    
 
   constructor(public httpclient: HttpClient,  
@@ -146,24 +146,36 @@ reassign(employeeID:any){
     
     // this.getmodules()  
     this.route.params.subscribe(params => {
-      console.log(params);
+this.addbutton=false;
+console.log(params);
       this.formName=params['component']
-
+let collection:any
       if(this.formName == "module"){
 this.pageHeading= "Module"
+collection="project"
       }else if(this.formName=="Requirement"){
         this.pageHeading= "Requirement"
+        collection="project"
 
       }else if(this.formName=="projectteam"){
         this.pageHeading= "Team Member"
+        collection="project"
 
+      }else if(this.formName=="test_result"){
+collection="regression"
+this.addbutton=true;
       }
+
       this.loadConfig(this.formName)
       this.id = params['id'];
-      this.dataService.getDataById("project", this.id).subscribe((res: any) => {
+      this.dataService.getDataById(collection, this.id).subscribe((res: any) => {
         this.response = res.data[0]
-        this.response.startdate=moment(this.response?.startdate).format('D/M/ YYYY')
-        this.response.enddate=moment(this.response?.enddate).format("D/M/ YYYY")
+        if(this?.response?.startdate){
+          this.response.startdate=moment(this.response?.startdate).format('D/M/ YYYY')
+        }
+        if(this?.response?.enddate){
+          this.response.enddate=moment(this.response?.enddate).format("D/M/ YYYY")
+        }
         if(this.formName=="Requirement"){
           this.sprintCellEditorParams('')
           this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
@@ -187,7 +199,7 @@ this.pageHeading= "Module"
 loadConfig(formName:any){
 
   if(formName=="module"){
-    this.autoGroupColumnDef={
+    this.gridOptions.autoGroupColumnDef={
         headerName: "Parent Modules",
         minWidth: 200,
         cellRendererParams: { suppressCount: true },
@@ -195,6 +207,8 @@ loadConfig(formName:any){
     resizable: true,
     filter: false
   }
+  this.gridOptions.treeData=true
+  this.gridOptions.groupDefaultExpanded=-1
   this.columnDefs.push(  
   //   {
   //   headerName: 'Parent Module Name',
@@ -204,12 +218,12 @@ loadConfig(formName:any){
   //   editable: true,
   //   hide: true
   // },
-  {
-    headerName: 'Requirement Name',
-    field: 'requirement_id', //! TO Change into requirement_name
-    width: 40,
-    filter: 'agTextColumnFilter',
-  },
+  // {
+  //   headerName: 'Requirement Name',
+  //   field: 'requirement_id', //! TO Change into requirement_name
+  //   width: 40,
+  //   filter: 'agTextColumnFilter',
+  // },
   {
     headerName: 'Task Name',
     field: 'task_name',
@@ -256,7 +270,12 @@ loadConfig(formName:any){
 
   })
   }else if(formName=="Requirement"){
-    this.autoGroupColumnDef={
+   
+
+this.gridOptions.treeData=true
+this.gridOptions.groupDefaultExpanded=-1
+   
+    this.gridOptions.autoGroupColumnDef={
       headerName: "Parent Requriement",
       field:"index",
       minWidth: 200,
@@ -357,7 +376,10 @@ loadConfig(formName:any){
     )
   }else if(formName=="projectteam"){
     // this.gridChange=true;
-    this.autoGroupColumnDef={
+
+this.gridOptions.treeData=true
+this.gridOptions.groupDefaultExpanded=-1
+    this.gridOptions.autoGroupColumnDef={
       headerName: "Team Specification Name",
       field:"name",
       // minWidth: 200,
@@ -434,7 +456,62 @@ loadConfig(formName:any){
 	// 			"filter": "agTextColumnFilter"
 	// 		}
       )
+  }else if(this.formName=="test_result"){
+    this.gridOptions.groupDefaultExpanded=-1
+    this.autoGroupColumnDef={
+      headerName: "test case",
+      field:"requriment.parentmodulename",
+      minWidth: 200,
+      cellRendererParams: { suppressCount: true },
+      sortable: false,
+      resizable: true,
+      filter: false
+}
+    this.columnDefs.push(  
+      {
+        headerName: 'Requirement Name',
+        field: 'requriment.module_id',
+        width: 40,rowGroup:true,showRowGroup:false,
+        filter: 'agTextColumnFilter',
+      },
+    //  {
+    //     headerName: 'Requirement Id',
+    //     field: 'requriment._id',
+    //     width: 40,rowGroup:true,showRowGroup:false,
+    //     filter: 'agTextColumnFilter',
+    //   }, 
+      {
+      headerName: 'Requirement Name',
+      field: 'requriment.requirement_name',
+      width: 40,
+      filter: 'agTextColumnFilter',
+    },
+   {
+      headerName: 'Test Case Name',
+      field: 'test_case_name',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    }, {
+      headerName: 'Test Case Type',
+      field: 'test_case_scenario',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    },
+      {
+  
+      field: 'Action',
+      width: 40,
+      sortable:false,
+      filter:false,
+      cellRenderer: 'buttonRenderer'
+  
+    }
+    
+    )
   }
+
 
 }
 
@@ -529,17 +606,17 @@ if(this.formName=="module"){
       this.listData = []
       for (let idx = 0; idx < res.data.length; idx++) {
         const row = res.data[idx];
-        if (row.parentmodulename == "" || !row.parentmodulename) {
-          row.treePath = [row.modulename];
+        if (row.parentmoduleid == "" || !row.parentmoduleid) {
+          row.treePath = [row.module_id];
         } else {
-          var parentNode = this.listData.find((d) => d.modulename == row.parentmodulename);
+          var parentNode = this.listData.find((d) => d.module_id == row.parentmoduleid);
           if (
             parentNode &&
             parentNode.treePath &&
-            !parentNode.treePath.includes(row.modulename)
+            !parentNode.treePath.includes(row.module_id)
           ) {
             row.treePath = [...parentNode.treePath];
-            row.treePath.push(row.modulename);
+            row.treePath.push(row.module_id);
           }
         }
         this.listData.push(row);
@@ -550,7 +627,7 @@ if(this.formName=="module"){
     
    
       // this.dataService.getDataByFilter("requirement",filer)
-      this.dataService.lookupRequriment(this.response.project_id).subscribe((res:any) =>{
+      this.dataService.lookupTreeData("requriment",this.response.project_id).subscribe((res:any) =>{
         let data:any[]= []     
         this.listData = []
         
@@ -652,6 +729,57 @@ if(this.formName=="module"){
         this.listData.push(row);
       }
     });
+  }else if(this.formName=="test_result"){
+this.dataService.lookupTreeData("regression",this.response._id).subscribe((res:any)=>{
+  console.log(res);
+
+  // this.listData=res.data.response
+
+  let overalldata:any[]=[]
+  res.data.response.forEach((vals:any,index:any)=>{
+    // overalldata.push(vals.requriment)
+    console.log(vals);
+let testcase:any[]=[]
+testcase= res.data.response[index].testcase
+testcase.forEach((data:any)=>{
+      let datas:any
+      datas=vals.requriment.find((d:any)=>{
+  console.log(d);
+  d._id==data.requirement_id
+})
+console.log(datas);
+
+      overalldata.push(data)
+    })
+
+  })
+  this.listData=overalldata
+
+  // console.log(overalldata);
+  
+  // let data:any[]= []     
+  // this.listData = []
+  
+  // for (let idx = 0; idx < overalldata.length; idx++) {
+  //   const row = overalldata[idx];
+  //     if (row.parentmodulename == "" || !row.parentmodulename) {
+  //       row.treePath = [row.requirement_name];
+  //     } else {
+  //       const parentNode = data.find((d) => d.requirement_name == row.parentmodulename);
+  //           if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
+  //             row.treePath = [...parentNode.treePath];
+  //             row.treePath.push(row.requirement_name);
+  //           }
+  //     }
+  //   data.push(row);
+  // }
+
+  // childArr.forEach((value:any)=>{
+    
+  // })
+  
+
+})
   }
 
 }
@@ -666,15 +794,13 @@ if(this.formName=="module"){
     resizable: true,
     filter: true,
   };
-// public gridOptions: GridOptions = {
-//   getDataPath:(data: any) => { 
-//     return data.treePath;
-//   },
-//   autoGroupColumnDef:this.autoGroupColumnDef,
-// treeData:true,
-// groupDefaultExpanded:-1,
-// animateRows:true,paginationPageSize:10
-// }
+public gridOptions: GridOptions = {
+  getDataPath:(data: any) => { 
+    return data.treePath;
+  },
+
+animateRows:true,paginationPageSize:10
+}
   /** treepath  for ag grid */
   public getTreePath: GetDataPath = (data: any) => {
     return data.treePath;
@@ -739,7 +865,8 @@ if(fieldName=="module_id"){
 
 }
     this.dataService.update("requirement",params.data._id,data ).subscribe((res: any) => {
-      this.rowData = res.data;
+      // this.rowData = res.data;
+      console.log(res);
       
     });
   }
