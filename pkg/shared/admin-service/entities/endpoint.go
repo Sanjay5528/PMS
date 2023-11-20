@@ -21,10 +21,11 @@ func SetupAllRoutes(app *fiber.App) {
 // SetupaccessUser --METHOD  Onboarding Processing function without token use
 func SetupaccessUser(app *fiber.App) {
 	r := app.Group("/activation-api/")
-	r.Put("/generate-pwd/:access_key", helper.UpdateUserPasswordAndremoveTempData)
+	r.Put("/generate-pwd/:access_key", helper.UpdateUserPasswordandremoveTempData)
 	r.Get("/:access_key", helper.RetrieveTemporaryUserDataByAccessKey)
 }
 
+// SetupCRUDRoutes  --METHOD BaseCud Endpoint
 func SetupCRUDRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/entities/", "REST API")
 	r.Post("/:model_name", PostDocHandler)
@@ -34,10 +35,9 @@ func SetupCRUDRoutes(app *fiber.App) {
 	r.Delete("/:collectionName", DeleteByAll)
 	r.Post("/filter/:collectionName", getDocsHandler)
 
-	//Old pms code above the endpoint
-	r.Get("/clients/:name", ActiveClientHandler)                           //todo
-	r.Get("/filter/:collectionName/:projectid", getDocByIddHandler)        //remove
-	r.Get("/filters/:collectionName/:clientname", getDocByClientIdHandler) //todo
+	//Old pms code endpoint and func
+	r.Get("/filter/:collectionName/:projectid", getDocByIddHandler)
+	r.Get("/filters/:collectionName/:clientname", getDocByClientIdHandler)
 }
 
 // create a group
@@ -60,20 +60,19 @@ func SetupBulkUploadRoutes(app *fiber.App) {
 	r.Get("/", helper.UploadbulkData)
 }
 
-// SetupTesting -- METHOD testing function don't need for token
+// SetupTesting -- METHOD testing function PURPOSE FOR LEARNING don't need for token
 func SetupTesting(app *fiber.App) {
-
 	r := app.Group("/testing")
 	r.Delete("/:model_name", helper.DeleteByDatamodel)
-	r.Get("/test/:modelName", helper.Testing)
+
 }
 
-// old pms code
+// Old pms code endpoint and func
 func SetupLookupRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/lookup", "Data Lookup API")
-	// r.Post("/", DataLookupDocsHandler)
 
 	r.Get("/requriment/:projectid", RequrimentObjectproject)
+	r.Get("/regression/:regression_id", regressionproject)
 	r.Get("/timesheet/:employee_id/:scheduledstartdate", TimeSheetByIdHandler)
 	r.Put("/timesheet", postTimesheetDocHandler)
 	r.Get("/unschedule/:employee_id/:date", getUnscheduleIdHandler)

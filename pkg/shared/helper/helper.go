@@ -21,14 +21,6 @@ import (
 
 var ctx = context.Background()
 
-func Toint64(s string) int64 {
-	if s == "" {
-		return int64(0)
-	}
-	v, _ := strconv.ParseInt(s, 10, 64)
-	return v
-}
-
 func Page(s string) int64 {
 	return Toint64(s)
 }
@@ -39,15 +31,29 @@ func Limit(s string) int64 {
 	}
 	return Toint64(s)
 }
+func Toint64(s string) int64 {
+	if s == "" {
+		return int64(0)
+	}
+	v, _ := strconv.ParseInt(s, 10, 64)
+	return v
+}
+
+// DocIdFilter generates a MongoDB filter for the given ID.
 func DocIdFilter(id string) bson.M {
+	// If the ID is empty, return an empty filter.
 	if id == "" {
 		return bson.M{}
 	}
 
+	// Attempt to convert the ID to a hexadecimal ObjectID.
 	docId, err := primitive.ObjectIDFromHex(id)
+
+	// If conversion fails, treat the ID as a string.
 	if err != nil {
 		return bson.M{"_id": id}
 	} else {
+		// If conversion is successful, use the ObjectID in the filter.
 		return bson.M{"_id": docId}
 	}
 }
@@ -56,24 +62,8 @@ func ObjectIdToString(id interface{}) string {
 	return id.(primitive.ObjectID).Hex()
 }
 
-func sharedDBEntityHandler(c *fiber.Ctx) error {
-	var collectionName = c.Params("collectionName")
-	if collectionName == "db_config" {
-		return shared.BadRequest("Access Denied")
-	}
-	cur, err := database.SharedDB.Collection(collectionName).Find(ctx, bson.D{})
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	var response []bson.M
-	if err = cur.All(ctx, &response); err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
 // UpdateUserPasswordAndremoveTempData   --METHOD user password update with Hashing for user collection
-func UpdateUserPasswordAndremoveTempData(c *fiber.Ctx) error {
+func UpdateUserPasswordandremoveTempData(c *fiber.Ctx) error {
 	// to value bind the from body
 	var inputData map[string]interface{}
 	err := c.BodyParser(&inputData)
@@ -190,6 +180,7 @@ func InsertValidateInDatamodel(collectionName, inputJsonString, orgId string) (m
 	json.Unmarshal(inputByte, &cleanedData)
 
 	return cleanedData, nil
+
 }
 
 func UpdateValidateInDatamodel(collectionName string, inputJsonString, orgId string) (map[string]interface{}, map[string]string) {
@@ -277,6 +268,7 @@ func GroupDataBasedOnRules(c *fiber.Ctx) error {
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
+
 	delete(response[0], "_id")
 	delete(response[0], "group_name")
 	delete(response[0], "grouptype")
@@ -352,7 +344,7 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 	}
 
 	if len(inputData.Aggregation) > 0 {
-		AggregationData := buildDynamicAggregationPipeline(inputData.Aggregation)
+		AggregationData := BuildDynamicAggregationPipelineFromSpecifications(inputData.Aggregation)
 		Pipeline = append(Pipeline, AggregationData...)
 	}
 	if len(inputData.Filter) > 0 {
@@ -530,12 +522,8 @@ func UpdateDatatypes(pipeline []bson.M) []bson.M {
 	return output
 }
 
-/*
-	createQueryPipeline -- METHOD To change the value Datatype and return the pipeline format
-
-Recusively call the  Method for Datatype converntiuon
-*/
-
+// createQueryPipeline -- METHOD To change the value Datatype and return the pipeline format
+// Recusively call the  Method for Datatype converntiuon
 func createQueryPipeline(data interface{}) interface{} {
 	// Check the Every DataType to incoming
 	switch dataType := data.(type) {
@@ -593,4 +581,3 @@ func UpdateDataset(c *fiber.Ctx) error {
 
 	return shared.SuccessResponse(c, Response)
 }
-

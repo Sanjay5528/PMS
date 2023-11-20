@@ -3,9 +3,7 @@ package helper
 import (
 	"context"
 	"crypto/tls"
-	"regexp"
 
-	"github.com/google/uuid"
 	mail "github.com/xhit/go-simple-mail/v2"
 	"go.mongodb.org/mongo-driver/bson"
 
@@ -114,10 +112,5 @@ func SendEmail(orgId string, to []string, cc []string, subject string, htmlBody 
 	} else {
 		return true
 	}
-
-}
-func Generateuniquekey() string {
-
-	return regexp.MustCompile(`[^a-zA-Z0-9 ]+`).ReplaceAllString(uuid.New().String(), "")
 
 }

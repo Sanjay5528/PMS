@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,10 +21,8 @@ var ctx = context.Background()
 
 // LoginHandler - Method to Valid the user id and password Auth
 func LoginHandler(c *fiber.Ctx) error {
-
 	org, exists := helper.GetOrg(c)
 	if !exists {
-
 		return shared.BadRequest("Invalid Org Id")
 	}
 
@@ -33,47 +32,46 @@ func LoginHandler(c *fiber.Ctx) error {
 	}
 
 	if loginRequest.Id == "" {
-		shared.BadRequest("Invalid User ID")
+		return shared.BadRequest("Invalid User ID") // Added return statement
 	}
 
-	filter := bson.M{
-		"_id": loginRequest.Id,
-	}
-	user, err := helper.GetQueryResult("pms", "user", filter, int64(0), int64(200), nil)
+	filter := bson.D{{"_id", loginRequest.Id}}
+
+	user, err := helper.FindOneDocument(org.Id, "user", filter)
 	if err != nil {
-		return shared.BadRequest(err.Error())
+		fmt.Println("Error:", err.Error())
 	}
 
-	// user, err := helper.FindOneDocument(org.Id, "user", filter)
-	// if err != nil {
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return shared.BadRequest("Invalid user ID") // Added return statement
+		}
+	}
 
-	// 	return shared.BadRequest("Invalid user ID")
-	// }
-
-	if !helper.CheckPassword(loginRequest.Password, primitive.Binary(user[0]["pwd"].(primitive.Binary)).Data) {
+	if !helper.CheckPassword(loginRequest.Password, primitive.Binary(user["pwd"].(primitive.Binary)).Data) {
 		return shared.BadRequest("Invalid User Password")
 	}
 
 	// If the password is valid, generate a JWT token
 	claims := utils.GetNewJWTClaim()
-	claims["id"] = user[0]["_id"]
-	claims["role"] = user[0]["role"]
+	claims["id"] = user["_id"]
+	claims["role"] = user["role"]
 	claims["uo_id"] = org.Id
 	claims["uo_type"] = org.Type
 
-	userName := user[0]["name"]
+	userName := user["name"]
 	if userName == nil {
-		userName = user[0]["first_name"]
+		userName = user["first_name"]
 	}
 
-	token := utils.GenerateJWTToken(claims, 24*60) //24*60
+	token := utils.GenerateJWTToken(claims, 24*60) // 24*60
 
 	response := &LoginResponse{
 		Name:       userName.(string),
-		UserRole:   user[0]["role"].(string),
+		UserRole:   user["role"].(string),
 		UserOrg:    org,
 		Token:      token,
-		EmployeeID: user[0]["employee_id"].(string),
+		EmployeeID: user["employee_id"].(string),
 	}
 
 	return shared.SuccessResponse(c, fiber.Map{

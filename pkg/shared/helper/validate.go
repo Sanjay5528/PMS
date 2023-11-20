@@ -28,19 +28,19 @@ func uservalidation(fl validator.FieldLevel) bool {
 	filter := bson.A{
 		bson.D{{"$match", bson.D{{"_id", email}}}},
 	}
-	response, _ := GetQueryResult("pms", "user", filter, int64(0), int64(200), nil)
-	if len(response[0]) < 0 {
-
-		return false
-
-	}
-
-	// response, _ := FindOneDocument("pms", "user", filter)
-	// if len(response) < 0 {
+	// response, _ := GetQueryResult("pms", "user", filter, int64(0), int64(200), nil)
+	// if len(response[0]) < 0 {
 
 	// 	return false
 
 	// }
+
+	response, _ := FindOneDocument("pms", "user", filter)
+	if len(response) < 0 {
+
+		return false
+
+	}
 	return true
 }
 

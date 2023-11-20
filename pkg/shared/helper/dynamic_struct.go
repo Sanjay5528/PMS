@@ -4,10 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
-	"strings"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
 	"go.mongodb.org/mongo-driver/bson"
 	"kriyatec.com/pms-api/pkg/shared/database"
@@ -25,7 +23,6 @@ var TypeMap = map[string]interface{}{
 	"float64":   new(float64),
 	"time.Time": new(*time.Time),
 	"[]string":  new([]string),
-	// "[]time":    new([]time.Time),
 	"[]bool":    new([]bool),
 	"[]int":     new([]int),
 	"[]int32":   new([]int32),
@@ -67,6 +64,7 @@ func LoadDataModelFromDB(orgID string) map[string][]Config {
 				"_id": "$model_name",
 				"fields": bson.M{
 					"$push": bson.M{
+						"model_name":  "$model_name",
 						"column_name": "$column_name",
 						"type":        "$type",
 						"tag":         "$tag",
@@ -149,12 +147,10 @@ func createDynamicTypes(data map[string][]Config) {
 
 func ServerInitstruct(orgID string) {
 
-	// for _, orgID := range orgIDs {
 	data := LoadDataModelFromDB(orgID)
 	// Create dynamic schema types based on the data model configuration.
 	createDynamicTypes(data)
 
-	// }
 }
 
 func CreateInstanceForCollection(collectionName string) (interface{}, map[string]string) {
@@ -175,150 +171,4 @@ func CreateInstanceForCollection(collectionName string) (interface{}, map[string
 	objIns := reflect.New(reflect.TypeOf(TypeMap[collectionName])).Interface()
 
 	return objIns, validationErrors
-}
-
-func Testing(c *fiber.Ctx) error {
-
-	Response := DataChecking(c.Params("modelName"))
-
-	Responses := fiber.Map{
-		"Data": Response,
-	}
-
-	return c.JSON(Responses)
-}
-
-var DataTypes = map[string]string{
-	"string":  "string",
-	"bool":    "bool",
-	"int":     "int",
-	"int32":   "int32",
-	"int64":   "int64",
-	"float32": "float32",
-	"float64": "float64",
-}
-
-func DataChecking(ModelName string) []bson.M {
-
-	Data := DataTypeChecking(ModelName, "")
-
-	ResponseData := NestedDatas(Data, ModelName, "")
-
-	return ResponseData
-}
-
-func NestedDatas(Data []bson.M, ModelName string, typeToRecursivelyHandle string) []bson.M {
-	ResponseData := []bson.M{}
-	var Flag bool
-	var typess string
-	var fieldName string
-	for _, NestedData := range Data {
-		Dataype := NestedData["type"].(string)
-
-		if _, ok := DataTypes[Dataype]; !ok {
-			Flag = true
-
-			if Flag {
-				MapData := DataTypeChecking(Dataype, Dataype)
-
-				for _, inMap := range MapData {
-					fieldName = strings.ToLower(inMap["name"].(string))
-					// fieldName = ModelName + "." + lowercaseString
-					inMap["field_name"] = fieldName
-					inMap["ParentCollectionName"] = ModelName
-					typess = inMap["type"].(string)
-					delete(NestedData, typess)
-					delete(inMap, typess)
-					ResponseData = append(ResponseData, inMap)
-
-				}
-
-				// Recursively process the specified type
-
-				if _, ok := DataTypes[typess]; !ok {
-					// fmt.Println(fieldName)
-
-					recursivelyHandledData := DataTypeChecking(typess, typess)
-					for _, recursivelyHandledDatass := range recursivelyHandledData {
-
-						fieldName := fieldName + strings.ToLower(recursivelyHandledDatass["name"].(string))
-
-						recursivelyHandledDatass["field_name"] = fieldName
-						recursivelyHandledDatass["ParentCollectionName"] = ModelName
-						delete(recursivelyHandledDatass, typess)
-						//  det(recursivelyHandledDatass, "typess")
-					}
-					ResponseData = append(ResponseData, recursivelyHandledData...)
-
-				}
-			}
-		} else {
-			Flag = false
-		}
-	}
-
-	return ResponseData
-}
-
-func DataTypeChecking(ModelName, Types string) []bson.M {
-	// fmt.Println(ModelName)
-	var pipeline = bson.A{
-		bson.D{
-			{"$match",
-				bson.D{
-					{"status", "A"},
-					{"model_name", ModelName},
-				},
-			},
-		},
-		bson.D{
-			{"$group",
-				bson.D{
-					{"_id", "$model_name"},
-					{"Data",
-						bson.D{
-							{"$push",
-								bson.D{
-									{"name",
-										bson.D{
-											{"$toUpper",
-												bson.D{
-													{"$concat",
-														bson.A{
-															"$model_name",
-															".",
-															"$column_name",
-														},
-													},
-												},
-											},
-										},
-									},
-									{"ParentCollectionName", "$model_name"},
-									{"type", "$type"},
-									{"field_name", "$json_field"},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-		bson.D{{"$unset", "_id"}},
-		bson.D{{"$unwind", bson.D{{"path", "$Data"}}}},
-		bson.D{{"$replaceRoot", bson.D{{"newRoot", "$Data"}}}},
-	}
-
-	if Types != "" {
-
-		pipeline = append(pipeline, bson.D{{"$match", bson.D{{"type", bson.D{{"$ne", Types}}}}}})
-	}
-
-	Response, err := GetAggregateQueryResult("pms", "data_model", pipeline)
-
-	if err != nil {
-		// Handle the error
-	}
-	// DataChecking(Response)
-	return Response
 }

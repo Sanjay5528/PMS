@@ -5,10 +5,13 @@ import (
 	"log"
 	"os"
 	"reflect"
+	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 
 	// "go.mongodb.org/mongo-driver/bson/primitive"
@@ -116,29 +119,20 @@ func ExecuteFindAndModifyQuery(orgId string, collectionName string, filter inter
 	return result, nil
 }
 
+func CollectionNameGet(model_name, orgId string) (string, error) {
 
-// Sequenceordercreate  --METHOD to concat the total count the documnet in db and name
-func Sequenceordercreate(OrgId, collectionName, name string) string {
-
-	res, err := database.GetConnection(OrgId).Collection(collectionName).CountDocuments(ctx, bson.M{})
-	if err != nil {
-
-		fmt.Println("Error counting documents:", err)
-
+	filter := bson.M{
+		"model_name":    model_name,
+		"is_collection": "Yes",
 	}
 
-	concatenated := fmt.Sprintf("%s%s%d", "T", name[:3], res)
+	Response, err := FindOneDocument(orgId, "model_config", filter)
+	if err != nil {
+		return "", nil
+	}
 
-	return concatenated
+	return Response["collection_name"].(string), nil
 }
-
-
-
-
-
-
-
-
 
 func Updateformodel(c *fiber.Ctx) error {
 
@@ -181,26 +175,40 @@ func Updateformodel(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(response)
 }
 
-// BuildAggregationPipeline  --METHOD build the Aggregation to appending processing
+// BuildAggregationPipeline --METHOD constructs a MongoDB aggregation pipeline based on input filter conditions.
+// It generates match conditions using GenerateAggregationPipeline for each condition and combines them based on the logical clause.
+// The resulting pipeline includes a $match stage with the combined match conditions.
 func BuildAggregationPipeline(inputData []FilterCondition, BasecollectionName string) bson.M {
+	// Initialize an empty array to store individual match conditions.
 	var matchConditions []bson.M
 
+	// Iterate over each filter condition in the input data.
 	for _, filter := range inputData {
+		// Iterate over each condition within the filter.
 		for _, condition := range filter.Conditions {
-			Finals := GenerateAggregationPipeline(condition, BasecollectionName)
-			matchConditions = append(matchConditions, Finals...)
+			// Generate an aggregation pipeline for the current condition.
+			// The GenerateAggregationPipeline function is assumed to return a slice of bson.M representing pipeline stages.
+			conditionPipeline := GenerateAggregationPipeline(condition, BasecollectionName)
+
+			// Append the generated pipeline stages to the match conditions array.
+			matchConditions = append(matchConditions, conditionPipeline...)
 		}
 	}
-	// finla caluse to add
+
+	// Initialize an empty bson.M to represent the final match clause.
 	var clause bson.M
+
+	// Check if there are any match conditions.
 	if len(matchConditions) > 0 {
+		// Combine match conditions based on the logical clause (OR or AND).
 		if inputData[0].Clause == "OR" {
 			clause = bson.M{"$or": matchConditions}
 		} else if inputData[0].Clause == "AND" {
 			clause = bson.M{"$and": matchConditions}
 		}
 	}
-	// return the with match
+
+	// Return the final aggregation pipeline with the $match stage.
 	return bson.M{"$match": clause}
 }
 
@@ -208,7 +216,7 @@ func BuildAggregationPipeline(inputData []FilterCondition, BasecollectionName st
 func GenerateAggregationPipeline(condition ConditionGroup, basecollection string) []bson.M {
 	conditions := []bson.M{}
 
-	//   If Nested Conditions Here that time Recursively load the filter
+	// If there are nested conditions, recursively generate pipelines for each nested condition.
 	if len(condition.Conditions) > 0 {
 		// nestedConditions := []bson.M{}
 		for _, nestedCondition := range condition.Conditions {
@@ -224,7 +232,7 @@ func GenerateAggregationPipeline(condition ConditionGroup, basecollection string
 
 	reference := condition.ParentCollectionName
 
-	//if basecollection is empty we use directly use columnName
+	// Handle the case where basecollection is empty or ParentCollectionName is empty.
 	if basecollection == "" {
 		column = condition.Column
 	} else if condition.ParentCollectionName == "" { //If ParentCollectioName is  empty we use directly use columnName
@@ -252,7 +260,7 @@ func GenerateAggregationPipeline(condition ConditionGroup, basecollection string
 		"IN":                 "$in",
 	}
 
-	//OpertorMap check we Sended In body to map
+	// Check if the specified operator exists in the operator map.
 	if operator, exists := operatorMap[condition.Operator]; exists {
 		conditionValue := ConvertToDataType(value, condition.Type)
 
@@ -291,7 +299,7 @@ func GenerateAggregationPipeline(condition ConditionGroup, basecollection string
 			conditions = append(conditions, bson.M{column: bson.M{operator: conditionValue}})
 		} else if condition.Operator == "NOTCONTAINS" {
 			pattern := fmt.Sprintf("^(?!.*%s)", condition.Value)
-			// conditions = append(conditions, bson.M{condition.Column: bson.M{"$regex": pattern}})
+
 			conditions = append(conditions, bson.M{condition.Column: bson.M{operator: pattern}})
 		} else if condition.Operator == "NOTBLANK" {
 			conditions = append(conditions, bson.M{column: bson.M{operator: true, "$ne": nil}})
@@ -320,7 +328,7 @@ func GenerateAggregationPipeline(condition ConditionGroup, basecollection string
 		}
 	}
 
-	//Clause Binding
+	// Handle logical clauses (AND or OR).
 	if condition.Clause == "AND" {
 		conditions = append(conditions, bson.M{"$and": conditions})
 	} else if condition.Clause == "OR" {
@@ -360,37 +368,40 @@ func PagiantionPipeline(start, end int) bson.M {
 	}
 }
 
-// ConvertToDataType --METHOD Build the Datatype from Paramters
+// ConvertToDataType converts the given value to the specified data type based on the provided DataType.
 func ConvertToDataType(value interface{}, DataType string) interface{} {
-
+	// Check the data type and perform the corresponding conversion.
 	if DataType == "time.Time" {
+		// If the data type is time.Time, attempt to parse the value as a string in RFC3339 format.
 		if valStr, ok := value.(string); ok {
 			t, err := time.Parse(time.RFC3339, valStr)
 			if err == nil {
+				// If parsing is successful, return a time.Time value with truncated seconds.
 				StartedDay := time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), 0, time.UTC)
 				return StartedDay
 			}
 		}
 	} else if DataType == "string" || DataType == "text" {
-
+		// If the data type is string or text, attempt to parse the value as a string.
 		if valStr, ok := value.(string); ok {
 			t, err := time.Parse(time.RFC3339, valStr)
-			//if err is nil that time only convert the string to time.Time format
+			// If parsing as time is successful, return a time.Time value with truncated seconds.
 			if err == nil {
 				StartedDay := time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), 0, time.UTC)
 				return StartedDay
 			} else {
-				// Default retrun the value string after convert string
+				// If parsing as time fails, return the original string value.
 				return valStr
 			}
 		}
 	} else if DataType == "boolean" || DataType == "bool" {
-
+		// If the data type is boolean or bool, attempt to cast the value to a boolean.
 		if boolValue, ok := value.(bool); ok {
 			return boolValue
 		}
 	}
 
+	// If the data type is not recognized or conversion is not possible, return the original value.
 	return value
 }
 
@@ -433,18 +444,77 @@ func UpdateDateObject(input map[string]interface{}) error {
 	}
 	return nil
 }
-func FindDocs(orgId, collection string, filter interface{}) (map[string]interface{}, error) {
-
+func FindOneDocument(orgId, collection string, filter interface{}) (map[string]interface{}, error) {
 	var result map[string]interface{}
+
 	err := database.GetConnection(orgId).Collection(collection).FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			// Handle case when no document matches the filter
-			// return nil, fmt.Errorf("No document found")
+			// Handle case where no documents are found
+			return nil, nil
 		}
-		 
+
 		return nil, err
 	}
 
 	return result, nil
+}
+
+// Generateuniquekey --METHOD create a uniquekey
+func Generateuniquekey() string {
+
+	return regexp.MustCompile(`[^a-zA-Z0-9 ]+`).ReplaceAllString(uuid.New().String(), "")
+
+}
+
+// GetkeyfromSequencestring -- METHOD extracts the sequence identifier from a key string.
+func GetkeyfromSequencestring(key string) (bool, string) {
+	index := strings.Index(key, "SEQ|")
+	if index == -1 {
+		fmt.Println("String 'Sequence|' not found in the input text.")
+		return false, key
+	} else {
+		return true, key[index+len("SEQ|"):]
+	}
+}
+
+// GenerateSequeence --METHOD generates a sequence value based on the provided key and organization ID.
+func GenerateSequence(key interface{}, OrgID string) string {
+	// Check if the key contains the sequence identifier.
+	flag, unsersocreID := GetkeyfromSequencestring(key.(string))
+
+	// Define a BSON filter to find the sequence document based on the extracted identifier.
+
+	filter := bson.D{{"_id", unsersocreID}}
+	// If the key contains the sequence identifier, query the sequence collection.
+	if flag {
+		// Get the result of the aggregation query for the sequence document.
+		Response, err := FindOneDocument(OrgID, "sequence", filter)
+		if err != nil {
+			fmt.Println("Error:", err.Error())
+		}
+
+		// Update the sequence collection to increment the start value.
+		updateSequeenceCollection(DocIdFilter(unsersocreID), OrgID)
+
+		// Return the formatted sequence value.
+		return fmt.Sprintf("%s%d", Response["prefix"].(string), Response["startvalue"].(int32))
+	} else {
+		// If the key does not contain the sequence identifier, return the original key.
+		return unsersocreID
+	}
+}
+
+// updateSequeenceCollection -- METHOD increments the start value in the sequence collection for the given filter.
+func updateSequeenceCollection(filter interface{}, OrgID string) error {
+	// Define the update data to increment the start value.
+	updateData := bson.M{
+		"$inc": bson.M{"startvalue": 1},
+	}
+
+	_, err := database.GetConnection(OrgID).Collection("sequence").UpdateOne(ctx, filter, updateData)
+	if err != nil {
+		return err
+	}
+	return nil
 }

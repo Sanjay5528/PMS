@@ -2,7 +2,6 @@ package entities
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -41,8 +40,8 @@ func PostDocHandler(c *fiber.Ctx) error {
 	}
 	// to  Get the User Details from Token
 	userToken := utils.GetUserTokenValue(c)
-	// // //get the collection from model_config collection to find the model_name
-	// collectionName, err := CollectionNameGet(c.Params("model_name"), org.Id)
+	// // // //get the collection from model_config collection to find the model_name
+	// collectionName, err := helper.CollectionNameGet(c.Params("model_name"), org.Id)
 	// if err != nil {
 	// 	shared.BadRequest("Invalid CollectionName")
 	// }
@@ -63,25 +62,27 @@ func PostDocHandler(c *fiber.Ctx) error {
 	// to paras the Datatype
 	helper.UpdateDateObject(inputData)
 
-	if inputData["_id"] == "" || inputData["_id"] == nil {
+	if inputData["_id"] != nil {
+		inputData["_id"] = helper.GenerateSequence(inputData["_id"], org.Id)
+	} else {
 		inputData["_id"] = helper.Generateuniquekey()
+
 	}
 
 	// user collection is here that time only password validation
 	if collectionName == "user" {
 		// user collection only OnboadingProcessing for send the mail to activation --METHOD OnboardingProcessing
-		err := OnboardingProcessing(org.Id, inputData["_id"].(string), "onboarding", "user")
+		err := OnboardingProcessing(org.Id, inputData["_id"].(string), "Onboarding", "user")
 		if err != nil {
 			return shared.BadRequest("invalid user Id")
 		}
-	} else if collectionName == "task" {
-		// if task here to task id will change to order based insert
-		inputData["task_id"] = helper.Sequenceordercreate(org.Id, collectionName, inputData["task_name"].(string))
+	} else if collectionName == "data_model" || collectionName == "model_config" {
+		// else If conditon  Purpose for these collection only need for status field don't overwrite another collection
+		inputData["status"] = "A"
 	}
 
 	inputData["created_on"] = time.Now()
 	inputData["created_by"] = userToken.UserId
-	// inputData["status"] = "A"
 
 	// Insert he data to mongo Collection  name form params
 	res, err := database.GetConnection(org.Id).Collection(collectionName).InsertOne(ctx, inputData)
@@ -119,31 +120,6 @@ func GetDocByIdHandler(c *fiber.Ctx) error {
 	}
 	return shared.SuccessResponse(c, response)
 }
-
-// func getDocsHandler(c *fiber.Ctx) error {
-// 	orgId := c.Get("OrgId")
-// 	if orgId == "" {
-// 		return shared.BadRequest("Organization Id missing")
-// 	}
-// 	// collectionName := c.Params("collectionName")
-// 	var requestBody shared.PaginationRequest
-
-// 	if err := c.BodyParser(&requestBody); err != nil {
-// 		return nil
-// 	}
-
-// 	pipeline := shared.MasterAggregationPipeline(requestBody, c)
-
-// 	Response, err := shared.GetAggregateQueryResult(orgId, c.Params("collectionName"), pipeline)
-
-// 	if err != nil {
-// 		if cmdErr, ok := err.(mongo.CommandError); ok {
-// 			return shared.BadRequest(cmdErr.Message)
-// 		}
-// 	}
-
-// 	return shared.SuccessResponse(c, Response)
-// }
 
 func DeleteById(c *fiber.Ctx) error {
 	//Get the orgId from Header
@@ -196,24 +172,25 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 	// to  Get the User Details from Token
 	userToken := utils.GetUserTokenValue(c)
 
-	collectionName, err := CollectionNameGet(org.Id, c.Params("collectionName"))
-	if err != nil {
-		return shared.BadRequest("Invalid CollectionName")
-	}
-	// Validate the input data based on the data model
-	inputData, validationErrors := helper.UpdateValidateInDatamodel(collectionName, string(c.Body()), org.Id)
-	if validationErrors != nil {
-		//Handle validation errors with status code 400 (Bad Request)
-		jsonstring, _ := json.Marshal(validationErrors)
-		return shared.BadRequest(string(jsonstring))
-	}
+	// collectionName, err := helper.CollectionNameGet(c.Params("model_name"), org.Id)
+	// if err != nil {
+	// 	return shared.BadRequest("Invalid CollectionName")
+	// }
 
-	updatedDatas := make(map[string]interface{})
-	// update for nested fields
-	UpdateData := helper.UpdateFieldsWithParentKey(inputData, "", updatedDatas)
+	// // Validate the input data based on the data model
+	// inputData, validationErrors := helper.UpdateValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	// if validationErrors != nil {
+	// 	//Handle validation errors with status code 400 (Bad Request)
+	// 	jsonstring, _ := json.Marshal(validationErrors)
+	// 	return shared.BadRequest(string(jsonstring))
+	// }
 
-	// var UpdateData map[string]interface{}
-	// c.BodyParser(&UpdateData)
+	// updatedDatas := make(map[string]interface{})
+	// // update for nested fields
+	// UpdateData := helper.UpdateFieldsWithParentKey(inputData, "", updatedDatas)
+	collectionName := c.Params("model_name")
+	var UpdateData map[string]interface{}
+	c.BodyParser(&UpdateData)
 
 	update := bson.M{
 		"$set": UpdateData,
@@ -222,7 +199,7 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 	UpdateData["update_on"] = time.Now()
 	UpdateData["update_by"] = userToken.UserId
 	// Update data in the collection
-	res, err := database.GetConnection(org.Id).Collection(c.Params("model_name")).UpdateOne(ctx, helper.DocIdFilter(c.Params("id")), update, updateOpts)
+	res, err := database.GetConnection(org.Id).Collection(collectionName).UpdateOne(ctx, helper.DocIdFilter(c.Params("id")), update, updateOpts)
 	if err != nil {
 		// Handle database update error with status code 500 (Internal Server Error)
 		return shared.BadRequest(err.Error())
@@ -237,25 +214,7 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, "Updated Successfully")
 }
 
-func CollectionNameGet(model_name, orgId string) (string, error) {
-
-	filter := bson.M{
-		"model_name":    model_name,
-		"is_collection": "Yes",
-	}
-	Response, err := helper.GetQueryResult(orgId, "model_config", filter, int64(0), int64(200), nil)
-	if err != nil {
-		return "", shared.BadRequest(err.Error())
-	}
-
-	// Response, err := helper.FindOneDocument(orgId, "model_config", filter)
-	// if err != nil {
-	// 	return "", nil
-	// }
-
-	return Response[0]["collection_name"].(string), nil
-}
-
+// Old Pms code
 func getDocByIddHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
 	if orgId == "" {
@@ -322,202 +281,6 @@ func getDocByClientIdHandler(c *fiber.Ctx) error {
 	}
 
 	response, err := helper.GetQueryResult(orgId, collectionName, filter, int64(0), int64(50000), nil)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-func getDocBycolonynameHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-
-	var filter interface{}
-	collectionName := c.Params("collectionName")
-
-	// Decode the URL parameter to handle spaces
-	paramsValue, err := url.QueryUnescape(c.Params("companyname"))
-	if err != nil {
-		return shared.BadRequest("Invalid URL parameter")
-	}
-
-	// fmt.Println(paramsValue)
-
-	// Define a map of collection names to fields to search
-	collectionFieldMap := map[string][]string{
-		"company": {"companyname"},
-		"colony":  {"colony_id", "colonyname", "companyname", "colonypin", "colonyid", "colonyaddr", "country_name", "states"},
-		"block":   {"blockname", "colonyname"},
-		"gate":    {"gatename", "colonyname"},
-		"owner":   {"ownername", "ownerid"},
-	}
-
-	fieldsToSearch, ok := collectionFieldMap[collectionName]
-	if !ok {
-		// Handle the case where the collectionName is not recognized
-		return shared.BadRequest("Invalid collectionName")
-	}
-
-	// Construct the filter dynamically based on the fields to search
-	orConditions := make([]bson.M, len(fieldsToSearch))
-	for i, field := range fieldsToSearch {
-		orConditions[i] = bson.M{field: paramsValue}
-	}
-	filter = bson.M{"$or": orConditions}
-
-	response, err := helper.GetQueryResult(orgId, collectionName, filter, int64(0), int64(50000), nil)
-
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-// getProduct Details by its ID
-func getDocByIdHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	collectionName := c.Params("collectionName")
-	filter := helper.DocIdFilter(c.Params("id"))
-
-	response, err := helper.GetQueryResult(orgId, collectionName, filter, int64(0), int64(50000), nil)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-// todo
-func ActiveClientHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-
-	name := c.Params("name")
-
-	filter := bson.A{
-		bson.D{{"$match", bson.D{{"status", "Active"}}}},
-	}
-
-	response, err := helper.GetAggregateQueryResult(orgId, name, filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-func colonyHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	companyname := c.Params("companyname")
-
-	decodedCompanyName, err := url.QueryUnescape(companyname)
-	if err != nil {
-		// fmt.Println("Error decoding:", err)
-	}
-	company := strings.Replace(decodedCompanyName, "%20", " ", -1)
-	// fmt.Println("Decoded Company Name:", company)
-	var collectionName = "colony"
-
-	filter :=
-		bson.A{
-			bson.D{{"$match", bson.D{{"companyname", company}}}},
-			bson.D{
-				{"$lookup",
-					bson.D{
-						{"from", "block"},
-						{"localField", "colonyname"},
-						{"foreignField", "colonyname"},
-						{"as", "block"},
-					},
-				},
-			},
-			bson.D{
-				{"$unwind",
-					bson.D{
-						{"path", "$block"},
-						{"includeArrayIndex", "string"},
-						{"preserveNullAndEmptyArrays", false},
-					},
-				},
-			},
-			bson.D{
-				{"$lookup",
-					bson.D{
-						{"from", "gate"},
-						{"localField", "colonyname"},
-						{"foreignField", "colonyname"},
-						{"as", "gate"},
-					},
-				},
-			},
-			bson.D{
-				{"$unwind",
-					bson.D{
-						{"path", "$gate"},
-						{"includeArrayIndex", "string"},
-						{"preserveNullAndEmptyArrays", false},
-					},
-				},
-			},
-			bson.D{
-				{"$group",
-					bson.D{
-						{"_id",
-							bson.D{
-								{"_id", "$_id"},
-								{"colonyname", "$colonyname"},
-							},
-						},
-						{"block", bson.D{{"$push", "$block"}}},
-						{"gate", bson.D{{"$push", "$gate"}}},
-					},
-				},
-			},
-			bson.D{
-				{"$project",
-					bson.D{
-						{"colonyname", "$_id.colonyname"},
-						{"_id", "$_id._id"},
-						{"block", 1},
-						{"gate", 1},
-					},
-				},
-			},
-		}
-	response, err := helper.GetAggregateQueryResult(orgId, collectionName, filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-func EmployeeTaskHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	assignedto := c.Params("assignedto")
-
-	decodedProjectName, err := url.QueryUnescape(assignedto)
-	if err != nil {
-		// fmt.Println("Error decoding:", err)
-	}
-	assign := strings.Replace(decodedProjectName, "%20", " ", -1)
-	// fmt.Println("Decoded assign Name:", assign)
-	var collectionName = "task"
-
-	filter := bson.A{
-		bson.D{{"$match", bson.D{{"assignedto", assign}}}},
-	}
-	response, err := helper.GetAggregateQueryResult(orgId, collectionName, filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
@@ -646,98 +409,6 @@ func TimeSheetByIdHandler(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, response)
 }
 
-func TimeSheetByTesting(c *fiber.Ctx) error {
-
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-
-	employee_id := c.Params("employee_id")
-	scheduledstartdate := c.Params("scheduledstartdate")
-	date, _ := time.Parse(time.RFC3339, scheduledstartdate)
-
-	filter :=
-		bson.A{
-			bson.D{
-				{"$lookup",
-					bson.D{
-						{"from", "timesheet"},
-						{"localField", "taskid"},
-						{"foreignField", "task_id"},
-						{"as", "result"},
-					},
-				},
-			},
-			bson.D{
-				{"$unwind",
-					bson.D{
-						{"path", "$result"},
-						{"preserveNullAndEmptyArrays", true},
-					},
-				},
-			},
-			bson.D{
-				{"$group",
-					bson.D{
-						{"_id",
-							bson.D{
-								{"employeeid", "$employeeid"},
-								{"task_id", "$taskid"},
-							},
-						},
-						{"totalworkedhours", bson.D{{"$sum", "$result.workedhours"}}},
-						{"id", bson.D{{"$first", "$_id"}}},
-						{"allocatedhours", bson.D{{"$first", "$allocatedhours"}}},
-						{"employeeid", bson.D{{"$first", "$employeeid"}}},
-						{"remarks", bson.D{{"$first", "$remarks"}}},
-						{"task_id", bson.D{{"$first", "$taskid"}}},
-						{"projectname", bson.D{{"$first", "$projectname"}}},
-						{"moduleid", bson.D{{"$first", "$moduleid"}}},
-						{"scheduled_start_date", bson.D{{"$first", "$scheduledstartdate"}}},
-						{"scheduled_end_date", bson.D{{"$first", "$scheduledenddate"}}},
-						{"taskname", bson.D{{"$first", "$taskname"}}},
-						{"assignedto", bson.D{{"$first", "$assignedto"}}},
-						{"actual_start_date", bson.D{{"$min", "$result.created_on"}}},
-						{"status", bson.D{{"$first", "$status"}}},
-						{"formatteddate", bson.D{{"$last", "$result.formatedDate"}}},
-						{"formatteddate1", bson.D{{"$first", "$result.formatedDate"}}},
-					},
-				},
-			},
-			bson.D{
-				{"$match",
-					bson.D{
-						{"status",
-							bson.D{
-								{"$in",
-									bson.A{
-										"In Progress",
-										"Completed",
-									},
-								},
-							},
-						},
-						{"scheduled_start_date", bson.D{{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}},
-					},
-				},
-			},
-		}
-	if employee_id == "SA" {
-
-		filter = filter
-	} else {
-		// fmt.Println(employee_id)
-		filter = append(filter, bson.D{{"$match", bson.D{{"employeeid", employee_id}}}})
-	}
-
-	response, err := helper.GetAggregateQueryResult(orgId, "task", filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
 // /  workedhour/:employee_id/:scheduledstartdate
 func TimeSheetByiiIdHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
@@ -837,130 +508,46 @@ func getDocsHandler(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, Response)
 }
 
-// getProduct --METHOD Details by its ID
-func getDocsByKeyValueHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	token := utils.GetUserTokenValue(c)
-	page := c.Params("page")
-	limit := c.Params("limit")
-	collectionName := c.Params("collectionName")
-	key := c.Params("key")
-	value := c.Params("value")
-	if value == "_" {
-		// fmt.Print("No User Id")
-		value = token.UserId
-		// fmt.Print(token.UserId)
-	}
-	filter := bson.M{key: value}
-	response, err := helper.GetQueryResult(orgId, collectionName, filter, helper.Page(page), helper.Limit(limit), nil)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-// getProduct Details by its ID
-// func updateIncrementalValue(c *fiber.Ctx) error {
-// 	orgId := c.Get("OrgId")
-// 	if orgId == "" {
-// 		return shared.BadRequest("Organization Id missing")
-// 	}
-// 	collectionName := c.Params("collectionName")
-// 	var inputData map[string]interface{}
-// 	err := c.BodyParser(&inputData)
-// 	if err != nil {
-// 		return shared.BadRequest(err.Error())
-// 	}
-// 	response, err := database.GetConnection(orgId).Collection(collectionName).UpdateOne(
-// 		ctx,
-// 		inputData["match"],
-// 		bson.M{"$inc": inputData["data"]},
-// 		updateOpts,
-// 	)
-// 	if err != nil {
-// 		return shared.BadRequest(err.Error())
-// 	}
-// 	return shared.SuccessResponse(c, response)
-// }
-
-// / deleteEntitiesByIDHandler - Delete Entity By ID
-func deleteDocumentByIDHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-
-	var col interface{}
-
-	value := c.Params("colName")
-	colname := c.Params("value")
-
-	fmt.Println(value, colname)
-
-	if value == "_id" {
-		colObj, err := primitive.ObjectIDFromHex(colname)
-		if err != nil {
-			fmt.Println(colObj)
-			return shared.BadRequest(err.Error())
-		}
-		col = colObj
-	}
-	// } else {
-	// 	col := colname
-	// 	fmt.Println(col)
-	// }
-	if colname == "_" {
-		token := utils.GetUserTokenValue(c)
-		value = token.UserId
-	}
-	filter := bson.M{value: col}
-	collectionName := c.Params("collectionName")
-	response, err := database.GetConnection(orgId).Collection(collectionName).DeleteMany(ctx, filter)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
 // !pending
 // OnboardingProcessing  -- METHOD Onboarding processing for user and send the email
-func OnboardingProcessing(OrgId, email, emailtype, category string) error {
+func OnboardingProcessing(orgId, email, emailtype, category string) error {
 	// Generate the 'decoding' value (replace this with your actual logic)
 	decoding := helper.Generateuniquekey()
-	query := bson.A{
+
+	filter := bson.A{
 		bson.D{
 			{"$match",
 				bson.D{
-					{"title", "user"},
-					{"emailtype", "Onboarding"},
+					{"title", category},
+					{"emailtype", emailtype},
 				},
 			},
 		},
 	}
-	response, err := helper.GetAggregateQueryResult(OrgId, "email_template", query)
+
+	Response, err := helper.GetAggregateQueryResult(orgId, "email_template", filter)
 	if err != nil {
-		return nil
+		fmt.Println("Err",
+			err.Error(),
+		)
+
 	}
 
-	Link := fmt.Sprintf("%s%s%s", response[0]["link"].(string), `=`, decoding)
-	fmt.Println(Link)
-	// Generate the URL with parameters  it call the back end api
-	// link := fmt.Sprintf("http://localhost:4200/activate?accesskey=%s", decoding)
-
-	// body := createOnBoardtemplate(link)
-	// if err := SendEmailS(email, os.Getenv("CLIENT_EMAIL"), "Welcome to pms Onboarding", body); err == nil {
-	// 	// If email sending was successful
-	// 	if err := UsertemporaryStoringData(email, decoding); err != nil {
-	// 		log.Println("Failed to insert user junked files:", err)
-	// 	}
-	// } else {
-	// 	return shared.BadRequest("Email sending failed:")
-	// }
+	if err := SendEmailS(email, os.Getenv("CLIENT_EMAIL"), "Welcome to pms Onboarding", replacestring(Response[0]["template"].(string), fmt.Sprintf("%s%s%s", Response[0]["link"].(string), `=`, decoding))); err == nil {
+		// If email sending was successful
+		if err := UsertemporaryStoringData(email, decoding); err != nil {
+			log.Println("Failed to insert user junked files:", err)
+		}
+	} else {
+		return shared.BadRequest("Email sending failed:")
+	}
 
 	return nil
+}
+
+func replacestring(template, Replacement string) string {
+
+	return strings.ReplaceAll(template, `{{link}}`, Replacement)
 }
 
 // USER ON BOARDING TEMPLATE  //todo
@@ -1076,22 +663,6 @@ func SendEmailS(recipientEmail string, senderEmail string, subject string, body 
 // 	}
 // 	return shared.SuccessResponse(c, response)
 // }
-
-func getNextSeqNumberHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	return c.JSON(GetNextSeqNumber(orgId, c.Params("key")))
-}
-
-func GetNextSeqNumber(orgId string, collectionName string) int32 {
-
-	filter := bson.D{{"_id", collectionName}}
-	update := bson.D{{"$inc", bson.D{{"seq", 1}}}}
-	result, _ := helper.ExecuteFindAndModifyQuery(orgId, "sequence", filter, update)
-	return result["seq"].(int32)
-}
 
 func postTimesheetDocHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
@@ -1278,6 +849,7 @@ func timesheetgroup(orgId string, response []primitive.M) ([]primitive.M, error)
 	fmt.Println(res)
 	return res, nil
 }
+
 func getUnscheduleIdHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
 	if orgId == "" {
@@ -1320,62 +892,6 @@ func getUnscheduleIdHandler(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, response)
 }
 
-// func putEntityByID(c *fiber.Ctx, putType string) error {
-// 	orgId := c.Get("OrgId")
-// 	if orgId == "" {
-// 		return shared.BadRequest("Organization Id missing")
-// 	}
-// 	token := shared.GetUserTokenValue(c)
-// 	filter := shared.DocIdFilter(c.Params("id"))
-// 	var collectionName = c.Params("collectionName")
-// 	var inputData map[string]interface{}
-// 	err := c.BodyParser(&inputData)
-// 	if err != nil {
-// 		return shared.BadRequest(err.Error())
-// 	}
-// 	//update date string to time object
-// 	shared.UpdateDateObject(inputData)
-
-// 	//add updated by and on values
-// 	inputData["updated_on"] = time.Now()
-// 	inputData["updated_by"] = token.UserId
-
-// 	//For insert
-// 	var insertData map[string]interface{}
-// 	insertData["created_on"] = time.Now()
-// 	insertData["created_by"] = token.UserId
-
-// 	query := bson.M{
-// 		"$set":         inputData,
-// 		"$setOnInsert": insertData,
-// 	}
-// 	if putType == "$addToSet" {
-// 		arrayName := c.Params("array")
-// 		query = bson.M{
-// 			"$addToSet": bson.M{
-// 				arrayName: inputData,
-// 			},
-// 		}
-// 		filter = bson.M{
-// 			"_id":     c.Params("id"),
-// 			arrayName: bson.M{"$elemMatch": bson.M{"_id": inputData["_id"]}},
-// 		}
-// 		fmt.Println(filter)
-// 	}
-// 	//Update
-// 	response, err := database.GetConnection(orgId).Collection(collectionName).UpdateOne(
-// 		ctx,
-// 		filter,
-// 		query,
-// 		updateOpts,
-// 	)
-// 	if err != nil {
-// 		fmt.Println(err.Error())
-// 		return shared.BadRequest(err.Error())
-// 	}
-// 	return shared.SuccessResponse(c, response)
-// }
-
 func getFileDetails(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
 	if orgId == "" {
@@ -1391,7 +907,6 @@ func getFileDetails(c *fiber.Ctx) error {
 	}
 	return shared.SuccessResponse(c, response)
 }
-
 func getAllFileDetails(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
 	if orgId == "" {
@@ -1403,32 +918,6 @@ func getAllFileDetails(c *fiber.Ctx) error {
 	limit := c.Params("limit")
 	query := bson.M{"category": fileCategory}
 	response, err := helper.GetQueryResult(orgId, "user_files", query, helper.Page(page), helper.Limit(limit), nil)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
-
-func taskAllocHandler(c *fiber.Ctx) error {
-	orgId := c.Get("OrgId")
-	if orgId == "" {
-		return shared.BadRequest("Organization Id missing")
-	}
-	var collectionName = "users"
-	task := c.Query("task")
-
-	filter := bson.A{
-		bson.D{
-			{"$match",
-				bson.D{
-					{"data_access.Books", true},
-					{"booktask", bson.D{{"$elemMatch", bson.D{{"_id", task}}}}},
-				},
-			},
-		},
-	}
-
-	response, err := helper.GetAggregateQueryResult(orgId, collectionName, filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
@@ -1539,5 +1028,46 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, fiber.Map{
 		"response": response,
 		// "pipeline": filter,
+	})
+}
+
+func regressionproject(c *fiber.Ctx) error {
+	//Get the orgId from Header
+	org, exists := helper.GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
+	}
+
+	filter := bson.A{
+		bson.D{{"$match", bson.D{{"_id", c.Params("regression_id")}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "requirement"},
+					{"localField", "sprint_id"},
+					{"foreignField", "sprint_id"},
+					{"as", "requirement"},
+				},
+			},
+		},
+		bson.D{{"$unwind", bson.D{{"path", "$requirement"}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "testcase"},
+					{"localField", "requirement._id"},
+					{"foreignField", "requirement_id"},
+					{"as", "testcase"},
+				},
+			},
+		},
+	}
+	response, err := helper.GetAggregateQueryResult(org.Id, "regression", filter)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	return shared.SuccessResponse(c, fiber.Map{
+		"response": response,
 	})
 }

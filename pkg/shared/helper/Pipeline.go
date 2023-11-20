@@ -6,45 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// // Build match conditions for a filter
-
-//	var TypeMaps = map[string]interface{}{
-//		"string":    new(string),
-//		"time":      new(time.Time),
-//		"bool":      new(bool),
-//		"int":       new(int),
-//		"int32":     new(int32),
-//		"int64":     new(int64),
-//		"float64":   new(float64),
-//		"time.Time": new(*time.Time),
-//		"[]string":  new(string),
-//		"[]time":    new(time.Time),
-//		"[]bool":    new(bool),
-//		"[]int":     new(int),
-//		"[]int32":   new(int32),
-//		"[]int64":   new(int64),
-//		"[]float64": new(float64),
-//	}
-
-// var DataType = map[string]interface{}{
-// 	"string":    new(string),
-// 	"time":      new(time.Time),
-// 	"bool":      new(bool),
-// 	"int":       new(int),
-// 	"int32":     new(int32),
-// 	"int64":     new(int64),
-// 	"float64":   new(float64),
-// 	"time.Time": new(*time.Time),
-// 	"[]string":  new([]string),
-// 	"[]time":    new([]time.Time),
-// 	"[]bool":    new([]bool),
-// 	"[]int":     new([]int),
-// 	"[]int32":   new([]int32),
-// 	"[]int64":   new([]int64),
-// 	"[]float64": new([]float64),
-// }
-
-// Build sort conditions for a filter
+// buildSortConditions -- METHOD Build sort conditions for a filter
 func buildSortConditions(sortCriteria []SortCriteria) bson.M {
 	sortConditions := bson.M{}
 
@@ -137,21 +99,24 @@ func CreateAggregationStage(column CustomColumn, Basecollection string) bson.M {
 	return Pipeline
 }
 
-// buildDynamicAggregationPipeline   --METHOD Create a aggreation
-func buildDynamicAggregationPipeline(Aggregation []Aggregation) []bson.M {
+// BuildDynamicAggregationPipelineFromSpecifications --METHOD Create a aggreation constructs a dynamic MongoDB aggregation pipeline based on the provided aggregations.
+// Each Aggregation specifies how to group and aggregate data in the pipeline.
+func BuildDynamicAggregationPipelineFromSpecifications(Aggregation []Aggregation) []bson.M {
+	// Initialize an empty array to store the MongoDB aggregation pipeline stages.
 	pipeline := []bson.M{}
-
+	// If there are no aggregations, return an empty pipeline
 	if len(Aggregation) == 0 {
 		return pipeline
 	}
-
+	// Iterate over each Aggregation in the input slice.
 	for _, aggregation_column := range Aggregation {
+		// Extract relevant information from the Aggregation structure.
 		GroupID := "$" + aggregation_column.AggGroupByField.Field
 		group := bson.M{"_id": GroupID}
 		AggColumnName := aggregation_column.AggColumnName
 		FieldsName := "$" + aggregation_column.AggFieldName.Field
 		AggFnName := aggregation_column.AggFnName
-
+		// Construct the $group stage based on the specified aggregation function
 		if AggFnName == "SUM" {
 			group[AggColumnName] = bson.M{"$sum": 1}
 			group["doc"] = bson.M{"$first": "$$ROOT"}
@@ -177,9 +142,9 @@ func buildDynamicAggregationPipeline(Aggregation []Aggregation) []bson.M {
 			group[AggColumnName] = bson.M{"$avg": FieldsName}
 			group["doc"] = bson.M{"$first": "$$ROOT"}
 		}
-
+		// Append the $group stage to the pipeline.
 		pipeline = append(pipeline, bson.M{"$group": group})
-
+		// Construct the $replaceRoot stage to merge the aggregated results back into the main document structure.
 		replaceRoot := bson.M{
 			"$replaceRoot": bson.M{
 				"newRoot": bson.M{
@@ -190,14 +155,15 @@ func buildDynamicAggregationPipeline(Aggregation []Aggregation) []bson.M {
 				},
 			},
 		}
+
 		pipeline = append(pipeline, replaceRoot)
 
-		// return pipeline
-
 	}
+	// Return the fully constructed MongoDB aggregation pipeline.
 	return pipeline
 }
 
+// generateSub   -- METHOD  generates expressions for the $subtract operator in MongoDB aggregation.
 func generateSub(fields []CustomField, Basecollection string) bson.A {
 	expressions := bson.A{}
 
@@ -213,11 +179,11 @@ func generateSub(fields []CustomField, Basecollection string) bson.A {
 	return expressions
 }
 
+// generateConcat  -- METHOD  generates expressions for the $concat operator in MongoDB aggregation.
 func generateConcat(fields []CustomField, Basecollection string) bson.A {
 	expressions := bson.A{}
 
 	for i, field := range fields {
-
 		FieldsName := field.FieldName
 		FieldsName = "$" + field.FieldName
 		if Basecollection != field.ParentCollectionName {
@@ -232,24 +198,25 @@ func generateConcat(fields []CustomField, Basecollection string) bson.A {
 	return expressions
 }
 
+// CreateCusotmColumns -- METHOD creates custom columns in a MongoDB aggregation pipeline based on the provided CustomColumns.
 func CreateCusotmColumns(Data []bson.M, CustomColumns []CustomColumn, Basecollection string) []bson.M {
 	if len(CustomColumns) == 0 {
 		return Data
 	}
 
 	aggregation := make([]bson.M, len(CustomColumns))
-	// aggregation := make([]bson.M, 0)
 	for i, column := range CustomColumns {
 		aggregation[i] = CreateAggregationStage(column, Basecollection)
 	}
 
 	return aggregation
 }
+
+// CreateSelectedColumn --METHOD creates a $project stage in a MongoDB aggregation pipeline to select specific columns.
 func CreateSelectedColumn(CustomColumns []SelectedListItem, BaseCollection string) []bson.M {
 	fieldsToProject := bson.M{}
 
 	for _, field := range CustomColumns {
-
 		fieldsToProject[field.Field] = 1
 	}
 
@@ -262,23 +229,23 @@ func CreateSelectedColumn(CustomColumns []SelectedListItem, BaseCollection strin
 	return expressions
 }
 
-func addFieldsStage(dataSetCustomColumnName string, Fileds bson.M) bson.M {
+// addFieldsStage --METHOD adds fields to a MongoDB aggregation pipeline using the $addFields stage.
+func addFieldsStage(dataSetCustomColumnName string, Fields bson.M) bson.M {
 	return bson.M{
 		"$addFields": bson.M{
-			dataSetCustomColumnName: Fileds,
+			dataSetCustomColumnName: Fields,
 		},
 	}
 }
 
+// createFilterParams --METHOD replaces filter parameters in a given pipeline with their default values.
 func createFilterParams(FilterParams []FilterParam, Pipeline string) string {
 	filterPipeline := Pipeline
 
 	for _, Filter := range FilterParams {
-
 		FindString := `{"ParamsName":"` + Filter.ParamsName + `","parmsDataType":"` + Filter.ParamsDataType + `"}`
 		Replacement := `"` + Filter.DefaultValue + `"`
 		filterPipeline = strings.ReplaceAll(filterPipeline, FindString, Replacement)
-
 	}
 
 	return filterPipeline
