@@ -1,30 +1,22 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import {
   ColDef,
   ColGroupDef,
   ColumnApi,
-  FirstDataRenderedEvent,
-  GetContextMenuItemsParams,
   GetDataPath,
   GridApi,
   GridOptions,
   GridReadyEvent,
-  ICellEditorParams,
-  IRichCellEditorParams,
-  MenuItemDef,
-  RichSelectParams,
-  RowDataTransaction,
-  RowGroupingDisplayType,
 } from "ag-grid-community";
+
 import { DialogService } from 'src/app/services/dialog.service';
 import { ActivatedRoute,Router } from '@angular/router';
 import { DataService } from 'src/app/services/data.service';
 import * as moment from 'moment';
 import { FormService } from 'src/app/services/form.service';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import "ag-grid-enterprise";
-import { ActionButtonComponent } from '../datatable/button';
 import { ButtonComponent } from './button';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { HelperService } from 'src/app/services/helper.service';
@@ -499,6 +491,24 @@ this.gridOptions.groupDefaultExpanded=-1
       editable: false,
       filter: 'agTextColumnFilter',
     },
+    // Need Separate
+    // {
+    //   field: 'test_data',
+    //   editable: true,
+    //   cellEditor: 'agLargeTextCellEditor',
+    //   cellEditorPopup: true,
+    //   cellEditorPopupPosition:'under',
+    //   cellEditorParams: {
+    //     component:function(parms:any){
+    //       console.error(parms);
+    //       return "<p [innerHTML]={{parms.data}}></p>"
+    //     }
+    //     ,
+    //     maxLength: '300',
+    //     cols: '50',
+    //     rows: '6',
+    //   },
+    // }, 
       {
   
       field: 'Action',
@@ -606,17 +616,17 @@ if(this.formName=="module"){
       this.listData = []
       for (let idx = 0; idx < res.data.length; idx++) {
         const row = res.data[idx];
-        if (row.parentmoduleid == "" || !row.parentmoduleid) {
-          row.treePath = [row.module_id];
+        if (row.parentmodulename == "" || !row.parentmodulename) {
+          row.treePath = [row.modulename];
         } else {
-          var parentNode = this.listData.find((d) => d.module_id == row.parentmoduleid);
+          var parentNode = this.listData.find((d) => d.modulename == row.parentmodulename);
           if (
             parentNode &&
             parentNode.treePath &&
-            !parentNode.treePath.includes(row.module_id)
+            !parentNode.treePath.includes(row.modulename)
           ) {
             row.treePath = [...parentNode.treePath];
-            row.treePath.push(row.module_id);
+            row.treePath.push(row.modulename);
           }
         }
         this.listData.push(row);

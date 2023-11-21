@@ -101,24 +101,20 @@ import { HelperService } from "src/app/services/helper.service";
       </mat-menu>
     </div>
     <div *ngIf="parentRouteName=='test_result'" >
-      <button mat-icon-button [matMenuTriggerFor]="test_resultmenu" aria-label="Example icon-button with a menu">
+      <button mat-icon-button *ngIf="params?.data?._id" [matMenuTriggerFor]="test_resultmenu" aria-label="Example icon-button with a menu">
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
       </button>
       <mat-menu #test_resultmenu="matMenu">
         
-      <button mat-menu-item (click)="onclicktestResulr('add', params.data)">
+      <button mat-menu-item   (click)="onclicktestResulr('add', params.data)">
           <mat-icon>add</mat-icon>
           <span>Add Test Case</span>
         </button>
-        <button mat-menu-item (click)="onclicktestResulr('edit', params.data)">
+        <button mat-menu-item *ngIf="params?.data?.test_case_name" (click)="onclicktestResulr('edit', params.data)">
           <mat-icon>edit</mat-icon>
           <span>Edit Test Case</span>
         </button>
-        <button mat-menu-item (click)="onclicktestResulr('delete', params.data)">
-          <mat-icon>delete</mat-icon>
-          <span>Delete</span>
-        </button>
-        <button  mat-menu-item (click)="onclicktestResulr('testresult', params.data)">
+        <button  mat-menu-item *ngIf="params?.data?.test_case_name"  (click)="onclicktestResulr('testresult', params.data)">
           <mat-icon>task</mat-icon>
           <span>Test Result</span>
         </button>
@@ -129,13 +125,18 @@ import { HelperService } from "src/app/services/helper.service";
     <ng-template #taskViewPopup class="example-sidenav" mode="over" style="margin: auto">
       <mat-card>
         <mat-card-header style="flex: 1 1 auto;">
-          <div style="width: 100%">
+ 
+        <div style="width: 100%">
           <h2 style="text-align: center;" class="page-title">{{model_heading}} </h2>
           </div>
           <div style="text-align-last: end">
             <mat-icon mat-dialog-close (click)="closedia()">close</mat-icon>
           </div>
+ 
         </mat-card-header>
+        <div *ngIf="this.model_heading== 'Test Case - Add'||this.model_heading== 'Test Case - Add'">
+    <span style="font-weight: bold;font-size: large;font-family: 'Times New Roman', Times, serif;font-style: italic;margin-left: 29px;margin-bottom: 10px;">Requirement Name : {{this.gridData.requirement_name}}</span>
+      </div>  
         <mat-card-content style="padding-top: 10px">
           <form [formGroup]="form">
             <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
@@ -443,55 +444,30 @@ parentRouteName:any
     this.dataService.loadConfig("testcase").subscribe((frmConfig: any) => {
       this.formAction = "Add";
       console.log(frmConfig);
-      
+      this.continue_Save=true
+      this.model_heading="Test Case - Add"
       this.config = frmConfig;
-      this.model_heading=frmConfig.pageHeading
+      // this.model_heading=frmConfig.pageHeading
       this.fields = frmConfig.form.fields;
-      this.dialogService.openDialog(this.modulesViewPopup,null, null, {});
+      this.dialogService.openDialog(this.taskViewPopup,null, null, {});
     });
-  } else if (formAction == "edit" ) {
-   if(data && data?.module_id){
-   let findValue:any=this.ParentComponent.ValueToCompareRequriementModules.find(val=>val.label==data?.module_id)
-   console.log(findValue.value);
-   data.module_id= findValue.value;
-   }
-  //  testresult
-    if( data.parentmodulename==''){
-      this.model_heading="Team Specification - Edit"
-
-      this.dataService.loadConfig(this.parentRouteName.toLowerCase()).subscribe((frmConfig: any) => {
-        this.formAction = "Edit";
-        this.config = frmConfig;
-        this.fields = frmConfig.form.fields;
-        data.isEdit=true;
-        this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
-      });
-    }else{
-      this.model_heading="Team Member - Edit"
-
-      this.dataService.loadConfig("teamaddmember").subscribe((frmConfig: any) => {
-        this.formAction = "Edit";
-        this.config = frmConfig;
-        data.isEdit=true;
-        this.fields = frmConfig.form.fields;
-        this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
-      });
-    }
-  } else if (formAction == "delete") {
-    if (confirm("Do you wish to delete this record?")) {
-      // !Look Up delete
-      this.dataService
-        .deleteDataById("team_specification", data._id)
-        .subscribe((res: any) => {
-          console.log(res);
-          this.dialogService.openSnackBar(res.message, "OK");
-        });
-    }
   } 
-  else {
-   this.data = this.gridData;
-   // this.router.navigate(["/list/testcase/" + `${this.data.moduleid}`]);
- }
+  else if (formAction == "edit" ) {
+   
+      this.dataService.loadConfig("testcase").subscribe((frmConfig: any) => {
+        this.formAction = "Edit";
+        this.config = frmConfig;   
+           this.model_heading="Test Case - Edit"
+
+        data.isEdit=true;
+        this.fields = frmConfig.form.fields;
+        this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
+      });
+    
+  } else if (formAction == "testresult") {
+    
+  } 
+  
  }
   // if (ctrl.config.form.collectionName == "modules") {
   //   if (ctrl.autoGroupColumnDef?.headerName == "Parent Modules") {
@@ -520,14 +496,14 @@ parentRouteName:any
     }
     let values: any = this.form.value;
     if(formName=='Requirement'){
-    if (val == "modulesViewPopup"&&(this.model_heading=="Sub Requirement - Add"||this.model_heading=="Requirement - Edit"
-||    this.model_heading=="Sub Requirement - Edit" )) {
+    if (val == "modulesViewPopup"&&(this.model_heading=="Sub Requirement - Add" || this.model_heading=="Requirement - Edit" || this.model_heading=="Sub Requirement - Edit" )) {
       values.project_id = this.ParentComponent.response?.project_id;
       values.parentmodulename = this.gridData.requirement_name;
     }
     else if(  this.model_heading=="Task - Add"){
       values.project_id = this.ParentComponent.response?.project_id;
       values.requirement_id = this.gridData._id;
+      // values._id="SEQ|TASK"
     }  else if(  this.model_heading=="Test Case - Add"){
       values.project_id = this.ParentComponent.response?.project_id;
       values.requirement_id = this.gridData._id;
@@ -540,13 +516,31 @@ parentRouteName:any
         }
         this.form.reset();
       });
-    }else  {
+    }else if(formName=='test_result'){
+      if(  this.model_heading=="Test Case - Add"){
+        values.project_id = this.ParentComponent.response?.project_id;
+        values.requirement_id = this.gridData._id;
+      } 
+      this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
+        console.log(data);
+        if(this.continue_Save!==true){
+
+          this.dialogService.closeModal();
+        }
+        this.form.reset();
+      });
+    }
+    else  {
+      if(  this.model_heading=="Test Case - Add"){
+        values.project_id = this.ParentComponent.response?.project_id;
+        values.requirement_id = this.gridData._id;
+      }
        // values.project_name=this.gridData.project_name
         // values.client_name = this.ParentComponent.response?.client_name;
         values.project_id = this.ParentComponent.response?.project_id;
         // values.project_name = this.ParentComponent.response?.project_name;
         if (this.gridData.modulename) {
-          values.parentmoduleid = this.gridData.module_id;
+          values.parentmodulename = this.gridData.modulename;
       } else if (this.gridData.team_id) {
           values.parentmodulename = this.gridData.team_id;
       }
