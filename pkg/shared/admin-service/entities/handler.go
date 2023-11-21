@@ -1052,22 +1052,33 @@ func regressionproject(c *fiber.Ctx) error {
 					{"from", "requriment"},
 					{"localField", "sprint_id"},
 					{"foreignField", "sprint_id"},
-					{"as", "requriment"},
+					{"as", "requirement"},
 				},
 			},
 		},
-		bson.D{{"$unwind", "$requriment"}},
+		bson.D{{"$unwind", bson.D{{"path", "$requirement"}}}},
 		bson.D{
 			{"$lookup",
 				bson.D{
 					{"from", "testcase"},
-					{"localField", "requriment._id"},
+					{"localField", "requirement._id"},
 					{"foreignField", "requirement_id"},
 					{"as", "testcase"},
 				},
 			},
 		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "test_result"},
+					{"localField", "testcase._id"},
+					{"foreignField", "testCase_id"},
+					{"as", "test_result"},
+				},
+			},
+		},
 	}
+
 	response, err := helper.GetAggregateQueryResult(org.Id, "regression", filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
@@ -1076,3 +1087,28 @@ func regressionproject(c *fiber.Ctx) error {
 		"response": response,
 	})
 }
+
+// filter := bson.A{
+// 		bson.D{{"$match", bson.D{{"_id", c.Params("regression_id")}}}},
+// 		bson.D{
+// 			{"$lookup",
+// 				bson.D{
+// 					{"from", "requriment"},
+// 					{"localField", "sprint_id"},
+// 					{"foreignField", "sprint_id"},
+// 					{"as", "requriment"},
+// 				},
+// 			},
+// 		},
+// 		bson.D{{"$unwind", "$requriment"}},
+// 		bson.D{
+// 			{"$lookup",
+// 				bson.D{
+// 					{"from", "testcase"},
+// 					{"localField", "requriment._id"},
+// 					{"foreignField", "requirement_id"},
+// 					{"as", "testcase"},
+// 				},
+// 			},
+// 		},
+// 	}
