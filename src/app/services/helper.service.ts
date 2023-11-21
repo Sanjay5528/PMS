@@ -201,7 +201,7 @@ export class HelperService implements OnInit {
   }
   getSubDomainName() {
     var hostName = this.loc.hostname.replace("www.", "").split(".")
-    return environment.OrgId//hostName[0]
+    return environment?.OrgId//hostName[0]
   }
   getRole() {
     let value:any= sessionStorage.getItem('auth')

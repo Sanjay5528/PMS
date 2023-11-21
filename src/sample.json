@@ -35,16 +35,19 @@
         ]
       },
       {
-        "type": "input",
-        "key": "name",
-        "templateOptions": {
-          "label": "Test Result Name",
-          "maxLength": 80,
-          "required": true,
-          "placeholder": "Test Result Name"
-        },
-        "hideExpression": "model.isEdit"
-      },
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+        
+      {
+        "key": "testcase_date",
+        "type": "date-input",
+        "props": {
+          "label": "Test Case Date",
+          "placeholder": "Test Case Date",
+          "required": true
+        }
+      }
+      ]},
       {
         "fieldGroupClassName": "display-flex",
         "fieldGroup": [
@@ -71,16 +74,7 @@
       {
         "fieldGroupClassName": "display-flex",
         "fieldGroup": [
-          {
-            "key": "testcase_date",
-            "type": "date-input",
-            "className": "flex-6",
-            "props": {
-              "label": "Test Case Date",
-              "placeholder": "Test Case Date",
-              "required": true
-            }
-          },
+         
           {
             "key": "result_status",
             "type": "radio",
@@ -90,12 +84,12 @@
               "required": true,
               "options": [
                 {
-                  "value": "Pass",
-                  "label": "P"
+                  "label": "Pass",
+                  "value": "P"
                 },
                 {
-                  "value": "Fail",
-                  "label": "F"
+                  "label": "Fail",
+                  "value": "F"
                 }
               ]
             }
@@ -113,20 +107,23 @@
 		   "role":"test_case",
             "props": {
 				"refId": "name",
-				"label": "Result Proof",
-              "required": true
+				"label": "Result Proof"
             },
-			"hideExpression": "!model.result_status"
+            "expressions": {
+              "props.required": "model.result_status=='F'"
+            }
+          
           },
           {
             "type": "html-input",
             "key": "actual_result",
             "className": "flex-8",
             "props": {
-              "label": "Actual Result",
-			  "required": true
-            },
-			"hideExpression": "!model.result_status"
+              "label": "Actual Result"
+               },
+               "expressions": {
+                 "props.required": "model.result_status=='F'"
+               }
           }
         ]
       },

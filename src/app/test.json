@@ -1,49 +1,86 @@
 {
-  "pageHeading": "Task",
+  "pageHeading": "Test Result Name",
   "formType": "simple",
-  "editMode": "page",
   "keyField": "_id",
   "form": {
-    "collectionName": "task",
+    "collectionName": "test_result",
     "fields": [
       {
-        "type": "input",
-        "key": "task_name",
-        "props": {
-          "label": "Task Name",
-          "placeholder": "Task Name",
-          "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
-          "required": true
-        },
-        "expressions": {
-          "props.readonly": "model.isEdit"
-        }
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "type": "label-view",
+            "key": "_id",
+            "className": "flex-6",
+            "props": {
+              "label": "Test Result Id",
+              "label_width": 100,
+              "value_width": 200,
+              "value_in_next_row": false
+            },
+            "hideExpression": "!model.isEdit"
+          },
+          {
+            "type": "label-view",
+            "key": "name",
+            "className": "flex-6",
+            "props": {
+              "label": "Test Result Name",
+              "label_width": 100,
+              "value_width": 200,
+              "value_in_next_row": false
+            },
+            "hideExpression": "!model.isEdit"
+          }
+        ]
       },
       {
         "fieldGroupClassName": "display-flex",
         "fieldGroup": [
           {
-            "key": "scheduled_start_date",
+            "key": "testcase_date",
             "type": "date-input",
-            "className": "flex-6",
-
+            "className": "flex-3",
             "props": {
-              "label": "Scheduled Start Date",
-              "placeholder": "Scheduled Start Date",
+              "label": "Test Case Date",
+              "placeholder": "Test Case Date",
               "required": true
             }
           },
           {
-            "key": "scheduled_end_date",
-            "type": "date-input",
+            "type": "input",
+            "key": "name",
             "className": "flex-6",
 
-            "parentKey": "scheduled_start_date",
-            "parentCollectionName": "task",
+            "templateOptions": {
+              "label": "Test Result Name",
+              "maxLength": 80,
+              "required": true,
+              "placeholder": "Test Result Name"
+            },
+            "hideExpression": "model.isEdit"
+          }
+        ]
+      },
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "type": "html-input",
+            "key": "test_data",
+            "className": "flex-6",
             "props": {
-              "label": "Scheduled End Date",
-              "placeholder": "Scheduled End Date",
-              "required": true
+              "label": "Test Data",
+              "disabled": true
+            }
+          },
+          {
+            "type": "html-input",
+            "key": "expected_result",
+            "className": "flex-6",
+            "props": {
+              "label": "Expected Result",
+              "disabled": true
             }
           }
         ]
@@ -52,67 +89,81 @@
         "fieldGroupClassName": "display-flex",
         "fieldGroup": [
           {
-            "type": "number",
-            "key": "allocated_hours",
+            "key": "result_status",
+            "type": "radio",
             "className": "flex-6",
-
             "props": {
-              "label": "Allocated Hours",
-              "placeholder": "Allocated Hours",
-              "pattern": "^(?:|[1-9][0-9]*)$",
-              "required": true
+              "label": "Test Result",
+              "required": true,
+              "options": [
+                {
+                  "label": "Pass",
+                  "value": "P"
+                },
+                {
+                  "lebel": "Fail",
+                  "value": "F"
+                }
+              ]
             }
-          },
-
+          }
+        ]
+      },
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
           {
-            "type": "select-input",
-            "key": "assigned_to",
-            "className": "flex-6",
-
+            "type": "image-input",
+            "key": "result_proof",
+            "className": "flex-4",
+            "bind_key": "name",
+            "role": "test_case",
             "props": {
-              "label": "Assigned To",
-              "placeholder": "Assigned To",
-              "multifilter": true,
-              "Collections": "team_specification",
-              "multifiltertype": "local",
-              "local_name": "project_id",
-              "multifilter_condition": {
-                "clause": "AND",
-                "conditions": [
-                  {
-                    "column": "project_id",
-                    "operator": "EQUALS",
-                    "type": "string",
-                    "value": ""
-                  },  {
-                    "column": "user_id",
-                    "operator": "EXISTS",
-                    "type": "string",
-                    "value": true
-                  }
-                ]
-              },
-              "labelProp": "user_id",
-              "valueProp": "user_id",
-              "required": true
+              "refId": "name",
+              "label": "Result Proof"
             },
             "expressions": {
-              "hide": "model.isEdit"
+              "props.disabled": "model.result_status=='F'"
+            }
+          },
+          {
+            "type": "html-input",
+            "key": "actual_result",
+            "className": "flex-8",
+            "props": {
+              "label": "Actual Result"
             }
           }
         ]
       },
       {
-        "type": "html-input",
-        "key": "description",
-        "className": "flex-6",
-        "props": {
-          "label": "Task Description",
+        "key": "status",
+        "type": "select",
+        "defaultValue": "A",
+        "templateOptions": {
+          "label": "Status",
+          "options": [
+            {
+              "label": "Active",
+              "value": "A"
+            },
+            {
+              "label": "Disable",
+              "value": "D"
+            }
+          ],
           "required": true
         },
-
-        "maxlength": 2000
+        "hideExpression": "!model.isEdit"
+      }
+    ],
+    "defaultValues": [
+      {
+        "colName": "status",
+        "value": "A",
+        "type": "string"
       }
     ]
-  }
+  },
+  "onCancelRoute": "/list/test_result"
 }

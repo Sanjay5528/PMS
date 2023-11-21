@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
     this.dataService.login(user_data).subscribe((res: any) => {
       if (res) {
         this.user_data = this.jwtService.decodeToken(res.data.LoginResponse.token)
-        sessionStorage.setItem('selectedOrgId', environment.OrgId)
+        sessionStorage.setItem('selectedOrgId', environment?.OrgId)
         sessionStorage.setItem('token', res.data.LoginResponse.token);
         sessionStorage.setItem('auth', JSON.stringify(res));
         this.dialogService.openSnackBar(res.data.Message  ,"OK");

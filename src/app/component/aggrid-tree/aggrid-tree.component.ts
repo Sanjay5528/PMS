@@ -23,6 +23,7 @@ import { HelperService } from 'src/app/services/helper.service';
 import { Location } from '@angular/common';
 import { isEmpty } from 'lodash';
 import { MatSidenav } from '@angular/material/sidenav';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-aggrid-tree',
@@ -51,6 +52,7 @@ export class AggridTreeComponent {
   pageHeading: any
   id: any 
   response: any
+  imageurl: string=environment?.ImageBaseUrl
 public  columnDefs: (ColDef | ColGroupDef)[] = [
     // {
     //   headerName: 'Parent Module Name',
@@ -104,7 +106,7 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
     
   } 
 datefunction(date:any){
-  return moment(date).format("DD-MM-YYYY  ")
+  return moment(date).format("DD-MM-YYYY")
 }
 reassignemployee:any
 reassign(employeeID:any){
@@ -493,7 +495,15 @@ this.gridOptions.groupDefaultExpanded=-1
       width: 40,
       editable: false,
       filter: 'agTextColumnFilter',
-    }, {
+    }, 
+    {
+      headerName: 'Total Test Result ',
+      field: 'test_cases_length',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    },
+    {
       headerName: 'Test Result Stauts',
       field: 'test_result_stauts',
       width: 40,
@@ -759,54 +769,61 @@ if(this.formName=="module"){
     });
   }else if(this.formName=="test_result"){
 this.dataService.lookupTreeData("regression",this.response._id).subscribe((res:any)=>{
-//   console.log(res);
+  let test_Case_Details:any[]=[]
+  res.data.response.forEach((xyz:any)=>{
+    if(!isEmpty(xyz.test_result)){
 
-//   let overalldata:any[]=[]
-//   res.data.response.forEach((vals:any,index:any)=>{
-//     // overalldata.push(vals.requriment)
-//     console.log(vals);
-// let testcase:any[]=[]
-// testcase= res.data.response[index].testcase
-// testcase.forEach((data:any)=>{
-//       let datas:any
-//       datas=vals.requriment.find((d:any)=>{
-//   console.log(d);
-//   d._id==data.requirement_id
-// })
-// console.log(datas);
-
-//       overalldata.push(data)
-//     })
-
-//   })
-//   this.listData=overalldata
-console.log(res);
+      test_Case_Details.push(...xyz.test_result)
+    }
+  })
+console.log(test_Case_Details);
 
 let overalldata: any[] = [];
 
 res.data.response.forEach((vals: any, index: any) => {
 
-  
-  // let testcase: any[] = res.data.response[index].testcase;
+  // ? here each test add
   vals.testcase.forEach((data: any) => {
-    // Create a new object combining data from testcase and requriment
-    let _id= vals.requriment._id
+    let _id= vals.requirement._id
     let testcase_id=data._id
-    delete vals.requriment._id
+    delete vals.requirement._id
     let combinedData = {
         ...data,
-        ...vals.requriment,
+        ...vals.requirement,
     };
     combinedData["requriment_id"] = _id
     combinedData["test_case_id"] = testcase_id
+    const refFound: any[] = test_Case_Details.filter((d: any) => {return d.testCase_id == combinedData.test_case_id});
+    console.warn(refFound);
+    if(!isEmpty(refFound)){
+      const hasFailures: boolean = refFound.some((d: any) => {return d.result_status === "F"});
+
+      const failList: any = refFound.filter((d: any) => {return d.result_status === "F" });
+
+      const resultStatus = hasFailures ? "Fail" : "Pass";
+      combinedData['bug_list']=failList
+
+    combinedData['test_result_stauts']=resultStatus      
+
+    combinedData['bug_count']=failList.length
+    
+    combinedData['test_cases']=refFound
+    combinedData['test_cases_length']=refFound.length
+
+    }
+    // else{
+    // combinedData['test_cases_length']=0
+
+    // }
+
     overalldata.push(combinedData);
 });
-if (vals?.requriment?.module_id==undefined) {
-  vals.requriment['module_id'] = "No Module Id Present";
+if (vals?.requirement?.module_id==undefined) {
+  vals.requirement['module_id'] = "No Module Id Present";
 }
 if (vals.testcase.length === 0) {
   debugger
-    overalldata.push(vals.requriment);
+    overalldata.push(vals.requirement);
 }
  
   });
@@ -841,11 +858,19 @@ animateRows:true,paginationPageSize:10
   cellClicked:any
   onCellClicked(event: any){
 let clickCell:any=event.column.getColId()
+if(this.formName=="Requirement"){
     if(clickCell== 'number_of_TestCase_count'||clickCell=="number_of_Task_count"){
       console.log(event.data);
       this.cellClicked=clickCell
       this.drawer.toggle()
     }
+  }else if(this.formName=="test_result"){
+    if(clickCell== 'test_cases_length'||clickCell=="bug_count"){
+      console.log(event.data);
+      this.cellClicked=clickCell
+      this.drawer.toggle()
+    }
+  }
 
   }
   close(event: any) {

@@ -236,6 +236,8 @@ parentRouteName:any
   }
   closedia() {
     localStorage.removeItem("projectmembers");
+    this.continue_Save=false
+    this.form.reset();
     this.dialogService.CloseALL()
   }
 
@@ -516,6 +518,7 @@ parentRouteName:any
     }  else if(  this.model_heading=="Test Case - Add"){
       values.project_id = this.ParentComponent.response?.project_id;
       values.requirement_id = this.gridData._id;
+      values.doneBy=this.helperServices.getEmp_id()
     }
     this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
         console.log(data);
