@@ -84,5 +84,5 @@ func SetupDownloadRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/file", "Upload APIs")
 	r.Post("/:folder/:refId", helper.FileUpload)
 	r.Get("/all/:category/:status/:page?/:limit?", getAllFileDetails)
-	r.Get("/:category/:refId", getFileDetails)
+	r.Get("/:folder/:refId", getFileDetails)
 }

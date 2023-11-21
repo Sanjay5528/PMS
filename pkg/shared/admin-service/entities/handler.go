@@ -902,16 +902,19 @@ func getFileDetails(c *fiber.Ctx) error {
 	if orgId == "" {
 		return shared.BadRequest("Organization Id missing")
 	}
-	fileCategory := c.Params("category")
+	fileCategory := c.Params("folder")
 	refId := c.Params("refId")
 	//	token := shared.GetUserTokenValue(c)
-	query := bson.M{"ref_id": refId, "category": fileCategory}
+	query := bson.M{"ref_id": refId, "folder": fileCategory}
+	
 	response, err := helper.GetQueryResult(orgId, "user_files", query, int64(0), int64(200), nil)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
+
 	return shared.SuccessResponse(c, response)
 }
+
 func getAllFileDetails(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
 	if orgId == "" {
