@@ -450,7 +450,7 @@ func FindOneDocument(orgId, collection string, filter interface{}) (map[string]i
 	err := database.GetConnection(orgId).Collection(collection).FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			// Handle case where no documents are found
+
 			return nil, nil
 		}
 
@@ -467,44 +467,59 @@ func Generateuniquekey() string {
 
 }
 
-// GetkeyfromSequencestring -- METHOD extracts the sequence identifier from a key string.
-func GetkeyfromSequencestring(key string) (bool, string) {
-	index := strings.Index(key, "SEQ|")
-	if index == -1 {
-		fmt.Println("String 'Sequence|' not found in the input text.")
-		return false, key
-	} else {
-		return true, key[index+len("SEQ|"):]
-	}
-}
+// HandleSequenceOrder -- METHOD extracts the sequence identifier from a key string.
+func HandleSequenceOrder(key, OrgID string) (string, error) {
+	parts := strings.Split(key, "SEQ|")
 
-// GenerateSequeence --METHOD generates a sequence value based on the provided key and organization ID.
-func GenerateSequence(key interface{}, OrgID string) string {
-	// Check if the key contains the sequence identifier.
-	flag, unsersocreID := GetkeyfromSequencestring(key.(string))
+	if len(parts) > 1 {
+		afterSeq := parts[1]
+		subParts := strings.Split(strings.TrimSpace(afterSeq), "|")
 
-	// Define a BSON filter to find the sequence document based on the extracted identifier.
-	filter := bson.D{{"_id", unsersocreID}}
-	// If the key contains the sequence identifier, query the sequence collection.
-	if flag {
-		// Get the result of the aggregation query for the sequence document.
-		Response, err := FindOneDocument(OrgID, "sequence", filter)
-		if err != nil {
-			fmt.Println("Error:", err.Error())
+		if len(subParts) == 2 {
+			result, err := HandleSequenceID(subParts[0], OrgID)
+			if err != nil {
+				return "", fmt.Errorf(err.Error())
+			}
+
+			return fmt.Sprintf("%s%s%s", subParts[1], "-", result), nil
+		} else if len(subParts) == 1 {
+			result, err := HandleSequenceID(subParts[0], OrgID)
+			if err != nil {
+				return "", fmt.Errorf(err.Error())
+			}
+
+			return result, nil
 		}
-		// Update the sequence collection to increment the start value.
-		updateSequeenceCollection(DocIdFilter(unsersocreID), OrgID)
- 
-		// Return the formatted sequence value.
-		return fmt.Sprintf("%s%d", Response["prefix"].(string), Response["startvalue"].(int32))
-	} else {
-		// If the key does not contain the sequence identifier, return the original key.
-		return unsersocreID
+
+		// return afterSeq, nil
 	}
+
+	return key, nil
 }
 
-// updateSequeenceCollection -- METHOD increments the start value in the sequence collection for the given filter.
-func updateSequeenceCollection(filter interface{}, OrgID string) error {
+// HandleSequenceID --METHOD  check the Sequence Collection  amd Update
+func HandleSequenceID(key, OrgID string) (string, error) {
+	filter := bson.D{{"_id", key}}
+
+	Response, err := FindOneDocument(OrgID, "sequence", filter)
+	if err != nil {
+		return "", fmt.Errorf("failed to find document: %w", err)
+	}
+
+	if Response == nil {
+
+		return "", fmt.Errorf("Invalid Sequence ID")
+	}
+
+	err = updateSequenceCollection(DocIdFilter(key), OrgID)
+	if err != nil {
+		return "", fmt.Errorf("failed to update sequence collection: %w", err)
+	}
+	return fmt.Sprintf("%s%d", Response["prefix"].(string), Response["startvalue"].(int32)), nil
+}
+
+// updateSequenceCollection -- METHOD increments the start value in the sequence collection for the given filter.
+func updateSequenceCollection(filter interface{}, OrgID string) error {
 	// Define the update data to increment the start value.
 	updateData := bson.M{
 		"$inc": bson.M{"startvalue": 1},

@@ -63,7 +63,12 @@ func PostDocHandler(c *fiber.Ctx) error {
 	helper.UpdateDateObject(inputData)
 
 	if inputData["_id"] != nil {
-		inputData["_id"] = helper.GenerateSequence(inputData["_id"], org.Id)
+		result, err := helper.HandleSequenceOrder(inputData["_id"].(string), org.Id)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return shared.BadRequest(err.Error())
+		}
+		inputData["_id"] = result
 	} else {
 		inputData["_id"] = helper.Generateuniquekey()
 
@@ -935,7 +940,7 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 	filter :=
 		bson.A{
 			bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
-			bson.D{{"$addFields", bson.D{{"_id", bson.D{{"$toString", "$_id"}}}}}},
+			// bson.D{{"$addFields", bson.D{{"_id", bson.D{{"$toString", "$_id"}}}}}},
 			bson.D{
 				{"$lookup",
 					bson.D{
@@ -1021,7 +1026,7 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 			},
 			bson.D{{"$unset", "employeeResult"}},
 		}
-	response, err := helper.GetAggregateQueryResult(org.Id, "requirement", filter)
+	response, err := helper.GetAggregateQueryResult(org.Id, "requriment", filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
@@ -1044,19 +1049,19 @@ func regressionproject(c *fiber.Ctx) error {
 		bson.D{
 			{"$lookup",
 				bson.D{
-					{"from", "requirement"},
+					{"from", "requriment"},
 					{"localField", "sprint_id"},
 					{"foreignField", "sprint_id"},
-					{"as", "requirement"},
+					{"as", "requriment"},
 				},
 			},
 		},
-		bson.D{{"$unwind", bson.D{{"path", "$requirement"}}}},
+		bson.D{{"$unwind", "$requriment"}},
 		bson.D{
 			{"$lookup",
 				bson.D{
 					{"from", "testcase"},
-					{"localField", "requirement._id"},
+					{"localField", "requriment._id"},
 					{"foreignField", "requirement_id"},
 					{"as", "testcase"},
 				},
