@@ -14,7 +14,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 	"github.com/xuri/excelize/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"kriyatec.com/pms-api/pkg/shared"
@@ -113,7 +112,8 @@ func FileUpload(c *fiber.Ctx) error {
 				return c.Status(422).JSON(fiber.Map{"errors": errContent})
 			}
 			//Save file name to the DB
-			id := uuid.New().String()
+			// id := uuid.New().String()
+			id := Generateuniquekey()
 			storageName := folderName + "/" + fileName
 			apiResponse := bson.M{"_id": id, "ref_id": refId, "uploaded_by": token.UserId, "folder": fileCategory, "file_name": pathOfFile.Filename, "storage_name": storageName, "size": pathOfFile.Size} // "extn": filepath.Ext(fileName),
 
