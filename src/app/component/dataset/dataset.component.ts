@@ -3,8 +3,9 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from "@angular/cdk/drag-drop";
-import { Component, TemplateRef, ViewChild } from "@angular/core";
+import { Component, SimpleChange, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
 import {
   ColDef,
   ColumnApi,
@@ -54,7 +55,19 @@ export class DatasetComponent {
     defaultToolPanel: "Selected Columns",
   };
   custom_Variable_Arr: any = [];
-  dataSet: any = new FormGroup({});
+  dataSet: any =this.formBuilder.group({
+    dataSetName: ["", [Validators.required, Validators.minLength(3)]],
+    dataSetDescription: [""],
+    dataSetBaseCollection: ["", [Validators.required]],
+    dataSetBaseCollectionFilter: [[]],
+    dataSetJoinCollection: this.formBuilder.array([]),
+    CustomColumn: this.formBuilder.array([]),
+    Aggregation: this.formBuilder.array([]),
+    SelectedList: [[]],
+    FilterParams: this.formBuilder.array([]),
+    Filter: [],
+  });
+  
   @ViewChild("Popup", { static: true }) Popup!: TemplateRef<any>;
   @ViewChild("Filter", { static: true }) Filter!: TemplateRef<any>;
 
@@ -117,20 +130,36 @@ export class DatasetComponent {
   constructor(
     public dataService: DataService,
     public dialogService: DialogService,
-    public formBuilder: FormBuilder
+    public formBuilder: FormBuilder,
+    public route:ActivatedRoute
+
   ) {
-    this.dataSet = this.formBuilder.group({
-      dataSetName: ["", [Validators.required, Validators.minLength(3)]],
-      dataSetDescription: [""],
-      dataSetBaseCollection: ["", [Validators.required]],
-      dataSetBaseCollectionFilter: [[]],
-      dataSetJoinCollection: this.formBuilder.array([]),
-      CustomColumn: this.formBuilder.array([]),
-      Aggregation: this.formBuilder.array([]),
-      SelectedList: [[]],
-      FilterParams: this.formBuilder.array([]),
-      Filter: [],
-    });
+  this.route.params.subscribe((params:any)=>{
+    console.log(params);
+    
+    if(params['id']){
+      this.dataService.getDataById("dataset_config",params['id']).subscribe((res:any)=>{
+        console.log(res);
+        let data:any=res.data[0]
+        this.dataSet.get('dataSetName')?.setValue(data.dataSetName);
+        this.dataSet.get('dataSetDescription')?.setValue(data.dataSetDescription);
+
+        // this.dataSet = this.formBuilder.group({
+        //   dataSetName: [data.dataSetName, [Validators.required, Validators.minLength(3)]],
+        //   dataSetDescription: [data.dataSetDescription],
+        //   dataSetBaseCollection: [data.dataSetBaseCollection, [Validators.required]],
+        //   dataSetBaseCollectionFilter: [data.dataSetBaseCollectionFilter],
+        //   dataSetJoinCollection: this.formBuilder.array([data.dataSetJoinCollection]),
+        //   CustomColumn: this.formBuilder.array([data.CustomColumn]),
+        //   Aggregation: this.formBuilder.array([data.Aggregation]),
+        //   SelectedList: [[data.SelectedList]],
+        //   FilterParams: this.formBuilder.array([data.FilterParams]),
+        //   Filter: [data.Filter],
+        // });
+            
+      })
+    }
+  })
     // ! Collection Name
     var filterCondition1 = {
       filter: [
@@ -178,8 +207,6 @@ export class DatasetComponent {
         this.aggFn = res.data[0].response;
       });
 
-    // ! Custom_Function
-
     var filterCondition1 = {
       filter: [
         {
@@ -196,26 +223,9 @@ export class DatasetComponent {
         this.custom_columns_fn = res.data[0].response;
       });
 
-    // ! Custom_Function
-
-    // var filterCondition1 = {
-    //   filter: [
-    //     {
-    //       clause: "AND",
-    //       conditions: [
-    //         { column: "type", operator: "EQUALS", value: "custom_Variable" },
-    //       ],
-    //     },
-    //   ],
-    // };
-    // this.dataService.getDataByFilter(
-    //   "Schematic_Data",
-    //   filterCondition1
-    // ).subscribe((res: any) => {
-    //   this.custom_Variable_Arr=res.data[0].response
-
-    // });
   }
+
+
   //? The Raw Form Control
   QueryParms() {
     return this.formBuilder.group({

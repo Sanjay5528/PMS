@@ -1,201 +1,163 @@
 {
-	"pageHeading": "Functional Testing",
-	"formType": "master-detail",
-	"localSet":true,
-	"localSetField":"project_id",
-	"mapColumnDiff":true,
-	"mapColumnfield":"project_id",
-	"form": {
-		"collectionName": "project",
-		"fields": [
-			{
-				"type": "label-view",
-				"key": "client_id",
-				"props": {
-					"label": "Client Name",
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": false,
-					"placeholder": "Client Name",
-					"required": true
-				}
-			}, {
-				"type": "label-view",
-				"key": "project_name",
-				"props": {
-					"label": "Project Name",
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": false,
-					"placeholder": "Project Name",
-					"required": true
-				}
-			}, 
-			{
-				"type": "label-view",
-				"key": "status",
-				"props": {
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": true,
-					"label": "Project Status",
-					"placeholder": "Project Status",
-					"required": true
-				}
-			}
-		],
-		"buttons": {
-			"start": false,
-			"newEntry": false
-		}
-	},
-	"detailForm": {
-		"customfilter":true,
-		"customkey":"project_id",
-		"mapColumn":"project_id",
-		"collectionName": "regression",
-		"keyColumn": "_id",
-		"isPopupEdit": true,
-		"fields": [
-			{
-				"fieldGroupClassName": "display-flex",
-				"fieldGroup": [
-					{
-						"type": "select-input",
-						"key": "sprint_id",
-						"className": "flex-2",
-						"props": {
-							"label": "Sprint Id",
-							"placeholder": "Sprint Id",
-							"labelPropTemplate": " {{id}}",
-							"optionsDataSource": {
-								"collectionName": "sprint"
-							},
-							"required":true,
-							"labelProp": "id",
-							"valueProp": "id"
-						}
-					}	,
-					{
-						"type": "input",
-						"key": "regression_id",
-						"className": "flex-6",
-						"props": {
-						"label": "Regression Name/ID",
-						"placeholder": "Regression Name/ID",
-						"required": true,
-						"maxLength": 10,
-						"pattern": "^[a-zA-Z0-9]+$"
-						},
-						"hideExpression": "model.isEdit " 
-					}]},
-			
-			
-			
-			
-			{
-				"type": "html-input",
-				"key": "description",
-				"className": "flex-6",
-				"props": {
-					"label": "Regression Description"
-				}
-			}
-		]
-		
-	},
-	"detailListConfig": {
-		"sectionHeading": "Project Team",
-		"actions": [
-			{
-				"label": "Edit",
-				"icon": "edit",
-				"formName": "project"
-			},{
-				"label": "Test Result",
-				"icon": "view_module",
-				"formName": "test_result",
-				"formAction": "components",
-				"route_type":"CustomRoute",
-				"Custom_Route":"project/test_result",
-				"Custom_Key_filed":"_id"
-				
-			},
-			{
-				"label": "Delete",
-				"icon": "delete",
-				"formName": "delete",
-				"formAction":"delete"
-			}
-		],
-		"addRoute": "add/regression",
-		"editRoute": "edit/regression",
-		"fields": [
-			{
-				"headerName": "Regression Id",
-				"field": "regression_id",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"headerName": "Sprint Id",
-				"field": "sprint_id",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			
-			{
-				"headerName": "Schedule Start Date",
-				"field": "startdate",
-				"sortable": true,
-				"filter": "agDateColumnFilter",
-				"type": "date"
-						},
-			{
-				"headerName": "Schedule End Date",
-				"field": "enddate",
-				"sortable": true,
-				"filter": "agDateColumnFilter",
-				"type": "date"
-			},
-			{
-				"headerName": "Test Case Count",
-				"field": "number_of_TestCase_count",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"headerName": "Positive Result",
-				"field": "positive_result",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"headerName": "Negative Result",
-				"field": "negative_result",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"headerName": "Status",
-				"field": "status",
-				"filter": "agTextColumnFilter"
-			},
-			
-			{
-				"type": "rightAligned",
-				"headerName": "Actions",
-				"cellRenderer": "buttonRenderer",
-				"cellRendererParams": {
-					"onClick": "this.onBtnClick1.bind(this)",
-					"label": "Click 1"
-				}
-			}
-		],
-		"filterOptions": [],
-		"defaultFilter": []
-	},
-	"designConfig": {
-		"leftPanelWidth": "320px"
-	}
+  "pageHeading": "Test Result Name",
+  "formType": "simple",
+  "keyField": "_id",
+  "form": {
+    "collectionName": "test_result",
+    "fields": [
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "type": "label-view",
+            "key": "_id",
+            "className": "flex-6",
+            "props": {
+              "label": "Test Result Id",
+              "label_width": 100,
+              "value_width": 200,
+              "value_in_next_row": false
+            },
+            "hideExpression": "!model.isEdit"
+          },
+          {
+            "type": "label-view",
+            "key": "name",
+            "className": "flex-6",
+            "props": {
+              "label": "Test Result Name",
+              "label_width": 100,
+              "value_width": 200,
+              "value_in_next_row": false
+            },
+            "hideExpression": "!model.isEdit"
+          }
+        ]
+      },
+      {
+        "type": "input",
+        "key": "name",
+        "templateOptions": {
+          "label": "Test Result Name",
+          "maxLength": 80,
+          "required": true,
+          "placeholder": "Test Result Name"
+        },
+        "hideExpression": "model.isEdit"
+      },
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "type": "html-input",
+            "key": "test_data",
+            "className": "flex-6",
+            "props": {
+              "label": "Test Data",
+              "disabled": true
+            }
+          },
+          {
+            "type": "html-input",
+            "key": "expected_result",
+            "className": "flex-6",
+            "props": {
+              "label": "Expected Result",
+              "disabled": true
+            }
+          }
+        ]
+      },
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "key": "testcase_date",
+            "type": "date-input",
+            "className": "flex-6",
+            "props": {
+              "label": "Test Case Date",
+              "placeholder": "Test Case Date",
+              "required": true
+            }
+          },
+          {
+            "key": "result_status",
+            "type": "radio",
+            "className": "flex-6",
+            "props": {
+              "label": "Test Result",
+              "required": true,
+              "options": [
+                {
+                  "value": "Pass",
+                  "label": "P"
+                },
+                {
+                  "value": "Fail",
+                  "label": "F"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "type": "image-input",
+            "key": "result_proof",           
+			 "className": "flex-4",
+           "bind_key": "name",
+		   "role":"test_case",
+            "props": {
+				"refId": "name",
+				"label": "Result Proof",
+              "required": true
+            },
+			"hideExpression": "!model.result_status"
+          },
+          {
+            "type": "html-input",
+            "key": "actual_result",
+            "className": "flex-8",
+            "props": {
+              "label": "Actual Result",
+			  "required": true
+            },
+			"hideExpression": "!model.result_status"
+          }
+        ]
+      },
+      {
+        "key": "status",
+        "type": "select",
+        "defaultValue": "A",
+        "templateOptions": {
+          "label": "Status",
+          "options": [
+            {
+              "label": "Active",
+              "value": "A"
+            },
+            {
+              "label": "Disable",
+              "value": "D"
+            }
+          ],
+          "required": true
+        },
+        "hideExpression": "!model.isEdit"
+      }
+    ],
+    "defaultValues": [
+      {
+        "colName": "status",
+        "value": "A",
+        "type": "string"
+      }
+    ]
+  },
+  "onCancelRoute": "/list/test_result"
 }

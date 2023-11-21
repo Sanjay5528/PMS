@@ -7,5 +7,6 @@ export const environment = {
   OrgId: 'pms',
   cacheBlockSize:14,
   paginationPageSize:10, 
-  rowModelType:"serverSide"
+  rowModelType:"serverSide",
+  ImageBaseUrl:"https://amsort.sgp1.digitaloceanspaces.com/"
 };

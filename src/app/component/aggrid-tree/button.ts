@@ -466,6 +466,15 @@ parentRouteName:any
     
   } else if (formAction == "testresult") {
     
+    this.dataService.loadConfig("test_result").subscribe((frmConfig: any) => {
+      this.formAction = "Add";
+      this.config = frmConfig;   
+         this.model_heading="Test Result - Add"
+
+      // data.isEdit=true;
+      this.fields = frmConfig.form.fields;
+      this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
+    });
   } 
   
  }
@@ -519,8 +528,13 @@ parentRouteName:any
     }else if(formName=='test_result'){
       if(  this.model_heading=="Test Case - Add"){
         values.project_id = this.ParentComponent.response?.project_id;
-        values.requirement_id = this.gridData._id;
-      } 
+        values.requirement_id = this.gridData.requriment_id;
+      } else if(this.model_heading=="Test Result - Add"){
+        values.project_id = this.ParentComponent.response?.project_id;
+        // values.requirement_id = this.gridData.requriment_id;
+        values.testCase_id = this.gridData.test_case_id;
+
+      }
       this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
         console.log(data);
         if(this.continue_Save!==true){

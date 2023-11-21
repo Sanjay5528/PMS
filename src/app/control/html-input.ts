@@ -77,6 +77,7 @@ export class HtmlInput extends FieldType implements OnInit {
   ngOnInit() {
     let key = this.field.key as string
     this.data = this.field.model[key]
+    debugger
     this.editorConfig.editable = !this.field.props?.disabled
     this.editorConfig.showToolbar = !this.field.props?.disabled
   }

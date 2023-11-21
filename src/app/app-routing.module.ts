@@ -158,6 +158,9 @@ const routes: Routes = [
       },{
         path:'ngmodel',
         component:NgmodelComponent
+      },{
+        path:':id',
+        component:DatasetComponent
       }
     ]
   }, {

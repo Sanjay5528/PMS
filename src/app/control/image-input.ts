@@ -144,6 +144,7 @@ import { FieldType } from '@ngx-formly/core';
 import { DataService } from '../services/data.service';
 import { DialogService } from '../services/dialog.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
  selector: 'image-input',
@@ -239,7 +240,7 @@ if(this.model.isEdit){
     console.log(this.formControl.value);
     console.log(this.model);
     
- this.imageUrl=  "https://amsort.sgp1.digitaloceanspaces.com/"+this.model[this.field.key].storage_name
+ this.imageUrl=  environment.ImageBaseUrl+this.model[this.field.key].storage_name
 
     // this.dataService.getDataById("employee", this.id).subscribe((res: any) => {
     //     console.log(res);
@@ -300,6 +301,9 @@ this.formControl.setValue("")
  
  refId: any
  upload() {
+    if(!this.file){
+        return this.dialogService.openSnackBar("Select the File First","OK")
+    }
 let ref=this.field.props.refId
  this.refId=this.model[ref]
  const formData = new FormData();

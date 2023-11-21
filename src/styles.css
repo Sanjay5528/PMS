@@ -20,6 +20,34 @@
    url('assets/fonts/material-icons-base-400-normal.woff') format('woff');
 
 }
+/* ! Start Radio Button */
+.mat-mdc-form-field-infix .mat-mdc-radio-button .mdc-radio{
+    height: auto !important;
+    padding: 0;
+    padding-left:  1px; 
+    padding-right: 2px;
+    display: flex;
+    justify-content:space-between  !important;
+  }
+
+  .mat-mdc-form-field-infix .mat-mdc-radio-button .mdc-label{
+    padding-right:  10px; 
+   }
+   
+/* .mat-mdc-form-field-infix .mat-mdc-radio-button .mdc-radio{
+  height: auto !important;
+  padding: 0;
+  padding-left:  1px; 
+  padding-right: 2px;
+  display: flex;
+  justify-content:space-between;
+  
+}
+
+.mat-mdc-form-field-infix .mat-mdc-radio-button .mdc-label{
+padding-right:  10px; 
+} */
+/* ! Start Multi seletect ng Select */
 
 .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-placeholder {
   z-index: 1;

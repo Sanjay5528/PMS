@@ -450,10 +450,10 @@ this.gridOptions.groupDefaultExpanded=-1
       )
   }else if(this.formName=="test_result"){
     this.gridOptions.groupDefaultExpanded=-1
-    this.autoGroupColumnDef={
-      headerName: "test case",
-      field:"parentmodulename",
-      minWidth: 200,
+    this.gridOptions.autoGroupColumnDef={
+      headerName: "Requirement Name",
+      field:"requirement_name",
+      maxWidth: 280,
       cellRendererParams: { suppressCount: true },
       sortable: false,
       resizable: true,
@@ -463,7 +463,10 @@ this.gridOptions.groupDefaultExpanded=-1
       {
         headerName: 'Module id',
         field: 'module_id',
-        width: 40,rowGroup:true,showRowGroup:false,hide:true,
+        width: 40,
+        rowGroup:true,
+        showRowGroup:false,
+        hide:true,
         filter: 'agTextColumnFilter',
       },
     //  {
@@ -472,12 +475,12 @@ this.gridOptions.groupDefaultExpanded=-1
     //     width: 40,rowGroup:true,showRowGroup:false,
     //     filter: 'agTextColumnFilter',
     //   }, 
-      {
-      headerName: 'Requirement Name',
-      field: 'requirement_name',
-      width: 40,
-      filter: 'agTextColumnFilter',
-    },
+    //   {
+    //   headerName: 'Requirement Name',
+    //   field: 'requirement_name',
+    //   width: 40,
+    //   filter: 'agTextColumnFilter',
+    // },
    {
       headerName: 'Test Case Name',
       field: 'test_case_name',
@@ -487,6 +490,18 @@ this.gridOptions.groupDefaultExpanded=-1
     }, {
       headerName: 'Test Case Type',
       field: 'test_case_scenario',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    }, {
+      headerName: 'Test Result Stauts',
+      field: 'test_result_stauts',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    },{
+      headerName: 'Bug Count',
+      field: 'bug_count',
       width: 40,
       editable: false,
       filter: 'agTextColumnFilter',
@@ -512,9 +527,12 @@ this.gridOptions.groupDefaultExpanded=-1
       {
   
       field: 'Action',
-      width: 40,
+      // width: 40,
       sortable:false,
       filter:false,
+      resizable:false,
+      maxWidth: 110,
+
       cellRenderer: 'buttonRenderer'
   
     }
@@ -767,66 +785,33 @@ console.log(res);
 let overalldata: any[] = [];
 
 res.data.response.forEach((vals: any, index: any) => {
-  // console.log(vals);
 
+  
   // let testcase: any[] = res.data.response[index].testcase;
   vals.testcase.forEach((data: any) => {
     // Create a new object combining data from testcase and requriment
+    let _id= vals.requriment._id
+    let testcase_id=data._id
+    delete vals.requriment._id
     let combinedData = {
         ...data,
         ...vals.requriment,
     };
-
-    console.warn(combinedData);
-
-    // Push the combined data to the overalldata array
+    combinedData["requriment_id"] = _id
+    combinedData["test_case_id"] = testcase_id
     overalldata.push(combinedData);
 });
-
-// Check if there are no testcases, and if so, push vals.requriment directly
+if (vals?.requriment?.module_id==undefined) {
+  vals.requriment['module_id'] = "No Module Id Present";
+}
 if (vals.testcase.length === 0) {
+  debugger
     overalldata.push(vals.requriment);
 }
+ 
+  });
 
-// Assign the overalldata array to this.listData
 this.listData = overalldata;
-
-console.log(overalldata);
-
-//     } else {
-//       // Handle the case when no matching requirement is found
-//       console.warn(`No matching requirement found for requirement_id ${data.requirement_id}`);
-//     }
-  // });
-});
-
-// Assign the overalldata array to this.listData
-this.listData = overalldata;
-
-  console.log(overalldata);
-  
-  // let data:any[]= []     
-  // this.listData = []
-  
-  // for (let idx = 0; idx < overalldata.length; idx++) {
-  //   const row = overalldata[idx];
-  //     if (row.parentmodulename == "" || !row.parentmodulename) {
-  //       row.treePath = [row.requirement_name];
-  //     } else {
-  //       const parentNode = data.find((d) => d.requirement_name == row.parentmodulename);
-  //           if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
-  //             row.treePath = [...parentNode.treePath];
-  //             row.treePath.push(row.requirement_name);
-  //           }
-  //     }
-  //   data.push(row);
-  // }
-
-  // childArr.forEach((value:any)=>{
-    
-  // })
-  
-
 })
   }
 
