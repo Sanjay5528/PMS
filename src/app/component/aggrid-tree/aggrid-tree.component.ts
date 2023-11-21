@@ -460,7 +460,7 @@ this.gridOptions.groupDefaultExpanded=-1
     this.gridOptions.groupDefaultExpanded=-1
     this.autoGroupColumnDef={
       headerName: "test case",
-      field:"requriment.parentmodulename",
+      field:"parentmodulename",
       minWidth: 200,
       cellRendererParams: { suppressCount: true },
       sortable: false,
@@ -469,9 +469,9 @@ this.gridOptions.groupDefaultExpanded=-1
 }
     this.columnDefs.push(  
       {
-        headerName: 'Requirement Name',
-        field: 'requriment.module_id',
-        width: 40,rowGroup:true,showRowGroup:false,
+        headerName: 'Module id',
+        field: 'module_id',
+        width: 40,rowGroup:true,showRowGroup:false,hide:true,
         filter: 'agTextColumnFilter',
       },
     //  {
@@ -482,7 +482,7 @@ this.gridOptions.groupDefaultExpanded=-1
     //   }, 
       {
       headerName: 'Requirement Name',
-      field: 'requriment.requirement_name',
+      field: 'requirement_name',
       width: 40,
       filter: 'agTextColumnFilter',
     },
@@ -731,31 +731,69 @@ if(this.formName=="module"){
     });
   }else if(this.formName=="test_result"){
 this.dataService.lookupTreeData("regression",this.response._id).subscribe((res:any)=>{
-  console.log(res);
+//   console.log(res);
 
-  // this.listData=res.data.response
+//   let overalldata:any[]=[]
+//   res.data.response.forEach((vals:any,index:any)=>{
+//     // overalldata.push(vals.requriment)
+//     console.log(vals);
+// let testcase:any[]=[]
+// testcase= res.data.response[index].testcase
+// testcase.forEach((data:any)=>{
+//       let datas:any
+//       datas=vals.requriment.find((d:any)=>{
+//   console.log(d);
+//   d._id==data.requirement_id
+// })
+// console.log(datas);
 
-  let overalldata:any[]=[]
-  res.data.response.forEach((vals:any,index:any)=>{
-    // overalldata.push(vals.requriment)
-    console.log(vals);
-let testcase:any[]=[]
-testcase= res.data.response[index].testcase
-testcase.forEach((data:any)=>{
-      let datas:any
-      datas=vals.requriment.find((d:any)=>{
-  console.log(d);
-  d._id==data.requirement_id
-})
-console.log(datas);
+//       overalldata.push(data)
+//     })
 
-      overalldata.push(data)
-    })
+//   })
+//   this.listData=overalldata
+console.log(res);
 
-  })
-  this.listData=overalldata
+let overalldata: any[] = [];
 
-  // console.log(overalldata);
+res.data.response.forEach((vals: any, index: any) => {
+  // console.log(vals);
+
+  // let testcase: any[] = res.data.response[index].testcase;
+  vals.testcase.forEach((data: any) => {
+    // Create a new object combining data from testcase and requriment
+    let combinedData = {
+        ...data,
+        ...vals.requriment,
+    };
+
+    console.warn(combinedData);
+
+    // Push the combined data to the overalldata array
+    overalldata.push(combinedData);
+});
+
+// Check if there are no testcases, and if so, push vals.requriment directly
+if (vals.testcase.length === 0) {
+    overalldata.push(vals.requriment);
+}
+
+// Assign the overalldata array to this.listData
+this.listData = overalldata;
+
+console.log(overalldata);
+
+//     } else {
+//       // Handle the case when no matching requirement is found
+//       console.warn(`No matching requirement found for requirement_id ${data.requirement_id}`);
+//     }
+  // });
+});
+
+// Assign the overalldata array to this.listData
+this.listData = overalldata;
+
+  console.log(overalldata);
   
   // let data:any[]= []     
   // this.listData = []
