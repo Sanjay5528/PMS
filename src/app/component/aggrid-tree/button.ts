@@ -40,14 +40,14 @@ import { HelperService } from "src/app/services/helper.service";
           <mat-icon>task</mat-icon>
           <span>Sub Modules</span>
         </button>
-        <button mat-menu-item (click)="onClickMenuItem('task', params.data)">
+        <!-- <button mat-menu-item (click)="onClickMenuItem('task', params.data)">
           <mat-icon>task</mat-icon>
           <span>Task</span>
         </button>
         <button mat-menu-item (click)="onClickMenuItem('testcase', this)">
           <mat-icon>description</mat-icon>
           <span>Testcase</span>
-        </button>
+        </button> -->
       </mat-menu>
     </div>
     
@@ -120,7 +120,34 @@ import { HelperService } from "src/app/services/helper.service";
         </button>
       </mat-menu>
     </div>
-    
+
+    <div  *ngIf="parentRouteName=='bug_list'">
+      <button mat-icon-button [matMenuTriggerFor]="Bugmenu" aria-label="Example icon-button with a menu">
+        <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
+      </button>
+      <mat-menu #Bugmenu="matMenu">
+      <button  mat-menu-item (click)="onClickRequirementMenuItem('addsubchild', params.data)">
+          <mat-icon>add</mat-icon>
+          <span>Sub Requriement</span>
+        </button>
+        <button mat-menu-item (click)="onClickRequirementMenuItem('edit', params.data)">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-menu-item (click)="onClickRequirementMenuItem('delete', params.data)">
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+         <button mat-menu-item (click)="onClickRequirementMenuItem('task', params.data)">
+          <mat-icon>task</mat-icon>
+          <span>Task</span>
+        </button>
+        <button mat-menu-item (click)="onClickRequirementMenuItem('testcase', this)">
+          <mat-icon>description</mat-icon>
+          <span>Test Case </span>
+        </button>
+      </mat-menu>
+    </div>
 
     <ng-template #taskViewPopup class="example-sidenav" mode="over" style="margin: auto">
       <mat-card>
@@ -314,7 +341,7 @@ parentRouteName:any
     }
      if( data.parentmodulename==''){
        this.model_heading="Requirement - Edit"
-       this.dataService.loadConfig(this.parentRouteName.toLowerCase()).subscribe((frmConfig: any) => {
+       this.dataService.loadConfig("bug").subscribe((frmConfig: any) => {
          this.formAction = "Edit";
          this.butText="Update"
          this.config = frmConfig;
@@ -497,6 +524,7 @@ parentRouteName:any
     if (val == "modulesViewPopup"&&(this.model_heading=="Sub Requirement - Add" || this.model_heading=="Requirement - Edit" || this.model_heading=="Sub Requirement - Edit" )) {
       values.project_id = this.ParentComponent.response?.project_id;
       values.parentmodulename = this.gridData.requirement_name;
+      values._id= "SEQ|requriment|"+values.project_id;
     }
     else if(  this.model_heading=="Task - Add"){
       values.project_id = this.ParentComponent.response?.project_id;
@@ -519,7 +547,6 @@ parentRouteName:any
           this.dialogService.CloseALL();
         }
         this.form.reset();   
-        //  this.ParentComponent.ngOnInit()
 
       });
           }
@@ -666,6 +693,8 @@ parentRouteName:any
         });
             }
     }
+    this.ParentComponent.ngOnInit()
+
     }
 
 

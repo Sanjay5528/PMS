@@ -408,9 +408,9 @@ return
       }
       console.log(this.valueformGrupo.value);
       let values = this.valueformGrupo.value
-      values.facility_id = data._id // facitlity add
-      values.org_id = data.org_id // Org ID add
-      values.status = "Active"
+      // values.facility_id = data._id // facitlity add
+      // values.org_id = data.org_id // Org ID add
+      values.status = "A"
       console.log(values);
       if(config.change_id==true &&config.changeKeyField ){
         let key:any=this.selectedRow[config.addValue]

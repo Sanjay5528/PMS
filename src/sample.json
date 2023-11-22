@@ -1,347 +1,114 @@
 {
-	"pageHeading": "Project",
-	"formType": "master-detail",
-	"localSet":true,
-	"mapColumnDiff":true,
-	"mapColumnfield":"client_id",
-	"localSetField":"client_id",
+	"pageHeading": "Bug Detail View",
+	"formType": "simple",
+	"editMode": "popup",
+	"keyField": "_id",
 	"form": {
-		"collectionName": "client",
-		"fields": [
+	"collectionName": "bug",
+	"fields": [
+	
+	{
+		"fieldGroupClassName": "display-flex",
+		"fieldGroup": [
 			{
-				"type": "label-view",
-				"key": "client_id",
-				"props": {
-					"label": "Client Name",
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": false,
-					"placeholder": "Client Name",
-					"required": true
-				}
-			}, 
-			{
-				"type": "label-view",
-				"key": "status",
-				"props": {
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": true,
-					"label": "Project Status",
-					"placeholder": "Project Status",
-					"required": true
-				}
+			"type": "html-input",
+			"key": "testcase.test_data",
+			"className": "flex-6",
+			"props": {
+				"label": "Test Case Test Data"
 			}
-		],
-		"buttons": {
-			"start": false,
-			"newEntry": false
+		},
+		{
+		"type": "html-input",
+		"key": "testcase.expected_result",
+		"className": "flex-6",
+		"props": {
+			"label": "Test Case Expected Result"
+		}
+	}
+]
+},{
+	"fieldGroupClassName": "display-flex",
+	"fieldGroup": [
+		{
+		"type": "html-input",
+		"key": "test_result.actual_result",
+		"className": "flex-6",
+		"props": {
+			"label": "Test Case Actual Result"
+		
 		}
 	},
-	"detailForm": {
-        "customfilter":true,
-        "customkey":"client_id",
-		"collectionName": "project",
-		"mapColumn": "client_id",
-		"keyColumn": "_id",
-		  "Change_id": true,
-		"changekeyfield":"project_id",
-		"addkeyfield":"client_id",
-		"isPopupEdit": true,
-		"fields": [
-			{
-				"fieldGroupClassName": "display-flex",
-				"fieldGroup": [
+	{
+	"type": "muti-image",
+	"key": "test_result.result_proof",
+	"className": "flex-6",
+	"props": {
+		"label": "Result Proof Data"
+	}
+}
+]
+},{
+	"fieldGroupClassName": "display-flex",
+	"fieldGroup": [
+		{
+			"key": "devops_status",
+			"type": "select",
+			"templateOptions": {
+				"label": "Devops Response",
+				"options": [
 					{
-			"type": "label-view",
-			"key": "project_id",
-			"className": "flex-6",
-			"props": {
-			  "label": "Project Id",
-			  "label_width": 100,
-			  "value_width": 200,
-			  "value_in_next_row": true
-			},
-			"hideExpression": "!model.isEdit"
-		  },  
-			{
-			"type": "matprefix-input",
-			"parentKey": "client_id",
-						"key": "project_id",
-			"className": "flex-6",
-			"props": {
-			  "label": "Project ID",
-			  "type": "local",
-			  "placeholder": "Project ID",
-			  "required": true,
-			  "maxLength": 10,
-			  "pattern": "^[A-Z0-9]+$"
-			},
-			"hideExpression": "model.isEdit "
-		  },{
-			"type": "label-view",
-			"key": "project_name",
-			"className": "flex-6",
-			"props": {
-			  "label": "Project Name",
-			  "label_width": 100,
-			  "value_width": 200,
-			  "value_in_next_row": true
-			},
-			"hideExpression": "!model.isEdit"
-		  },
-					{
-						"type": "input",
-						"key": "project_name",
-						"className": "flex-6",
-						"props": {
-							"label": "Project Name",
-							"placeholder": "Project Name",
-							"pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
-							"required": true
-						},
-						"hideExpression": "model.isEdit"
-  
+						"label": "Active",
+						"value": "A"
 					},
 					{
-			"type": "label-view",
-			"key": "project_type",
+						"label": "Disable",
+						"value": "D"
+					}
+				],
+				"required": true
+			}
+		},
+		{
+			"type": "html-input",
+			"key": "test_result.actual_result",
 			"className": "flex-6",
 			"props": {
-			  "label": "Project Type",
-			  "label_width": 100,
-			  "value_width": 200,
-			  "value_in_next_row": true
-			},
-			"hideExpression": "!model.isEdit"
-		  },
-					{
-						"type": "select",
-						"key": "project_type",
-						"className": "flex-6",
-						"props": {
-							"label": "Project Type",
-							"placeholder": "Project Type",
-							"options": [
-								{
-									"value": "Software Development ",
-									"label": "Software Development "
-								},
-								{
-									"value": "Web Development",
-									"label": "Web Development"
-								},
-								{
-									"value": "Technology Installation",
-									"label": "Technology Installation "
-								},
-								{
-									"value": "Cloud Computing ",
-									"label": "Cloud Computing "
-								},
-								{
-									"value": "Cyber Security ",
-									"label": "Cyber Security"
-								},
-								{
-									"label": "Others",
-									"value": "Others"
-								}
-							],
-							"required": true
-						}
-					}
-				]
-			},
+				"label": "Test Case Actual Result"
 			
+			}
+		}
+]
+},
 			{
-				"fieldGroupClassName": "display-flex",
-				"fieldGroup": [
-					{
-						"className": "flex-6",
-						"key": "startdate",
-						"type": "date-input", 
-						"props": {
-						  "label": "Scheduled Start Date",
-						  "placeholder": "Scheduled Start Date",
-						  "type": "date",
-						  "required": true
-						}
-					  },
-					  {
-						"className": "flex-6",
-						"key": "enddate",
-						"type": "date-input",
-						"parentKey": "startdate",
-						"parentCollectionName": "project",
-						"props": {
-						  "label": "Scheduled End Date",
-						  "placeholder": "Scheduled End Date",
-						  "type": "date",
-						  "required": true
-						}
-					  },
-					{
-						"type": "select",
-						"key": "status",
-						"className": "flex-6",
-						"props": {
-							"label": "Project Status",
-							"options": [
-								{
-									"label": "Active",
-									"value": "A"
-								},
-								{
-									"label": "Inactive",
-									"value": "I"
-								}
-							]
+				"key": "status",
+				"type": "select",
+				"defaultValue": "A",
+				"templateOptions": {
+					"label": "Status",
+					"options": [
+						{
+							"label": "Active",
+							"value": "A"
 						},
-					
-						"expressions": {
-							"hide": "!model.isEdit"
+						{
+							"label": "Disable",
+							"value": "D"
 						}
-						}
-				]
-			},
-			{
-				"type": "html-input",
-				"key": "projectdetails",
-				"className": "flex-6",
-				"props": {
-					"label": "Project Details"
+					],
+					"required": true
 				},
-				
-				"maxlength": 500
+				"hideExpression": "!model.isEdit"
+			}
+	
+	],
+		"defaultValues": [
+			{
+				"colName": "status",
+				"value": "A",
+				"type": "string"
 			}
 		]
-		 
 	},
-	"detailListConfig": {
-		"sectionHeading": "Project Team",
-		"actions": [
-			{
-				"label": "Edit",
-				"icon": "edit",
-				"formName": "project"
-			},   {
-				"label": "Requirement",
-				"icon": "view_module",
-				"formAction": "components",
-				"route_type":"CustomRoute",
-				"Custom_Route":"project/Requirement",
-				"Custom_Key_filed":"_id"
-				
-			},{
-				"label": "Modules",
-				"icon": "view_module",
-				"formAction": "components",
-				"route_type":"CustomRoute",
-				"Custom_Route":"project/module",
-				"Custom_Key_filed":"_id"
-				
-			},{
-				"label": "Realse",
-				"icon": "view_module",
-				"formAction": "components",
-				"route_type":"CustomRoute",
-				"Custom_Route":"data/edit/release",
-				"Custom_Key_filed":"_id"
-				
-			},{
-				"label": "Sprint",
-				"icon": "view_module",
-				"formAction": "components",
-				"route_type":"CustomRoute",
-				"Custom_Route":"data/edit/project_sprint",
-				"Custom_Key_filed":"_id"
-				
-			},
-			{
-				"label": "Project Team",
-				"icon": "view_module",
-				"formName": "projectteam",
-				"formAction": "components",
-				"route_type":"CustomRoute",
-				"Custom_Route":"project/projectteam",
-				"Custom_Key_filed":"_id"
-				
-			},{
-				"label": "Test Case",
-				"icon": "view_module",
-				"formAction": "components",
-				"route_type":"CustomRoute",
-				"Custom_Route":"data/edit/regression",
-				"Custom_Key_filed":"_id"
-				
-			},{
-				"label": "Bug List",
-				"icon": "view_module",
-				"formName": "buglist",
-				"formAction": "components",
-				"route_type":"CustomRoute",
-				"Custom_Route":"project/bug_list",
-				"Custom_Key_filed":"_id"
-				
-			},
-			{
-				"label": "Delete",
-				"icon": "delete",
-				"formName": "entities/project",
-                "formAction":"delete"
-			}
-		],
-		"addRoute": "add/project_team_member",
-		"editRoute": "edit/project_team_member",
-		"fields": [
-			{
-				"headerName": "Project Id",
-				"field": "project_id",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"headerName": "Project Name",
-				"field": "project_name",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"headerName": "Schedule Start Date",
-				"field": "startdate",
-				"sortable": true,
-				"filter": "agDateColumnFilter",
-				"type": "date"
-			},
-			{
-				"headerName": "Schedule End Date",
-				"field": "enddate",
-				"sortable": true,
-				"filter": "agDateColumnFilter",
-				"type": "date"
-			},
-			{
-				"headerName": "Project Status",
-				"field": "status",
-				"sortable": true,
-				"filter": "agTextColumnFilter"
-			},
-			{
-				"type": "rightAligned",
-				"headerName": "Actions",
-				"cellRenderer": "buttonRenderer",
-				"cellRendererParams": {
-					"onClick": "this.onBtnClick1.bind(this)",
-					"label": "Click 1"
-				}
-			}
-		],
-		"filterOptions": [],
-		"defaultFilter": []
-	},
-	"onCancelRoute": "/list/client",
-	"designConfig": {
-		"leftPanelWidth": "320px"
-	}
-  }
+	"onCancelRoute": "list/bug"
+}

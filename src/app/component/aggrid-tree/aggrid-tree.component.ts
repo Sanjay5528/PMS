@@ -202,7 +202,7 @@ loadConfig(formName:any){
     field: 'task_name',
     width: 40,
     editable: true,
-    filter: 'agTextColumnFilter',
+    filter: 'agTextColumnFilter',hide:true
   },
   {
     headerName: 'Start Date',
@@ -243,11 +243,11 @@ loadConfig(formName:any){
 
   })
   }else if(formName=="Requirement"){
-   
+  
 
 this.gridOptions.treeData=true
 this.gridOptions.groupDefaultExpanded=-1
-   
+  
     this.gridOptions.autoGroupColumnDef={
       headerName: "Parent Requriement",
       field:"index",
@@ -532,7 +532,7 @@ this.gridOptions.groupDefaultExpanded=-1
     this.gridOptions.groupDefaultExpanded=-1
     this.gridOptions.autoGroupColumnDef={
       headerName: "Requirement Name",
-      field:"requirement_name",
+      field:"requriment.requirement_name",
       maxWidth: 280,
       cellRendererParams: { suppressCount: true },
       sortable: false,
@@ -542,48 +542,65 @@ this.gridOptions.groupDefaultExpanded=-1
     this.columnDefs.push(  
       {
         headerName: 'Test Case Name',
-        field: 'module_id',
+        field: 'testcase.test_case_name',
         width: 40,
         rowGroup:true,
         showRowGroup:false,
         hide:true,
         filter: 'agTextColumnFilter',
       },
+  //  {
+  //     headerName: 'Test Result Status',
+  //     field: 'test_case_name',
+  //     width: 40,
+  //     editable: false,
+  //     filter: 'agTextColumnFilter',
+  //   },
+   
    {
-      headerName: 'Test Result Status',
-      field: 'test_case_name',
+      headerName: 'Test Case Name',
+      field: 'testcase.test_case_name',
       width: 40,
       editable: false,
       filter: 'agTextColumnFilter',
+    }, 
+     {
+      headerName: 'Test Result Status',
+      field: 'test_case_name',
+      width: 40,
+      editable: false,hide:true,
+      filter: 'agTextColumnFilter',
     }, {
       headerName: 'Test Case Type',
-      field: 'test_case_scenario',
+      field: 'testcase.test_case_scenario',
       width: 40,
       editable: false,
       filter: 'agTextColumnFilter',
     }, 
     {
       headerName: 'Error Type',
-      field: 'test_cases_length',
+      field: 'test_result.error_type',
       width: 40,
       editable: false,
       filter: 'agTextColumnFilter',
     },
     {
       headerName: 'Error Priority',
-      field: 'test_result_stauts',
+      field: 'test_result.error_priority',
       width: 40,
       editable: false,
       filter: 'agTextColumnFilter',
-    },{
-      headerName: 'Done By',
-      field: 'bug_count',
-      width: 40,
-      editable: false,
-      filter: 'agTextColumnFilter',
-    },{
+    },
+    // {
+    //   headerName: 'Done By',
+    //   field: 'bug_count',
+    //   width: 40,
+    //   editable: false,
+    //   filter: 'agTextColumnFilter',
+    // },
+    {
       headerName: 'Devops Status',
-      field: 'bug_count',
+      field: 'devops_Status',
       width: 40,
       editable: false,
       filter: 'agTextColumnFilter',
@@ -627,7 +644,7 @@ sprintCellEditorParams = (params: any) => {
   }
   this.dataService.getDataByFilter("sprint",filer).subscribe((res:any) =>{
       if(isEmpty(res.data[0].response)){
-        this.dialogService.openSnackBar("There Were No Sprint To be Found","OK")
+        // this.dialogService.openSnackBar("There Were No Sprint To be Found","OK")
         return
       }
     res.data[0].response.forEach((each:any)=>{
@@ -691,6 +708,17 @@ if(params==true){
 // ! UNDO
 
 if(this.formName=="module"){
+//   let Projectfiler:any={
+//     start:0,end:1000,filter:[{
+      
+//         clause: "AND",
+//         conditions: [
+//           {column: "project_id",operator: "EQUALS",type: "string",value: this.response.project_id},
+//         ],
+      
+//     }]
+//   }
+// this.response.project_id
     this.dataService.getModuleFilter("modules", this.response.project_id).subscribe((res: any) => {
       this.listData = []
       for (let idx = 0; idx < res.data.length; idx++) {
@@ -723,7 +751,7 @@ if(this.formName=="module"){
         for (let idx = 0; idx < res.data.response.length; idx++) {
           const row = res.data.response[idx];
             if(row && row?.module_id){
-              // Check if Data is Empty (it call function and return)
+// Check if Data is Empty (it call function and return)
               let datafound = this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;          
               let findValue:any=datafound.find((val:any)=>val.value==row.module_id)
               row.module_id = findValue?.label;
@@ -732,18 +760,18 @@ if(this.formName=="module"){
               row.treePath = [row.requirement_name];
             } else {
               const parentNode = data.find((d) => d.requirement_name == row.parentmodulename);
-                  if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
-                    row.treePath = [...parentNode.treePath];
-                    row.treePath.push(row.requirement_name);
-                  }
-            }
+              if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
+                              row.treePath = [...parentNode.treePath];
+                row.treePath.push(row.requirement_name);
+              }
+                        }
           data.push(row);
         }
-        
+                
         let parentTreeData: any[] = [];
         let childIndex: { [key: string]: number } = {};
         let childArr: any[] = [];
-        
+
         data.forEach((res: any) => {
           const arrLength = res.treePath ? res.treePath.length : 0;
           if (arrLength === 1) {
@@ -776,7 +804,7 @@ if(this.formName=="module"){
                   }
           }
         });
-        // childArr.forEach((value:any)=>{
+// childArr.forEach((value:any)=>{
           
         // })
         this.listData = [...parentTreeData, ...childArr];
@@ -882,86 +910,78 @@ this.listData = overalldata;
     this.dataService.lookUpBug(this.response.project_id).subscribe((res:any)=>{
       console.log(res);
       let data:any=res.data.response
+      this.listData=data
       console.log(data);
-      
-      let test_Case_Details:any[]=[]
-    //   res.data.response.forEach((xyz:any)=>{
-    //     if(!isEmpty(xyz.test_result)){
-    
-    //       test_Case_Details.push(...xyz.test_result)
+      // !  Regression Id Done by Devops Status 
+      // let test_Case_Details:any[]=[]
+    //   {
+    //     "_id": "testclientID-R1-B13",
+    //     "created_by": "sanjay123sanjay12@gmial.com",
+    //     "created_on": "2023-11-22T13:48:48.074Z",
+    //     "project_id": "testclientID-R1",
+    //     "requriment": {
+    //         "_id": "6556e6ca708092f87ad4e9b6",
+    //         "created_by": "sanjay123sanjay12@gmial.com",
+    //         "created_on": "2023-11-17T04:06:34.298Z",
+    //         "module_id": "M1",
+    //         "parentmodulename": "",
+    //         "project_id": "testclientID-R1",
+    //         "requirement_description": "Authentication",
+    //         "requirement_name": "Authentication",
+    //         "sprint_id": "R01-3",
+    //         "status": "A",
+    //         "update_by": "sanjay123sanjay12@gmial.com",
+    //         "update_on": "2023-11-20T10:38:13.341Z"
+    //     },
+    //     "test_case_id": "cbd6d91db9c04849b54605ecd1c97e11",
+    //     "test_result": {
+    //         "_id": "testclientID-R1-TR11",
+    //         "actual_result": "sdasdasdasdasdas",
+    //         "created_by": "sanjay123sanjay12@gmial.com",
+    //         "created_on": "2023-11-22T13:48:47.873Z",
+    //         "doneBy": "Emp121",
+    //         "error_priority": "medium",
+    //         "error_type": "cosmatic_error",
+    //         "project_id": "testclientID-R1",
+    //         "regression_id": "AUTH",
+    //         "result_proof": [
+    //             {
+    //                 "_id": "4b1ef78317b94c8b9e4cb2a7e153ed9b",
+    //                 "file_name": "Screenshot from 2023-09-28 19-46-48.png",
+    //                 "folder": "test_case",
+    //                 "ref_id": "cbd6d91db9c04849b54605ecd1c97e11",
+    //                 "size": 285990,
+    //                 "storage_name": "test_case/cbd6d91db9c04849b54605ecd1c97e11/Screenshot from 2023-09-28 19-46-48__2023-11-22-19-18-43.png",
+    //                 "uploaded_by": "sanjay123sanjay12@gmial.com"
+    //             },
+    //             {
+    //                 "_id": "03552a946f134f85ba7a2883b7ce5f79",
+    //                 "file_name": "Screenshot from 2023-09-26 13-24-48.png",
+    //                 "folder": "test_case",
+    //                 "ref_id": "cbd6d91db9c04849b54605ecd1c97e11",
+    //                 "size": 174701,
+    //                 "storage_name": "test_case/cbd6d91db9c04849b54605ecd1c97e11/Screenshot from 2023-09-26 13-24-48__2023-11-22-19-18-44.png",
+    //                 "uploaded_by": "sanjay123sanjay12@gmial.com"
+    //             }
+    //         ],
+    //         "result_status": "F",
+    //         "status": "A",
+    //         "testCase_id": "cbd6d91db9c04849b54605ecd1c97e11",
+    //         "testcase_date": "2023-10-31T18:30:00Z"
+    //     },
+    //     "test_result_id": "testclientID-R1-TR11",
+    //     "testcase": {
+    //         "_id": "cbd6d91db9c04849b54605ecd1c97e11",
+    //         "created_by": "sanjay123sanjay12@gmial.com",
+    //         "created_on": "2023-11-21T05:57:14.153Z",
+    //         "expected_result": "Auth1",
+    //         "project_id": "testclientID-R1",
+    //         "requirement_id": "6556e6ca708092f87ad4e9b6",
+    //         "test_case_name": "Auth1",
+    //         "test_case_scenario": "N",
+    //         "test_data": "Auth1"
     //     }
-    //   })
-    // console.log(test_Case_Details);
-    
-    // let overalldata: any[] = [];
-    // let virtualDAta:any=res.data.response
-    // virtualDAta.forEach((vals: any) => {
-    // debugger
-    // // let requirement:any={}
-    // // let _id= vals.requirement._id
-    // // Object.assign(requirement,vals.requirement)
-    // // delete requirement._id
-    // // ? here each test add
-    // vals.testcase.forEach((data: any) => {
-    //   let testcase_id=data._id
-    //   // console.error(requirement);
-    //   // console.warn(_id,"_ID");
-        
-    //   //   console.log(requirement,"requirement");
-    
-    //     let combinedData = {
-    //         ...data,
-    //         ...vals.requirement,
-    //     };
-    //     combinedData["requriment_id"] = vals.requirement._id
-    //     // combinedData["requriment"] = vals.requirement
-    //     combinedData["_id"]=data["_id"]
-    //     console.log(combinedData["_id"]);
-        
-    //     combinedData["test_case_id"] = testcase_id
-    //     const refFound: any[] = test_Case_Details.filter((d: any) => {return d.testCase_id == combinedData.test_case_id});
-    //     console.warn(refFound);
-    //     if(!isEmpty(refFound)){
-    //       const hasFailures: boolean = refFound.some((d: any) => {return d.result_status === "F"});
-    
-    //       const failList: any = refFound.filter((d: any) => {return d.result_status === "F" });
-    
-    //       const resultStatus = hasFailures ? "Fail" : "Pass";
-    //       combinedData['bug_list']=failList
-    
-    //     combinedData['test_result_stauts']=resultStatus      
-    
-    //     combinedData['bug_count']=failList.length
-        
-    //     combinedData['test_cases']=refFound
-    //     combinedData['test_cases_length']=refFound.length
-    
-    //     }
-    
-    //     overalldata.push(combinedData);
-    // });
-    // if (vals?.requirement?.module_id==undefined) {
-    //   vals.requirement['module_id'] = "No Module Id Present";
     // }
-    // if (vals.testcase.length === 0) {
-    //   console.log('hi');
-      
-    //   let combinedData = {
-    //     ...vals.requirement,
-    // };
-    // // combinedData["_id"] = _id
-
-    //   combinedData["requriment_id"] = vals.requirement._id
-    //   console.log(combinedData);
-    //   console.log(combinedData["_id"]);
-
-    
-    //     overalldata.push(combinedData);
-    // }
-     
-    //   });
-    
-    // this.listData = overalldata;
     })
       }
 
@@ -978,9 +998,9 @@ this.listData = overalldata;
     filter: true,
   };
 public gridOptions: GridOptions = {
-  getDataPath:(data: any) => { 
-    return data.treePath;
-  },
+ getDataPath:(data: any) => {
+  return data.treePath;
+ }, 
 
 animateRows:true,paginationPageSize:10
 }
