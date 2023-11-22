@@ -142,6 +142,7 @@ func BuildDynamicAggregationPipelineFromSpecifications(Aggregation []Aggregation
 			group[AggColumnName] = bson.M{"$avg": FieldsName}
 			group["doc"] = bson.M{"$first": "$$ROOT"}
 		}
+		
 		// Append the $group stage to the pipeline.
 		pipeline = append(pipeline, bson.M{"$group": group})
 		// Construct the $replaceRoot stage to merge the aggregated results back into the main document structure.
