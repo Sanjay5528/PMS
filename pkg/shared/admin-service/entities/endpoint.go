@@ -73,7 +73,7 @@ func SetupLookupRoutes(app *fiber.App) {
 
 	r.Get("/requriment/:projectid", RequrimentObjectproject)
 	r.Get("/regression/:regression_id", regressionproject)
-	r.Get("/bug-report",HandlerBugReport)
+	r.Get("/bug-report/:projectid", HandlerBugReport)
 	r.Get("/timesheet/:employee_id/:scheduledstartdate", TimeSheetByIdHandler)
 	r.Put("/timesheet", postTimesheetDocHandler)
 	r.Get("/unschedule/:employee_id/:date", getUnscheduleIdHandler)
