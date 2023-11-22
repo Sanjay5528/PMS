@@ -906,7 +906,7 @@ func getFileDetails(c *fiber.Ctx) error {
 	refId := c.Params("refId")
 	//	token := shared.GetUserTokenValue(c)
 	query := bson.M{"ref_id": refId, "folder": fileCategory}
-	
+
 	response, err := helper.GetQueryResult(orgId, "user_files", query, int64(0), int64(200), nil)
 	if err != nil {
 		return shared.BadRequest(err.Error())
@@ -1080,8 +1080,34 @@ func regressionproject(c *fiber.Ctx) error {
 				},
 			},
 		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "employee"},
+					{"localField", "test_result.doneBy"},
+					{"foreignField", "employee_id"},
+					{"as", "employee_result"},
+				},
+			},
+		},
+		bson.D{
+			{"$set",
+				bson.D{
+					{"test_result.employee_name",
+						bson.D{
+							{"$arrayElemAt",
+								bson.A{
+									"$employee_result.first_name",
+									0,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		bson.D{{"$unset", "employee_result"}},
 	}
-
 	response, err := helper.GetAggregateQueryResult(org.Id, "regression", filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
