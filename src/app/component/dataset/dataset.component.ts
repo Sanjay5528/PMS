@@ -141,8 +141,65 @@ export class DatasetComponent {
       this.dataService.getDataById("dataset_config",params['id']).subscribe((res:any)=>{
         console.log(res);
         let data:any=res.data[0]
+        let allCollection_Name:any[]=[]
         this.dataSet.get('dataSetName')?.setValue(data.dataSetName);
         this.dataSet.get('dataSetDescription')?.setValue(data.dataSetDescription);
+        this.dataSet.get('dataSetBaseCollection')?.setValue(data.dataSetBaseCollection);
+        allCollection_Name.push(data.dataSetBaseCollection)
+        let FilterParams:any []= data.FilterParams
+        // let FilterParamsControl:any[]=[]
+        if(!isEmpty(FilterParams)){
+        FilterParams.forEach((data:any) => {         
+          this.dataSet.get('FilterParams')?.push(this.updateQueryParmsVAlue(data));
+        });
+      }
+      let dataSetJoinCollection:any []= data.dataSetJoinCollection
+      // let FilterParamsControl:any[]=[]
+      if(!isEmpty(dataSetJoinCollection)){
+        dataSetJoinCollection.forEach((data:any) => { 
+          allCollection_Name.push(data.toCollection)        
+        this.dataSet.get('dataSetJoinCollection')?.push(this.updateVAlueJoinCollection(data));
+      });
+    }
+    let CustomColumn:any []= data.CustomColumn
+    // let FilterParamsControl:any[]=[]
+    if(!isEmpty(CustomColumn)){
+      CustomColumn.forEach((data:any) => {         
+      this.dataSet.get('CustomColumn')?.push(this.updateVAluecustomfield(data));
+    });
+  }
+  let Aggregation:any []= data.Aggregation
+  // let FilterParamsControl:any[]=[]
+  if(!isEmpty(Aggregation)){
+    Aggregation.forEach((data:any) => {         
+    this.dataSet.get('Aggregation')?.push(this.updateVAlueAggregatefield(data));
+  });
+}
+let SelectedList:any []= data.SelectedList
+// let FilterParamsControl:any[]=[]
+if(!isEmpty(SelectedList)){
+  // Aggregation.forEach((data:any) => {         
+    this.SelctedColumns=SelectedList
+  this.dataSet.get('SelectedList')?.setValue(SelectedList);
+// });
+}
+// allCollection_Name.push(data.toCollection)        
+
+this.ModelCloumnConfig(allCollection_Name).then(async (modelConfig: any) => {
+  // let vals:any=Object.create( await data)
+  // this.dragData=vals
+  console.log(data);
+  this.editgrp(data.Filter)
+
+  this.options = modelConfig;
+  // this.newcustomfield.forEach((newColumn) => {
+  //   if (!this.options.includes(newColumn)) {
+  //     this.options.push(newColumn);
+  //   }
+  });
+
+this.NameChange()
+        // this.CustomColumn("FilterParams").push(FilterParamsControl);
 
         // this.dataSet = this.formBuilder.group({
         //   dataSetName: [data.dataSetName, [Validators.required, Validators.minLength(3)]],
@@ -171,9 +228,7 @@ export class DatasetComponent {
         },
       ],
     };
-    this.dataService
-      .getDataByFilter("model_config", filterCondition1)
-      .subscribe((res: any) => {
+    this.dataService.getDataByFilter("model_config", filterCondition1).subscribe((res: any) => {
         this.selected = res.data[0].response.map((response: any) => {
           return {
             model_name: response.model_name
@@ -201,9 +256,7 @@ export class DatasetComponent {
         },
       ],
     };
-    this.dataService
-      .getDataByFilter("Schematic_Data", filterCondition1)
-      .subscribe((res: any) => {
+    this.dataService.getDataByFilter("Schematic_Data", filterCondition1).subscribe((res: any) => {
         this.aggFn = res.data[0].response;
       });
 
@@ -217,15 +270,277 @@ export class DatasetComponent {
         },
       ],
     };
-    this.dataService
-      .getDataByFilter("Schematic_Data", filterCondition1)
-      .subscribe((res: any) => {
+    this.dataService.getDataByFilter("Schematic_Data", filterCondition1).subscribe((res: any) => {
         this.custom_columns_fn = res.data[0].response;
       });
 
   }
 
+updateQueryParmsVAlue(value:any){
+ return this.formBuilder.group({
+    convert_To_String: [value.convert_To_String],
+    parmasName: [value.parmasName, [Validators.required]],
+    parmsDataType: [value.parmsDataType, [Validators.required]],
+    defaultValue: [value.defaultValue, [Validators.required]],
+  });
+}
 
+updateVAlueJoinCollection(value:any) {
+  return this.formBuilder.group({
+    convert_To_String: [value.convert_To_String],
+    fromCollection: [value.fromCollection, [Validators.required]],
+    fromCollectionField: [value.fromCollectionField, [Validators.required]],
+    toCollection: [value.toCollection, [Validators.required]],
+    toCollectionField: [value.toCollectionField, [Validators.required]],
+  });
+}
+
+updateVAlueAggregatefield(value:any) {
+  return this.formBuilder.group({
+    convert_To_String: [value.convert_To_String],
+    Agg_Column_Name: [value.Agg_Column_Name, [Validators.required]],
+    Agg_Field_Name: [value.Agg_Field_Name, [Validators.required]],
+    Agg_Fn_Name: [value.Agg_Fn_Name, [Validators.required]],
+    Agg_group_byField: [value.Agg_group_byField, [Validators.required]],
+  });
+}
+async editgrp(data: any,) {
+  // todo
+  // let addtionalvalues:any
+console.log(data);
+
+let filter:any=data
+const overallcondition: any[] = await this.converRawdataintoArray(filter)
+
+//  this.options = addtionalvalues;
+overallcondition.forEach((parentFilter:any, parentIndex:any) => {
+if (parentFilter.clause !== undefined) {
+
+ this.Parent_Conditons(true,parentFilter.clause,parentIndex)
+}
+
+this.field[parentIndex] = [];
+this.operator[parentIndex] = [];
+this.orbitalValue[parentIndex] = [];
+
+this.value_type[parentIndex] = [];
+this.anotherfield[parentIndex] = [];
+parentFilter.conditions.forEach((ChildValues:any, childIndex:any) => {
+ if (ChildValues !== undefined) {
+   // Initialize arrays
+   this.field[parentIndex][childIndex] = [];
+   this.operator[parentIndex][childIndex] = [];
+   this.orbitalValue[parentIndex][childIndex] = [];
+   this.value_type[parentIndex][childIndex] = [];
+   this.anotherfield[parentIndex][childIndex] = [];
+
+   // if (parentFilter.ChildValuess.length >= childIndex) {
+     if (this.grp[parentIndex][childIndex]?.flag === undefined) {
+       this.addgrp(parentIndex,childIndex)
+     }
+   // }
+
+   // Use find to find matching options and operators
+   const filteredOption = this.options.find((res:any) => res.field_name === ChildValues.column);
+   if (filteredOption) {
+     this.setflag(filteredOption, parentIndex, childIndex);
+     this.getOperators(filteredOption, parentIndex, childIndex);
+     this.button_Flag = true;
+
+     const filteredOperatorOption = this.operatorOptions[parentIndex][childIndex].find(
+       (resOperator:any) => resOperator.value.toLowerCase() === ChildValues.operator.toLowerCase()
+     );
+
+     if (filteredOperatorOption) {
+       this.opertorchange(filteredOperatorOption, parentIndex, childIndex);
+      //  this.apiflag = true;
+       this.field[parentIndex][childIndex] = filteredOption;
+       this.operator[parentIndex][childIndex] = filteredOperatorOption;
+       this.value_type[parentIndex][childIndex] =ChildValues.value_type
+    let value_type: any = this.value_type[parentIndex][childIndex];
+
+       // if(this.operator[p])
+       if (filteredOption.type === "time.Time"&& value_type == "constant" && filteredOperatorOption.type === "time.Time") {
+         if (
+           (filteredOperatorOption.value == "in_between" ||filteredOperatorOption.value == "between_age"  ) &&  // ! this used for the value from another input box
+           filteredOperatorOption.anotherfield == true 
+         ) {
+           this.orbitalValue[parentIndex][childIndex]=ChildValues.value[0]
+            this.anotherfield[parentIndex][childIndex]=ChildValues.value[1]
+         } else {
+           this.orbitalValue[parentIndex][childIndex]=ChildValues.value
+         }
+       }
+        else {
+         if (filteredOperatorOption.anotherfield == true && filteredOperatorOption.value == "in_between") {
+           this.orbitalValue[parentIndex][childIndex]=ChildValues.value[0]
+            this.anotherfield[parentIndex][childIndex]=ChildValues.value[1]
+         } else {
+          if (value_type === "filter_Paramas") {
+            this.orbitalValue[parentIndex][childIndex]=ChildValues.ParamsName;
+          }else{
+
+            this.orbitalValue[parentIndex][childIndex]=ChildValues.value;
+          }
+         }
+       }
+       // this.orbitalValue[parentIndex][childIndex] = ChildValues.value;
+       this.convertdata_into_string(parentIndex, childIndex);
+     }
+   }
+ }
+});
+});
+
+
+// let filterCondition = {
+//   filter: [
+//     {
+//       clause: "AND",
+//       conditions: [
+//         {
+//           column: "model_name",
+//           operator: "EQUALS",
+//           value: this.Collection,
+//         },
+//       ],
+//     },
+//   ],
+// };
+
+// this.dataService.getDataByFilter("data_model", filterCondition).subscribe(
+//   (res: any) => {
+//     let values: any;
+//     values = res.data[0].response.map((res: any) => {
+//       let field_name = res.column_name.toLowerCase();
+//       let data: any = {};
+  
+//         return {
+//           name: res.column_name
+//             .replace(/_/g, " ")
+//             .toUpperCase()
+//             .replace(/_/g, " "),
+//           field_name: field_name,
+//           type: res.type,
+//         };
+    
+//     });
+//     values.forEach((result: any) => {
+//       const typeMapping: { [key: string]: string } = {
+//         string: "string",
+//         int: "number",
+//         int64: "number",
+//         float32: "number",
+//         float64: "number",
+//         bool: "boolean",
+//         "time.Time": "Date",
+//       };
+//       const selectedTypes = result.type.replace("[", "").replace("]", "");
+//       if (!(selectedTypes in typeMapping)) {
+//         let filterCondition = {
+//           filter: [
+//             {
+//               clause: "AND",
+//               conditions: [
+//                 {
+//                   column: "model_name",
+//                   operator: "EQUALS",
+//                   value: selectedTypes,
+//                 },
+//               ],
+//             },
+//           ],
+//         };
+//         this.dataService.getDataByFilter(
+//           "data_model",
+//           filterCondition
+//         ).subscribe((res: any) => {
+
+//           let values: any;
+//           values = res.data[0].response.map((res: any) => {
+//             let field_name =
+//               result.field_name + "." + res.column_name.toLowerCase();
+//             let column_name =
+//               result.name
+//                 .replace(/_/g, " ")
+//                 .toUpperCase()
+//                 .replace(/_/g, " ") +
+//               " : " +
+//               res.column_name
+//                 .replace(/_/g, " ")
+//                 .toUpperCase()
+//                 .replace(/_/g, " ");
+//             let data: any = {};
+        
+//               addtionalvalues.push({
+//                 name: column_name,
+//                 field_name: field_name,
+//                 type: res.type,
+//               });
+          
+//           });
+//         });
+//       } else {
+//         addtionalvalues.push(result);
+//       }
+//     });
+
+
+ 
+
+//   }
+// );
+
+
+// })
+
+
+  
+// })
+
+}
+converRawdataintoArray(filter:any):Promise<any> {
+  return new Promise(async (resolve, reject) => {
+  let final:any[]=[]
+let arr:any[] = []
+    var parentFilter:any
+for (let index = 0; index < filter.length; index++) {
+const element = filter[index];
+const clonedElement = { ...element };
+parentFilter = { ...clonedElement };
+parentFilter.condition = [];
+console.log(parentFilter);
+console.log(clonedElement);
+
+for (let conditionIndex = 0; conditionIndex < clonedElement.condition.length; conditionIndex++) {
+  const condition = clonedElement.condition[conditionIndex];
+console.log(condition);
+
+  if (condition.condition) {
+    arr.push(condition);
+  } else {
+    parentFilter.condition.push(condition);
+  }
+}
+final.push(parentFilter);
+}
+console.log(arr);
+if(!isEmpty(arr)){
+arr.forEach((xyz:any)=>{
+  final.push(xyz)
+})}
+resolve(final)
+  })
+ }
+updateVAluecustomfield(value:any) {
+  return this.formBuilder.group({
+    convert_To_String: [value.convert_To_String],
+    dataSetCustomColumnName: [value.dataSetCustomColumnName, [Validators.required]],
+    dataSetCustomLabelName: [value.dataSetCustomLabelName, [Validators.required]],
+    dataSetCustomAggregateFnName: [value.dataSetCustomAggregateFnName, [Validators.required]],
+    dataSetCustomField: [value.dataSetCustomField, [Validators.required]],
+  });
+}
   //? The Raw Form Control
   QueryParms() {
     return this.formBuilder.group({
@@ -489,7 +804,8 @@ export class DatasetComponent {
     let totalValues: any = this.dataSet.value[key];
     totalValues.forEach((element: any, joinIndex: any) => {
       if (
-        element.fromCollection == valueOfTOColletion ||
+        element.fromCollection == valueOfTOColletion 
+                          ||
         element.toCollection == valueOfTOColletion
       ) {
         this.CustomColumn(key).removeAt(joinIndex);
@@ -1201,26 +1517,11 @@ export class DatasetComponent {
         const customColumnArray: any = this.dataSet.get(
           "dataSetJoinCollection"
         ) as FormArray;
-        customColumnArray
-          .at(datas.index)
-          .get("convert_To_String")
-          .setValue(true);
-        customColumnArray
-          .at(datas.index)
-          .get("fromCollection")
-          .setValue(this.fromCollection);
-        customColumnArray
-          .at(datas.index)
-          .get("fromCollectionField")
-          .setValue(this.fromCollectionReference);
-        customColumnArray
-          .at(datas.index)
-          .get("toCollection")
-          .setValue(this.toCollection);
-        customColumnArray
-          .at(datas.index)
-          .get("toCollectionField")
-          .setValue(this.toCollectionReference);
+        customColumnArray.at(datas.index).get("convert_To_String").setValue(true);
+        customColumnArray.at(datas.index).get("fromCollection").setValue(this.fromCollection);
+        customColumnArray.at(datas.index).get("fromCollectionField").setValue(this.fromCollectionReference);
+        customColumnArray.at(datas.index).get("toCollection").setValue(this.toCollection);
+        customColumnArray.at(datas.index).get("toCollectionField").setValue(this.toCollectionReference);
         var collectionNameExist: any;
 
         this.fromcollectionList.filter((response: any) => {
@@ -1701,8 +2002,6 @@ this.dialogService.openSnackBar("Selected Column is Required","OK")
 
   // ! Pop Up Screen
   BaseCollectionFilter() {
-    // if()
-    console.log(this.dataSet.value.dataSetBaseCollectionFilter);
     if (isEmpty(this.dataSet.value.dataSetBaseCollectionFilter)) {
       let data: any = {
         Action: "Add",
