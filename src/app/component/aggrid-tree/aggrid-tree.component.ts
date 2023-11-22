@@ -94,7 +94,8 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
   butText = 'Save'
   onClose: any;
   addbutton:boolean=false
-   
+  reassignemployee:any[]=[]
+
 
   constructor(public httpclient: HttpClient,  
     public dialogService: DialogService, public route: ActivatedRoute,public _location:Location,   public router: Router,private helperServices:HelperService,
@@ -105,36 +106,7 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
     this.context = { componentParent: this };
     
   } 
-datefunction(date:any){
-  return moment(date).format("DD-MM-YYYY")
-}
-reassignemployee:any
-reassign(employeeID:any){
-  let filer:any={
-    start:0,end:1000,filter:[{
-      clause: "AND",
-        conditions: [
-          {column: "employee_id",operator: "NOTEQUAL",type: "string",value: employeeID},
-        ],
-      
-    }]
-  }
-  this.dataService.getDataByFilter("employee",filer).subscribe((res:any) =>{
-      if(isEmpty(res.data[0].response)){
-        this.dialogService.openSnackBar("There Were No Employee To be Found","OK")
-        return
-      }
-      console.log(res);
-      
-      this.reassignemployee=res.data[0].response
-  //   res.data[0].response.forEach((each:any)=>{
-  //   // this.ValueToCompareRequriementSprint.push({label:each.name,value:each.id})
-  //   // this.OnlyValueRequriementSprint.push(each.id)
 
-  // })
-  // return data  
-})
-}
   ngOnInit() {
     debugger
     
@@ -156,8 +128,15 @@ collection="project"
         collection="project"
 
       }else if(this.formName=="test_result"){
-collection="regression"
-this.addbutton=true;
+        this.pageHeading="Test Result"
+
+        collection="regression"
+        this.addbutton=true;
+      }else if(this.formName=="bug_list"){
+        this.pageHeading="Bug List"
+
+        collection="project"
+        this.addbutton=true;
       }
 
       this.loadConfig(this.formName)
@@ -548,6 +527,79 @@ this.gridOptions.groupDefaultExpanded=-1
     }
     
     )
+  }else if(this.formName=="bug_list"){
+    this.pageHeading="Bug List"
+    this.gridOptions.groupDefaultExpanded=-1
+    this.gridOptions.autoGroupColumnDef={
+      headerName: "Requirement Name",
+      field:"requirement_name",
+      maxWidth: 280,
+      cellRendererParams: { suppressCount: true },
+      sortable: false,
+      resizable: true,
+      filter: false
+}
+    this.columnDefs.push(  
+      {
+        headerName: 'Test Case Name',
+        field: 'module_id',
+        width: 40,
+        rowGroup:true,
+        showRowGroup:false,
+        hide:true,
+        filter: 'agTextColumnFilter',
+      },
+   {
+      headerName: 'Test Result Status',
+      field: 'test_case_name',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    }, {
+      headerName: 'Test Case Type',
+      field: 'test_case_scenario',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    }, 
+    {
+      headerName: 'Error Type',
+      field: 'test_cases_length',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    },
+    {
+      headerName: 'Error Priority',
+      field: 'test_result_stauts',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    },{
+      headerName: 'Done By',
+      field: 'bug_count',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    },{
+      headerName: 'Devops Status',
+      field: 'bug_count',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    },
+      {
+  
+      field: 'Action',
+      sortable:false,
+      filter:false,
+      resizable:false,
+      maxWidth: 110,
+      cellRenderer: 'buttonRenderer'
+  
+    }
+    
+    )
   }
 
 
@@ -626,7 +678,6 @@ if(params==true){
 }
   return this.OnlyValueRequriementModules
 }};
-
 
 
 
@@ -779,22 +830,17 @@ this.dataService.lookupTreeData("regression",this.response._id).subscribe((res:a
 console.log(test_Case_Details);
 
 let overalldata: any[] = [];
-
-res.data.response.forEach((vals: any, index: any) => {
-
-  // ? here each test add
+let virtualDAta:any=res.data.response
+virtualDAta.forEach((vals: any) => {
   vals.testcase.forEach((data: any) => {
-    let _id= vals.requirement._id
     let testcase_id=data._id
-    delete vals.requirement._id
     let combinedData = {
         ...data,
         ...vals.requirement,
     };
-    combinedData["requriment_id"] = _id
+    combinedData["requriment_id"] = vals.requirement._id
     combinedData["test_case_id"] = testcase_id
     const refFound: any[] = test_Case_Details.filter((d: any) => {return d.testCase_id == combinedData.test_case_id});
-    console.warn(refFound);
     if(!isEmpty(refFound)){
       const hasFailures: boolean = refFound.some((d: any) => {return d.result_status === "F"});
 
@@ -811,10 +857,6 @@ res.data.response.forEach((vals: any, index: any) => {
     combinedData['test_cases_length']=refFound.length
 
     }
-    // else{
-    // combinedData['test_cases_length']=0
-
-    // }
 
     overalldata.push(combinedData);
 });
@@ -822,15 +864,106 @@ if (vals?.requirement?.module_id==undefined) {
   vals.requirement['module_id'] = "No Module Id Present";
 }
 if (vals.testcase.length === 0) {
-  debugger
-    overalldata.push(vals.requirement);
+  let combinedData = {
+    ...vals.requirement,
+};
+  combinedData["requriment_id"] = vals.requirement._id
+
+    overalldata.push(combinedData);
 }
  
   });
 
 this.listData = overalldata;
 })
-  }
+  }else if(this.formName=="bug_list"){
+    console.log(this.response._id);
+    
+    this.dataService.lookUpBug(this.response.project_id).subscribe((res:any)=>{
+      console.log(res);
+      let data:any=res.data.response
+      console.log(data);
+      
+      let test_Case_Details:any[]=[]
+    //   res.data.response.forEach((xyz:any)=>{
+    //     if(!isEmpty(xyz.test_result)){
+    
+    //       test_Case_Details.push(...xyz.test_result)
+    //     }
+    //   })
+    // console.log(test_Case_Details);
+    
+    // let overalldata: any[] = [];
+    // let virtualDAta:any=res.data.response
+    // virtualDAta.forEach((vals: any) => {
+    // debugger
+    // // let requirement:any={}
+    // // let _id= vals.requirement._id
+    // // Object.assign(requirement,vals.requirement)
+    // // delete requirement._id
+    // // ? here each test add
+    // vals.testcase.forEach((data: any) => {
+    //   let testcase_id=data._id
+    //   // console.error(requirement);
+    //   // console.warn(_id,"_ID");
+        
+    //   //   console.log(requirement,"requirement");
+    
+    //     let combinedData = {
+    //         ...data,
+    //         ...vals.requirement,
+    //     };
+    //     combinedData["requriment_id"] = vals.requirement._id
+    //     // combinedData["requriment"] = vals.requirement
+    //     combinedData["_id"]=data["_id"]
+    //     console.log(combinedData["_id"]);
+        
+    //     combinedData["test_case_id"] = testcase_id
+    //     const refFound: any[] = test_Case_Details.filter((d: any) => {return d.testCase_id == combinedData.test_case_id});
+    //     console.warn(refFound);
+    //     if(!isEmpty(refFound)){
+    //       const hasFailures: boolean = refFound.some((d: any) => {return d.result_status === "F"});
+    
+    //       const failList: any = refFound.filter((d: any) => {return d.result_status === "F" });
+    
+    //       const resultStatus = hasFailures ? "Fail" : "Pass";
+    //       combinedData['bug_list']=failList
+    
+    //     combinedData['test_result_stauts']=resultStatus      
+    
+    //     combinedData['bug_count']=failList.length
+        
+    //     combinedData['test_cases']=refFound
+    //     combinedData['test_cases_length']=refFound.length
+    
+    //     }
+    
+    //     overalldata.push(combinedData);
+    // });
+    // if (vals?.requirement?.module_id==undefined) {
+    //   vals.requirement['module_id'] = "No Module Id Present";
+    // }
+    // if (vals.testcase.length === 0) {
+    //   console.log('hi');
+      
+    //   let combinedData = {
+    //     ...vals.requirement,
+    // };
+    // // combinedData["_id"] = _id
+
+    //   combinedData["requriment_id"] = vals.requirement._id
+    //   console.log(combinedData);
+    //   console.log(combinedData["_id"]);
+
+    
+    //     overalldata.push(combinedData);
+    // }
+     
+    //   });
+    
+    // this.listData = overalldata;
+    })
+      }
 
 }
 
@@ -859,20 +992,23 @@ animateRows:true,paginationPageSize:10
   onCellClicked(event: any){
 let clickCell:any=event.column.getColId()
 if(this.formName=="Requirement"){
-    if(clickCell== 'number_of_TestCase_count'||clickCell=="number_of_Task_count"){
+  this.drawer.close() 
+  if(clickCell== 'number_of_TestCase_count'||clickCell=="number_of_Task_count"){
       console.log(event.data);
       this.cellClicked=clickCell
-      this.drawer.toggle()
+      this.drawer.open()
     }
   }else if(this.formName=="test_result"){
+    this.drawer.close()
     if(clickCell== 'test_cases_length'||clickCell=="bug_count"){
       console.log(event.data);
       this.cellClicked=clickCell
-      this.drawer.toggle()
-    }
+      this.drawer.open()
+    }}else{
+    this.drawer.close()
+  }
   }
 
-  }
   close(event: any) {
     this.dialogService.closeModal();
     this.gridApi.deselectAll();
@@ -989,13 +1125,47 @@ if(fieldName=="module_id"){
     this.butText = this.model.id ? 'Update' : 'Save';
 
   }
+
+
+  datefunction(date:any){
+    return moment(date).format("DD-MM-YYYY")
+  }
+
+  reassigndata(employeeID:any,index:any){
+   this.reassignemployee[index]=[]
+    let filer:any={
+      start:0,end:1000,filter:[{
+        clause: "AND",
+          conditions: [
+            {column: "employee_id",operator: "NOTEQUAL",type: "string",value: employeeID},
+          ],
+        
+      }]
+    }
+    this.dataService.getDataByFilter("employee",filer).subscribe((res:any) =>{
+        if(isEmpty(res.data[0].response)){
+          this.dialogService.openSnackBar("There Were No Employee To be Found","OK")
+          return
+        }      
+        this.reassignemployee[index]=res.data[0].response
+  })
+  }
+
+  reassigntask(taskData:any,selectedData:any,index:any){
+      let data:any={}
+      data['assigned_to']=selectedData.employee_id
+      data['previous_assigned_to']=taskData.assigned_to
+      this.dataService.update("task",taskData._id,data).subscribe((xyz:any)=>{
+        console.log(xyz);
+        this.dialogService.openSnackBar("Task updated successfully","OK")
+        this.reassignemployee[index]=null
+      })
+  }
+
   goBack(){
     // this.router.navigate(['list/project'])
     this._location.back();
   }
-
-
-
 }
 
 

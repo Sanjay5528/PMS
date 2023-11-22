@@ -240,29 +240,7 @@ if(this.model.isEdit){
     console.log(this.formControl.value);
     console.log(this.model);
     
- this.imageUrl=  environment.ImageBaseUrl+this.model[this.field.key].storage_name
-
-    // this.dataService.getDataById("employee", this.id).subscribe((res: any) => {
-    //     console.log(res);
-    //     this.response = res.data
-       
-    //     })
-       
-        
-    //     this.dataService.getDataById("client", this.id).subscribe((res: any) => {
-    //    console.log(res);
-    //        this.response = res.data
-          
-           
-    //        })
-       
-       
-    
-
-
-    // "filterParams": {
-    //     "values": ["Female","Male","Others"]
-    //     }
+ this.imageUrl=  environment?.ImageBaseUrl+this.model[this.field.key].storage_name
 }
  }
 

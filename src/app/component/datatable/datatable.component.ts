@@ -83,9 +83,9 @@ export class DatatableComponent implements OnInit {
   @Input("mode") mode: string = "page";
   public gridOptions: any = {
     flex: 1,
-    cacheBlockSize: environment.cacheBlockSize,
-    paginationPageSize: environment.paginationPageSize,
-    rowModelType: environment.rowModelType,
+    cacheBlockSize: environment?.cacheBlockSize,
+    paginationPageSize: environment?.paginationPageSize,
+    rowModelType: environment?.rowModelType,
   };
   overlayNoRowsTemplate =
     '<span style="padding: 10px; background:white ;">No Data Found</span>"';

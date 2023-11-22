@@ -1,43 +1,3 @@
-<!-- <ng-template #editViewPopup>
-  <mat-card>
-    <mat-card-header style="flex: 1 1 auto;">
-      <div style="width: 100%">
-        <h2 style="text-align: center;" class="page-title">{{ pageHeading }}</h2>
-      </div>
-      <div style="text-align-last: end" >
-        <mat-icon mat-dialog-close>close</mat-icon>
-      </div>
-    </mat-card-header>
-    <mat-card-content style="padding-top: 10px">
-      <form [formGroup]="form">
-        <formly-form [model]="selectedModel" [fields]="fields" [form]="form"></formly-form>
-      
-      </form>
-    </mat-card-content>
-    <mat-card-actions>
-      <div style="text-align-last: end; width: 100%">
-        <button style="margin: 5px" mat-button mat-dialog-close>
-          Cancel
-        </button>
-        <button style="margin: 5px" mat-button (click)="resetBtn('reset')" *ngIf="this.id" >
-          Reset
-        </button>
-        <button
-        style="margin: 5px; background: rgb(59, 146, 155)"
-        (click)="saveForm(config,$event)"
-        mat-raised-button
-        color="warn"
-       
-      >
-        save
-      </button>
-      
-
-      </div>
-    </mat-card-actions>
-  </mat-card>
-</ng-template> -->
-
 <!-- ! an do requriement here 1st task -->
 <mat-drawer-container style="height: 100%;" >
   <!-- 'over' | 'push' | 'side'; -->
@@ -60,18 +20,11 @@
                
                <span style="font-size: large;font-weight: bold;">{{ testCase.test_case_name }}</span>                <span [ngStyle]="{'background-color': testCase?.test_case_scenario === 'P' ? 'green' : 'red', 'width': '10px', 'height': '10px', 'border-radius': '50%', 'display': 'inline-block', 'margin-right': '5px','margin-left':'5px'}"></span>
 
-                <!-- <span style="font-size: medium;">  ( {{testCase.test_case_scenario}} )  </span>  -->
              </mat-card-title>
-             <!-- <mat-card-subtitle>{{  }}</mat-card-subtitle> -->
            </mat-card-header>
            <mat-card-content style="margin-left: 30px;">
-             <!-- <p>{{  }}</p> -->
              <p [innerHTML]="testCase.expected_result"></p>
-             <!-- <p>{{ testCase.test_data }}</p> -->
            </mat-card-content>
-           <mat-card-actions>
-             <!-- Add actions if needed -->
-           </mat-card-actions>
          </mat-card>
        </div>
      </div>
@@ -80,37 +33,32 @@
    <div *ngIf="cellClicked=='number_of_Task_count'" style="margin-left: 25px;">
      <div  class="keep-scrolling">
    
-       <div *ngFor="let testCase of this.selectedRows?.taskresult" class="mat-card-container" style="margin-bottom: 5px;">
-         <mat-card class="mat-card">
+       <div *ngFor="let task of this.selectedRows?.taskresult;let index=index;" class="mat-card-container" style="margin-bottom: 5px;">
+         <mat-card class="mat-card" >
            <mat-card-header>
              <mat-card-title style="margin-top: 5px;">
-               <span style="font-size: large;font-weight: bold;width: 100%;margin-bottom: 5px;">{{ testCase.task_name }}</span> 
-               <!-- <mat-card-subtitle>{{  datefunction(testCase.scheduled_start_date)}}</mat-card-subtitle>
-               <mat-card-subtitle>{{  datefunction(testCase.scheduled_end_date)}}</mat-card-subtitle> -->
+               <span style="font-size: large;font-weight: bold;width: 100%;margin-bottom: 5px;">{{ task.task_name }}</span> 
              </mat-card-title>
 
 
-             <!-- <mat-card-subtitle>{{  }}</mat-card-subtitle> -->
            </mat-card-header>
-           <!-- <div> -->
-             <span style="font-size: medium;font-family: cursive;margin-left: 20px;color: grey;">  {{  datefunction(testCase.scheduled_start_date)}} to {{  datefunction(testCase.scheduled_end_date)}}  <span style="font-size: small;margin-left: 10px;font-weight: bold;">  ( {{testCase.allocated_hours}}  <span style="font-size: xx-small;font-weight: bold;">Hr</span> )  </span>  </span>
+             <span style="font-size: medium;font-family: cursive;margin-left: 20px;color: grey;">  {{  datefunction(task.scheduled_start_date)}} to {{  datefunction(task.scheduled_end_date)}}  <span style="font-size: small;margin-left: 10px;font-weight: bold;">  ( {{task.allocated_hours}}  <span style="font-size: xx-small;font-weight: bold;">Hr</span> )  </span>  </span>
            
-           <!-- </div> -->
            <mat-card-content style="margin-left: 30px;">
-             <!-- <p>{{  }}</p> -->
-             <p [innerHTML]="testCase.description"></p>
-             <!-- <p>{{ testCase.test_data }}</p> -->
+             <p [innerHTML]="task.description"></p>
            </mat-card-content>
            <mat-card-actions style="display: flex;justify-content: space-between;">
 <div style="display: flex;align-items: start;justify-items: center;">
- <mat-icon style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{testCase.employee_name}} 
- <mat-icon style="font-size: 20px;margin-left: 10px;margin-top: 3px;"*ngIf="!reassignemployee" (click)="reassign(testCase.assigned_to)">autorenew</mat-icon>
- <mat-icon  style="font-size: 20px;margin-left: 10px;margin-top: 3px;" (click)="reassignemployee=null" *ngIf="reassignemployee" >undo</mat-icon>
+ <mat-icon style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{task.employee_name}} 
+ <mat-icon style="font-size: 20px;margin-left: 10px;margin-top: 3px;"*ngIf="!reassignemployee[index]" (click)="reassigndata(task.assigned_to,index)">compare_arrows</mat-icon>
+ <mat-icon  style="font-size: 20px;margin-left: 10px;margin-top: 3px;" (click)="reassignemployee[index]=null" *ngIf="reassignemployee[index]" >undo</mat-icon>
 </div>
-<mat-form-field *ngIf="reassignemployee" style="width: 50%;max-width: 50%;">
+<mat-form-field *ngIf="reassignemployee[index]" style="width: 50%;max-width: 50%;">
  <mat-label>Reassign To</mat-label>
  <mat-select>
-     <mat-option  *ngFor="let data of reassignemployee" [value]="data.employee_id">{{data.first_name}}{{data.last_name}}</mat-option>
+  <mat-option selected="true" [disabled]="true" >Select Any Employee Below</mat-option>
+
+     <mat-option  *ngFor="let data of reassignemployee[index]" (click)="reassigntask(task,data,index)" [value]="data.employee_id">{{data.first_name}} {{data.last_name}}</mat-option>
  </mat-select>
 </mat-form-field>
 
@@ -124,7 +72,7 @@
   <div style="width: 100%;margin-bottom: 5px;" >
 
     <span *ngIf="cellClicked" style="font-size: larger;font-style: italic;margin-left: 20px;">{{selectedRows.requirement_name.toUpperCase()}} </span>
-    <mat-icon style="float: right;font-size: large;" mat-dialog-close (click)="this.drawer.toggle()">close</mat-icon>
+    <mat-icon style="float: right;font-size: large;"  (click)="this.drawer.close()">close</mat-icon>
   </div>
    <span *ngIf="cellClicked" style="font-size: small;font-style: normal;margin-left: 20px;"> {{cellClicked=='test_cases_length'? "Test Case":"Bug List" }} <span style="font-size: small;border-radius: 50%;"> {{ cellClicked=='test_cases_length'? selectedRows.test_cases_length : selectedRows.bug_count}} </span> </span>
  
@@ -135,24 +83,24 @@
            <mat-card-header>
              <mat-card-title style="margin-top: 5px;">
                
-               <span style="font-size: large;font-weight: bold;">{{ testCase.name }}</span>        
+               <span style="font-size: large;font-weight: bold;">{{ selectedRows.test_case_name }}</span>        
                        <span [ngStyle]="{'background-color': testCase?.result_status === 'P' ? 'green' : 'red', 'width': '10px', 'height': '10px', 'border-radius': '50%', 'display': 'inline-block', 'margin-right': '5px','margin-left':'5px'}"></span>
 <br>
-                <!-- <span style="font-size: medium;">  ( {{testCase.test_case_scenario}} )  </span>  -->
                 <span style="font-size: medium;font-family: cursive;margin-left: 20px;color: grey;">  {{  datefunction(testCase.testcase_date)}}</span>
              </mat-card-title>
 
-             <!-- <mat-card-subtitle>{{  }}</mat-card-subtitle> -->
            </mat-card-header>
            <mat-card-content style="margin-left: 30px;">
-             <!-- <p>{{  }}</p> -->
+            <div style="display: flex;align-items: start;justify-items: center;">
+              <mat-icon *ngIf="testCase.doneBy" style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{testCase.employee_name}} 
+            </div>
+            
              <p [innerHTML]="testCase.actual_result"></p>
-             <img *ngIf="testCase.result_proof.storage_name" [src]="imageurl+testCase.result_proof.storage_name" alt="Result Proof" height="100px" width="200px">
-             <!-- <p>{{ testCase.test_data }}</p> -->
+            <div *ngFor="let image of testCase?.result_proof">
+              <img *ngIf="image?.storage_name" [src]="imageurl + image?.storage_name" alt="Result Proof" height="100px" width="200px">
+             </div>
+          
            </mat-card-content>
-           <mat-card-actions>
-             <!-- Add actions if needed -->
-           </mat-card-actions>
          </mat-card>
        </div>
      </div>
@@ -162,55 +110,24 @@
      <div  class="keep-scrolling">
    
        <div *ngFor="let buglist of this.selectedRows?.bug_list " class="mat-card-container" style="margin-bottom: 5px;">
-         <!-- <mat-card class="mat-card">
-           <mat-card-header>
-             <mat-card-title style="margin-top: 5px;">
-               <span style="font-size: large;font-weight: bold;width: 100%;margin-bottom: 5px;">{{ buglist.task_name }}</span> 
-             </mat-card-title>
-
-           </mat-card-header>
-             <span style="font-size: medium;font-family: cursive;margin-left: 20px;color: grey;">  {{  datefunction(buglist.scheduled_start_date)}} to {{  datefunction(buglist.scheduled_end_date)}}  <span style="font-size: small;margin-left: 10px;font-weight: bold;">  ( {{buglist.allocated_hours}}  <span style="font-size: xx-small;font-weight: bold;">Hr</span> )  </span>  </span>
-           
-           <mat-card-content style="margin-left: 30px;">
-             <p [innerHTML]="buglist.description"></p>
-           </mat-card-content>
-           <mat-card-actions style="display: flex;justify-content: space-between;">
-<div style="display: flex;align-items: start;justify-items: center;">
- <mat-icon style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{buglist.employee_name}} 
- <mat-icon style="font-size: 20px;margin-left: 10px;margin-top: 3px;"*ngIf="!reassignemployee" (click)="reassign(buglist.assigned_to)">autorenew</mat-icon>
- <mat-icon  style="font-size: 20px;margin-left: 10px;margin-top: 3px;" (click)="reassignemployee=null" *ngIf="reassignemployee" >undo</mat-icon>
-</div>
-<mat-form-field *ngIf="reassignemployee" style="width: 50%;max-width: 50%;">
- <mat-label>Reassign To</mat-label>
- <mat-select>
-     <mat-option  *ngFor="let data of reassignemployee" [value]="data.employee_id">{{data.first_name}}{{data.last_name}}</mat-option>
- </mat-select>
-</mat-form-field>
-
-             </mat-card-actions>
-         </mat-card> -->
          <mat-card class="mat-card">
           <mat-card-header>
             <mat-card-title style="margin-top: 5px;">
-              
-              <span style="font-size: large;font-weight: bold;">{{ buglist.name }}</span>        
+              <span style="font-size: large;font-weight: bold;">{{ selectedRows.test_case_name }}</span>        
                       <span [ngStyle]="{'background-color': buglist?.result_status === 'P' ? 'green' : 'red', 'width': '10px', 'height': '10px', 'border-radius': '50%', 'display': 'inline-block', 'margin-right': '5px','margin-left':'5px'}"></span>
-<br>
-               <!-- <span style="font-size: medium;">  ( {{buglist.test_case_scenario}} )  </span>  -->
+                      <br>
                <span style="font-size: medium;font-family: cursive;margin-left: 20px;color: grey;">  {{  datefunction(buglist.testcase_date)}}</span>
             </mat-card-title>
 
-            <!-- <mat-card-subtitle>{{  }}</mat-card-subtitle> -->
           </mat-card-header>
           <mat-card-content style="margin-left: 30px;">
-            <!-- <p>{{  }}</p> -->
+            <mat-icon *ngIf="buglist.doneBy" style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{buglist.employee_name}} 
+
             <p [innerHTML]="buglist.actual_result"></p>
-            <img *ngIf="buglist.result_proof.storage_name" [src]="imageurl+buglist.result_proof.storage_name" alt="Result Proof" height="100px" width="200px">
-            <!-- <p>{{ testCase.test_data }}</p> -->
+            <div *ngFor="let image of buglist?.result_proof">
+              <img *ngIf="image?.storage_name" [src]="imageurl + image?.storage_name" alt="Result Proof" height="100px" width="200px">
+            </div>
           </mat-card-content>
-          <mat-card-actions>
-            <!-- Add actions if needed -->
-          </mat-card-actions>
         </mat-card>
        </div>
      </div>    
@@ -265,7 +182,7 @@
                     <div style="margin-top: 10px; margin-left: 20px;">
                       <div style="display: flex; margin-bottom: 2px; font-size: larger; color: black;">
                         <span>
-                           <b>Project</b> <span style="font-size: large;color: black;"> > ></span> <span style="font-weight: bold; margin-left: 10px;">{{response?.project_name?response?.project_name:response?.regression_id }}</span>         
+                           <b>Project</b> <span style="font-size: large;color: black;"> > ></span> <span style="font-weight: bold; margin-left: 10px;">{{response?.project_name ?  response?.project_name : response?.regression_id }}</span>         
                           <span style="margin-left: 10px;">({{response?.project_id}})</span>
                         </span>
                       </div>

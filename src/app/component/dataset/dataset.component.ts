@@ -26,9 +26,9 @@ import { environment } from "src/environments/environment";
 export class DatasetComponent {
   public gridOptions: any = {
     flex: 1,
-    cacheBlockSize: environment.cacheBlockSize,
-    paginationPageSize: environment.paginationPageSize,
-    rowModelType: environment.rowModelType,
+    cacheBlockSize: environment?.cacheBlockSize,
+    paginationPageSize: environment?.paginationPageSize,
+    rowModelType: environment?.rowModelType,
   };
   
   overlayNoRowsTemplate =

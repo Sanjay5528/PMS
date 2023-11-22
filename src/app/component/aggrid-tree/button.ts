@@ -147,7 +147,7 @@ import { HelperService } from "src/app/services/helper.service";
             <button style="margin: 5px" mat-button mat-dialog-close (click)="closedia()">  Cancel </button>
             <button style="margin: 5px" mat-button (click)="resetBtn('reset')">  Reset </button>
             <button  style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn"  (click)="saveForm(this.parentRouteName, 'taskViewPopup')" *ngIf="continue_Save==true"> Continue & Save</button> 
-            <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button color="warn" (click)="this.continue_Save=false;saveForm(this.parentRouteName, 'taskViewPopup')" >   {{continue_Save==true?"Save & Close":"Save"}}  </button>
+            <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button color="warn" (click)="this.continue_Save=false;saveForm(this.parentRouteName, 'taskViewPopup')" >   {{continue_Save==true?"Save & Close":butText}}  </button>
           </div>
         </mat-card-actions>
       </mat-card>
@@ -174,7 +174,7 @@ import { HelperService } from "src/app/services/helper.service";
             <button style="margin: 5px" mat-button  mat-dialog-close (click)="closedia()" > Cancel </button>
             <button style="margin: 5px" mat-button (click)="resetBtn()"> Reset </button> 
             <button style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn"  mat-button (click)="saveForm(this.parentRouteName, 'modulesViewPopup')" *ngIf="continue_Save==true"> Continue & Save</button> 
-            <button  style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn" (click)="this.continue_Save=false;saveForm(this.parentRouteName, 'modulesViewPopup')" > Save   </button>
+            <button  style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn" (click)="this.continue_Save=false;saveForm(this.parentRouteName, 'modulesViewPopup')" > {{butText}}   </button>
           </div>
         </mat-card-actions>
       </mat-card>
@@ -183,30 +183,21 @@ import { HelperService } from "src/app/services/helper.service";
 })
 export class ButtonComponent implements ICellRendererAngularComp {
   data: any;
-  public gridApi: any;
-  row_data: any;
   model_heading:any="Sub Module Add "
   id: any;
   config: any;
-  pageHeading: any;
   gridData: any;
-  @ViewChild("popup", { static: true }) popup!: TemplateRef<any>;
-  @ViewChild("modulesViewPopup", { static: true })
-  modulesViewPopup!: TemplateRef<any>;
-  @Input() selectedRows: any;
+  @ViewChild("modulesViewPopup", { static: true })  modulesViewPopup!: TemplateRef<any>;
   public params: any;
-  user: any;
   fields: any;
-  jsonData: any;
 
-  @ViewChild("taskViewPopup", { static: true })
-  taskViewPopup!: TemplateRef<any>;
-  @Input("model") model: any = {};
+  @ViewChild("taskViewPopup", { static: true })  taskViewPopup!: TemplateRef<any>;
+   model: any = {};
   form = new FormGroup({});
   selectedModel: any;
   formAction: any;
   formName: any;
-  butText = "Save";
+  butText:any = "Save";
   onClose: any;
   continue_Save: any=false;
   constructor(
@@ -241,23 +232,13 @@ parentRouteName:any
     this.dialogService.CloseALL()
   }
 
-  delete_button() {
-    let row: any = this.data;
-    this.row_data = {
-      name: row["name"],
-      delete_flag: 1,
-    };
-    this.id = this.row_data.id;
-    // this.dataService.disable(this.row_data, config, this.id).subscribe((res: any) => {
-    //   this.dialog.openSnackBar("Data has been Deleted successfully", "OK")
-    //   this.cancel()
-    // })
-  }
   onClickMenuItem(formAction: any, data?: any) {
      if (formAction == "submodules") {
       this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
         this.formAction = "Add";
-        this.config = frmConfig;
+        this.config = frmConfig;       
+          this.butText="Save"
+
         this.model_heading="Sub Module - Add"
         this.fields = frmConfig.form.fields;
         this.dialogService.openDialog(this.modulesViewPopup,null, null, {});
@@ -266,10 +247,12 @@ parentRouteName:any
       this.dataService.loadConfig("task").subscribe((frmConfig: any) => {
         this.formAction = "Add";
         this.model_heading="Task - Add"
+        this.butText="Save"
 
         this.config = frmConfig;
         this.fields = frmConfig.form.fields;
         sessionStorage.setItem("project_id", this.gridData.project_id);
+        
         this.dialogService.openDialog(this.taskViewPopup,null, null, data);
       });
     } else if (formAction == "edit" ) {
@@ -280,6 +263,8 @@ parentRouteName:any
           this.formAction = "Edit";
          data.isEdit=true;
          this.config = frmConfig;
+         this.butText="Update"
+         this.id=data._id;
           this.fields = frmConfig.form.fields;
           this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
         });
@@ -289,6 +274,8 @@ parentRouteName:any
         this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
           this.formAction = "Edit";
          data.isEdit=true;
+         this.butText="Update";
+         this.id=data._id;
          this.config = frmConfig;
           this.fields = frmConfig.form.fields;
           this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
@@ -309,14 +296,11 @@ parentRouteName:any
       // this.router.navigate(["/list/testcase/" + `${this.data.moduleid}`]);
     }
   }
-  onClickRequirementMenuItem(formAction: any, data?: any) {
-    console.log('dasdada',formAction);
-    
+  onClickRequirementMenuItem(formAction: any, data?: any) { 
     if (formAction == "addsubchild") {
      this.dataService.loadConfig(this.parentRouteName.toLowerCase()).subscribe((frmConfig: any) => {
        this.formAction = "Add";
-       console.log(frmConfig);
-       
+       this.butText="Save"
        this.config = frmConfig;
        this.model_heading="Sub Requirement - Add"
        this.fields = frmConfig.form.fields;
@@ -330,12 +314,13 @@ parentRouteName:any
     }
      if( data.parentmodulename==''){
        this.model_heading="Requirement - Edit"
-
        this.dataService.loadConfig(this.parentRouteName.toLowerCase()).subscribe((frmConfig: any) => {
          this.formAction = "Edit";
+         this.butText="Update"
          this.config = frmConfig;
          this.fields = frmConfig.form.fields;
          data.isEdit=true;
+         this.id=data._id;
          this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
        });
      }else{
@@ -343,8 +328,10 @@ parentRouteName:any
 
        this.dataService.loadConfig(this.parentRouteName.toLowerCase()).subscribe((frmConfig: any) => {
          this.formAction = "Edit";
+         this.butText="Update"
          this.config = frmConfig;
          data.isEdit=true;
+         this.id=data._id;
          this.fields = frmConfig.form.fields;
          this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
        });
@@ -361,12 +348,11 @@ parentRouteName:any
      }
    } else  if (formAction == "task") {
      this.dataService.loadConfig("task").subscribe((frmConfig: any) => {
-      this.formAction = "Add";
+      this.formAction = "Add";   
+      this.butText="Save"
       this.config = frmConfig;     
-        this.model_heading="Task - Add"
-        sessionStorage.setItem("project_id", this.gridData.project_id);
-
-      // data.isEdit=true;
+      this.model_heading="Task - Add"
+      sessionStorage.setItem("project_id", this.gridData.project_id);
       this.fields = frmConfig.form.fields;
       this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
     })
@@ -374,9 +360,9 @@ parentRouteName:any
       this.dataService.loadConfig('testcase').subscribe((vals: any) => {
         this.formAction = "Add";
         this.continue_Save=true
-        this.model_heading="Test Case - Add"
+        this.model_heading="Test Case - Add"      
+        this.butText="Save"
         this.config = vals;
-        // data.isEdit=true;
         this.fields = vals.form.fields;
         this.dialogService.openDialog(this.taskViewPopup,null, null, data);
       });
@@ -386,30 +372,29 @@ parentRouteName:any
   }
  }
  onclickTEamMembers(formAction:any,data?:any){
-  // 
   if (formAction == "addsubchild") {
     this.dataService.loadConfig("teamaddmember").subscribe((frmConfig: any) => {
       this.formAction = "Add";
-      console.log(frmConfig);
-      
+      this.butText="Save"
       this.config = frmConfig;
       this.model_heading="Team Member - Add"
       this.fields = frmConfig.form.fields;
       this.dialogService.openDialog(this.modulesViewPopup,null, null, {});
     });
   } else if (formAction == "edit" ) {
+    // ? Find The Model Value
    if(data && data?.module_id){
    let findValue:any=this.ParentComponent.ValueToCompareRequriementModules.find(val=>val.label==data?.module_id)
-   console.log(findValue.value);
    data.module_id= findValue.value;
    }
     if( data.parentmodulename==''){
       this.model_heading="Team Specification - Edit"
-
       this.dataService.loadConfig(this.parentRouteName.toLowerCase()).subscribe((frmConfig: any) => {
         this.formAction = "Edit";
+        this.butText="Update"   
+        this.id=data._id;
         this.config = frmConfig;
-        this.fields = frmConfig.form.fields;
+         this.fields = frmConfig.form.fields;
         data.isEdit=true;
         this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
       });
@@ -418,8 +403,11 @@ parentRouteName:any
 
       this.dataService.loadConfig("teamaddmember").subscribe((frmConfig: any) => {
         this.formAction = "Edit";
-        this.config = frmConfig;
-        data.isEdit=true;
+        this.butText="Update"
+        this.config = frmConfig;       
+        data.isEdit=true;     
+        this.id=data._id;
+
         this.fields = frmConfig.form.fields;
         this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
       });
@@ -445,35 +433,33 @@ parentRouteName:any
   if (formAction == "add") {
     this.dataService.loadConfig("testcase").subscribe((frmConfig: any) => {
       this.formAction = "Add";
-      console.log(frmConfig);
+      this.butText="Save"
       this.continue_Save=true
       this.model_heading="Test Case - Add"
-      this.config = frmConfig;
-      // this.model_heading=frmConfig.pageHeading
+      this.config = frmConfig;     
       this.fields = frmConfig.form.fields;
       this.dialogService.openDialog(this.taskViewPopup,null, null, {});
     });
   } 
   else if (formAction == "edit" ) {
-   
       this.dataService.loadConfig("testcase").subscribe((frmConfig: any) => {
         this.formAction = "Edit";
-        this.config = frmConfig;   
-           this.model_heading="Test Case - Edit"
+        this.butText="Update"   
+        this.id=data._id;
 
+        this.config = frmConfig;   
+        this.model_heading="Test Case - Edit"
         data.isEdit=true;
         this.fields = frmConfig.form.fields;
         this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
       });
     
   } else if (formAction == "testresult") {
-    
     this.dataService.loadConfig("test_result").subscribe((frmConfig: any) => {
       this.formAction = "Add";
       this.config = frmConfig;   
-         this.model_heading="Test Result - Add"
-
-      // data.isEdit=true;
+      this.model_heading="Test Result - Add"
+      this.butText="Save"
       this.fields = frmConfig.form.fields;
       this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
     });
@@ -498,7 +484,8 @@ parentRouteName:any
   //   }
   // }
   saveForm(formName: any, val?: any) {
-    debugger;
+
+    
     if(!this.form.valid){
       const invalidLabels:any = this.helperServices.getDataValidatoion(this.form.controls);
       this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
@@ -514,44 +501,109 @@ parentRouteName:any
     else if(  this.model_heading=="Task - Add"){
       values.project_id = this.ParentComponent.response?.project_id;
       values.requirement_id = this.gridData._id;
+      values._id = "SEQ|Task|"+values.project_id ;
+      
       // values._id="SEQ|TASK"
     }  else if(  this.model_heading=="Test Case - Add"){
       values.project_id = this.ParentComponent.response?.project_id;
       values.requirement_id = this.gridData._id;
-      values.doneBy=this.helperServices.getEmp_id()
+      values.testCase_Created=this.helperServices.getEmp_id()
+      values._id = "SEQ|Test_Case|"+values.project_id ;
+
     }
-    this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
+    if(this.id==undefined&&this.butText=="Save"|| this.formAction == 'Add'){
+      console.log('save');
+      this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
         console.log(data);
         if(this.continue_Save!==true){
-
-          this.dialogService.closeModal();
+          this.dialogService.CloseALL();
         }
-        this.form.reset();
+        this.form.reset();   
+        //  this.ParentComponent.ngOnInit()
+
       });
+          }
+          else{
+      console.log('update');
+      this.dataService.update(this.config.form.collectionName, this.id,values).subscribe((data: any) => {
+        console.log(data);
+        if(this.continue_Save!==true){
+          this.id=undefined
+          this.dialogService.CloseALL();
+        }
+        this.form.reset();  
+          // this.ParentComponent.ngOnInit()
+
+      });
+          }
+ 
     }else if(formName=='test_result'){
+      let updateBug:any=false
       if(  this.model_heading=="Test Case - Add"){
         values.project_id = this.ParentComponent.response?.project_id;
-        values.requirement_id = this.gridData.requriment_id;
+        values.requirement_id = this.gridData.requriment_id;    
+        values.testCase_Created=this.helperServices.getEmp_id()
+        values._id = "SEQ|Test_Case|"+values.project_id ;
+
       } else if(this.model_heading=="Test Result - Add"){
         values.project_id = this.ParentComponent.response?.project_id;
         // values.requirement_id = this.gridData.requriment_id;
         values.testCase_id = this.gridData.test_case_id;
-
-      }
-      this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
-        console.log(data);
-        if(this.continue_Save!==true){
-
-          this.dialogService.closeModal();
+        values.doneBy=this.helperServices.getEmp_id()
+        values._id = "SEQ|Test_Result|"+values.project_id ;
+        values.regression_id = this.ParentComponent.response.regression_id    ;
+        if(values.result_status=='F'){
+          updateBug=true;
         }
-        this.form.reset();
-      });
-    }
-    else  {
-      if(  this.model_heading=="Test Case - Add"){
-        values.project_id = this.ParentComponent.response?.project_id;
-        values.requirement_id = this.gridData._id;
       }
+      // this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
+      //   console.log(data);
+      //   if(this.continue_Save!==true){
+
+      //     this.dialogService.closeModal();
+      //   }
+      //   if(updateBug==true){
+          
+      //     this.InsertBug(values,data)
+      //   }
+
+      //   this.form.reset();
+      // });
+      values.status='A'
+
+      if(this.id==undefined&&this.butText=="Save"|| this.formAction == 'Add'){
+        console.log('save');
+        this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
+          if(this.continue_Save!==true){
+            this.dialogService.CloseALL();
+          }
+            if(updateBug==true){
+            this.InsertBug(values,data)
+            return
+          }
+          this.form.reset();
+    //       else{
+    // 
+    // this.ParentComponent.ngOnInit()
+    //
+
+    //       }
+            });
+          }else{
+        console.log('update');
+        this.dataService.update(this.config.form.collectionName, this.id,values).subscribe((data: any) => {
+          console.log(data);
+          if(this.continue_Save!==true){
+            this.id=undefined
+            this.dialogService.CloseALL();
+          }
+        
+          this.form.reset();
+          this.ParentComponent.ngOnInit()
+
+        });
+      }}else  {
+     
        // values.project_name=this.gridData.project_name
         // values.client_name = this.ParentComponent.response?.client_name;
         values.project_id = this.ParentComponent.response?.project_id;
@@ -560,6 +612,13 @@ parentRouteName:any
           values.parentmodulename = this.gridData.modulename;
       } else if (this.gridData.team_id) {
           values.parentmodulename = this.gridData.team_id;
+      } 
+      
+      if(this.model_heading=="Test Case - Add"){
+        values.project_id = this.ParentComponent.response?.project_id;
+        values.requirement_id = this.gridData._id;  
+              values._id = "SEQ|[Test_Case]|"+values.project_id ;
+
       }
       values.status='A'
         // values.project_id=this.gridData.project_id
@@ -579,16 +638,35 @@ parentRouteName:any
       //   values.project_id = this.ParentComponent.response?.project_id;
       //   // values.project_name = this.ParentComponent.response?.project_name;
       // } 
-      this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
-        console.log(data);
-        this.dialogService.closeModal();
-        this.form.reset();
-      });
+      // this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
+      //   console.log(data);
+      //   this.dialogService.closeModal();
+      //   this.form.reset();
+      // });
+      if(this.id==undefined&&this.butText=="Save"|| this.formAction == 'Add'){
+        console.log('save');
+        this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
+          console.log(data);
+          if(this.continue_Save!==true){
+  
+            this.dialogService.CloseALL();
+          }
+          this.form.reset();
+        });
+            }
+            else{
+        console.log('update');
+        this.dataService.update(this.config.form.collectionName, this.id,values).subscribe((data: any) => {
+          console.log(data);
+          if(this.continue_Save!==true){
+            this.id=undefined
+            this.dialogService.CloseALL();
+          }
+          this.form.reset();
+        });
+            }
     }
-    //! To To in transion For time Save
-    // this.ParentComponent.getTreeData(this.parentRouteName,true);
-    this.ParentComponent.ngOnInit()
-  }
+    }
 
 
   resetBtn(data?: any) {
@@ -597,4 +675,32 @@ parentRouteName:any
     this.formAction = this.model.id ? "Edit" : "Add";
     this.butText = this.model.id ? "Update" : "Save";
   }
+  InsertBug(formData:any,refId:any){
+console.log(formData);
+console.warn(refId);
+console.error(this.gridData);
+let data:any={}
+data['_id']="SEQ|BUG|"+this.gridData.project_id
+
+data['test_result_id']=refId.data["insert ID"]
+data['test_case_id']=this.gridData.test_case_id;
+data['project_id']=this.gridData.project_id
+
+
+this.dataService.save("bug",data).subscribe((res:any)=>{
+  console.log(res);
+  let values:any={}
+  values['bug_Id']=res.data["insert ID"]
+  values['Status']='created'
+
+  this.dataService.save("bug_Histoy",data).subscribe((res:any)=>{
+    console.log(res);
+    this.ParentComponent.ngOnInit()
+  })
+
+  // this.ParentComponent.ngOnInit()
+})
+
+  }
+
 }

@@ -20,6 +20,13 @@
 .form-container {
   width:95% !important;
 }
+img {
+  transition: transform 0.3s ease-in-out;
+}
+
+img:hover {
+  transform: scale(1.2); 
+}
 
 .back {
   margin-left: 5px;
