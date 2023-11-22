@@ -107,8 +107,8 @@ func PostDocHandler(c *fiber.Ctx) error {
 
 	// return shared.SuccessResponse(c, res.InsertedID)
 	return shared.SuccessResponse(c, fiber.Map{
-		"message":  "Insert Successfully",
-		"response": res.InsertedID,
+		"message":   "Insert Successfully",
+		"insert ID": res.InsertedID,
 	})
 }
 
