@@ -334,7 +334,7 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 	}
 
 	if len(inputData.DataSetJoinCollection) > 0 {
-		lookupData := ExecuteLookupQueryData(inputData, inputData.DataSetBaseCollection)
+		lookupData := ExecuteLookupQueryData(inputData.DataSetJoinCollection, inputData.DataSetBaseCollection)
 		Pipeline = append(Pipeline, lookupData...)
 	}
 

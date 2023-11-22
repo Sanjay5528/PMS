@@ -1141,3 +1141,43 @@ func regressionproject(c *fiber.Ctx) error {
 // 			},
 // 		},
 // 	}
+
+func HandlerBugReport(c *fiber.Ctx) error {
+	//Get the orgId from Header
+	org, exists := helper.GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
+	}
+	filter := bson.A{
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "testcase"},
+					{"localField", "test_case_id"},
+					{"foreignField", "_id"},
+					{"as", "testcase"},
+				},
+			},
+		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "test_result"},
+					{"localField", "test_result_id"},
+					{"foreignField", "_id"},
+					{"as", "test_result"},
+				},
+			},
+		},
+	}
+
+	response, err := helper.GetAggregateQueryResult(org.Id, "requriment", filter)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	return shared.SuccessResponse(c, fiber.Map{
+		"response": response,
+		// "pipeline": filter,
+	})
+}

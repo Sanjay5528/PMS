@@ -27,18 +27,19 @@ func buildSortConditions(sortCriteria []SortCriteria) bson.M {
 }
 
 // ExecuteLookupQueryData  --METHOD create a lookup aggreation and lookup filter
-func ExecuteLookupQueryData(Data DataSetConfiguration, basecollectionName string) []bson.M {
+func ExecuteLookupQueryData(Data []DataSetJoinCollection, basecollectionName string) []bson.M {
 	var lookupDataPipeline []bson.M
 	var previousAs string
-	currentCollection := Data.DataSetBaseCollection
+	currentCollection := basecollectionName
 
-	for _, LookupData := range Data.DataSetJoinCollection {
+	for _, LookupData := range Data {
 		if LookupData.FromCollection == currentCollection {
 			localField := LookupData.FromCollectionField
 
 			if LookupData.FromCollection == previousAs {
 				localField = previousAs + "." + LookupData.FromCollectionField
 			}
+
 			// build the lookup
 			lookupStage := bson.M{
 				"$lookup": bson.M{
@@ -58,7 +59,12 @@ func ExecuteLookupQueryData(Data DataSetConfiguration, basecollectionName string
 			lookupDataPipeline = append(lookupDataPipeline, unwindStage)
 
 			previousAs = LookupData.ToCollection
-			currentCollection = LookupData.ToCollection
+
+			if LookupData.FromCollection != basecollectionName {
+				currentCollection = LookupData.ToCollection
+
+			}  
+
 			// lookup Filter
 			if len(LookupData.Filter) > 0 {
 				filterPipeline := BuildAggregationPipeline(LookupData.Filter, basecollectionName)
@@ -142,7 +148,7 @@ func BuildDynamicAggregationPipelineFromSpecifications(Aggregation []Aggregation
 			group[AggColumnName] = bson.M{"$avg": FieldsName}
 			group["doc"] = bson.M{"$first": "$$ROOT"}
 		}
-		
+
 		// Append the $group stage to the pipeline.
 		pipeline = append(pipeline, bson.M{"$group": group})
 		// Construct the $replaceRoot stage to merge the aggregated results back into the main document structure.
