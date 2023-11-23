@@ -366,7 +366,11 @@ return
         if(item.Custom_Key_filed&&item.Custom_Route)
         // todo if this filed is missing it should take the _id
         // let field = data[item.Custom_Key_filed] ? data[item.Custom_Key_filed] : data[_id];
-       
+      //   "SaveType":"local",
+			// "Save_Field":"project_id",
+       if(item.SaveType&&item.Save_Field){
+        sessionStorage.setItem(item.Save_Field,data[item.Save_Field])
+       }
         this.router.navigate([
           `${item.Custom_Route}`,
           data[item.Custom_Key_filed],

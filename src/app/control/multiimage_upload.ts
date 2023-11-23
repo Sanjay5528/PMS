@@ -1,48 +1,19 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef, TemplateRef, ViewChild } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { DataService } from '../services/data.service';
 import { environment } from '../../environments/environment';
 import { DialogService } from '../services/dialog.service';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
     selector: 'formly-imageupload',
     template: `
- <!-- <button mat-raised-button style="color: white;background-color: grey;text-align: center; 
-          margin:20px;" (click)="fileInput.click()">Select File</button>
-          <span>File Size Maximum 2Mb</span>
-            <button style="height: 40px;width: 90px;border-radius: 10%;color:gray ;" button color="gray"
-              (click)="uploadFiles()" [disabled]="!imageList.length">
-              <span class="glyphicon glyphicon-upload"></span> Upload
-            </button>
-            <input style="display: none" #attachments type="file" id="pic" accept=".jpg, .png" (change)="onFileSelection($event)"
-              #fileInput multiple="true">
-            <div style="display:flex;flex-direction: row;">
-              <div style="flex:1 0 auto;width:100px;border: 1px solid #dddd;"
-                *ngFor="let image of imageList;let index = index">
-                <span>
-                  <img [src]="image" alt="Image">
-                  <mat-icon (click)="removeSelectedFile(index)">delete</mat-icon>
-                </span>
-
-              </div>
-
-            </div>
-          
-            
-
-
-            <div style="display:flex;flex-direction: row;" *ngIf="imageFile.length>0">
-              <span>Uploaded Images</span>
-              <div *ngFor="let data of imageFile" style="margin: 2px; display:flex">
-                <span style="display:inline-block;"><img src={{docBasePath}}{{data.storage_name}} alt="Image"></span>
-              </div>
-            </div> -->
-            <p style="font-style: italic;    display: contents">{{to['label']}}</p>
-            <button mat-raised-button style="color: white; background-color: grey; text-align: center; margin: 20px;" 
+    <p style="font-style: italic;display: contents;font-weight: bold;">{{to['label']}}</p>
+    <div *ngIf="UploadShow">
+            <button mat-raised-button  style="color: white; background-color: grey; text-align: center; margin: 20px;" 
         (click)="fileInput.click()">Select File</button>
-<!-- <span>File Size Maximums 2Mb</span> -->
 <button style="height: 40px; width: 90px; border-radius: 10%; color: gray;" button color="gray" 
         (click)="uploadFiles()" [disabled]="!imageList.length">
   <span class="glyphicon glyphicon-upload"></span> Upload
@@ -58,13 +29,25 @@ import { DialogService } from '../services/dialog.service';
     </span>
   </div>
 </div>
+    </div>
+       
 
 <div style="display:flex; flex-direction: row;" *ngIf="showUploadedImages">
-  <span>Uploaded Images</span>
   <div *ngFor="let data of imageFile" style="margin: 2px; display:flex">
-    <span style="display:inline-block;"><img [src]="docBasePath + data.storage_name" alt="Image"></span>
+    <span style="display:inline-block;"><img (click)="carsoasls()" [src]="docBasePath + data.storage_name" width="100px" height="100px" [alt]='data.file_name'></span>
   </div>
 </div>
+
+<ng-template #editViewPopup class="example-sidenav" mode="over" style="height: auto;width: auto;" let-data >
+  <div style="text-align-last: end">
+    <mat-icon [matDialogClose]="true">close</mat-icon>
+  </div>
+  <div class="page">
+    <div class="page-content">
+      <app-carsoal [data]="imageFile"></app-carsoal>
+    </div>
+  </div>
+</ng-template>
 
 `,
 })
@@ -76,21 +59,41 @@ export class FormlyMultiImageUpload extends FieldType<any>   {
     docBasePath: string=environment?.ImageBaseUrl
     refId:any
     res:any[]=[]
-
+    UploadShow: boolean=true
     showUploadedImages:boolean=false
+    carsoasl: boolean= false;
+    @ViewChild("editViewPopup", { static: true })
+    editViewPopup!: TemplateRef<any>;
     constructor(
         private dataservice: DataService, private cf: ChangeDetectorRef,
-
+        private matdiolog: MatDialog,
         private dialogService: DialogService
     ) {
         super();
     }
-
+    closeModal(){
+      this.matdiolog.afterAllClosed
+    }
+    carsoasls(){
+      this.matdiolog.open(this.editViewPopup);
+    }
     ngOnInit(): void {
-       if(this.model.isEdit==true){
+      debugger
+      if(this.field.props?.carsoasl == true ){
+
+        this.carsoasl=true
         this.imageFile=this.model[this.field.key]
-    
+        this.UploadShow=false
     this.showUploadedImages=true
+      }
+       if(this.field.props.disabled==true){
+        this.imageFile=this.model[this.field.key]
+        this.UploadShow=false
+    this.showUploadedImages=true
+       }
+       if(this.model.isEdit==true){
+        this.showUploadedImages=true
+
        }
     }
 

@@ -5,63 +5,42 @@
   "form": {
     "collectionName": "test_result",
     "fields": [
+    
       {
         "fieldGroupClassName": "display-flex",
         "fieldGroup": [
           {
             "type": "label-view",
-            "key": "_id",
+            "key": "test_case_name",
             "className": "flex-6",
             "props": {
-              "label": "Test Result Id",
+              "label": "Test Case Name",
               "label_width": 100,
               "value_width": 200,
               "value_in_next_row": false
-            },
-            "hideExpression": "!model.isEdit"
-          },
-          {
-            "type": "label-view",
-            "key": "name",
-            "className": "flex-6",
-            "props": {
-              "label": "Test Result Name",
-              "label_width": 100,
-              "value_width": 200,
-              "value_in_next_row": false
-            },
-            "hideExpression": "!model.isEdit"
-          }
-        ]
-      },
-      {
-        "fieldGroupClassName": "display-flex",
-        "fieldGroup": [
-          {
-            "key": "testcase_date",
-            "type": "date-input",
-            "className": "flex-3",
-            "props": {
-              "label": "Test Case Date",
-              "placeholder": "Test Case Date",
-              "required": true
             }
           },
           {
-            "type": "input",
-            "key": "name",
+            "type": "label-view",
+            "key": "test_case_scenario",
             "className": "flex-6",
-
-            "templateOptions": {
-              "label": "Test Result Name",
-              "maxLength": 80,
-              "required": true,
-              "placeholder": "Test Result Name"
-            },
-            "hideExpression": "model.isEdit"
-          }
-        ]
-      },
+            "props": {
+              "label": "Test Case Scenario",
+              "label_width": 100,
+              "value_width": 200,
+              "value_in_next_row": false
+            }
+          },
+      {
+        "key": "testcase_date",
+        "type": "date-input",
+        "props": {
+          "label": "Test Case Date",
+          "placeholder": "Test Case Date",
+          "required": true
+        }
+      }
+      ]},
       {
         "fieldGroupClassName": "display-flex",
         "fieldGroup": [
@@ -88,6 +67,7 @@
       {
         "fieldGroupClassName": "display-flex",
         "fieldGroup": [
+         
           {
             "key": "result_status",
             "type": "radio",
@@ -101,30 +81,80 @@
                   "value": "P"
                 },
                 {
-                  "lebel": "Fail",
+                  "label": "Fail",
                   "value": "F"
                 }
               ]
             }
+          }, {
+            "type": "select",
+            "key": "error_type",           
+			 "className": "flex-6",
+            "props": {
+				      "label": "Error Type",
+              "options": [
+                {
+                    "label": "Logical Error",
+                    "value": "logical_error"
+                },
+                {
+                    "label": "Cosmatic Error",
+                    "value": "cosmatic_error"
+                },  {
+                  "label": "Show Stoper",
+                  "value": "show_stoper"
+              }
+            ],
+            "placeholder": "Error Type"
+            },
+            "expressions": {
+              "props.required": "model.result_status=='F'"
+            }
+          },
+          {
+            "type": "select",
+            "key": "error_priority",           
+			 "className": "flex-6",
+            "props": {
+				      "label": "Priority",
+              "options": [
+                {
+                    "label": "High",
+                    "value": "high"
+                },
+                {
+                    "label": "Medium",
+                    "value": "medium"
+                },
+                {
+                    "label": "Low",
+                    "value": "low"
+                }
+            ],
+            "placeholder": "Priority"
+            },
+            "expressions": {
+              "props.required": "model.result_status=='F'",
+              "model.error_priority":"model.error_type=='show_stoper' ? 'high' : ' '"
+            }
           }
         ]
       },
-      {
-        "fieldGroupClassName": "display-flex",
-        "fieldGroup": [
+  
           {
-            "type": "image-input",
-            "key": "result_proof",
-            "className": "flex-4",
-            "bind_key": "name",
-            "role": "test_case",
+            "type": "muti-image",
+            "key": "result_proof",           
+			 "className": "flex-4",
+           "bind_key": "test_case_id",
+		   "role":"test_case",
             "props": {
-              "refId": "name",
-              "label": "Result Proof"
+				"refId": "test_case_id",
+				"label": "Result Proof"
             },
             "expressions": {
-              "props.disabled": "model.result_status=='F'"
+              "props.required": "model.result_status=='F'"
             }
+          
           },
           {
             "type": "html-input",
@@ -132,10 +162,13 @@
             "className": "flex-8",
             "props": {
               "label": "Actual Result"
-            }
+               },
+               "expressions": {
+                 "props.required": "model.result_status=='F'"
+               }
           }
-        ]
-      },
+        
+      ,
       {
         "key": "status",
         "type": "select",

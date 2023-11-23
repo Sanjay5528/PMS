@@ -1,114 +1,223 @@
 {
-	"pageHeading": "Bug Detail View",
-	"formType": "simple",
-	"editMode": "popup",
-	"keyField": "_id",
+	"pageHeading": "Functional Testing",
+	"formType": "master-detail",
+	"localSet": true,
+	"localSetField": "project_id",
+	"mapColumnDiff": true,
+	"mapColumnfield": "project_id",
 	"form": {
-	"collectionName": "bug",
-	"fields": [
-	
-	{
-		"fieldGroupClassName": "display-flex",
-		"fieldGroup": [
-			{
-			"type": "html-input",
-			"key": "testcase.test_data",
-			"className": "flex-6",
-			"props": {
-				"label": "Test Case Test Data"
-			}
+	  "collectionName": "project",
+	  "fields": [
+		{
+		  "type": "label-view",
+		  "key": "client_id",
+		  "props": {
+			"label": "Client Name",
+			"label_width": 100,
+			"value_width": 200,
+			"value_in_next_row": false,
+			"placeholder": "Client Name",
+			"required": true
+		  }
 		},
 		{
-		"type": "html-input",
-		"key": "testcase.expected_result",
-		"className": "flex-6",
-		"props": {
-			"label": "Test Case Expected Result"
-		}
-	}
-]
-},{
-	"fieldGroupClassName": "display-flex",
-	"fieldGroup": [
+		  "type": "label-view",
+		  "key": "project_name",
+		  "props": {
+			"label": "Project Name",
+			"label_width": 100,
+			"value_width": 200,
+			"value_in_next_row": false,
+			"placeholder": "Project Name",
+			"required": true
+		  }
+		},
 		{
-		"type": "html-input",
-		"key": "test_result.actual_result",
-		"className": "flex-6",
-		"props": {
-			"label": "Test Case Actual Result"
-		
+		  "type": "label-view",
+		  "key": "status",
+		  "props": {
+			"label_width": 100,
+			"value_width": 200,
+			"value_in_next_row": true,
+			"label": "Project Status",
+			"placeholder": "Project Status",
+			"required": true
+		  }
 		}
+	  ],
+	  "buttons": {
+		"start": false,
+		"newEntry": false
+	  }
 	},
-	{
-	"type": "muti-image",
-	"key": "test_result.result_proof",
-	"className": "flex-6",
-	"props": {
-		"label": "Result Proof Data"
-	}
-}
-]
-},{
-	"fieldGroupClassName": "display-flex",
-	"fieldGroup": [
+	"detailForm": {
+	  "customfilter": true,
+	  "customkey": "project_id",
+	  "mapColumn": "project_id",
+	  "collectionName": "regression",
+	  "keyColumn": "_id",
+	  "isPopupEdit": true,
+	  "fields": [
 		{
-			"key": "devops_status",
-			"type": "select",
-			"templateOptions": {
-				"label": "Devops Response",
-				"options": [
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "type": "select-input",
+			  "key": "sprint_id",
+			  "className": "flex-2",
+			  "props": {
+				"label": "Sprint Id",
+				"placeholder": "Sprint Id",
+				"labelPropTemplate": " {{id}}",
+				"Collections": "sprint",
+				"multifilter":true,
+				"multifiltertype": "local",
+				"local_name":"project_id",
+				"multifilter_condition": {
+				  "clause": "AND",
+				  "conditions": [
 					{
-						"label": "Active",
-						"value": "A"
-					},
-					{
-						"label": "Disable",
-						"value": "D"
+					  "column": "project_id",
+					  "operator": "EQUALS",
+					  "type": "string",
+					  "value": ""
 					}
-				],
-				"required": true
+				  ]
+				},
+				"required": true,
+				"labelProp": "id",
+				"valueProp": "id"
+			  }
+			},
+			{
+			  "type": "input",
+			  "key": "regression_id",
+			  "className": "flex-6",
+			  "props": {
+				"label": "Regression Name/ID",
+				"placeholder": "Regression Name/ID",
+				"required": true,
+				"maxLength": 10,
+				"pattern": "^[a-zA-Z0-9]+$"
+			  },
+			  "hideExpression": "model.isEdit "
 			}
+		  ]
+		},
+  
+		{
+		  "type": "html-input",
+		  "key": "description",
+		  "className": "flex-6",
+		  "props": {
+			"label": "Regression Description"
+		  }
+		}
+	  ]
+	},
+	"detailListConfig": {
+	  "sectionHeading": "Project Team",
+	  "actions": [
+		{
+		  "label": "Edit",
+		  "icon": "edit",
+		  "formName": "project"
 		},
 		{
-			"type": "html-input",
-			"key": "test_result.actual_result",
-			"className": "flex-6",
-			"props": {
-				"label": "Test Case Actual Result"
-			
-			}
+		  "label": "Test Result",
+		  "icon": "view_module",
+		  "formName": "test_result",
+		  "formAction": "components",
+		  "route_type": "CustomRoute",
+		  "Custom_Route": "project/test_result",
+		  "Custom_Key_filed": "_id"
+		},{
+			"label": "Bug Reports",
+			"icon": "view_module",
+			"formName": "test_result",
+			"formAction": "components",
+			"route_type": "CustomRoute",
+			"Custom_Route": "project/regression",
+			"SaveType":"local",
+			"Save_Field":"project_id",
+			"Custom_Key_filed": "_id"
+		  },
+		{
+		  "label": "Delete",
+		  "icon": "delete",
+		  "formName": "delete",
+		  "formAction": "delete"
 		}
-]
-},
-			{
-				"key": "status",
-				"type": "select",
-				"defaultValue": "A",
-				"templateOptions": {
-					"label": "Status",
-					"options": [
-						{
-							"label": "Active",
-							"value": "A"
-						},
-						{
-							"label": "Disable",
-							"value": "D"
-						}
-					],
-					"required": true
-				},
-				"hideExpression": "!model.isEdit"
-			}
-	
-	],
-		"defaultValues": [
-			{
-				"colName": "status",
-				"value": "A",
-				"type": "string"
-			}
-		]
+	  ],
+	  "addRoute": "add/regression",
+	  "editRoute": "edit/regression",
+	  "fields": [
+		{
+		  "headerName": "Regression Id",
+		  "field": "regression_id",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Sprint Id",
+		  "field": "sprint_id",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+  
+		{
+		  "headerName": "Schedule Start Date",
+		  "field": "startdate",
+		  "sortable": true,
+		  "filter": "agDateColumnFilter",
+		  "type": "date"
+		},
+		{
+		  "headerName": "Schedule End Date",
+		  "field": "enddate",
+		  "sortable": true,
+		  "filter": "agDateColumnFilter",
+		  "type": "date"
+		},
+		{
+		  "headerName": "Test Case Count",
+		  "field": "number_of_TestCase_count",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Positive Result",
+		  "field": "positive_result",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Negative Result",
+		  "field": "negative_result",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Status",
+		  "field": "status",
+		  "filter": "agTextColumnFilter"
+		},
+  
+		{
+		  "type": "rightAligned",
+		  "headerName": "Actions",
+		  "cellRenderer": "buttonRenderer",
+		  "cellRendererParams": {
+			"onClick": "this.onBtnClick1.bind(this)",
+			"label": "Click 1"
+		  }
+		}
+	  ],
+	  "filterOptions": [],
+	  "defaultFilter": []
 	},
-	"onCancelRoute": "list/bug"
-}
+	"designConfig": {
+	  "leftPanelWidth": "320px"
+	}
+  }
+  

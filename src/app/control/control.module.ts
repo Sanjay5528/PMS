@@ -71,6 +71,7 @@ import { CustomDecimalInputType } from "./custom-decimal-input";
 import { FormlyFieldset } from "./fieldsetform";
 import { OnlyDecimalDirective } from "./decimal-directive";
 import { FormlyMultiImageUpload } from "./multiimage_upload";
+import { CarsoalComponent } from './carsoal.component';
 
 export function minLengthValidationMessage(err: any, field: FormlyFieldConfig) {
   console.log(field);
@@ -362,6 +363,7 @@ const formlyConfig = {
     CallingcodeInput,
     patchWork,
     Chips,
+    CarsoalComponent,
   ],
   imports: [
     BrowserModule,
@@ -429,6 +431,7 @@ const formlyConfig = {
     Location,
     LogoComponent,
     OnlyDecimalDirective,
+    CarsoalComponent,
 
     CallingcodeInput,
     patchWork,

@@ -188,8 +188,8 @@ export class DataService {
     return this.http.post(this.getWsBaseUrl() + "s3files/upload", data);
   }
   // * TO CHANGE INTO Project ID
-    public lookUpBug(regression_id: any){
-      return this.http.get(this.getWsBaseUrl() +`lookup/bug-report/${regression_id}`)
+    public lookUpBug(project_id: any,regression_id?: any){
+      return this.http.get(this.getWsBaseUrl() +`lookup/bug-report/${project_id}/${regression_id}`)
     }
 
 public lookup(orgID:any){

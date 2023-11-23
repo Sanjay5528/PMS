@@ -90,16 +90,20 @@
              </mat-card-title>
 
            </mat-card-header>
-           <mat-card-content style="margin-left: 30px;">
+           <mat-card-content style="margin-left: 30px;"  fxLayout="column" >
             <div style="display: flex;align-items: start;justify-items: center;">
               <mat-icon *ngIf="testCase.doneBy" style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{testCase.employee_name}} 
             </div>
             
              <p [innerHTML]="testCase.actual_result"></p>
-            <div *ngFor="let image of testCase?.result_proof">
-              <img *ngIf="image?.storage_name" [src]="imageurl + image?.storage_name" alt="Result Proof" height="100px" width="200px">
+             <div  fxLayout="row" fxFlex="100%">
+              <div *ngFor="let image of testCase?.result_proof;let testCaseIndex=index">
+                <!-- <img *ngIf="image?.storage_name && testCaseIndex==0" (click)="poupimage(testCase?.result_proof)" [src]="imageurl + image?.storage_name" [alt]="image.file_name" height="100px" width="200px">
+                <img *ngIf="image?.storage_name && testCaseIndex==1" (click)="poupimage(testCase?.result_proof)" [src]="imageurl + image?.storage_name" [alt]="image.file_name" height="100px" width="200px"> -->
+                <img *ngIf="image?.storage_name " style="margin-left: 10px" (click)="poupimage(testCase?.result_proof)" [src]="imageurl + image?.storage_name" [alt]="image.file_name" height="100px" width="200px">
+
+               </div>
              </div>
-          
            </mat-card-content>
          </mat-card>
        </div>
@@ -120,14 +124,18 @@
             </mat-card-title>
 
           </mat-card-header>
-          <mat-card-content style="margin-left: 30px;">
+          <mat-card-content style="margin-left: 30px;" fxLayout="column" >
             <mat-icon *ngIf="buglist.doneBy" style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{buglist.employee_name}} 
 
             <p [innerHTML]="buglist.actual_result"></p>
-            <div *ngFor="let image of buglist?.result_proof">
-              <img *ngIf="image?.storage_name" [src]="imageurl + image?.storage_name" alt="Result Proof" height="100px" width="200px">
+            <div fxLayout="row" fxFlex="100%">
+              <div   *ngFor="let image of buglist?.result_proof;let bugIndex=index">
+                <!-- <img *ngIf="image?.storage_name"  (click)="poupimage(buglist?.result_proof)"  [src]="imageurl + image?.storage_name" [alt]="image.file_name" height="100px" width="200px"> -->
+                <img *ngIf="image?.storage_name " style="margin-left: 10px" (click)="poupimage(buglist?.result_proof)" [src]="imageurl + image?.storage_name" [alt]="image.file_name" height="100px" width="200px">
+                <!-- <img *ngIf="image?.storage_name && bugIndex==1" style="margin-left: 10px;opacity: 0.5;" (click)="poupimage(buglist?.result_proof)" [src]="imageurl + image?.storage_name" [alt]="image.file_name" height="100px" width="200px"> -->
+              </div>
             </div>
-          </mat-card-content>
+             </mat-card-content>
         </mat-card>
        </div>
      </div>    
@@ -147,13 +155,6 @@
           
         </div>
       </div>
-      <!-- margin-left: 26px;
-        width: 20%;
-        flex-direction: column;
-        box-sizing: border-box;
-        display: flex;
-        margin-top: 24px; -->
-       
       <div fxLayout="row" class="form-container">
           <!-- <div [ngStyle]="{'width': '20%' }"  fxLayout="column">
             <div  style="margin-top: 10px;margin-left: 20px;">
@@ -189,10 +190,7 @@
                       <div style="display: flex; font-size:medium; color: grey;align-items: baseline;">
                         <span style=" margin-bottom:  -7px;" *ngIf="response?.client_name">From {{response?.client_name}}</span>
                         <span style=" margin-bottom:  -7px;" *ngIf="response?.sprint_id">Sprint {{response?.sprint_id}}</span>
-
-                        <!-- <span style="margin-left: 10px;">({{response?.status}})</span> -->
                         <span [ngStyle]="{'background-color': response?.status === 'A' ? 'green' : 'red', 'width': '10px', 'height': '10px', 'border-radius': '50%', 'display': 'inline-block', 'margin-right': '5px','margin-left':'5px'}"></span>
-    
                       </div>
                       <div style="display: flex; font-size: small; color: grey;" *ngIf="response?.enddate">
                         <span>{{response?.startdate}} to {{response?.enddate}}</span>
@@ -202,25 +200,16 @@
                   
                   
                   <div fxFlex="1 0 auto">
-                    <!-- <app-dynamic-filter  [showdefaultFilter]="showdefaultFilter" (filterValue)=" ' ' "></app-dynamic-filter> -->
-                  </div>
-                  <!-- <div style="float:right;" fxLayout="column" fxFlex="10%">
-                    {{this.listData.length}} Record(s) found
-                  </div> -->
+                  </div> 
                   <div>
                   <div class="add-container" *ngIf="!addbutton">
                     <button mat-raised-button color="primary"
                       (click)="onAddButonClick($event)">
                       <mat-icon>add</mat-icon>
-                      Add</button>
-                      <!-- <button class="icon" matTooltip="Add" mat-mini-fab (click)="onAddButonClick($event)"
-            style="margin-right: 20px; background: #90c0e5;   color: #080201;">
-            <mat-icon>add</mat-icon>
-          </button> -->
+                      Add</button> 
                     </div>
                 </div>
               </div>
-              
         <!-- [gridOptions]='gridOptions'    [treeData]="true"   [getDataPath]="getTreePath"
          [pagination]="true"  [autoGroupColumnDef]="autoGroupColumnDef"
          [animateRows]="true" [paginationPageSize]="10"
@@ -236,7 +225,6 @@
         [columnDefs]="columnDefs" 
         [rowData]="listData"
         [gridOptions]='gridOptions'
-        [groupDefaultExpanded]="groupDefaultExpanded" 
         [context]="context"
         [rowSelection]="'single'"
         [components]="components" 
@@ -248,42 +236,10 @@
         (cellValueChanged)="onCellValueChanged($event)"
         (gridReady)="onGridReady($event)" 
         ></ag-grid-angular>
-      <!-- </div> -->
-      <!-- <div *ngIf="gridChange">
-        <ag-grid-angular 
-        style="width: 100%; height: calc(100vh - 250px); flex: 1 1 auto"
-        class="ag-theme-alpine"
-        [defaultColDef]="defaultColDef"
-        [columnDefs]="columnDefs" 
-        [rowData]="listData"
-        [autoGroupColumnDef]="autoGroupColumnDef"
-        [groupDefaultExpanded]="groupDefaultExpanded" 
-        [gridOptions]='gridOptions' 
-        [context]="context"
-        [rowSelection]="'single'"
-        [components]="components" 
-        [paginationPageSize]="10"
-        [pagination]="true"
-        [animateRows]="true"
-        (cellClicked)='onCellClicked($event)'
-        (selectionChanged)="onSelectionChanged($event)"
-        (cellValueChanged)="onCellValueChanged($event)"
-        (gridReady)="onGridReady($event)" 
-        ></ag-grid-angular>
-      </div>
-    -->
-    
-    
             </div>
           </div>
           </div>
-          
-          <!-- <div *ngIf="isDataError">
-            <mat-icon color="warn" aria-label="Given ID is not valid">error</mat-icon>
-            <span>Given ID is not valid</span>
-          </div> -->
         </div>
-      
     </div>
   </mat-drawer-content>
 </mat-drawer-container>
@@ -327,10 +283,17 @@
         </div>
       </mat-card-actions>
     </mat-card>
-    <div >
-      <!-- <mat-icon color="warn">error</mat-icon>
-      <span>Given ID is not valid</span> -->
-    </div>
-    
   </div>
 </ng-template>
+
+<ng-template #imagepoup class="example-sidenav" mode="over" style="height: auto;width: 50%;" let-data >
+  <div style="text-align-last: end">
+    <mat-icon [matDialogClose]="true">close</mat-icon>
+  </div>
+  <div class="page">
+    <div class="page-content">
+      <app-carsoal [data]="imageFile"></app-carsoal>
+    </div>
+  </div>
+</ng-template>
+

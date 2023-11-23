@@ -33,66 +33,30 @@ import { environment } from 'src/environments/environment';
 export class AggridTreeComponent {
   form = new FormGroup({});
   gridApi!: GridApi<any>;
-  public gridColumnApi!: ColumnApi;
-  rowSelected: any[] = []
   selectedModel: any = {}
   public listData: any[] = []
-  groupDefaultExpanded = -1;
   data: any[] = [];
   selectedRows: any
   components: any;
   @ViewChild("drawer") drawer!: MatSidenav;
+  
+  @ViewChild("imagepoup", { static: true }) imagepoup!: TemplateRef<any>;
 
   context: any
   fields: FormlyFieldConfig[] = [];
   config: any
-  tasklist: any
   @ViewChild("editViewPopup", { static: true }) editViewPopup!: TemplateRef<any>;
   @Input('model') model: any = {}
   pageHeading: any
   id: any 
   response: any
   imageurl: string=environment?.ImageBaseUrl
-public  columnDefs: (ColDef | ColGroupDef)[] = [
-    // {
-    //   headerName: 'Parent Module Name',
-    //   field: 'parentmodulename',
-    //   width: 40,
-    //   filter: 'agTextColumnFilter',
-    //   rowGroup: true,
-    //   editable: true,
-    //   hide: true
-    // },
-    // // {
-    // //   headerName: 'Module Name',
-    // //   field: 'modulename',
-    // //   width: 40,
-    // //   filter: 'agTextColumnFilter',
-    // // },
-    // {
-    //   headerName: 'Task Name',
-    //   field: 'task_name',
-    //   width: 40,
-    //   editable: true,
-    //   filter: 'agTextColumnFilter',
-    // },
-    
-    // {
-
-    //   field: 'Action',
-    //   width: 40,
-    //   cellRenderer: 'buttonRenderer'
-
-    // },
-  ]
+public  columnDefs: (ColDef | ColGroupDef)[] = []
   formAction: any;
   formName: any;
-  doAction: any;
   valueChanged: any;
-  // rowData: any;
   collectionName: any;
   butText = 'Save'
-  onClose: any;
   addbutton:boolean=false
   reassignemployee:any[]=[]
 
@@ -108,12 +72,11 @@ public  columnDefs: (ColDef | ColGroupDef)[] = [
   } 
 
   ngOnInit() {
-    debugger
-    
-    // this.getmodules()  
     this.route.params.subscribe(params => {
 this.addbutton=false;
 console.log(params);
+this.id = params['id'];
+
       this.formName=params['component']
 let collection:any
       if(this.formName == "module"){
@@ -137,10 +100,15 @@ collection="project"
 
         collection="project"
         this.addbutton=true;
-      }
+      } else if(this.formName=="regression"){
+        this.pageHeading="Bug List"
 
+        collection="project"
+        this.addbutton=true;
+        this.id=sessionStorage.getItem("project_id")
+      } 
+      // regression/6554bb7e052126c9587741a5
       this.loadConfig(this.formName)
-      this.id = params['id'];
       this.dataService.getDataById(collection, this.id).subscribe((res: any) => {
         this.response = res.data[0]
         if(this?.response?.startdate){
@@ -150,7 +118,9 @@ collection="project"
           this.response.enddate=moment(this.response?.enddate).format("D/M/ YYYY")
         }
         if(this.formName=="Requirement"){
-          this.sprintCellEditorParams('')
+          // this.sprintCellEditorParams('')
+          this.ValueToCompareRequriementSprint == undefined || isEmpty(this.ValueToCompareRequriementSprint) ? this.sprintCellEditorParams(true) : this.ValueToCompareRequriementSprint;            
+
           this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
         }
         // sessionStorage.setItem("projectname", this.response.projectname)
@@ -532,7 +502,7 @@ this.gridOptions.groupDefaultExpanded=-1
     this.gridOptions.groupDefaultExpanded=-1
     this.gridOptions.autoGroupColumnDef={
       headerName: "Requirement Name",
-      field:"requriment.requirement_name",
+      field:"requirement.requirement_name",
       maxWidth: 280,
       cellRendererParams: { suppressCount: true },
       sortable: false,
@@ -541,8 +511,8 @@ this.gridOptions.groupDefaultExpanded=-1
 }
     this.columnDefs.push(  
       {
-        headerName: 'Test Case Name',
-        field: 'testcase.test_case_name',
+        headerName: 'test_case_id',
+        field: 'test_case_id',
         width: 40,
         rowGroup:true,
         showRowGroup:false,
@@ -551,7 +521,7 @@ this.gridOptions.groupDefaultExpanded=-1
       },
   //  {
   //     headerName: 'Test Result Status',
-  //     field: 'test_case_name',
+  //     field: 'testcase.test_case_name',
   //     width: 40,
   //     editable: false,
   //     filter: 'agTextColumnFilter',
@@ -621,12 +591,16 @@ this.gridOptions.groupDefaultExpanded=-1
 
 
 }
-
+imageFile:any[]=[]
 ValueToCompareRequriementSprint:any[]=[] 
 OnlyValueRequriementSprint:any[]=[]
 
 ValueToCompareRequriementModules:any[]=[]
 OnlyValueRequriementModules:any[]=[]
+poupimage(data:any){
+this.imageFile=data;
+this.dialogService.openDialog(this.imagepoup)
+}
 sprintCellEditorParams = (params: any) => {
     if(params==true || !isEmpty(this.OnlyValueRequriementSprint)){
     console.warn("Data Exist")
@@ -907,7 +881,7 @@ this.listData = overalldata;
   }else if(this.formName=="bug_list"){
     console.log(this.response._id);
     
-    this.dataService.lookUpBug(this.response.project_id).subscribe((res:any)=>{
+    this.dataService.lookUpBug(this.response.project_id,).subscribe((res:any)=>{
       console.log(res);
       let data:any=res.data.response
       this.listData=data
@@ -1088,7 +1062,6 @@ if(fieldName=="module_id"){
   /**gridReady for ag grid */
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
     this.gridApi.sizeColumnsToFit();
   }
 

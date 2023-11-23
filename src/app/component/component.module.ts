@@ -84,7 +84,6 @@ import { DropDownAgggrid } from './master-single-detail-form/dropdownAggrid';
 import { NestedtablesComponent } from './nestedtables/nestedtables.component';
 
 
-
 const MY_DATE_FORMATS = {
   parse: {
     dateInput: 'DD/MM/YYYY',

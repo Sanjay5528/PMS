@@ -122,29 +122,17 @@ import { HelperService } from "src/app/services/helper.service";
     </div>
 
     <div  *ngIf="parentRouteName=='bug_list'">
-      <button mat-icon-button [matMenuTriggerFor]="Bugmenu" aria-label="Example icon-button with a menu">
+      <button mat-icon-button *ngIf="params?.data?._id"  [matMenuTriggerFor]="Bugmenu" aria-label="Example icon-button with a menu">
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
       </button>
       <mat-menu #Bugmenu="matMenu">
-      <button  mat-menu-item (click)="onClickRequirementMenuItem('addsubchild', params.data)">
-          <mat-icon>add</mat-icon>
-          <span>Sub Requriement</span>
+      <button  mat-menu-item (click)="onclickBug('bug', params.data)">
+      <mat-icon>edit</mat-icon>
+          <span>Bug Result</span>
         </button>
-        <button mat-menu-item (click)="onClickRequirementMenuItem('edit', params.data)">
-          <mat-icon>edit</mat-icon>
-          <span>Edit</span>
-        </button>
-        <button mat-menu-item (click)="onClickRequirementMenuItem('delete', params.data)">
+        <button mat-menu-item (click)="onclickBug('delete', params.data)">
           <mat-icon>delete</mat-icon>
           <span>Delete</span>
-        </button>
-         <button mat-menu-item (click)="onClickRequirementMenuItem('task', params.data)">
-          <mat-icon>task</mat-icon>
-          <span>Task</span>
-        </button>
-        <button mat-menu-item (click)="onClickRequirementMenuItem('testcase', this)">
-          <mat-icon>description</mat-icon>
-          <span>Test Case </span>
         </button>
       </mat-menu>
     </div>
@@ -152,14 +140,12 @@ import { HelperService } from "src/app/services/helper.service";
     <ng-template #taskViewPopup class="example-sidenav" mode="over" style="margin: auto">
       <mat-card>
         <mat-card-header style="flex: 1 1 auto;">
- 
         <div style="width: 100%">
           <h2 style="text-align: center;" class="page-title">{{model_heading}} </h2>
           </div>
           <div style="text-align-last: end">
             <mat-icon mat-dialog-close (click)="closedia()">close</mat-icon>
           </div>
- 
         </mat-card-header>
         <div *ngIf="this.model_heading== 'Test Case - Add'||this.model_heading== 'Test Case - Add'">
     <span style="font-weight: bold;font-size: large;font-family: 'Times New Roman', Times, serif;font-style: italic;margin-left: 29px;margin-bottom: 10px;">Requirement Name : {{this.gridData.requirement_name}}</span>
@@ -398,6 +384,7 @@ parentRouteName:any
     // this.router.navigate(["/list/testcase/" + `${this.data.moduleid}`]);
   }
  }
+
  onclickTEamMembers(formAction:any,data?:any){
   if (formAction == "addsubchild") {
     this.dataService.loadConfig("teamaddmember").subscribe((frmConfig: any) => {
@@ -455,6 +442,7 @@ parentRouteName:any
    // this.router.navigate(["/list/testcase/" + `${this.data.moduleid}`]);
  }
  }
+
  onclicktestResulr(formAction:any,data?:any){
   // 
   if (formAction == "add") {
@@ -493,6 +481,7 @@ parentRouteName:any
   } 
   
  }
+
   // if (ctrl.config.form.collectionName == "modules") {
   //   if (ctrl.autoGroupColumnDef?.headerName == "Parent Modules") {
   //     Object.assign(data, {
@@ -510,6 +499,48 @@ parentRouteName:any
   //     console.log("Object Assign isn't working");
   //   }
   // }
+
+ onclickBug(formAction:any,data:any){
+
+  if (formAction == "bug") {
+    this.dataService.loadConfig("bug").subscribe((frmConfig: any) => {
+      this.formAction = "Edit";
+      this.butText="Save"
+      // this.continue_Save=true
+      this.model_heading="Bug Result - Edit"
+      this.config = frmConfig;     
+      this.fields = frmConfig.form.fields;
+      console.log(data);
+      let values:any={}
+      // devops_justification devops_status
+      values['test_data']=data.testcase.test_data
+      values['expected_result']=data.testcase.expected_result
+      values['actual_result']=data.test_result.actual_result
+      values['result_proof']=data.test_result.result_proof
+      values['requirement_name']=data?.requirement?.requirement_name
+      values['test_case_name']=data?.testcase?.test_case_name
+      values['test_case_scenario']=data?.testcase?.test_case_scenario
+
+      values['devops_justification']=data?.test_result?.devops_justification
+      values['devops_status']=data?.test_result?.devops_status
+
+      this.dialogService.openDialog(this.modulesViewPopup,null, null, values);
+    });
+  } else if (formAction == "delete") {
+    if (confirm("Do you wish to delete this record?")) {
+      // !Look Up delete
+      this.dataService
+        .deleteDataById("team_specification", data._id)
+        .subscribe((res: any) => {
+          console.log(res);
+          this.dialogService.openSnackBar(res.message, "OK");
+        });
+    }
+  } 
+ }
+
+
+
   saveForm(formName: any, val?: any) {
 
     
@@ -714,6 +745,7 @@ data['_id']="SEQ|BUG|"+this.gridData.project_id
 data['test_result_id']=refId.data["insert ID"]
 data['test_case_id']=this.gridData.test_case_id;
 data['project_id']=this.gridData.project_id
+data['regression_id']=formData.regression_id
 
 
 this.dataService.save("bug",data).subscribe((res:any)=>{
