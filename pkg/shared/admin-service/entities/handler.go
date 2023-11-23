@@ -1149,7 +1149,31 @@ func HandlerBugReport(c *fiber.Ctx) error {
 
 		return shared.BadRequest("Invalid Org Id")
 	}
+	// filter := bson.A{
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "testcase"},
+	// 				{"localField", "test_case_id"},
+	// 				{"foreignField", "_id"},
+	// 				{"as", "testcase"},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "test_result"},
+	// 				{"localField", "test_result_id"},
+	// 				{"foreignField", "_id"},
+	// 				{"as", "test_result"},
+	// 			},
+	// 		},
+	// 	},
+	// }
+	fmt.Println(c.Params("projectid"))
 	filter := bson.A{
+		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
 		bson.D{
 			{"$lookup",
 				bson.D{
@@ -1170,9 +1194,21 @@ func HandlerBugReport(c *fiber.Ctx) error {
 				},
 			},
 		},
+		bson.D{{"$unwind", bson.D{{"path", "$testcase"}}}},
+		bson.D{{"$unwind", bson.D{{"path", "$test_result"}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "requriment"},
+					{"localField", "testcase.requirement_id"},
+					{"foreignField", "_id"},
+					{"as", "requriment"},
+				},
+			},
+		},
+		bson.D{{"$unwind", bson.D{{"path", "$requriment"}}}},
 	}
-
-	response, err := helper.GetAggregateQueryResult(org.Id, "requriment", filter)
+	response, err := helper.GetAggregateQueryResult(org.Id, "bug", filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
