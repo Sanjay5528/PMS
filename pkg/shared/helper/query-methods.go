@@ -444,9 +444,15 @@ func UpdateDateObject(input map[string]interface{}) error {
 	}
 	return nil
 }
+func HandlerCollectionCount(orgId, collection string, filter interface{}) (int64, error) {
+	count, err := database.GetConnection(orgId).Collection(collection).CountDocuments(ctx, filter)
+	if err != nil {
+		return 0, nil
+	}
 
+	return count, nil
 
-
+}
 func FindOneDocument(orgId, collection string, filter interface{}) (map[string]interface{}, error) {
 	var result map[string]interface{}
 
@@ -479,12 +485,13 @@ func HandleSequenceOrder(key, OrgID string) (string, error) {
 		subParts := strings.Split(strings.TrimSpace(afterSeq), "|")
 
 		if len(subParts) == 2 {
-			result, err := HandleSequenceID(subParts[0], OrgID)
+
+			result, err := HandlerChildSequence(subParts[0], subParts[1], OrgID)
 			if err != nil {
 				return "", fmt.Errorf(err.Error())
 			}
-
-			return fmt.Sprintf("%s%s%s", subParts[1], "-", result), nil
+			 
+			return result, nil
 		} else if len(subParts) == 1 {
 			result, err := HandleSequenceID(subParts[0], OrgID)
 			if err != nil {
@@ -494,10 +501,89 @@ func HandleSequenceOrder(key, OrgID string) (string, error) {
 			return result, nil
 		}
 
-		// return afterSeq, nil
 	}
 
 	return key, nil
+}
+
+func HandlerChildSequence(key, reference, orgId string) (string, error) {
+	filter := bson.M{
+		"collectionName":  key,
+		"reference_value": reference,
+	}
+	var sequence_response map[string]interface{}
+
+	sequence_response, err := FindOneDocument(orgId, "sequence", filter)
+	if err != nil {
+		return "", fmt.Errorf("Failed to find document: %w", err)
+	}
+
+	var concatData string
+	if sequence_response == nil {
+		concatData, err = CreateNewSequenceData(key, orgId, reference)
+
+		if err != nil {
+			return "", fmt.Errorf(err.Error())
+		}
+
+		return concatData, nil
+
+	} else {
+
+		suffixValue := sequence_response["suffix"].(string)
+		prefixValue := sequence_response["prefix"].(string)
+		concatData = fmt.Sprintf("%s%s%s%d", reference, suffixValue, prefixValue, sequence_response["startvalue"].(int32)+1)
+		updateSequenceCollection(filter, orgId)
+	}
+
+	return concatData, err
+}
+
+func CreateNewSequenceData(key, orgId, reference string) (string, error) {
+	query := bson.M{"collectionName": key}
+	var sequence_response map[string]interface{}
+	var Concatstring string
+	sequence_response, err := FindOneDocument(orgId, "sequence", query)
+	if err != nil {
+		// fmt.Println(fmt.Errorf(err.Error()))
+		// return "", fmt.Errorf("Invalid Sequence ID")
+
+	}
+	if sequence_response == nil {
+		sequence_response = bson.M{
+			"_id":             Generateuniquekey(),
+			"collectionName":  key,
+			"prefix":          "",
+			"endvalue":        999,
+			"startvalue":      1,
+			"suffix":          "-",
+			"reference_value": reference,
+		}
+
+		_, err = database.GetConnection(orgId).Collection("sequence").InsertOne(ctx, sequence_response)
+		if err != nil {
+			return "", fmt.Errorf("Failed to insert new sequence data: %w", err)
+		}
+		Concatstring = fmt.Sprintf("%s%s%s%d", reference, sequence_response["suffix"], sequence_response["prefix"], sequence_response["startvalue"].(int))
+
+	} else {
+		sequence_response = bson.M{
+			"_id":             Generateuniquekey(),
+			"collectionName":  key,
+			"prefix":          sequence_response["prefix"],
+			"endvalue":        sequence_response["endvalue"],
+			"startvalue":      1,
+			"suffix":          sequence_response["suffix"],
+			"reference_value": reference,
+		}
+
+		_, err = database.GetConnection(orgId).Collection("sequence").InsertOne(ctx, sequence_response)
+		if err != nil {
+			return "", fmt.Errorf("Failed to insert new sequence data: %w", err)
+		}
+		Concatstring = fmt.Sprintf("%s%s%s%d", reference, sequence_response["suffix"], sequence_response["prefix"], sequence_response["startvalue"].(int))
+	}
+	return Concatstring, nil
 }
 
 // HandleSequenceID --METHOD  check the Sequence Collection  amd Update

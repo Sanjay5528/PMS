@@ -35,6 +35,22 @@ func uservalidation(fl validator.FieldLevel) bool {
 
 	// }
 
+	value, kind, nullable := fl.ExtractType(fl.Field())
+	param := fl.Param()
+
+	fmt.Printf("=> name: [%s]\n", fl.FieldName())
+	fmt.Printf("=> tag: [%s]\n", fl.GetTag())
+	fmt.Printf("=> struct field name: [%s]\n", fl.StructFieldName())
+	fmt.Printf("=> param: [%s]\n", param)
+	fmt.Printf("=> value: [%s]\n", value.String())
+	fmt.Printf("=> kind: [%s]\n", kind.String())
+
+	if nullable {
+		fmt.Printf("=> nullable: true\n")
+	} else {
+		fmt.Printf("=> nullable: false\n")
+	}
+
 	response, _ := FindOneDocument("pms", "user", filter)
 	if len(response) < 0 {
 
