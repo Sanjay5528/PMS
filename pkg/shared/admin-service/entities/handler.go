@@ -32,84 +32,78 @@ var ctx = context.Background()
 
 // PostDocHandler --METHOD Data insert to mongo Db with Proper Field Validation
 func PostDocHandler(c *fiber.Ctx) error {
-	//Get the orgId from Header
 	org, exists := helper.GetOrg(c)
 	if !exists {
-
 		return shared.BadRequest("Invalid Org Id")
 	}
-	// to  Get the User Details from Token
+
 	userToken := utils.GetUserTokenValue(c)
-	// // // //get the collection from model_config collection to find the model_name
-	collectionName, err := helper.CollectionNameGet(c.Params("model_name"), org.Id)
-	if err != nil {
-		shared.BadRequest("Invalid CollectionName")
-	}
+	// modelName := c.Params("model_name")
 
-	// Validation the Insert Data from -- InsertValidateInDatamodel
-	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
-	if errmsg != nil {
-		// errmsg is map to string
-		for key, value := range errmsg {
-			return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
-		}
-	}
+	// collectionName, err := helper.CollectionNameGet(modelName, org.Id)
+	// if err != nil {
+	// 	return shared.BadRequest("Invalid CollectionName")
+	// }
 
-	//  collectionName := c.Params("model_name")
-	//  var inputData map[string]interface{}
-	//  c.BodyParser(&inputData)
+	// inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	// if errmsg != nil {
+	// 	// errmsg is map to string
+	// 	for key, value := range errmsg {
+	// 		return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
+	// 	}
+	// }
 
+	collectionName := c.Params("model_name")
+	var inputData map[string]interface{}
+	c.BodyParser(&inputData)
 	// to paras the Datatype
 	helper.UpdateDateObject(inputData)
 
-	if inputData["_id"] != nil {
-		result, err := helper.HandleSequenceOrder(inputData["_id"].(string), org.Id)
-		if err != nil {
-			fmt.Println("Error:", err)
-			return shared.BadRequest(err.Error())
-		}
-		inputData["_id"] = result
-	} else {
-		inputData["_id"] = helper.Generateuniquekey()
+	handleIDGeneration(inputData, org.Id)
 
-	}
-
-	// user collection is here that time only password validation
 	if collectionName == "user" {
-		// user collection only OnboadingProcessing for send the mail to activation --METHOD OnboardingProcessing
 		err := OnboardingProcessing(org.Id, inputData["_id"].(string), "Onboarding", "user")
 		if err != nil {
-			return shared.BadRequest("invalid user Id")
+			return shared.BadRequest("Invalid user Id")
 		}
 	} else if collectionName == "data_model" || collectionName == "model_config" {
-		// else If conditon  Purpose for these collection only need for status field don't overwrite another collection
 		inputData["status"] = "A"
 	}
 
 	inputData["created_on"] = time.Now()
 	inputData["created_by"] = userToken.UserId
 
-	// Insert he data to mongo Collection  name form params
-	res, err := database.GetConnection(org.Id).Collection(collectionName).InsertOne(ctx, inputData)
+	res, err := Insert(org.Id, collectionName, inputData)
 	if err != nil {
 		return shared.BadRequest("Failed to insert data into the database " + err.Error())
 	}
 
-	// if Data model collection to insert the data in Db to automatically run then Struct for load the new struct without cut the server
-	// only Data model collection only we need to run the  ServerInitstruct
-	if collectionName == "data_model" {
-		// only Data to insert the Db that time only call the method
-		if res.InsertedID != nil {
-			// Goroutines for synchronized to load the struct without laging server
-			helper.ServerInitstruct(org.Id)
-		}
+	if collectionName == "data_model" && res.InsertedID != nil {
+		go helper.ServerInitstruct(org.Id)
 	}
 
-	// return shared.SuccessResponse(c, res.InsertedID)
 	return shared.SuccessResponse(c, fiber.Map{
 		"message":   "Insert Successfully",
 		"insert ID": res.InsertedID,
 	})
+}
+
+func Insert(orgId string, collectionName string, inputData map[string]interface{}) (*mongo.InsertOneResult, error) {
+	res, err := database.GetConnection(orgId).Collection(collectionName).InsertOne(ctx, inputData)
+
+	return res, err
+}
+
+// handleIDGeneration generates or handles the ID in the input data.
+func handleIDGeneration(inputData bson.M, orgID string) {
+	if inputData["_id"] != nil {
+		result, err := helper.HandleSequenceOrder(inputData["_id"].(string), orgID)
+		if err == nil {
+			inputData["_id"] = result
+		}
+	} else {
+		inputData["_id"] = helper.Generateuniquekey()
+	}
 }
 
 func GetDocByIdHandler(c *fiber.Ctx) error {
@@ -1117,31 +1111,6 @@ func regressionproject(c *fiber.Ctx) error {
 	})
 }
 
-// filter := bson.A{
-// 		bson.D{{"$match", bson.D{{"_id", c.Params("regression_id")}}}},
-// 		bson.D{
-// 			{"$lookup",
-// 				bson.D{
-// 					{"from", "requriment"},
-// 					{"localField", "sprint_id"},
-// 					{"foreignField", "sprint_id"},
-// 					{"as", "requriment"},
-// 				},
-// 			},
-// 		},
-// 		bson.D{{"$unwind", "$requriment"}},
-// 		bson.D{
-// 			{"$lookup",
-// 				bson.D{
-// 					{"from", "testcase"},
-// 					{"localField", "requriment._id"},
-// 					{"foreignField", "requirement_id"},
-// 					{"as", "testcase"},
-// 				},
-// 			},
-// 		},
-// 	}
-
 func HandlerBugReport(c *fiber.Ctx) error {
 	//Get the orgId from Header
 	org, exists := helper.GetOrg(c)
@@ -1149,29 +1118,7 @@ func HandlerBugReport(c *fiber.Ctx) error {
 
 		return shared.BadRequest("Invalid Org Id")
 	}
-	// filter := bson.A{
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "testcase"},
-	// 				{"localField", "test_case_id"},
-	// 				{"foreignField", "_id"},
-	// 				{"as", "testcase"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "test_result"},
-	// 				{"localField", "test_result_id"},
-	// 				{"foreignField", "_id"},
-	// 				{"as", "test_result"},
-	// 			},
-	// 		},
-	// 	},
-	// }
-	fmt.Println(c.Params("projectid"))
+
 	filter := bson.A{
 		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
 		bson.D{
@@ -1209,6 +1156,56 @@ func HandlerBugReport(c *fiber.Ctx) error {
 		bson.D{{"$unwind", bson.D{{"path", "$requriment"}}}},
 	}
 	response, err := helper.GetAggregateQueryResult(org.Id, "bug", filter)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	return shared.SuccessResponse(c, fiber.Map{
+		"response": response,
+		// "pipeline": filter,
+	})
+}
+
+// team_specification   --METHOD to get the empolyee_name on team_specifcaiton data
+func team_specification(c *fiber.Ctx) error {
+	//Get the orgId from Header
+	org, exists := helper.GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
+	}
+	query := bson.A{
+		bson.D{{"$match", bson.D{{"parentmodulename", bson.D{{"$ne", ""}}}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "employee"},
+					{"localField", "user_id"},
+					{"foreignField", "employee_id"},
+					{"as", "employee"},
+				},
+			},
+		},
+		bson.D{{"$unwind", bson.D{{"path", "$employee"}}}},
+		bson.D{
+			{"$addFields",
+				bson.D{
+					{"employe_name",
+						bson.D{
+							{"$concat",
+								bson.A{
+									"$employee.first_name",
+									" ",
+									"$employee.first_name",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		bson.D{{"$unset", "employee"}},
+	}
+	response, err := helper.GetAggregateQueryResult(org.Id, "bug", query)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}

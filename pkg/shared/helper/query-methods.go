@@ -420,6 +420,15 @@ func UpdateDataToDb(orgId string, filter interface{}, Data interface{}, collecti
 	return UpdatetResponse, err
 }
 
+func InsertData(c *fiber.Ctx, orgId string, collectionName string, data interface{}) error {
+	response, err := database.GetConnection(orgId).Collection(collectionName).InsertOne(ctx, data)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	return shared.SuccessResponse(c, response)
+}
+
+
 func UpdateDateObject(input map[string]interface{}) error {
 	for k, v := range input {
 		if v == nil {
@@ -478,145 +487,27 @@ func Generateuniquekey() string {
 
 // HandleSequenceOrder -- METHOD extracts the sequence identifier from a key string.
 func HandleSequenceOrder(key, OrgID string) (string, error) {
+
 	parts := strings.Split(key, "SEQ|")
-
-	if len(parts) > 1 {
-		afterSeq := parts[1]
-		subParts := strings.Split(strings.TrimSpace(afterSeq), "|")
-
-		if len(subParts) == 2 {
-
-			result, err := HandlerChildSequence(subParts[0], subParts[1], OrgID)
-			if err != nil {
-				return "", fmt.Errorf(err.Error())
-			}
-			 
-			return result, nil
-		} else if len(subParts) == 1 {
-			result, err := HandleSequenceID(subParts[0], OrgID)
-			if err != nil {
-				return "", fmt.Errorf(err.Error())
-			}
-
-			return result, nil
-		}
-
-	}
-
-	return key, nil
-}
-
-func HandlerChildSequence(key, reference, orgId string) (string, error) {
-	filter := bson.M{
-		"collectionName":  key,
-		"reference_value": reference,
-	}
-	var sequence_response map[string]interface{}
-
-	sequence_response, err := FindOneDocument(orgId, "sequence", filter)
-	if err != nil {
-		return "", fmt.Errorf("Failed to find document: %w", err)
-	}
-
-	var concatData string
-	if sequence_response == nil {
-		concatData, err = CreateNewSequenceData(key, orgId, reference)
-
-		if err != nil {
-			return "", fmt.Errorf(err.Error())
-		}
-
-		return concatData, nil
-
-	} else {
-
-		suffixValue := sequence_response["suffix"].(string)
-		prefixValue := sequence_response["prefix"].(string)
-		concatData = fmt.Sprintf("%s%s%s%d", reference, suffixValue, prefixValue, sequence_response["startvalue"].(int32)+1)
-		updateSequenceCollection(filter, orgId)
-	}
-
-	return concatData, err
-}
-
-func CreateNewSequenceData(key, orgId, reference string) (string, error) {
-	query := bson.M{"collectionName": key}
-	var sequence_response map[string]interface{}
-	var Concatstring string
-	sequence_response, err := FindOneDocument(orgId, "sequence", query)
-	if err != nil {
-		// fmt.Println(fmt.Errorf(err.Error()))
-		// return "", fmt.Errorf("Invalid Sequence ID")
-
-	}
-	if sequence_response == nil {
-		sequence_response = bson.M{
-			"_id":             Generateuniquekey(),
-			"collectionName":  key,
-			"prefix":          "",
-			"endvalue":        999,
-			"startvalue":      1,
-			"suffix":          "-",
-			"reference_value": reference,
-		}
-
-		_, err = database.GetConnection(orgId).Collection("sequence").InsertOne(ctx, sequence_response)
-		if err != nil {
-			return "", fmt.Errorf("Failed to insert new sequence data: %w", err)
-		}
-		Concatstring = fmt.Sprintf("%s%s%s%d", reference, sequence_response["suffix"], sequence_response["prefix"], sequence_response["startvalue"].(int))
-
-	} else {
-		sequence_response = bson.M{
-			"_id":             Generateuniquekey(),
-			"collectionName":  key,
-			"prefix":          sequence_response["prefix"],
-			"endvalue":        sequence_response["endvalue"],
-			"startvalue":      1,
-			"suffix":          sequence_response["suffix"],
-			"reference_value": reference,
-		}
-
-		_, err = database.GetConnection(orgId).Collection("sequence").InsertOne(ctx, sequence_response)
-		if err != nil {
-			return "", fmt.Errorf("Failed to insert new sequence data: %w", err)
-		}
-		Concatstring = fmt.Sprintf("%s%s%s%d", reference, sequence_response["suffix"], sequence_response["prefix"], sequence_response["startvalue"].(int))
-	}
-	return Concatstring, nil
-}
-
-// HandleSequenceID --METHOD  check the Sequence Collection  amd Update
-func HandleSequenceID(key, OrgID string) (string, error) {
-	filter := bson.D{{"_id", key}}
-
-	Response, err := FindOneDocument(OrgID, "sequence", filter)
-	if err != nil {
-		return "", fmt.Errorf("failed to find document: %w", err)
-	}
-
-	if Response == nil {
-
-		return "", fmt.Errorf("Invalid Sequence ID")
-	}
-
-	err = updateSequenceCollection(DocIdFilter(key), OrgID)
-	if err != nil {
-		return "", fmt.Errorf("failed to update sequence collection: %w", err)
-	}
-	return fmt.Sprintf("%s%d", Response["prefix"].(string), Response["startvalue"].(int32)), nil
-}
-
-// updateSequenceCollection -- METHOD increments the start value in the sequence collection for the given filter.
-func updateSequenceCollection(filter interface{}, OrgID string) error {
-	// Define the update data to increment the start value.
+	ID := parts[1]
 	updateData := bson.M{
-		"$inc": bson.M{"startvalue": 1},
+		"$set": bson.M{
+			"endvalue": 999,
+			"suffix":   "-",
+			"_id":      ID,
+		},
+		"$inc": bson.M{
+			"start_value": 1,
+		},
 	}
 
-	_, err := database.GetConnection(OrgID).Collection("sequence").UpdateOne(ctx, filter, updateData)
-	if err != nil {
-		return err
+	query := bson.M{"_id": ID}
+	result, _ := ExecuteFindAndModifyQuery(OrgID, "sequence", query, updateData)
+
+	startValue, ok := result["start_value"].(int32)
+	if !ok {
+		return "", fmt.Errorf("start_value is not of type int")
 	}
-	return nil
+
+	return fmt.Sprintf("%s%03d", ID, startValue), nil
 }

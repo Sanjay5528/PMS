@@ -127,13 +127,6 @@ func FileUpload(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, result)
 }
 
-func InsertData(c *fiber.Ctx, orgId string, collectionName string, data interface{}) error {
-	response, err := database.GetConnection(orgId).Collection(collectionName).InsertOne(ctx, data)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
-	return shared.SuccessResponse(c, response)
-}
 
 //todo currently not use
 // func GetAllFileDetails(c *fiber.Ctx) error {
