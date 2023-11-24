@@ -428,7 +428,6 @@ func InsertData(c *fiber.Ctx, orgId string, collectionName string, data interfac
 	return shared.SuccessResponse(c, response)
 }
 
-
 func UpdateDateObject(input map[string]interface{}) error {
 	for k, v := range input {
 		if v == nil {
@@ -487,7 +486,7 @@ func Generateuniquekey() string {
 
 // HandleSequenceOrder -- METHOD extracts the sequence identifier from a key string.
 func HandleSequenceOrder(key, OrgID string) (string, error) {
-
+	fmt.Println("dddddddd")
 	parts := strings.Split(key, "SEQ|")
 	ID := parts[1]
 	updateData := bson.M{

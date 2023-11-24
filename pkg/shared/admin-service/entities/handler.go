@@ -58,7 +58,6 @@ func PostDocHandler(c *fiber.Ctx) error {
 	c.BodyParser(&inputData)
 	// to paras the Datatype
 	helper.UpdateDateObject(inputData)
-
 	handleIDGeneration(inputData, org.Id)
 
 	if collectionName == "user" {
@@ -102,6 +101,7 @@ func handleIDGeneration(inputData bson.M, orgID string) {
 			inputData["_id"] = result
 		}
 	} else {
+		fmt.Println("sdagsd")
 		inputData["_id"] = helper.Generateuniquekey()
 	}
 }
@@ -946,7 +946,7 @@ func TaskRequeriment(c *fiber.Ctx) error {
 			},
 		},
 	}
-	response, err := helper.GetAggregateQueryResult(org.Id, "regression", filter)
+	response, err := helper.GetAggregateQueryResult(org.Id, "requirement", filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
