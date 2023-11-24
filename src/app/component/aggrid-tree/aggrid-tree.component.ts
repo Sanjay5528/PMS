@@ -61,6 +61,28 @@ public  columnDefs: (ColDef | ColGroupDef)[] = []
   reassignemployee:any[]=[]
 
 
+  public autoGroupColumnDef: ColDef = {};
+
+  public defaultColDef: ColDef = {
+    flex: 1,
+    minWidth: 100,
+    sortable: true,
+    resizable: true,
+    filter: true,
+  };
+public gridOptions: GridOptions = {
+ getDataPath:(data: any) => {
+  return data.treePath;
+ }, 
+
+animateRows:true,paginationPageSize:10
+}
+  /** treepath  for ag grid */
+  public getTreePath: GetDataPath = (data: any) => {
+    return data.treePath;
+  };
+  cellClicked:any 
+
   constructor(public httpclient: HttpClient,  
     public dialogService: DialogService, public route: ActivatedRoute,public _location:Location,   public router: Router,private helperServices:HelperService,
     public dataService: DataService, public formservice: FormService,public formBuilder: FormBuilder) {
@@ -587,6 +609,88 @@ this.gridOptions.groupDefaultExpanded=-1
     }
     
     )
+  }else if(this.formName=="bug_list"){
+    this.pageHeading="Bug List"
+    this.gridOptions.groupDefaultExpanded=-1
+    this.gridOptions.autoGroupColumnDef={
+      headerName: "Requirement Name",
+      field:"requirement.requirement_name",
+      maxWidth: 280,
+      cellRendererParams: { suppressCount: true },
+      sortable: false,
+      resizable: true,
+      filter: false
+}
+    this.columnDefs.push(  
+      {
+        headerName: 'test_case_id',
+        field: 'test_case_id',
+        width: 40,
+        rowGroup:true,
+        showRowGroup:false,
+        hide:true,
+        filter: 'agTextColumnFilter',
+      },
+   {
+      headerName: 'Test Case Name',
+      field: 'testcase.test_case_name',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    }, 
+     {
+      headerName: 'Test Result Status',
+      field: 'test_case_name',
+      width: 40,
+      editable: false,hide:true,
+      filter: 'agTextColumnFilter',
+    }, {
+      headerName: 'Test Case Type',
+      field: 'testcase.test_case_scenario',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    }, 
+    {
+      headerName: 'Error Type',
+      field: 'test_result.error_type',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    },
+    {
+      headerName: 'Error Priority',
+      field: 'test_result.error_priority',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    },
+    // {
+    //   headerName: 'Done By',
+    //   field: 'bug_count',
+    //   width: 40,
+    //   editable: false,
+    //   filter: 'agTextColumnFilter',
+    // },
+    {
+      headerName: 'Devops Status',
+      field: 'devops_Status',
+      width: 40,
+      editable: false,
+      filter: 'agTextColumnFilter',
+    },
+      {
+  
+      field: 'Action',
+      sortable:false,
+      filter:false,
+      resizable:false,
+      maxWidth: 110,
+      cellRenderer: 'buttonRenderer'
+  
+    }
+    
+    )
   }
 
 
@@ -961,28 +1065,6 @@ this.listData = overalldata;
 
 }
 
-
-  public autoGroupColumnDef: ColDef = {};
-
-  public defaultColDef: ColDef = {
-    flex: 1,
-    minWidth: 100,
-    sortable: true,
-    resizable: true,
-    filter: true,
-  };
-public gridOptions: GridOptions = {
- getDataPath:(data: any) => {
-  return data.treePath;
- }, 
-
-animateRows:true,paginationPageSize:10
-}
-  /** treepath  for ag grid */
-  public getTreePath: GetDataPath = (data: any) => {
-    return data.treePath;
-  };
-  cellClicked:any
   onCellClicked(event: any){
 let clickCell:any=event.column.getColId()
 if(this.formName=="Requirement"){
@@ -1103,6 +1185,7 @@ if(fieldName=="module_id"){
   values.parentmodulename= ""
   this.dataService.save(this.config.form.collectionName,values).subscribe((data:any)=>{
     console.log(data);
+    this.form.reset()
     this.dialogService.closeModal();
   })
   this.ngOnInit()
