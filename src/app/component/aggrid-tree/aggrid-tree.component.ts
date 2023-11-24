@@ -8,6 +8,7 @@ import {
   GridApi,
   GridOptions,
   GridReadyEvent,
+  SideBarDef,
 } from "ag-grid-community";
 
 import { DialogService } from 'src/app/services/dialog.service';
@@ -164,6 +165,7 @@ collection="project"
   
   }
 // gridChange:any=false
+public sideBar: SideBarDef | string | string[] | boolean | null = 'columns';
 
 loadConfig(formName:any){
 
@@ -535,27 +537,33 @@ this.gridOptions.paginationPageSize=100
     )
   }else if(this.formName=="bug_list"){
     this.pageHeading="Bug List"
-    this.gridOptions.groupDefaultExpanded=-1
-
+    // this.gridOptions.groupDefaultExpanded=-1
+this.gridOptions.sideBar=this.sideBar
 this.gridOptions.pagination=true
 this.gridOptions.paginationPageSize=100
-    this.gridOptions.autoGroupColumnDef={
-      headerName: "Requirement Name",
-      field:"requirement.requirement_name",
-      maxWidth: 280,
-      cellRendererParams: { suppressCount: true },
-      sortable: false,
-      resizable: true,
-      filter: false
-}
+this.gridOptions.pivotMode=false
+//     this.gridOptions.autoGroupColumnDef={
+//       headerName: "Requirement Name",
+//       field:"requirement.requirement_name",
+//       maxWidth: 280,
+//       cellRendererParams: { suppressCount: true },
+//       sortable: false,
+//       resizable: true,
+//       filter: false
+// }
+this.defaultColDef.enablePivot=true;
+this.defaultColDef.sortable=true;
+this.defaultColDef.editable=false;
+// this.defaultColDef.enablePivot: true 
     this.columnDefs.push(  
       {
-        headerName: 'test_case_id',
+        headerName: 'Issue ID',
         field: 'test_case_id',
         width: 40,
-        rowGroup:true,
-        showRowGroup:false,
-        hide:true,
+        // rowGroup:true,
+        // showRowGroup:false,
+        // hide:true,
+        
         filter: 'agTextColumnFilter',
       },
   //  {
@@ -574,12 +582,6 @@ this.gridOptions.paginationPageSize=100
       filter: 'agTextColumnFilter',
     }, 
      {
-      headerName: 'Test Result Status',
-      field: 'test_case_name',
-      width: 40,
-      editable: false,hide:true,
-      filter: 'agTextColumnFilter',
-    }, {
       headerName: 'Test Case Type',
       field: 'testcase.test_case_scenario',
       width: 40,
@@ -587,17 +589,38 @@ this.gridOptions.paginationPageSize=100
       filter: 'agTextColumnFilter',
     }, 
     {
-      headerName: 'Error Type',
+      headerName: 'Issue Type',
       field: 'test_result.error_type',
       width: 40,
       editable: false,
       filter: 'agTextColumnFilter',
+      
+      enableRowGroup:true,
     },
     {
-      headerName: 'Error Priority',
+      headerName: 'Issue Priority',
       field: 'test_result.error_priority',
       width: 40,
       editable: false,
+      
+      enableRowGroup:true,
+      filter: 'agTextColumnFilter',
+    }, {
+      headerName: 'Raised By',
+      field: 'bugemploye_name',
+      width: 40,
+      editable: false,
+      
+      enableRowGroup:true,
+      filter: 'agTextColumnFilter',
+    },
+    {
+      headerName: 'assign to',
+      field: 'taskemploye_name',
+      width: 40,
+      editable: false,
+      
+      enableRowGroup:true,
       filter: 'agTextColumnFilter',
     },
     // {
@@ -608,7 +631,7 @@ this.gridOptions.paginationPageSize=100
     //   filter: 'agTextColumnFilter',
     // },
     {
-      headerName: 'Devops Status',
+      headerName: 'Status',
       field: 'devops_Status',
       width: 40,
       editable: false,
@@ -824,9 +847,6 @@ if(this.formName=="module"){
       }
     });
   }else if(this.formName=="Requirement"){
-    
-   
-      // this.dataService.getDataByFilter("requirement",filer)
       this.dataService.lookupTreeData("requriment",this.response.project_id).subscribe((res:any) =>{
 //         let data:any[]= []     
 //         this.listData = []
@@ -1025,7 +1045,6 @@ let parentIndex: number = 1; // Initialize parentIndex
 
 data.forEach((row: any, idx: number) => {
   if (row && row.module_id) {
-    // Check if Data is Empty (it calls a function and returns)
     let datafound = this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;
     let findValue: any = datafound.find((val: any) => val.value == row.module_id);
     row.module_id = findValue?.label;
@@ -1050,15 +1069,9 @@ data.forEach((row: any, idx: number) => {
   }
 
   if (!row.parentmodulename) {
-    // Increment parentIndex only for top-level elements
     parentIndex++;
   }
 });
-
-// Log the final data for debugging or further analysis.
-console.log(parentTreeData);
-
-// Set the final data to your listData variable
 this.listData = parentTreeData;
 
       })

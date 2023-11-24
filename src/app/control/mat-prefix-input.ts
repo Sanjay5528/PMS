@@ -17,9 +17,12 @@ import { DataService } from "../services/data.service";
     </style>
     <mat-form-field>
       <span matPrefix>{{ prefix }}</span>
-      <input
+      <input *ngIf="opt"
         (change)="onselect($event)"
-        matInput [pattern]="this.opt.pattern"
+        matInput 
+        [pattern]="this.opt.pattern ? this.opt.pattern : null"
+  [required]="this.opt.required ? this.opt.required : false"
+  [maxlength]="this.opt.maxLength ? this.opt.maxLength :null "
         placeholder="{{ this.field.props.placeholder }}"
         [formControl]="FormControl"
         [formlyAttributes]="field"

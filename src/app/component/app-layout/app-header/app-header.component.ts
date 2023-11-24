@@ -32,7 +32,7 @@ export class AppHeaderComponent {
   screenId:any
 
   ngOnInit() { 
-    this.screenId="COORDR_menu";
+    this.screenId="devops";
     // rewrite the code
       // this.httpClient.get("assets/menu-json/" +"menu" + ".json").subscribe((data: any) => {
       //   console.log(data);
