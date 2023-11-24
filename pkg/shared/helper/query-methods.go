@@ -488,25 +488,29 @@ func Generateuniquekey() string {
 func HandleSequenceOrder(key, OrgID string) (string, error) {
 	fmt.Println("dddddddd")
 	parts := strings.Split(key, "SEQ|")
-	ID := parts[1]
-	updateData := bson.M{
-		"$set": bson.M{
-			"endvalue": 999,
-			"suffix":   "-",
-			"_id":      ID,
-		},
-		"$inc": bson.M{
-			"start_value": 1,
-		},
+	if len(parts) > 1 {
+		ID := parts[1]
+		updateData := bson.M{
+			"$set": bson.M{
+				"endvalue": 999,
+				"suffix":   "-",
+				"_id":      ID,
+			},
+			"$inc": bson.M{
+				"start_value": 1,
+			},
+		}
+
+		query := bson.M{"_id": ID}
+		result, _ := ExecuteFindAndModifyQuery(OrgID, "sequence", query, updateData)
+
+		startValue, ok := result["start_value"].(int32)
+		if !ok {
+			return "", fmt.Errorf("start_value is not of type int")
+		}
+		return fmt.Sprintf("%s%03d", ID, startValue), nil
+
+	} else {
+		return key, nil
 	}
-
-	query := bson.M{"_id": ID}
-	result, _ := ExecuteFindAndModifyQuery(OrgID, "sequence", query, updateData)
-
-	startValue, ok := result["start_value"].(int32)
-	if !ok {
-		return "", fmt.Errorf("start_value is not of type int")
-	}
-
-	return fmt.Sprintf("%s%03d", ID, startValue), nil
 }
