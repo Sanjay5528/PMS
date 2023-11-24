@@ -228,9 +228,8 @@
         [context]="context"
         [rowSelection]="'single'"
         [components]="components" 
-        [paginationPageSize]="10"
-        [pagination]="true"
         [animateRows]="true"
+        [singleClickEdit]="true"
         (cellClicked)='onCellClicked($event)'
         (selectionChanged)="onSelectionChanged($event)"
         (cellValueChanged)="onCellValueChanged($event)"

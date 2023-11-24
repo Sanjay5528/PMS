@@ -159,7 +159,6 @@ export class DataService {
     return this.http.post(this.getWsBaseUrl() + `${endPoint}`, data, { reportProgress: true, observe: 'events' });
     
   }
-  
 
 /**
  * This method USed To Get data Using Filter Condition

@@ -1,19 +1,18 @@
-<div style="width: 98%;margin: 10px;height: calc(100vh - 250px);margin-bottom: 10px; overflow-y: scroll;">
+<!-- <div style="width: 98%;margin: 10px;height: calc(100vh - 250px);margin-bottom: 10px; overflow-y: scroll;"> -->
     <ag-grid-angular
-    #agGrid style="width: 98%; height: calc(100vh - 340px); flex: 1 1 auto;margin: 10px;"
+    #agGrid style="width: 98%; height: 90%; flex: 1 1 auto;margin: 10px;"
       class="ag-theme-alpine"
       [columnDefs]="columnDefs"
       [defaultColDef]="defaultColDef"
       [masterDetail]="true"
       [rowSelection]="'single'"
-      [pagination]="true"
-      [paginationPageSize]="14"
       [context]="context"
-      [components]="components"
       [detailCellRendererParams]="detailCellRendererParams"
       [rowData]="rowData"
       [components]="components"
       (selectionChanged)="onSelectionChanged($event)"
-      (gridReady)="onGridReady($event)"
+      (gridReady)="onGridReady($event)"  (cellClicked)='onCellClicked($event)'
+        (cellValueChanged)="onCellValueChanged($event)"
     ></ag-grid-angular>
-        </div>
+        <!-- </div> -->
+      

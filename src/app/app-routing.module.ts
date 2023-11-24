@@ -20,6 +20,7 @@ import { ProjectteamComponent } from './component/projectteam/projectteam.compon
 import { TimesheetComponent } from './component/timesheet/timesheet.component';
 import { CreatecvComponent } from './component/createcv/createcv.component';
 import { ExpansionComponent } from './component/checkformaly/expansion/expansion.component';
+import { NestedtablesComponent } from './component/nestedtables/nestedtables.component';
 
 
 
@@ -106,6 +107,17 @@ const routes: Routes = [
 {
   path:"Check",
   component:ExpansionComponent
+},
+{
+  path:"nestestedtable",
+  component: DefaultLayoutComponent,
+  canActivate: [AuthGuardService],
+  children: [
+    {
+      path: ":form/:id",
+      component:NestedtablesComponent
+    },
+  ],
 },
   {
     path: "add",

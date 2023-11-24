@@ -402,7 +402,7 @@ parentRouteName:any
    data.module_id= findValue.value;
    }
     if( data.parentmodulename==''){
-      this.model_heading="Team Specification - Edit"
+      this.model_heading="Team Group Name - Edit"
       this.dataService.loadConfig(this.parentRouteName.toLowerCase()).subscribe((frmConfig: any) => {
         this.formAction = "Edit";
         this.butText="Update"   

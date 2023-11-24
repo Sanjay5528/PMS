@@ -1,44 +1,77 @@
 {
-	"pageHeading": "Application",
-	"collectionName": "application",
-	"editMode": "popup",
-	"addRoute": "/add/application",
-	"editRoute": "/edit/application",
-	"showbutton": true,
-	"actions": [
-	  {
-		"label": "Edit",
-		"formAction": "edit",
-		"icon": "edit"
-	  },
-	  {
-		"label": "Delete",
-		"formAction": "delete",
-		"icon": "delete"
-	  }
-	],
-	"columnDefs": [
-		{
-			"headerName": "Project Name",
-			"field": "project_name"
-		  },  {
-		"headerName": "Name",
-		"field": "name"
-	  },
-	  {
-		"headerName": "status",
-		"field": "status"
-	  },
-	  {
-		"type": "rightAligned",
-		"headerName": "Actions",
-		"cellRenderer": "buttonRenderer",
-		"lockPosition": "right",
-		"cellRendererParams": {
-		  "onClick": "this.onBtnClick1.bind(this)",
-		  "label": "Click 1"
-		}
-	  }
-	]
-  }
-  
+    "pageHeading": "Team Members",
+    "formType": "simple",
+    "editMode": "popup",
+    "form": {
+        "collectionName": "team_specification",
+        "fields": [
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                    {
+                        "type": "select-input",
+                        "key": "user_id",
+                        "className": "flex-6",
+                        "props": {
+                            "label": "User Name",
+                            "placeholder": "User Name",
+                            "labelPropTemplate": " {{first_name}}",
+                            "multifilter": true,
+                            "optionsDataSource": {
+                                "collectionName": "employee"
+                            },
+                            "labelProp": "first_name",
+                            "valueProp": "employee_id",
+                            "required": true
+                        }
+                    },
+                    {
+                        "type": "select-input",
+                        "key": "role_id",
+                        "className": "flex-6",
+                        "props": {
+                            "label": "Role Name",
+                            "placeholder": "Role Name",
+                            "labelPropTemplate": " {{name}}",
+                            "multifilter": true,
+                            "optionsDataSource": {
+                                "collectionName": "project_role"
+                            },
+                            "labelProp": "name",
+                            "valueProp": "_id",
+                            "required": true
+                        }
+                    }
+                ]
+            },
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                    {
+                        "key": "scheduled_start_date",
+                        "type": "date-input",
+                        "className": "flex-6",
+                        "props": {
+                            "label": "Scheduled Start Date",
+                            "placeholder": "Scheduled Start Date",
+                            "required": true
+                        }
+                    },
+                    {
+                        "key": "scheduled_end_date",
+                        "type": "date-input",
+                        "className": "flex-6",
+                        "parentKey": "scheduled_start_date",
+                        "parentCollectionName": "task",
+                        "props": {
+                            "label": "Scheduled End Date",
+                            "placeholder": "Scheduled End Date",
+                            "required": true
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "onCancelRoute": "/list/teammembers"
+}

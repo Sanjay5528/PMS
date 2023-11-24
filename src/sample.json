@@ -1,23 +1,22 @@
 {
-	"pageHeading": "Application ",
+	"pageHeading": "Team Group",
 	"formType": "simple",
 	"keyField": "_id",
 	"form": {
-		"collectionName": "application",
+		"collectionName": "team_specification",
 		"fields": [
 			{
 				"fieldGroupClassName": "display-flex",
 				"fieldGroup": [
-					
 					{
 						"type": "label-view",
-						"key": "name",
+						"key": "team_id",
 						"className": "flex-6",
 						"props": {
-							"label": "Project Role Name",
+							"label": "Team  ID",
 							"label_width": 100,
 							"value_width": 200,
-							"value_in_next_row": false
+							"value_in_next_row": true
 						},
 						"hideExpression": "!model.isEdit"
 					}
@@ -31,20 +30,20 @@
 						"key": "name",
 						"className": "flex-5",
 						"templateOptions": {
-							"label": "Project Role Name",
+							"label": "Team  Name",
 							"maxLength": 50,
-							"required": true,
-							"placeholder": "Project Role Name"
-						},
-						"hideExpression": "model.isEdit"
+							"required": true,              
+							"pattern": "^[a-zA-Z0-9&>/;,:-_/@]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+							"placeholder": "Team  Name"
+						}
 					}
 				]
 			},
 			{
-				"type": "textarea",
-				"key": "Description",
+				"type": "html-input",
+				"key": "description",
 				"templateOptions": {
-					"label": "Anything about this Project Role",
+					"label": "Anything about this Team ",
 					"placeholder": "Description",
 					"rows": 5
 				}
@@ -77,10 +76,10 @@
 				"type": "string"
 			},{
 				"colName": "_id",
-				"value": "SEQ|APP",
+				"value": "SEQ|TEAM|{{project_id}}",
 				"type": "string"
 			}
 		]
 	},
-	"onCancelRoute": "/list/application"
+	"onCancelRoute": "/list/projectteam"
 }
