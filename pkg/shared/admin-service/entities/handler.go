@@ -1176,7 +1176,8 @@ func HandlerBugReport(c *fiber.Ctx) error {
 	if regression_id == "" {
 		filter = append(filter, bson.D{{"$match", bson.D{{"regression_id", regression_id}}}})
 	}
-	filter = append(filter, bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
+	filter = append(filter,
+		bson.D{{"$match", bson.D{{"project_id", "testclientID-R1"}}}},
 		bson.D{
 			{"$lookup",
 				bson.D{
@@ -1210,10 +1211,111 @@ func HandlerBugReport(c *fiber.Ctx) error {
 			},
 		},
 		bson.D{{"$unwind", bson.D{{"path", "$requirement"}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "task"},
+					{"localField", "requirement._id"},
+					{"foreignField", "requirement_id"},
+					{"as", "task"},
+				},
+			},
+		},
+		bson.D{{"$unwind", bson.D{{"path", "$task"}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "employee"},
+					{"localField", "task.assigned_to"},
+					{"foreignField", "employee_id"},
+					{"as", "taskemployee"},
+				},
+			},
+		},
+		bson.D{{"$unwind", bson.D{{"path", "$taskemployee"}}}},
+		bson.D{
+			{"$addFields",
+				bson.D{
+					{"taskemploye_name",
+						bson.D{
+							{"$concat",
+								bson.A{
+									"$taskemployee.first_name",
+									" ",
+									"$taskemployee.first_name",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "employee"},
+					{"localField", "test_result.doneBy"},
+					{"foreignField", "employee_id"},
+					{"as", "bugemployee"},
+				},
+			},
+		},
+		bson.D{{"$unwind", bson.D{{"path", "$bugemployee"}}}},
+		bson.D{
+			{"$addFields",
+				bson.D{
+					{"bugemploye_name",
+						bson.D{
+							{"$concat",
+								bson.A{
+									"$bugemployee.first_name",
+									" ",
+									"$bugemployee.first_name",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 	)
-	// filter := bson.A{
 
-	// }
+	// filter = append(filter, bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "testcase"},
+	// 				{"localField", "test_case_id"},
+	// 				{"foreignField", "_id"},
+	// 				{"as", "testcase"},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "test_result"},
+	// 				{"localField", "test_result_id"},
+	// 				{"foreignField", "_id"},
+	// 				{"as", "test_result"},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unwind", bson.D{{"path", "$testcase"}}}},
+	// 	bson.D{{"$unwind", bson.D{{"path", "$test_result"}}}},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "requirement"},
+	// 				{"localField", "testcase.requirement_id"},
+	// 				{"foreignField", "_id"},
+	// 				{"as", "requirement"},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unwind", bson.D{{"path", "$requirement"}}}},
+	// )
+
 	response, err := helper.GetAggregateQueryResult(org.Id, "bug", filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
