@@ -926,6 +926,34 @@ func getAllFileDetails(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, response)
 }
 
+func TaskRequeriment(c *fiber.Ctx) error {
+	org, exists := helper.GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
+	}
+
+	filter := bson.A{
+		bson.D{{"$match", bson.D{{"project_id", "testclientID-R1"}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "task"},
+					{"localField", "_id"},
+					{"foreignField", "requirement_id"},
+					{"as", "task"},
+				},
+			},
+		},
+	}
+	response, err := helper.GetAggregateQueryResult(org.Id, "regression", filter)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	return shared.SuccessResponse(c, fiber.Map{
+		"response": response,
+	})
+}
 func RequrimentObjectproject(c *fiber.Ctx) error {
 	//Get the orgId from Header
 	org, exists := helper.GetOrg(c)

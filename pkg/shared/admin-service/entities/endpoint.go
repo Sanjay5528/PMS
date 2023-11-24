@@ -70,6 +70,7 @@ func SetupTesting(app *fiber.App) {
 // Old pms code endpoint and func
 func SetupLookupRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/lookup", "Data Lookup API")
+	r.Get("/task_requriment/:projectid", RequrimentObjectproject)
 
 	r.Get("/requriment/:projectid", RequrimentObjectproject)
 	r.Get("/regression/:regression_id", regressionproject)
