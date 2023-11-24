@@ -1023,7 +1023,7 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 			},
 			bson.D{{"$unset", "employeeResult"}},
 		}
-	response, err := helper.GetAggregateQueryResult(org.Id, "requriment", filter)
+	response, err := helper.GetAggregateQueryResult(org.Id, "requirement", filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
@@ -1046,7 +1046,7 @@ func regressionproject(c *fiber.Ctx) error {
 		bson.D{
 			{"$lookup",
 				bson.D{
-					{"from", "requriment"},
+					{"from", "requirement"},
 					{"localField", "sprint_id"},
 					{"foreignField", "sprint_id"},
 					{"as", "requirement"},
@@ -1111,6 +1111,31 @@ func regressionproject(c *fiber.Ctx) error {
 	})
 }
 
+// filter := bson.A{
+// 		bson.D{{"$match", bson.D{{"_id", c.Params("regression_id")}}}},
+// 		bson.D{
+// 			{"$lookup",
+// 				bson.D{
+// 					{"from", "requirement"},
+// 					{"localField", "sprint_id"},
+// 					{"foreignField", "sprint_id"},
+// 					{"as", "requirement"},
+// 				},
+// 			},
+// 		},
+// 		bson.D{{"$unwind", "$requirement"}},
+// 		bson.D{
+// 			{"$lookup",
+// 				bson.D{
+// 					{"from", "testcase"},
+// 					{"localField", "requirement._id"},
+// 					{"foreignField", "requirement_id"},
+// 					{"as", "testcase"},
+// 				},
+// 			},
+// 		},
+// 	}
+
 func HandlerBugReport(c *fiber.Ctx) error {
 	//Get the orgId from Header
 	org, exists := helper.GetOrg(c)
@@ -1118,9 +1143,12 @@ func HandlerBugReport(c *fiber.Ctx) error {
 
 		return shared.BadRequest("Invalid Org Id")
 	}
-
-	filter := bson.A{
-		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
+	filter := bson.A{}
+	regression_id := c.Params("regression_id")
+	if regression_id == "" {
+		filter = append(filter, bson.D{{"$match", bson.D{{"regression_id", regression_id}}}})
+	}
+	filter = append(filter, bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
 		bson.D{
 			{"$lookup",
 				bson.D{
@@ -1146,15 +1174,18 @@ func HandlerBugReport(c *fiber.Ctx) error {
 		bson.D{
 			{"$lookup",
 				bson.D{
-					{"from", "requriment"},
+					{"from", "requirement"},
 					{"localField", "testcase.requirement_id"},
 					{"foreignField", "_id"},
-					{"as", "requriment"},
+					{"as", "requirement"},
 				},
 			},
 		},
-		bson.D{{"$unwind", bson.D{{"path", "$requriment"}}}},
-	}
+		bson.D{{"$unwind", bson.D{{"path", "$requirement"}}}},
+	)
+	// filter := bson.A{
+
+	// }
 	response, err := helper.GetAggregateQueryResult(org.Id, "bug", filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
