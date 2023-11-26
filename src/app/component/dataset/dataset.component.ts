@@ -147,14 +147,14 @@ export class DatasetComponent {
         this.dataSet.get('dataSetBaseCollection')?.setValue(data.dataSetBaseCollection);
         allCollection_Name.push(data.dataSetBaseCollection)
         let FilterParams:any []= data.FilterParams
-        // let FilterParamsControl:any[]=[]
+//         // let FilterParamsControl:any[]=[]
         if(!isEmpty(FilterParams)){
         FilterParams.forEach((data:any) => {         
           this.dataSet.get('FilterParams')?.push(this.updateQueryParmsVAlue(data));
         });
       }
-      let dataSetJoinCollection:any []= data.dataSetJoinCollection
-      // let FilterParamsControl:any[]=[]
+      let dataSetJoinCollection:any []= data?.dataSetJoinCollection
+//       // let FilterParamsControl:any[]=[]
       if(!isEmpty(dataSetJoinCollection)){
         dataSetJoinCollection.forEach((data:any) => { 
           allCollection_Name.push(data.toCollection)        
@@ -197,6 +197,7 @@ this.ModelCloumnConfig(allCollection_Name).then(async (modelConfig: any) => {
   //     this.options.push(newColumn);
   //   }
   });
+console.log(this.dataSet.value);
 
 this.NameChange()
         // this.CustomColumn("FilterParams").push(FilterParamsControl);
@@ -504,7 +505,7 @@ converRawdataintoArray(filter:any):Promise<any> {
   let final:any[]=[]
 let arr:any[] = []
     var parentFilter:any
-for (let index = 0; index < filter.length; index++) {
+for (let index = 0; index < filter?.length; index++) {
 const element = filter[index];
 const clonedElement = { ...element };
 parentFilter = { ...clonedElement };
@@ -512,17 +513,17 @@ parentFilter.condition = [];
 console.log(parentFilter);
 console.log(clonedElement);
 
-for (let conditionIndex = 0; conditionIndex < clonedElement.condition.length; conditionIndex++) {
-  const condition = clonedElement.condition[conditionIndex];
+for (let conditionIndex = 0; conditionIndex < clonedElement?.condition?.length; conditionIndex++) {
+  const condition = clonedElement?.condition[conditionIndex];
 console.log(condition);
 
-  if (condition.condition) {
+  if (condition?.condition) {
     arr.push(condition);
   } else {
-    parentFilter.condition.push(condition);
+    parentFilter?.condition.push(condition);
   }
 }
-final.push(parentFilter);
+final?.push(parentFilter);
 }
 console.log(arr);
 if(!isEmpty(arr)){
@@ -1977,8 +1978,8 @@ this.dialogService.openSnackBar("Selected Column is Required","OK")
     const customColumnArray: any = this.dataSet.get(
       "dataSetJoinCollection"
     ) as FormArray;
-    const filterControl: any = customColumnArray.at(index).get("Filter");
-    if (filterControl.value) {
+    const filterControl: any = customColumnArray?.at(index)?.get("Filter");
+    if (filterControl?.value) {
       return true;
     } else {
       return false;

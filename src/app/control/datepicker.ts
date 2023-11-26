@@ -47,41 +47,23 @@ this.required=this.field.props?.required
       this.minFromDate=moment().add(this?.opt?.attributes?.add_days || 0, 'day')
   }
     if(this?.model?.isEdit==true&& this?.opt?.dynamic==true){
-this.minFromDate=this.formControl.value
+      this.minFromDate=this.formControl.value
     }
-    
-    
 
-    if(this?.opt?.attributes?.hide=="future_date"){
+  if(this?.opt?.attributes?.hide=="future_date"){
       this.maxFromDate=moment().add(this?.opt?.attributes?.add_days || 0, 'day')
   }
-
-console.log(this.opt);
-
   if(this?.model?.isEdit==true&& this?.opt?.overrideFromDate?.dynamic==true){
-    // let field =  this.opt.overrideFromDate.ToDAtekey
-    const todate:any=this.form.get(this.opt.overrideFromDate.ToDAtekey)
-    // console.log(todate);
-    // console.log(this.opt.overrideFromDate.ToDAtekey);
+  const todate:any=this.form.get(this.opt.overrideFromDate.ToDAtekey)
     this.minFromDate=this.formControl.value
-
     this.maxFromDate=moment(todate?.value);
-console.log(this.minFromDate,this.maxFromDate);
-
-    // (this.field.hooks as any).afterViewInit = (f: any) => {
-        // const parentControl = this.form.get(field)
         todate?.valueChanges.subscribe((val: any) => {
-          console.log(val);
-          
           this.maxFromDate = val
         })
-
-      // }
       }
 
 
-    if (this.currentField.parentKey!= "") {
-      debugger
+    if (this.currentField.parentKey!= "") {      
       (this.field.hooks as any).afterViewInit = (f: any) => {
       let field =  this.currentField.parentKey
         const parentControl = this.form.get(field)

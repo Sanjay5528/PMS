@@ -762,6 +762,17 @@ sprintCellEditorParams = (params: any) => {
 }};
 
 
+Changethetask(taskData:any,selectedData:any,index:any){
+  let data:any={}
+  data['assigned_to']=selectedData.employee_id
+  data['previous_assigned_to']=taskData.assigned_to
+  this.dataService.update("task",taskData._id,data).subscribe((xyz:any)=>{
+    console.log(xyz);
+    this.dialogService.openSnackBar("Task updated successfully","OK")
+    this.reassignemployee[index]=null
+  })
+}
+
 
   
 moduleCellEditorParams =  (params: any)  => {
@@ -1307,7 +1318,14 @@ if(this.formName=="Requirement"){
       console.log(event.data);
       this.cellClicked=clickCell
       this.drawer.open()
-    }}else{
+    }}
+    else if(this.formName=="bug_list"){
+      // console.log(event.data);
+      this.cellClicked=clickCell
+      
+      this.drawer.open()
+    }
+    else {
     this.drawer.close()
   }
   }

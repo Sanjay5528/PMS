@@ -229,6 +229,7 @@ parentRouteName:any
   agInit(params: any): void {
     debugger;
     this.gridData = params.data;
+    this.form.reset();
     this.params = params;
     this.route.params.subscribe(params => {
       this.parentRouteName=params['component']

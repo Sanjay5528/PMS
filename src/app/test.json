@@ -1,45 +1,51 @@
 {
-    "pageHeading": "Team Members",
+    "pageHeading": "Employee",
     "formType": "simple",
-    "editMode": "popup",
+    "editMode": "page",
+"screenEditMode": "page",
+    "keyField": "_id",
+	"user":true,
     "form": {
-        "collectionName": "team_specification",
+        "collectionName": "employee",
         "fields": [
             {
                 "fieldGroupClassName": "display-flex",
                 "fieldGroup": [
                     {
-                        "type": "select-input",
-                        "key": "user_id",
-                        "className": "flex-6",
+                        "type": "input",
+                        "key": "employee_id",
+                        "className": "flex-2",
                         "props": {
-                            "label": "User Name",
-                            "placeholder": "User Name",
-                            "labelPropTemplate": " {{first_name}}",
-                            "multifilter": true,
-                            "optionsDataSource": {
-                                "collectionName": "employee"
-                            },
-                            "labelProp": "first_name",
-                            "valueProp": "employee_id",
-                            "required": true
+                            "label": "Employee Id",
+                            "placeholder": "Employee Id",
+                            "pattern": "^[a-zA-Z0-9-_]*$",
+                             "required":true
+                        },
+                        "expressions": {
+                       
+                            "props.readonly": "model.isEdit"
                         }
                     },
                     {
-                        "type": "select-input",
-                        "key": "role_id",
-                        "className": "flex-6",
+                        "type": "input",
+                        "key": "first_name",
+                        "className": "flex-2",
                         "props": {
-                            "label": "Role Name",
-                            "placeholder": "Role Name",
-                            "labelPropTemplate": " {{name}}",
-                            "multifilter": true,
-                            "optionsDataSource": {
-                                "collectionName": "project_role"
-                            },
-                            "labelProp": "name",
-                            "valueProp": "_id",
-                            "required": true
+                            "label": "First Name",
+                            "placeholder": "First Name",
+                            "pattern": "^[a-zA-Z0-9>;,:_-]+([a-zA-Z0-9>;,:_-]+)*$",
+                            "required":true
+                        }
+                    },
+                    {
+                        "type": "input",
+                        "key": "last_name",
+                        "className": "flex-2",
+                        "props": {
+                            "label": "Last Name",
+                            "placeholder": "Last Name",
+                            "pattern": "^[a-zA-Z0-9>;,:_-]+([a-zA-Z0-9>;,:_-]+)*$",
+                            "required":true
                         }
                     }
                 ]
@@ -48,30 +54,1105 @@
                 "fieldGroupClassName": "display-flex",
                 "fieldGroup": [
                     {
-                        "key": "scheduled_start_date",
                         "type": "date-input",
-                        "className": "flex-6",
+                        "key": "dob",
+                        "className": "flex-2",
                         "props": {
-                            "label": "Scheduled Start Date",
-                            "placeholder": "Scheduled Start Date",
-                            "required": true
+                            "attributes":{
+                                "hide":"future_date"
+                                },
+                            "label": " D.O.B",
+                            "placeholder": " D.O.B",
+                            "required":true
                         }
                     },
                     {
-                        "key": "scheduled_end_date",
-                        "type": "date-input",
-                        "className": "flex-6",
-                        "parentKey": "scheduled_start_date",
-                        "parentCollectionName": "task",
+                        
+                            "key": "gender",
+                            "type": "select",
+                            "className": "flex-2",
+                            "props": {
+                              "label": "Gender",
+                             
+                              "placeholder": "Gender",
+                              "required": true,
+                              "options": [
+                                {
+                                  "value": "Female",
+                                  "label": "Female"
+                                },
+                                {
+                                  "value": "Male",
+                                  "label": "Male"
+                                },
+                                {
+                                    "value": "Others",
+                                    "label": "Others"
+                                  }
+                              ]
+                            }
+                          
+                    }
+                ]
+            },
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                    {
+                        "type": "input",
+                        "key": "email",
+                        "className": "flex-2",
                         "props": {
-                            "label": "Scheduled End Date",
-                            "placeholder": "Scheduled End Date",
-                            "required": true
+                            "label": "Email",
+                            "placeholder": "Email",
+                            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                            "required":true
+                        }
+                    },
+                    {
+                        
+                        "key": "blood_group",
+                        "type": "select",
+                        "className": "flex-2",
+                        "props": {
+                          "label": "BloodGroup",
+                         
+                          "placeholder": "BloodGroupr",
+                          "required": true,
+                          "options": [
+                            {
+                              "value": "A positive",
+                              "label": "A positive"
+                            },
+                            {
+                              "value": "A negative",
+                              "label": "A negative"
+                            },
+                            {
+                                "value": "B positive",
+                                "label": "B positive"
+                              },
+                              {
+                                "value": "B negative",
+                                "label": "B negative"
+                              }, 
+                              {
+                                "value": "AB negative",
+                                "label": "AB negative"
+                              }, 
+                              {
+                                "value": "AB positive",
+                                "label": "AB positive"
+                              }, 
+                              {
+                                "value": "O positive",
+                                "label": "O positive"
+                              },
+                              {
+                                "value": "O negative",
+                                "label": "O negative"
+                              }
+                          ]
+                        }
+                      
+                },
+                    {
+                        "type": "checkbox",
+                        "key": "access_right",
+                        "className": "flex-2",
+                        "props": {
+                            "label": "Access Right"
+                            
+                        }
+                    }
+
+                ]
+            },
+          
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                    {
+                        "type": "select",
+                        "key": "language_knows",
+                        "className": "flex-2",
+                        "templateOptions": {
+                            "label": "Language Knows",
+                            "multiple": true, 
+                            "options": [
+                              { "label": "English", "value": "English" },
+                              { "label": "Tamil", "value": "Tamil" },
+                              { "label": "Hindi", "value": "Hindi" },
+                              { "label": "Kannada", "value": " Kannada" },
+                              { "label": "Malayalam", "value": "Malayalam" },
+                              { "label": "Telugu", "value": "Telugu" }
+                            ],
+                            "required":true
+                          }
+                    },
+                    {
+                        "type": "input",
+                        "key": "contact_mobile_number",
+                        "className": "flex-2",
+                        "props": {
+                            "label": "Contact Number",
+                            "placeholder": "Contact Number",
+                            "required":true,
+                            "maxLength": 10,
+                            "pattern": "[6-9]{1}[0-9]{9}"
                         }
                     }
                 ]
+            },
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                    {
+                        "key": "religion",
+                        "type": "select",
+                        "className": "flex-2",
+                        "props": {
+                          "label": "Religion",
+                         
+                          "placeholder": "Religion",
+                          "required": true,
+                          "options": [
+                            {
+                              "value": "Christian",
+                              "label": "Christian"
+                            },
+                            {
+                              "value": "Hindu",
+                              "label": "Hindu"
+                            },
+                            {
+                                "value": "Muslim",
+                                "label": "Muslim"
+                              },
+                              {
+                                "value": "Others",
+                                "label": "Others"
+                              }
+                          ]
+                        }
+                    },
+                    {
+                        "type": "input",
+                        "key": "identity_mark",
+                        "className": "flex-2",
+                        "props": {
+                            "label": "IdentityMark",
+                            "placeholder": "IdentityMark",
+                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                            "required":true
+                        }
+                    }
+                ]
+            },
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                    {
+                        "type": "select-input",
+                        "key": "designation",
+                        "className": "flex-6",
+                        "props": {                      
+                            "label": "Designation",
+                            "placeholder": "Designation",
+                            "multifilter":true,
+                            "type":"input",
+                            "optionsDataSource": {
+                                "collectionName": "designation"
+                            },
+                            "labelProp": "_id",
+                            "valueProp": "name",
+                            "required": true
+
+                        }
+                    },  
+                        
+                    {
+                        
+                        "key": "marital_status",
+                        "type": "select",
+                        "className": "flex-6",
+                        "props": {
+                          "label": "Marital Status",
+                         
+                          "placeholder": "Marital Status",
+                          "required": true,
+                          "options": [
+                            {
+                              "value": "Married",
+                              "label": "Married"
+                            },
+                            {
+                              "value": "UnMarried",
+                              "label": "UnMarried"
+                            }
+                            
+                          ]
+                        }
+                    }
+                ]
+            },
+            {
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                    {
+                        "className": "flex-2",
+                        "key": "appoinment_date",
+                        "type": "date-input",
+                    
+                        "props": {
+                          "label": "Appointment Date",
+                          "placeholder": "Appointment Date",
+                          
+                          "required": true
+                        }
+                      },
+                      {
+                        "className": "flex-2",
+                        "key": "joining_date",
+                        "type": "date-input",
+                        "parentKey": "appoinment_date",
+                        "parentCollectionName": "employee",
+                        "props": {
+                          "label": "Joining Date",
+                          "placeholder": "Joining Date",
+                           
+                          "required": true
+                        }
+                      }
+                ]
+            },
+            {
+                "type": "tab-input",
+                "fieldGroup": [
+                    
+                    {      
+                     
+                    "props": {
+                        "label": "Address",
+                        "required": true
+                    },
+                    
+                    "fieldGroup": [
+                        {
+                                
+                    "type": "fieldset",
+
+                    "checkbox":true,
+                    "patch": "secondary",
+                    "patch_value": "primary",
+                    "checkboxIndex": 2,
+                    "label":"The Secondary Address Is Same as the Primary Address",
+                    "fieldGroup": [
+                        { 
+                             "props": {
+                            "label": "Primary Address"
+                        }, 
+                        "fieldGroup": [    
+                      {
+                            "type": "input",
+                            "key": "primary.street",
+                            "className": "flex-6",
+                            "props": {
+                                "label": "Street",
+                                "placeholder": "Street",
+                                "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                "required": true
+                            }
+                        },
+                        {
+                            "type": "input",
+                            "key": "primary.areaname",
+                            "className": "flex-6",
+                            "props": {
+                                "label": "Area Name",
+                                "placeholder": "Area Name",
+                                "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                "required": true
+                            }
+                        },
+                  
+                                {
+                                    "type": "select-input",
+                                    "key": "primary.country_name",
+                                    "className": "flex-6",
+                                    "props": {                      
+                                        "label": "Country",
+                                        "placeholder": "Country",
+                                        "labelPropTemplate": " {{country_name}}",
+                                        "multifilter":true,
+                                        "type":"input",
+                                        "optionsDataSource": {
+                                            "collectionName": "country"
+                                        },
+                                        "labelProp": "country_name",
+                                        "valueProp": "country_name",
+                                        "required": true
+
+                                    }
+                                },
+                                {
+                                    "type": "select-input",
+                                    "key": "primary.states",
+                                    "className": "flex-6",
+                                    "parentKey": "primary.country_name",
+                                    "parentCollectionName": "country",
+                                    "props": {
+                                        "label": "State",
+                                        "placeholder": "State",
+                                        "Properties": {
+                                            "formVAlueChange":true
+                                          },
+                                          "multifiltertype":"Simple",
+                                          "multifilterFieldName":"states",
+                                          "multifilter_condition": {
+                                            "clause": "AND",
+                                            "conditions": [
+                                              {
+                                                "column": "country_name",
+                                                "operator": "EQUALS",
+                                                "type": "string",
+                                                "value": ""
+                                              }
+                                            ]
+                                          },
+                                          "labelProp": "label",
+                                          "valueProp": "value",
+                                          "required": true
+                                    }
+                                },  
+                                {
+                                    "type": "input",
+                                    "key": "primary.city",
+                                    "className": "flex-6",
+                                    "props": {
+                                        "label": "City",
+                                        "placeholder": "City",
+                                        "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                        "required": true
+                                    }
+                                }, {
+                                    "type": "input",
+                                    "key": "primary.pincode",
+                                    "className": "flex-6",
+                                    "props": {
+                                        "label": "Postal code",
+                                        "placeholder": "Postal code",
+                                        "pattern": "^[1-9][0-9]{5}$",
+                                        "maxLength": 6,
+                                        "required": true
+                                    }
+                                },
+                             
+                        {
+                            "type": "input",
+                            "key": "primary.currency",
+                            "className": "flex-6",
+                            "parentKey": "country_name",
+                            "parentCollectionName": "country",
+                            "props": {
+                                "label": "Currency",
+                                "placeholder": "Currency",
+                                "labelPropTemplate": "{{currency}}",
+                                "optionsDataSource": {
+                                    "collectionName": "country"
+                                },
+                                "labelProp": "currency",
+                                "valueProp": "currency",
+                                "required": true
+                            }
+                        },
+                        {
+                            "type": "input",
+                            "key": "primary.timezone",
+                            "className": "flex-6",
+                            "props": {
+                                "label": "Time Zone",
+                                "placeholder": "Time Zone",
+                                "required": true
+                            }
+                        }, {
+                            "type": "input",
+                            "key": "primary.landmark",
+                            "className": "flex-6",
+                            "props": {
+                                "label": "Land Mark",
+                                "placeholder": "Land Mark",
+                                "pattern": "^[a-zA-Z0-9_@!#$%^&*()>/<> ]+[a-zA-Z0-9_@!#$%^&*()>/<> ]*$"
+                            }
+                        }
+
+                       
+                       
+                    ]},
+                    { "props": {
+                        "label": "Secondary Address"
+                    }, 
+                    "fieldGroup": [ 
+                                {
+                                    "type": "input",
+                                    "key": "secondary.street",
+                                    "className": "flex-6",
+                                    "props": {
+                                        "label": "Street Name",
+                                        "placeholder": "Street Name",
+                                        "required": true,
+                                        "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$"
+                                    }
+                                },
+                                {
+                                    "type": "input",
+                                    "key": "secondary.areaname",
+                                    "className": "flex-6",
+                                    "props": {
+                                        "label": "Area Name",
+                                        "placeholder": "Area Name",
+                                        "required": true,
+                                        "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$"
+                                    }
+                                },
+                         {
+                            "type": "select-input",
+                            "key": "secondary.country_name",
+                            "className": "flex-6",
+                            "props": {
+                             
+
+                                "label": "Country",
+                                "placeholder": "Country",
+                                "labelPropTemplate": " {{country_name}}",
+                                "multifilter":true,
+
+                                "type":"input",
+                                "optionsDataSource": {
+                                    "collectionName": "country"
+                                },
+                                "labelProp": "country_name",
+                                "valueProp": "country_name",
+                                "required": true
+
+                            }
+                        },
+                        {
+                            "type": "select-input",
+                            "key": "secondary.states",
+                            "className": "flex-6",
+                            "parentKey": "secondary.country_name",
+                            "parentCollectionName": "country",
+                            "props": {
+                                "label": "State",
+                                "placeholder": "State",
+                                "Properties": {
+                                    "formVAlueChange":true
+                                  },
+                                  "multifiltertype":"Simple",
+                                  "multifilterFieldName":"states",
+                                  "multifilter_condition": {
+                                    "clause": "AND",
+                                    "conditions": [
+                                      {
+                                        "column": "country_name",
+                                        "operator": "EQUALS",
+                                        "type": "string",
+                                        "value": ""
+                                      }
+                                    ]
+                                  },
+                                  "labelProp": "label",
+                                  "valueProp": "value",
+                                  "required": true
+                            }
+                        },{
+                                "type": "input",
+                                "key": "secondary.city",
+                                "className": "flex-6",
+                                "props": {
+                                    "label": "City",
+                                    "placeholder": "City",
+                                    "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                    "required": true
+                                }
+                            },
+                            {
+                                "type": "input",
+                                "key": "secondary.pincode",
+                                "className": "flex-6",
+                                "props": {
+                                    "label": "Postal code",
+                                    "placeholder": "Postal code",
+                                    "pattern": "^[1-9][0-9]{5}$",
+                                    "maxLength": 6,
+                                    "required": true
+                                }
+                            }, {
+                                "type": "input",
+                                "key": "secondary.currency",
+                                "className": "flex-6",
+                                "parentKey": "country_name",
+                                "props": {
+                                    "label": "Currency",
+                                    "placeholder": "Currency",
+                                    "labelPropTemplate": "{{currency}}",
+                                    "optionsDataSource": {
+                                        "collectionName": "country"
+                                    },
+                                    "labelProp": "currency",
+                                    "valueProp": "currency",
+                                    "required": true
+                                }
+                            },
+                            {
+                                "type": "input",
+                                "key": "secondary.timezone",
+                                "className": "flex-6",
+                                "props": {
+                                    "label": "Time Zone",
+                                    "placeholder": "Time Zone",
+                                    "required": true
+                                }
+                            } ,
+                        
+                            {
+                                "type": "input",
+                                "key": "secondary.landmark",
+                                "className": "flex-6",
+                                "props": {
+                                    "label": "Land Mark",
+                                    "placeholder": "Land Mark",
+                                    "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$"
+                                }
+                            }
+                       
+                    ]}
+                    ]
+                        }
+                       ]
+                    },
+                    {
+                        "props": {
+                            "label": "Family Details",
+                            "addText": "Add",
+                            "required": true
+                        },
+                        "key": "familymember",
+                        "type": "repeat",
+                        "fieldArray": {
+                            "fieldGroupClassName": "row",
+                            "fieldGroup": [
+                                {
+                                    "fieldGroupClassName": "display-flex",
+                                    "fieldGroup": [
+                                        {
+                                            "type": "input",
+                                            "key": "family_member",
+                                            "className": "flex-1",
+                                            "props": {
+                                                "label": "Family Member",
+                                                "placeholder": "Family Member",
+                                                "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                                "required":true
+                                            }
+                                        },
+                                        {
+                                            "type": "input",
+                                            "key": "relationship",
+                                            "className": "flex-1",
+                                            "props": {
+                                                "label": "Relation",
+                                                "placeholder": "Relation",
+                                                "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                                "required":true
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fieldGroupClassName": "display-flex",
+                                    "fieldGroup": [
+                                        {
+                                            "type": "date-input",
+                                            "key": "dob",
+                                            "className": "flex-1",
+                                            "props": {
+                                                "attributes":{
+                                                    "hide":"future_date"
+                                                    },
+                                                "label": "D.O.B",
+                                                "placeholder": "D.O.B",
+                                                "required":true
+                                            }
+                                        },
+                                        {
+                                            "type": "select",
+                                            "key": "dependent",
+                                            "className": "flex-1",
+                                            "props": {
+                                                "label": "Dependent",
+                                                "options": [
+                                                    {
+                                                        "label": "Yes",
+                                                        "value": "Yes"
+                                                    },
+                                                    {
+                                                        "label": "No",
+                                                        "value": "No"
+                                                    }
+                                                     
+                                                ],
+                                                "placeholder": "Dependent",
+                                                "required": true
+                                            }
+                                        },
+                                        {
+                                            "type": "select",
+                                            "key": "employed",
+                                            "className": "flex-1",
+                                            "props": {
+                                                "label": "Whether Employed ?",
+                                                "options": [
+                                                    {
+                                                        "label": "Yes",
+                                                        "value": "Yes"
+                                                    },
+                                                    {
+                                                        "label": "No",
+                                                        "value": "No"
+                                                    }
+                                                     
+                                                ],
+                                                "placeholder": "Whether Employed ?",
+                                                "required": true
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "props": {
+                            "label": "Education Details",
+                            "addText": "Add",
+                            "required": true
+                        },
+                        "key": "education",
+                        "type": "repeat",
+                        "fieldArray": {
+                            "fieldGroupClassName": "row",
+                            "fieldGroup": [
+                                {
+                                    "fieldGroupClassName": "display-flex",
+                                    "fieldGroup": [
+                                        {
+                                            "type": "select",
+                                            "key": "education_type",
+                                            "className": "flex-1",
+                                            "props": {
+                                                "label": "Education",
+                                                "options": [
+                                                    {
+                                                        "label": "Diploma",
+                                                        "value": "Diploma"
+                                                    },
+                                                    {
+                                                        "label": "HSC",
+                                                        "value": "HSC"
+                                                    },
+                                                    {
+                                                        "label": "SSLC",
+                                                        "value": "SSLC"
+                                                    },
+                                                    {
+                                                        "label": "Post Graduation",
+                                                        "value": "Post Graduation"
+                                                    },
+
+                                                    {
+                                                        "label": "Under Graduation",
+                                                        "value": "Under Graduation"
+                                                    }
+                                                ],
+                                                "placeholder": "Education",
+                                                "required": true
+                                            }
+                                        },
+                                        {
+                                            "type": "input",
+                                            "key": "university",
+                                            "className": "flex-1",
+                                            "props": {
+                                                "label": "Board university",
+                                                "placeholder": "Board University",
+                                                "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                                "required":true
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fieldGroupClassName": "display-flex",
+                                    "fieldGroup": [
+                                        {
+                                            "type": "input",
+                                            "key": "education_percentage",
+                                            "className": "flex-1",
+                                            "props": {
+                                                "label": "Mark Percentage",
+                                                "placeholder": "Mark Percentage",
+                                                "pattern": "^([0-9]{1,2}([0-9]1,2})?|100(0{1,2})?)$",
+                                                "maxLength":3,
+                                                "required":true
+                                            }, "expressions": {
+                                                "validation.show": "!(model.education_percentage>=100)"
+                                              }
+                                        },
+                                        {
+                                            "type": "date-input",
+                                            "key": "education_ year_of_passing",
+                                            "className": "flex-1",
+                                            "props": {
+                                                "attributes":{
+                                                    "hide":"future_date"
+                                                    },
+                                                "label": "Year of Passing Date",
+                                                "placeholder": "Year of Passing Date",
+
+                                                "required":true
+                                            }
+                                        },
+                                        {
+                                            "type": "input",
+                                            "key": "class",
+                                            "className": "flex-1",
+                                            "props": {
+                                                "label": "Class",
+                                                "placeholder": "Class",
+                                                
+                                                "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                                "required":true
+                                            }
+                                        }
+                                    ]
+                                }
+                                 
+                            ]
+                        }
+                    },
+                    {
+                        "props": {
+                            "label": "Education Certificate"
+                        },
+                        "fieldGroup": [
+                            {
+                                "fieldGroupClassName": "display-flex",
+                                "fieldGroup": [
+                                    {
+                                        "type": "image-input",
+                                        "key": "education_sslc_certificate",
+                                        "role": "employee",
+                                        "refid": "id",
+                                        "bind_key": "employee_id",
+                                        "details_type": "Education Details",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "refId": "employee_id",
+                                            "label": "SSLC Certificate",
+                                            "required":true
+                                        }
+                                    },
+                                    {
+                                        "type": "image-input",
+                                        "key": "education_hsc_certificate",
+                                        "role": "employee",
+                                        "refid": "id",
+                                        "bind_key": "employee_id",
+                                        "details_type": "Education Details",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "refId": "employee_id",
+                                            "label": "HSC Certificate",
+                                            "required":true
+                                        }
+                                    },
+                                    {
+                                        "type": "image-input",
+                                        "key": "education_degree_certificate",
+                                        "role": "employee",
+                                        "refid": "id",
+                                        "bind_key": "employee_id",
+                                        "details_type": "Education Details",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "refId": "employee_id",
+                                            "label": "Degree Certificate",
+                                            "required":true
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "props": {
+                            "label": "Experience Details",
+                            "addText": "Add"
+
+                        },
+                        "key": "experience",
+                        "type": "repeat",
+                        "fieldArray": {
+                            "fieldGroupClassName": "row",
+                            "fieldGroup": [
+                                {
+                                    "fieldGroupClassName": "display-flex",
+                                    "fieldGroup": [
+                                        {
+                                            "type": "input",
+                                            "key": "company_Name",
+                                            "className": "flex-1",
+                                            "props": {
+                                                "label": "Company Name",
+                                                "placeholder": "Company Name",
+                                                "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$"
+                                            }
+                                        },
+                                        {
+                                            "type": "input",
+                                            "key": "company_location",
+                                            "className": "flex-1",
+                                            "props": {
+                                                "label": "Location",
+                                                "placeholder": "Location",
+                                                "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fieldGroupClassName": "display-flex",
+                                    "fieldGroup": [
+                                        {
+                                            "type": "date-input",
+                                            "key": "company_joined_on",
+                                            "className": "flex-1",
+                                            "props": {
+                                                "attributes":{
+                                                    "hide":"future_date"
+                                                    },
+                                                "label": "Joined On",
+                                                "placeholder": "Joined On"
+                                            }
+                                        },
+                                        {
+                                            "type": "date-input",
+                                            "key": "company_relieved_on",
+                                            "className": "flex-1",
+                                            "props": {
+                                                "label": "Relieved On",
+                                                "placeholder": "Relieved On"
+                                            }
+                                        }
+                                    ]
+                                }
+                                
+                            ]
+                        }
+                    },
+                    {
+                        "props": {
+                            "label": "Bank Details"
+                            
+
+                        },
+                        "fieldGroup": [
+                            {
+                                "fieldGroupClassName": "display-flex",
+                                "fieldGroup": [
+                                    {
+                                        "type": "input",
+                                        "key": "account_no",
+                                        "className": "flex-1",
+                                        "props": {
+                                            "label": "Account No",
+                                            "placeholder": "Account No",
+                                            "pattern": "^[0-9_@!#$%^&*()><>]*$",
+                                            "required":true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "bank_name",
+                                        "className": "flex-1",
+                                        "props": {
+                                            "label": "Bank Name",
+                                            "placeholder": "Bank Name",
+                                            "pattern": "^[a-zA-Z&>/;,:-_/]+( [a-zA-Z&>/;,:-_/!@-]+)*$",
+                                            "required":true
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "fieldGroupClassName": "display-flex",
+                                "fieldGroup": [
+                                    {
+                                        "type": "input",
+                                        "key": "branch_name",
+                                        "className": "flex-1",
+                                        "props": {
+                                            "label": "Branch Name",
+                                            "placeholder": "Branch Name",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required":true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "ifsc_code",
+                                        "className": "flex-1",
+                                        "props": {
+                                            "label": "IFSC Code",
+                                            "placeholder": "IFSC Code",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required":true
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "props": {
+                            "label": "Id Details"
+                        },
+                        "fieldGroup": [
+                            {
+                                "fieldGroupClassName": "display-flex",
+                                "fieldGroup": [
+                                    {
+                                        "type": "input",
+                                        "key": "aadharcard",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "Aadhar Card",
+                                            "placeholder": "Aadhar Card",
+                                            "pattern": "^[0-9_@!#$%^&*()><>]*$",
+                                            "maxLength":12,
+                                            "required":true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "pancard",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "PanCard",
+                                            "placeholder": "PanCard",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required":true
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "fieldGroupClassName": "display-flex",
+                                "fieldGroup": [
+                                    {
+                                        "type": "input",
+                                        "key": "pf_no",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "PF No",
+                                            "placeholder": "PF No",
+                                            "pattern": "^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$",
+                                            "required":true
+                                        }
+                                    },
+                                    {
+                                        "type": "input",
+                                        "key": "esi_no",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "label": "ESI No",
+                                            "placeholder": "ESI No",
+                                            "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+                                            "required":true
+                                        }
+                                    }
+                        ]},
+                                    {
+                                        "fieldGroupClassName": "display-flex",
+                                        "fieldGroup": [
+                                    {
+                                        "type": "image-input",
+                                        "key": "aadharcard_image",
+                                        "role":"employee",
+                                        "refId":"id",
+                                        "bind_key":"employee_id", 
+                                        "className": "flex-2",
+                                        "details_type":"idimage",
+                                        "props": {
+                                            "refId":"employee_id", 
+                                            "label": "Aadhar Card",
+                                            "required":true
+                                            
+                                        }
+                                    },
+                                    {
+                                        "type": "image-input",
+                                        "key": "pancard_image",
+                                        "role":"employee",
+                                        "refId":"id",
+                                        "bind_key":"employee_id", 
+                                        "className": "flex-2",
+                                        "details_type":"idimage",
+                                        "props": {
+                                            "refId":"employee_id", 
+                                            "label": "Pan Card",
+                                            "required":true
+                                            
+                                        }
+                                    },
+                                    {
+                                        "type": "image-input",
+                                        "key": "experience_certificate_image",
+                                        "role":"employee",
+                                        "refid":"id",
+                                        "bind_key":"employee_id",
+                                        "details_type":"expimage",
+                                        "className": "flex-2",
+                                        "props": {
+                                            "refid":"employee_id",
+                                            "label": "Experience Certificate"
+                                        
+                                        }
+                                    }
+                                    
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "image-input",
+                "key": "image",
+                "role":"employee",
+                "refId":"id",
+                "bind_key":"employee_id", 
+                "details_type":"image",
+                "props": {
+                    "refId":"employee_id", 
+                    "label": "Employee Photo",
+                    "required":true
+                }
             }
+            
         ]
     },
-    "onCancelRoute": "/list/teammembers"
+    "onCancelRoute": "/list/employee"
 }
