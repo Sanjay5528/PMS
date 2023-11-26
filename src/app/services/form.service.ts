@@ -765,9 +765,9 @@ console.log(ctrl);
               ctrl.butonflag=false
               return error }) ).subscribe((res: any) => {
             if(res){
-              console.log(ctrl);
+              
               if(ctrl?.config?.user){
-                this.updateuser(ctrl);
+                this.updateuser(ctrl,res);
               } 
               
               this.dialogService.openSnackBar("Data has been Inserted successfully", "OK")
@@ -800,59 +800,29 @@ console.log(ctrl);
 
 
 
-  updateuser(ctrl:any){
+  updateuser(ctrl:any,refId:any){
     
       let datas:any={}
-    //   if(ctrl?.collectionName=='organisation'){
-    //      datas={
-    //       _id:ctrl.model.contact_details.email_id,
-    //       first_name:ctrl.model.contact_details.first_name,
-    //       last_name:ctrl.model.contact_details.last_name,
-    //       mobile_number:ctrl.model.contact_details.mobile_number,
-    //       role:'Admin',
-    //       org_id:ctrl.model._id ,// ,depends to which organisation
-    //       user_type:ctrl.model.org_type //! change
-    //     }
-    //  }else{
-    //   // if(ctrl.model.access==1){
-    //   //   //! system user Created by Role SA
-    //   //   datas={
-    //   //     _id:ctrl.model.email_id,
-    //   //     first_name:ctrl.model.first_name,
-    //   //     last_name:ctrl.model.last_name,
-    //   //     mobile_number:ctrl.model.mobile_number,
-    //   //     org_id:ctrl.model.org_id ,
-    //   //     user_type:ctrl.model.user_type, //! change
-    //   //     role:ctrl.model.org_type //! change
-
-    //   //   }
-        
-    //   // }else if(ctrl.model.access !== 1){
-    //   //   //! system user Created by himself
-    //   //   // let  number:any=JSON.stringify(ctrl.model.mobile_number)
-    //   // datas={
-    //   //   _id:ctrl.model.email_id,
-    //   //   first_name:ctrl.model.first_name,
-    //   //   last_name:ctrl.model.last_name,
-    //   //   mobile_number:ctrl.model.mobile_number,
-    //   //   org_id:this.dataService.getdetails().profile.org_id ,
-    //   //     user_type:this.dataService.getdetails().profile.role , //! change
-    //   //     role:ctrl.model.role //! change
-
-    //   // }
-    //   // }
-        
-    //  }
-    //  console.log(datas);
+      if(ctrl?.collectionName=='client'){
+         datas={
+          _id:ctrl.model.contact_details.email_id,
+          first_name:ctrl.model.contact_details.first_name + " " +ctrl.model.contact_details.last_name,
+          mobile_number:ctrl.model.contact_details.mobile_number,
+          user_type:ctrl.collectionName.toLowerCase(),
+          role:'Admin',
+          org_id:ctrl.model._id 
+        }
+     }else{
     datas={
             _id:ctrl.model.email,
             name:ctrl.model.first_name+" "+ctrl.model.last_name,
-            // last_name:,
+            user_type: ctrl.collectionName.toLowerCase(),
             mobile_number:ctrl.model.mobile_number,
             role:ctrl.model.designation,
             employee_id:ctrl.model.employee_id,
             status:"Email Sended"
           }
+        }
      this.dataService.save('user',datas).subscribe((res: any) => {
      console.log(res);
      
@@ -978,7 +948,6 @@ Create_struct(ctrl:any,value:any): Promise<any> {
           formData[obj.colName] = model[val]
       } else if (obj.type == "exp") {
         if (obj.source == "local") {
-         
           val =JSON.parse(sessionStorage.getItem(obj.value) || '');
           let data = val[obj.object][obj.object1]
           formData[obj.colName] = data
