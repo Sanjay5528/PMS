@@ -136,6 +136,22 @@ import { HelperService } from "src/app/services/helper.service";
         </button>
       </mat-menu>
     </div>
+    
+    <div  *ngIf="parentRouteName=='team_member'">
+      <button mat-icon-button  [matMenuTriggerFor]="Taskmenu" aria-label="Example icon-button with a menu">
+        <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
+      </button>
+      <mat-menu #Taskmenu="matMenu">
+      <button  mat-menu-item (click)="onclickBug('bug', params.data)">
+      <mat-icon>add</mat-icon>
+          <span>Task</span>
+        </button>
+        <button mat-menu-item (click)="onclickBug('delete', params.data)">
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+    </div>
 
     <ng-template #taskViewPopup class="example-sidenav" mode="over" style="margin: auto">
       <mat-card>
@@ -232,6 +248,9 @@ parentRouteName:any
     this.form.reset();
     this.params = params;
     this.route.params.subscribe(params => {
+      console.log(params);
+      
+      
       this.parentRouteName=params['component']
     });
   }

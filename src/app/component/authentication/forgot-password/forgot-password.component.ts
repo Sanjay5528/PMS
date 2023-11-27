@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { DataService } from 'src/app/services/data.service';
 import { DialogService } from '../../../services/dialog.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HelperService } from 'src/app/services/helper.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -19,6 +20,7 @@ export class ForgotPasswordComponent {
     private dataService: DataService,
     private dialogService: DialogService,
     private route:ActivatedRoute,
+    private helperServices:HelperService,
     private router:Router
   ) {
 
@@ -63,9 +65,36 @@ accesskey:any
 
 
   forgotPassword() {
-
-    // let id = this.frmLogin.value.userId
-
+    
+    if(!this.forgetPassword.valid){
+      
+      function collectInvalidLabels(controls:any,invalidLabels='') {
+        for (const key in controls) {
+            if (controls.hasOwnProperty(key)) {
+                const control = controls[key];
+        
+                 if (control instanceof FormControl && control?.status === 'INVALID') {
+                    invalidLabels +=key.toUpperCase().replaceAll("_",' ') + ",";
+                    
+                    
+                
+            }
+        }
+        console.log(invalidLabels);
+        
+      }
+      var n =invalidLabels.lastIndexOf(",")
+      var value=invalidLabels.substring(0,n)
+      return value;
+    
+      // this.helperServices.getDataValidatoion(this.forgetPassword.controls)
+    }
+    const label:any= collectInvalidLabels(this.forgetPassword.controls)
+    console.log(label);
+    
+    this.dialogService.openSnackBar(label,"ok")
+    return
+  }
     let user_data = this.forgetPassword.value
     // console.log();
     console.log(user_data);

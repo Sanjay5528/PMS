@@ -25,7 +25,8 @@
     [animateRows]="true"
     [rowData]="listdata"     
      [rowSelection]="'single'"
-
+      [components]="components"
+      [context]="context"
     (gridReady)="RowonGridReady($event)"
     (selectionChanged)="rowonSelectionChanged($event)" 
     (cellClicked)='rowonCellClicked($event)'

@@ -16,6 +16,7 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { FormlyModule } from '@ngx-formly/core';
 import { environment } from 'src/environments/environment';
 import { MatSelect, MatSelectModule } from '@angular/material/select';
+import { NbTooltipModule } from '@nebular/theme';
 
 
 @NgModule({
@@ -38,7 +39,7 @@ import { MatSelect, MatSelectModule } from '@angular/material/select';
     MatButtonModule,
     MatToolbarModule,
     MatMenuModule,
-    MatGridListModule,
+    MatGridListModule,MatToolbarModule,
     FlexLayoutModule,
     ReactiveFormsModule,
     FormlyModule.forRoot({

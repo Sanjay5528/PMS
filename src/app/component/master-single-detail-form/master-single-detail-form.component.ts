@@ -317,6 +317,8 @@ return
 
   onSelect(event: any) {
     this.selectedRow = event.api.getSelectedRows()[0]
+    
+    
     this.detailFields[this.detailDefaultFocusIndex].focus = true
     this.detailModel = this.selectedRow
     this.detailModel['isEdit'] = true
@@ -381,6 +383,14 @@ return
       }
       //! TO DO Changes
       // this.router.navigate([`${item.route}` + "/" + data[this.config.keyField]])
+    } else if( item.formAction=="individual_report"){
+      
+      this.router.navigate([
+        `${item.Custom_Route}`,
+        data["_id"],
+      ]);
+      sessionStorage.setItem(item.Save_Field,this.id)
+
     }
     else {
       this.selectedRow = data

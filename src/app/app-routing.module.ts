@@ -114,7 +114,7 @@ const routes: Routes = [
   canActivate: [AuthGuardService],
   children: [
     {
-      path: ":form/:id",
+      path: ":component/:id",
       component:NestedtablesComponent
     },
   ],

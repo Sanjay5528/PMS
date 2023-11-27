@@ -93,12 +93,13 @@ animateRows:true,paginationPageSize:10
     this.context = { componentParent: this };
     
   } 
-
+parms:any
   ngOnInit() {
     this.route.params.subscribe(params => {
 this.addbutton=false;
 console.log(params);
 this.id = params['id'];
+this.parms=params['id']
 
       this.formName=params['component']
 let collection:any
@@ -535,7 +536,7 @@ this.gridOptions.paginationPageSize=100
     }
     
     )
-  }else if(this.formName=="bug_list"){
+  }else if(this.formName=="bug_list"||this.formName=="regression"){
     this.pageHeading="Bug List"
     // this.gridOptions.groupDefaultExpanded=-1
 this.gridOptions.sideBar=this.sideBar
@@ -594,7 +595,11 @@ this.defaultColDef.editable=false;
       width: 40,
       editable: false,
       filter: 'agTextColumnFilter',
-      
+      valueFormatter:function(parse:any){
+        if(parse?.value){
+          return parse.value.toUpperCase().replaceAll("_",' ')
+        }
+      },
       enableRowGroup:true,
     },
     {
@@ -602,7 +607,11 @@ this.defaultColDef.editable=false;
       field: 'test_result.error_priority',
       width: 40,
       editable: false,
-      
+      valueFormatter:function(parse:any){
+        if(parse?.value){
+        return parse.value.toUpperCase().replaceAll("_",' ')
+      }
+              },
       enableRowGroup:true,
       filter: 'agTextColumnFilter',
     }, {
@@ -636,17 +645,18 @@ this.defaultColDef.editable=false;
       width: 40,
       editable: false,
       filter: 'agTextColumnFilter',
-    },
-      {
-  
-      field: 'Action',
-      sortable:false,
-      filter:false,
-      resizable:false,
-      maxWidth: 110,
-      cellRenderer: 'buttonRenderer'
-  
     }
+    // ,
+    //   {
+  
+    //   field: 'Action',
+    //   sortable:false,
+    //   filter:false,
+    //   resizable:false,
+    //   maxWidth: 110,
+    //   cellRenderer: 'buttonRenderer'
+  
+    // }
     
     )
   }else if(this.formName=="team_member"){
@@ -1180,85 +1190,24 @@ if (vals.testcase.length === 0) {
 this.listData = overalldata;
 })
   }else if(this.formName=="bug_list"){
-    console.log(this.response._id);
     
-    this.dataService.lookUpBug(this.response.project_id,).subscribe((res:any)=>{
+    this.dataService.lookUpBug(this.response.project_id,"").subscribe((res:any)=>{
       console.log(res);
       let data:any=res.data.response
       this.listData=data
-      console.log(data);
-      // !  Regression Id Done by Devops Status 
-      // let test_Case_Details:any[]=[]
-    //   {
-    //     "_id": "testclientID-R1-B13",
-    //     "created_by": "sanjay123sanjay12@gmial.com",
-    //     "created_on": "2023-11-22T13:48:48.074Z",
-    //     "project_id": "testclientID-R1",
-    //     "requriment": {
-    //         "_id": "6556e6ca708092f87ad4e9b6",
-    //         "created_by": "sanjay123sanjay12@gmial.com",
-    //         "created_on": "2023-11-17T04:06:34.298Z",
-    //         "module_id": "M1",
-    //         "parentmodulename": "",
-    //         "project_id": "testclientID-R1",
-    //         "requirement_description": "Authentication",
-    //         "requirement_name": "Authentication",
-    //         "sprint_id": "R01-3",
-    //         "status": "A",
-    //         "update_by": "sanjay123sanjay12@gmial.com",
-    //         "update_on": "2023-11-20T10:38:13.341Z"
-    //     },
-    //     "test_case_id": "cbd6d91db9c04849b54605ecd1c97e11",
-    //     "test_result": {
-    //         "_id": "testclientID-R1-TR11",
-    //         "actual_result": "sdasdasdasdasdas",
-    //         "created_by": "sanjay123sanjay12@gmial.com",
-    //         "created_on": "2023-11-22T13:48:47.873Z",
-    //         "doneBy": "Emp121",
-    //         "error_priority": "medium",
-    //         "error_type": "cosmatic_error",
-    //         "project_id": "testclientID-R1",
-    //         "regression_id": "AUTH",
-    //         "result_proof": [
-    //             {
-    //                 "_id": "4b1ef78317b94c8b9e4cb2a7e153ed9b",
-    //                 "file_name": "Screenshot from 2023-09-28 19-46-48.png",
-    //                 "folder": "test_case",
-    //                 "ref_id": "cbd6d91db9c04849b54605ecd1c97e11",
-    //                 "size": 285990,
-    //                 "storage_name": "test_case/cbd6d91db9c04849b54605ecd1c97e11/Screenshot from 2023-09-28 19-46-48__2023-11-22-19-18-43.png",
-    //                 "uploaded_by": "sanjay123sanjay12@gmial.com"
-    //             },
-    //             {
-    //                 "_id": "03552a946f134f85ba7a2883b7ce5f79",
-    //                 "file_name": "Screenshot from 2023-09-26 13-24-48.png",
-    //                 "folder": "test_case",
-    //                 "ref_id": "cbd6d91db9c04849b54605ecd1c97e11",
-    //                 "size": 174701,
-    //                 "storage_name": "test_case/cbd6d91db9c04849b54605ecd1c97e11/Screenshot from 2023-09-26 13-24-48__2023-11-22-19-18-44.png",
-    //                 "uploaded_by": "sanjay123sanjay12@gmial.com"
-    //             }
-    //         ],
-    //         "result_status": "F",
-    //         "status": "A",
-    //         "testCase_id": "cbd6d91db9c04849b54605ecd1c97e11",
-    //         "testcase_date": "2023-10-31T18:30:00Z"
-    //     },
-    //     "test_result_id": "testclientID-R1-TR11",
-    //     "testcase": {
-    //         "_id": "cbd6d91db9c04849b54605ecd1c97e11",
-    //         "created_by": "sanjay123sanjay12@gmial.com",
-    //         "created_on": "2023-11-21T05:57:14.153Z",
-    //         "expected_result": "Auth1",
-    //         "project_id": "testclientID-R1",
-    //         "requirement_id": "6556e6ca708092f87ad4e9b6",
-    //         "test_case_name": "Auth1",
-    //         "test_case_scenario": "N",
-    //         "test_data": "Auth1"
-    //     }
-    // }
     })
-      }else if(this.formName=="team_member"){
+      }else if(this.formName=="regression"){
+        this.dataService.getDataById("regression",this.parms ).subscribe((res:any)=>{
+          
+          this.dataService.lookUpBug(this.response.project_id,res.data[0].regression_id).subscribe((res:any)=>{
+            console.log(res);
+            let data:any=res.data.response
+            this.listData=data
+          })
+        })
+      }
+      
+      else if(this.formName=="team_member"){
      this.dataService.lookupTreeData("requriment",this.response.project_id).subscribe((res:any) =>{
     const data = res.data.response;
   let parentTreeData: any[] = [];
@@ -1482,7 +1431,10 @@ if(fieldName=="module_id"){
         this.reassignemployee[index]=null
       })
   }
+  
+  addOneColumnBelow(params:any){
 
+  }
   goBack(){
     // this.router.navigate(['list/project'])
     this._location.back();

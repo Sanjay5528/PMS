@@ -225,10 +225,10 @@ export class HelperService implements OnInit {
               const control = controls[key];
       
               if (control instanceof FormGroup) {
-                  invalidLabels += this.getDataValidatoion(control.controls);
-              } else if (control instanceof FormControl && control.status === 'INVALID') {
+                  invalidLabels += this.getDataValidatoion(control?.controls);
+              } else if (control instanceof FormControl && control?.status === 'INVALID') {
                   // Access the label property assuming it exists in the control
-                  invalidLabels +=controls[key]._fields[0].props.label + ",";
+                  invalidLabels +=controls[key]?._fields[0]?.props?.label + ",";
               }else if(control instanceof FormArray && control.status === 'INVALID'){
                 invalidLabels +=controls[key]._fields[0].props.label + ",";
               }

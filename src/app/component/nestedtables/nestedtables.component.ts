@@ -20,6 +20,7 @@ import { FormService } from "src/app/services/form.service";
 import "ag-grid-enterprise";
 import * as moment from "moment";
 import { v4 as uuidv4 } from "uuid";
+import { ButtonComponent } from "../aggrid-tree/button";
 
 @Component({
   selector: "app-nestedtables",
@@ -175,8 +176,8 @@ export class NestedtablesComponent {
     private router: Router
   ) {
     this.components = {
-      // buttonRenderer: ButtonComponent
-    };
+      buttonRenderer: ButtonComponent
+    }
     this.context = { componentParent: this };
     // this.detailCellRendererParams.detailGridOptions.context = this.context;
   }
@@ -216,10 +217,7 @@ export class NestedtablesComponent {
       cellDataType: "number",
 
       valueFormatter: function (parms:any){
-        console.log(parms.node.index);
-        console.log(parms);
-        
-        return parms
+        return parms?.node?.index
       },
       editable: false,
       sortable: true,
@@ -281,7 +279,15 @@ export class NestedtablesComponent {
       field: "employee_id",
       cellDataType: "text",
       editable: true,
-    },
+    },{
+
+      field: 'Action',
+      width: 40,
+      sortable:false,
+      filter:false,
+      cellRenderer: 'buttonRenderer'
+  
+    }
   ];
   ngOnInit() {
     this.route.params.subscribe((params) => {
@@ -297,6 +303,7 @@ export class NestedtablesComponent {
               this.rowData = res.data.response;
               this.GroupRow(res.data.response);
             });
+          
         });
     });
   }
@@ -342,6 +349,12 @@ export class NestedtablesComponent {
       this.TaskIdChange()
     }
   }
+
+  
+  addOneColumnBelow(params:any){
+
+  }
+
 TaskIdChange(params?: any) {
 this.gridApi.forEachLeafNode((res:any)=>{
   console.log(res);
