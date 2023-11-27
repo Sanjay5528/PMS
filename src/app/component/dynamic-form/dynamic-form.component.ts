@@ -154,8 +154,12 @@ export class DynamicFormComponent {
       //  if(data.data._id==undefined||data.data._id==null){
       if(this.config.inserted_id){
         data.data._id=data.data.InsertedId
-            this.model['_id']=data.data.InsertedId
+            this.model['_id']=data.data["insert ID"] 
+      }else{
+        this.model['_id']=data.data["insert ID"] 
+
       }
+      // sdad
         let insertedData = Object.assign(data.data,this.model)
         Object.assign(insertedData,this.form.value)
             
