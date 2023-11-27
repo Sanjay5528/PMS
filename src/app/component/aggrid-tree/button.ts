@@ -143,7 +143,7 @@ import { v4 as uuidv4 } from "uuid";
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
       </button>
       <mat-menu #Taskmenu="matMenu">
-      <button  mat-menu-item *ngIf="params?.data?._id!==undefined" (click)="onclickTask('add', params)">
+      <button  mat-menu-item *ngIf="params?.data?.task_id==undefined" (click)="onclickTask('add', params)">
       <mat-icon>add</mat-icon>
           <span>Task</span>
         </button>
@@ -561,18 +561,22 @@ parentRouteName:any
   console.log(params);
   params.data
 let values:any={}
-values['requirement_name']=params.data.requirement_name
+// values['requirement_name']=params.data.requirement_name
 values['requirement_id']=params.data._id
-values["_id"]=params.data._id
-values.unqiue=uuidv4()
-let count:any=params.data.task_count+1
-values.task_count=count
-values.task_id= "T"+count
-console.log(values);
+values["_id"]=`SEQ|${params.data.project_id}`
 
+this.dataService.save("task",values).subscribe((res:any)=>{
+  // console.log();
+  values["_id"]=res.data["insert ID"]
+  values["task_id"]=res.data["insert ID"]
+  values["treePath"]=[...params.data.treePath,res.data["insert ID"]]
+values["taskeditable"]=true
   const result = params.api.applyTransaction({ add: [values] });
   console.log(result);
-  params.context.componentParent.TaskIdChange()
+  // params.context.componentParent.TaskIdChange()
+  
+})
+// values["treePath"]=params.data.treePath
  }
 
   saveForm(formName: any, val?: any) {
@@ -765,6 +769,7 @@ console.log(values);
 
   resetBtn(data?: any) {
     debugger;
+    this.form.reset()
     this.model = {};
     this.formAction = this.model.id ? "Edit" : "Add";
     this.butText = this.model.id ? "Update" : "Save";

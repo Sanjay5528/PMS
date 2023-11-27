@@ -23,7 +23,7 @@ import { ButtonComponent } from './button';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { HelperService } from 'src/app/services/helper.service';
 import { Location } from '@angular/common';
-import { concat, isEmpty } from 'lodash';
+import { concat, isEmpty, values } from 'lodash';
 import { MatSidenav } from '@angular/material/sidenav';
 import { environment } from 'src/environments/environment';
 
@@ -663,6 +663,7 @@ this.defaultColDef.editable=false;
   }else if(this.formName=="team_member"){
     this.pageHeading="Team Member"
   
+this.gridOptions.treeData=true
 this.gridOptions.pagination=true
 this.gridOptions.paginationPageSize=100
     this.gridOptions.autoGroupColumnDef={
@@ -675,25 +676,19 @@ this.gridOptions.paginationPageSize=100
       filter: false,
       // refData:
 }
-this.gridOptions.groupDisplayType='groupRows'
+// this.gridOptions.groupDisplayType='groupRows'
 this.gridOptions.rowSelection='single'
 this.gridOptions.groupSuppressBlankHeader=true;
 this.gridOptions.getRowId=function(rowData:any){
-  return rowData.data['unqiue']
+  return rowData.data['_id']
 }
     this.columnDefs.push(  
-      {
-        headerName: "Requirement Name",
-        field: "requirement_name",
-        width: 40,
-        cellRendererParams:{
-          suppressCount: true
-        },
-        filter: "agTextColumnFilter",
-        rowGroup: true,
-        showRowGroup: false,
-        hide: true,
-      },  
+      // {
+      //   headerName: "Requirement Name",
+      //   field: "requirement_name",
+      //   width: 40,
+    
+      // },  
       {
         headerName: "Task Id",
         field: "task_id",
@@ -715,28 +710,45 @@ this.gridOptions.getRowId=function(rowData:any){
         sortable: true,
       },
       {
-        headerName: "Group Name",
+        headerName: "Team Name",
         cellDataType: "text",
-        field: "group_name",
-        editable: true,
+        field: "team_name",
+        editable: function(parms) {
+          return parms.data.taskeditable
+        }
       },
+      // {
+      //   headerName: "Days",
+      //   field: "days",
+
+      //   editable: function(parms) {
+      //     return parms.data.taskeditable
+      //   },
+      //   cellDataType: "number",
+      //   cellEditor: "agNumberCellEditor",
+      //   cellEditorParams: {
+      //     min: 0,
+      //     max: 100,
+      //     precision: 2,
+      //   },
+      // }, 
       {
-        headerName: "Days",
-        field: "days",
-        editable: true,
+        headerName: "Allocated Hours",
         cellDataType: "number",
-        cellEditor: "agNumberCellEditor",
+        field: "hours",
+        editable: function(parms) {
+          return parms.data.taskeditable
+        } ,cellEditor: "agNumberCellEditor",
         cellEditorParams: {
           min: 0,
           max: 100,
-          precision: 2,
+          precision: 0,
         },
       },
       {
         headerName: "Start Date",
         cellDataType: "date",
         field: "start_date",
-        editable: true,
         cellEditor: "agDateCellEditor",
         // cellEditorParams: {
         //     min: moment
@@ -744,34 +756,48 @@ this.gridOptions.getRowId=function(rowData:any){
         valueFormatter: function (params: any) {
           if (params.value) {
             console.log(params.value);
-  
-            return params.value.format("DD-MM-YYYY");
+            let data=params.value
+            return moment(data).format("DD-MM-YYYY");
           }
+          return '' 
         },
+        editable: function(parms) {
+          return parms.data.taskeditable
+        }
       },
       {
         headerName: "End Date",
         cellDataType: "date",
         field: "end_date",
-        editable: true,
         valueFormatter: function (params: any) {
           if (params.value) {
-            return params.value.format("DD-MM-YYYY");
+            console.log(params.value);
+            let data=params.value
+            return moment(data).format("DD-MM-YYYY");
           }
+          return '' 
         },
+        editable: function(parms) {
+          return parms.data.taskeditable
+        }
       },
+     
       {
         headerName: "Depend Task",
         cellDataType: "text",
         field: "depend_task",
-        editable: true,
-      },
+
+        editable: function(parms) {
+          return parms.data.taskeditable
+        }      },
       {
         headerName: "Assigned to ",
         field: "employee_id",
         cellDataType: "text",
-        editable: true,
-      },
+
+        editable: function(parms) {
+          return parms.data.taskeditable
+        }      },
       {
         field: 'Action',
         width: 40,
@@ -1283,27 +1309,69 @@ this.listData = overalldata;
 taskdount:any=1
 
 GroupRow(data: any) {
-  let taskValue: any[] = [];
-  let parentvalue: any[] = [];
-  data.map((res: any, index: any) => {
-    if(res.task_id ==undefined ){
-      res.task_id ='T'+this.taskdount
-      res.task_count=this.taskdount
-      this.taskdount=this.taskdount+1
-    }
-    res.unqiue=uuidv4()
-    parentvalue.push(res);
-    if (!isEmpty(res.task)) {
-      
-      taskValue.push(res.task);
-    }
-    delete parentvalue[index].task;
-  });
-  this.listData = concat(parentvalue, taskValue);
-  console.log(this.listData);
-  console.log(parentvalue);
-  console.log(taskValue);
+this.listData = [];
+let plainRequirements: any[] = [];
+let existTasks: any[] = [];
+
+// Separate data into plain requirements and existing tasks
+data.forEach((element: any) => {
+  if (!isEmpty(element.task)) {
+ 
+        element.task.forEach((task:any) => {
   
+      existTasks.push(task);
+});
+let Value: any = {};
+Object.assign(Value, element);
+delete Value.task;
+plainRequirements.push(Value);
+  } else {
+    let Value: any = {};
+    Object.assign(Value, element);
+    delete Value.task;
+    plainRequirements.push(Value);
+  }
+});
+
+console.warn(existTasks, 'ChildData');
+console.error(plainRequirements, 'plainRequirements');
+let parentTreeData: any[] = [];
+
+for (let idx = 0; idx < plainRequirements.length; idx++) {
+  const row = plainRequirements[idx];
+  console.log(idx);
+
+  if (row.parentmodulename == "" || !row.parentmodulename) {
+    // If the element doesn't have a task_id, treat it as a root node
+    row.treePath = [row.requirement_name];
+    row.taskeditable = false;
+    parentTreeData.push(row);
+  } else {
+    const parent = parentTreeData.find((d) => d.requirement_name === row.parentmodulename);
+    console.log(parent);
+
+    if (parent) {
+      row.treePath = [...parent.treePath, row.requirement_name];
+      row.taskeditable = false;
+      parentTreeData.push(row);
+    }
+  }
+}
+
+console.log(parentTreeData);
+
+let taskData: any[] = [];
+existTasks.forEach((element: any) => {
+  const parent = parentTreeData.find((d) => d._id === element.requirement_id);
+ if (parent!==undefined) {
+    element.taskeditable = true;
+    element.task_id=element._id
+    element.treePath = [...parent.treePath, element._id];
+    taskData.push(element);
+  }
+});
+this.listData = concat(parentTreeData,taskData);
+
 }
 
   onCellClicked(event: any){
@@ -1371,7 +1439,7 @@ if(this.formName=="Requirement"){
     console.log(params);
     
     let fieldName = params.colDef.field;
-    this.valueChanged = params.value;
+    // this.valueChanged = params.value;
     let data: any = {};
     data[fieldName] = params.value;
 // ! UNDO
@@ -1389,30 +1457,49 @@ if(this.formName=="Requirement"){
     
   });
 
-}else{
-
-  if (fieldName == "days") {
-  console.log(data);
-  params.data["start_date"] = moment();
-  params.data["end_date"] = moment().add(params.value, "day");
-  console.log(params.data);
-  const result = params.api.applyTransaction({ update: [params.data] });
-  console.log(result);
-  this.TaskIdChange()
-
 }
+ if(this.formName=="team_member"){
+let update:any={}
+let value:any=[]
+update[fieldName] = params.value;
+
+  if (fieldName == "hours") {
+  console.log(data);
+  // !todo
+  let hrsconvertedDay=params.value/8
+  update["start_date"] = moment();
+  update["end_date"] = moment().add(params.value, "day");
+  }
+if(fieldName=="depend_task"){
+  // 
+  this.depend_task(params.value)
+}
+this.dataService.update("task",params.data._id,update).subscribe((res:any)=>{
+  // console.log();
+  
+  value={...params.data,...update}
+
+  // value["treePath"]=[...params.data.treePath,res.data["insert ID"]]
+value["taskeditable"]=true
+console.log(value);
+
+  const result = params.api.applyTransaction({ update: [value] });
+  console.log(result);
+  // params.context.componentParent.TaskIdChange()
+  
+})
 }
 
   }
 
-  TaskIdChange(params?: any) {
-    this.gridApi.forEachLeafNode((res:any)=>{
-      console.log(res);
-      
-      console.log(res.data);
+  depend_task(id:any){
+    this.gridApi.forEachNode((res:any)=>{
+      console.log();
+      let toCheckData:any=res.data
+
       
     })
-    }
+  }
   /**gridReady for ag grid */
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
@@ -1441,9 +1528,6 @@ if(this.formName=="Requirement"){
     })
   
   } 
- addtask(data:any){
-
- }
   saveChild() { 
     if (!this.form.valid) {
     const invalidLabels:any = this.helperServices.getDataValidatoion(this.form.controls);
