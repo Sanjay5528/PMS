@@ -1173,7 +1173,7 @@ func HandlerBugReport(c *fiber.Ctx) error {
 	}
 	filter := bson.A{}
 	regression_id := c.Params("regression_id")
-	if regression_id == "" {
+	if regression_id != "" {
 		filter = append(filter, bson.D{{"$match", bson.D{{"regression_id", regression_id}}}})
 	}
 	filter = append(filter,
