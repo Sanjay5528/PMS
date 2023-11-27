@@ -181,14 +181,6 @@ export class NestedtablesComponent {
     this.context = { componentParent: this };
     // this.detailCellRendererParams.detailGridOptions.context = this.context;
   }
-
-  public getRowId: GetRowIdFunc = (params: GetRowIdParams) =>
-    `${params.data["_id"]}`;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridApi.sizeColumnsToFit();
-  }
   public RowgetRowId: GetRowIdFunc = (params: GetRowIdParams) =>
     `${params.data["_id"]}`;
 
@@ -301,12 +293,13 @@ export class NestedtablesComponent {
             .subscribe((res: any) => {
               console.log(res);
               this.rowData = res.data.response;
-              this.GroupRow(res.data.response);
+              // this.GroupRow(res.data.response);
             });
           
         });
     });
   }
+
   GroupRow(data: any) {
     let taskValue: any[] = [];
     let parentvalue: any[] = [];
@@ -375,6 +368,7 @@ this.gridApi.forEachLeafNode((res:any)=>{
     console.log(clickCell);
     clickCell;
   }
+  
   rowonCellValueChanged(params: any) {
     debugger;
     console.log(params);

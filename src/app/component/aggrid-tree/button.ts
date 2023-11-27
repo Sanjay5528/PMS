@@ -18,6 +18,7 @@ import { HelperService } from "src/app/services/helper.service";
 // import { DataService } from "../services/data.service";
 // import { DialogService } from "../services/dialog.service";
 // import { ProductComponent } from "./product.component";
+import { v4 as uuidv4 } from "uuid";
 
 @Component({
   selector: "app-button-renderer",
@@ -142,11 +143,11 @@ import { HelperService } from "src/app/services/helper.service";
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
       </button>
       <mat-menu #Taskmenu="matMenu">
-      <button  mat-menu-item (click)="onclickBug('bug', params.data)">
+      <button  mat-menu-item *ngIf="params?.data?._id!==undefined" (click)="onclickTask('add', params)">
       <mat-icon>add</mat-icon>
           <span>Task</span>
         </button>
-        <button mat-menu-item (click)="onclickBug('delete', params.data)">
+        <button mat-menu-item *ngIf="params?.data?.task_id!==undefined" (click)="onclickTask('delete', params)">
           <mat-icon>delete</mat-icon>
           <span>Delete</span>
         </button>
@@ -248,10 +249,7 @@ parentRouteName:any
     this.form.reset();
     this.params = params;
     this.route.params.subscribe(params => {
-      console.log(params);
-      
-      
-      this.parentRouteName=params['component']
+     this.parentRouteName=params['component']
     });
   }
 
@@ -559,7 +557,23 @@ parentRouteName:any
   } 
  }
 
+ onclickTask(formAction:any,params:any){
+  console.log(params);
+  params.data
+let values:any={}
+values['requirement_name']=params.data.requirement_name
+values['requirement_id']=params.data._id
+values["_id"]=params.data._id
+values.unqiue=uuidv4()
+let count:any=params.data.task_count+1
+values.task_count=count
+values.task_id= "T"+count
+console.log(values);
 
+  const result = params.api.applyTransaction({ add: [values] });
+  console.log(result);
+  params.context.componentParent.TaskIdChange()
+ }
 
   saveForm(formName: any, val?: any) {
 

@@ -747,7 +747,7 @@ console.log(ctrl);
         data.user_type=role_type
       }
 // ? PREFIX
-      if(ctrl?.config?.Change_id){
+      if(ctrl?.config?.Change_id && (ctrl.model.isEdit !==true||ctrl.formAction != 'Add')){
 
         // data.org_id=this.dataService.getdetails().profile.org_id
         // data._id=data.org_id+"-"+data._id
