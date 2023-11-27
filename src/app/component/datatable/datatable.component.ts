@@ -581,29 +581,54 @@ export class DatatableComponent implements OnInit {
   }
 
 // Add OR Edit DATA To Change with out api request
-  close(event: any) {
-    this.dialogService.closeModal();
-    this.gridApi.deselectAll();
+  // close(event: any) {
+  //   this.dialogService.closeModal();
+  //   this.gridApi.deselectAll();
     
-    if (event) {
-      // Ensure 'event' contains the expected properties before proceeding
-      if (event.action === "Add" && event.data) {
-      const transaction: ServerSideTransaction = {
-        add: 
-        [event.data ],
-      };
-      const result = this.gridApi.applyServerSideTransaction(transaction);
-      console.log(transaction, result)
-      }else{
-        const transaction: ServerSideTransaction = {
-              update:  [event.data ]
-             };
-            const result = this.gridApi.applyServerSideTransaction(transaction);
-        console.log(transaction, result)
+  //   if (event) {
+  //     // Ensure 'event' contains the expected properties before proceeding
+  //     if (event.action === "Add" && event.data) {
+  //     const transaction: ServerSideTransaction = {
+  //       add: 
+  //       [event.data ],
+  //     };
+  //     const result = this.gridApi.applyServerSideTransaction(transaction);
+  //     console.log(transaction, result)
+  //     }else{
+  //       const transaction: ServerSideTransaction = {
+  //             update:  [event.data ]
+  //            };
+  //           const result = this.gridApi.applyServerSideTransaction(transaction);
+  //       console.log(transaction, result)
 
-      }
+  //     }
+  //   }
+  // }
+  close(event: any) {
+    debugger
+    console.log(event);
+    
+    this.dialogService.closeModal();
+    this.fields = undefined;
+    if (!event) return
+    if (event.action == "filter") {
+      this.getList(event.data)
+     }
+    if (event.action === "Add" && event.data) {
+    this.gridApi.deselectAll();
+    const transaction: ServerSideTransaction = {
+    add: [ event.data],
+    };
+    const result = this.gridApi.applyServerSideTransaction(transaction);
+    console.log(transaction, result)
+    } else {
+    const transaction: ServerSideTransaction = {
+    update: [event.data],
+    };
+    const result = this.gridApi.applyServerSideTransaction(transaction);
+    console.log(transaction, result)
     }
-  }
+    }
 
   // Open dialog for add,edit and view
   doAction(data?: any, id?: string) {
