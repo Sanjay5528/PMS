@@ -54,7 +54,8 @@ func DocIdFilter(id string) bson.M {
 		return bson.M{"_id": id}
 	} else {
 		// If conversion is successful, use the ObjectID in the filter.
-		return bson.M{"_id": docId}
+
+		return bson.M{"_id": ObjectIdToString(docId)}
 	}
 }
 
