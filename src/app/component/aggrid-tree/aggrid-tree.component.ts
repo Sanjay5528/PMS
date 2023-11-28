@@ -1573,8 +1573,7 @@ if(fieldName=="assigned_to"){
   }
 if(fieldName=="depend_task"){
   // 
-  this.depend_task(params.value,params)
-  return 
+  update["end_date"] =  this.depend_task(params.value,params)
 }
 this.dataService.update("task",params.data._id,update).subscribe((res:any)=>{
   // console.log();
@@ -1624,7 +1623,26 @@ console.log(value);
     this.dialogService.openSnackBar("No tasks were found ","OK")
     return
   }
-    console.log(valuesMatchTaskId);
+  function getHigherDate(dateString1:any, dateString2?:any) {
+    
+    const momentDate1 = moment(dateString1);
+    const momentDate2 = moment(dateString2);
+  
+    if (momentDate1.isAfter(momentDate2)) {
+      return momentDate1;
+    } else if (momentDate1.isBefore(momentDate2)) {
+      return momentDate2;
+    } else {
+      return null; // or handle the case when both dates are equal
+    }
+  }
+  let bigdate:any =moment()
+  valuesMatchTaskId.forEach((xyz:any)=>{
+    bigdate = getHigherDate(bigdate,xyz.end_date);
+    console.log(bigdate);
+    
+  })
+    return bigdate
   }
   
   /**gridReady for ag grid */
