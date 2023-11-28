@@ -1320,7 +1320,7 @@ func HandlerBugReport(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{{"$unwind", bson.D{{"path", "$bugemployee"}}}},
+		bson.D{{"$unwind", bson.D{{"path", "$bugemployee"}, {"preserveNullAndEmptyArrays", true}}}},
 		bson.D{
 			{"$addFields",
 				bson.D{
@@ -1409,6 +1409,132 @@ func team_specification(c *fiber.Ctx) error {
 			},
 		},
 		bson.D{{"$unwind", "$employee"}},
+		bson.D{
+			{"$addFields",
+				bson.D{
+					{"employe_name",
+						bson.D{
+							{"$concat",
+								bson.A{
+									"$employee.first_name",
+									" ",
+									"$employee.last_name",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		bson.D{{"$unset", "employee"}},
+	}
+	response, err := helper.GetAggregateQueryResult(org.Id, "team_specification", query)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	return shared.SuccessResponse(c, fiber.Map{
+		"response": response,
+		// "pipeline": filter,
+	})
+}
+
+func team_specificationList(c *fiber.Ctx) error {
+	//Get the orgId from Header
+	org, exists := helper.GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
+	}
+	// query := bson.A{
+	// 	bson.D{{"$match", bson.D{{"parentmodulename", bson.D{{"$ne", ""}}}}}},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "employee"},
+	// 				{"localField", "user_id"},
+	// 				{"foreignField", "employee_id"},
+	// 				{"as", "employee"},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unwind", bson.D{{"path", "$employee"}}}},
+	// 	bson.D{
+	// 		{"$addFields",
+	// 			bson.D{
+	// 				{"employe_name",
+	// 					bson.D{
+	// 						{"$concat",
+	// 							bson.A{
+	// 								"$employee.first_name",
+	// 								" ",
+	// 								"$employee.first_name",
+	// 							},
+	// 						},
+	// 					},
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unset", "employee"}},
+	// }
+	// query := bson.A{
+	// 	bson.D{
+	// 		{"$match",
+	// 			bson.D{
+	// 				{"project_id", c.Params("projectid")},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "employee"},
+	// 				{"localField", "user_id"},
+	// 				{"foreignField", "employee_id"},
+	// 				{"as", "employee"},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unwind", "$employee"},{"preserveNullAndEmptyArrays", true},},
+	// 	bson.D{
+	// 		{"$addFields",
+	// 			bson.D{
+	// 				{"employe_name",
+	// 					bson.D{
+	// 						{"$concat",
+	// 							bson.A{
+	// 								"$employee.first_name",
+	// 								" ",
+	// 								"$employee.last_name",
+	// 							},
+	// 						},
+	// 					},
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unset", "employee"}},
+	// }
+	query := bson.A{
+		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "employee"},
+					{"localField", "user_id"},
+					{"foreignField", "employee_id"},
+					{"as", "employee"},
+				},
+			},
+		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$employee"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
 		bson.D{
 			{"$addFields",
 				bson.D{
