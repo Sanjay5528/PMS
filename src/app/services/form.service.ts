@@ -181,6 +181,12 @@ export class FormService {
             this.dataService.save(ctrl.config.detailForm.collectionName,data).subscribe(
                 (res:any) => {
               ctrl.isEditMode = false
+              const transaction: any = {
+             add: [ data],
+                };
+                const result = ctrl.gridApi.applyTransaction(transaction);
+                console.log(transaction, result)
+             
               this.resetDetailModel(ctrl)
               this.dialogService.openSnackBar("Data has been updated successfully", "OK");              
               
@@ -226,6 +232,7 @@ export class FormService {
             this.dataService.update(ctrl.config.detailForm.collectionName, id,   data).subscribe(
               res => {
                 ctrl.isEditMode = false
+                
                 this.resetDetailModel(ctrl)
                 this.dialogService.openSnackBar("Data has been updated successfully", "OK");              
                 if (findIndex >= 0) {
@@ -237,6 +244,12 @@ export class FormService {
                 ctrl.tempListData = ctrl.listData;
                 ctrl.listData = [...ctrl.listData]
                 ctrl.tempListData = ctrl.listData;
+                const transaction: any = {
+                  update: [ data],
+                  };
+                  const result = ctrl.gridApi.applyTransaction(transaction);
+                  console.log(transaction, result)
+                      
                 resolve(data)
   
               },
@@ -259,20 +272,28 @@ export class FormService {
             data[ctrl?.config?.detailForm?.changekeyfield]=data[ctrl?.config?.detailForm?.addkeyfield]+"-"+data[ctrl?.config?.detailForm?.changekeyfield]
           }
         this.dataService.save(ctrl.config.detailForm.collectionName,data).subscribe(
-          res => {
+          (res:any) => {
             ctrl.isEditMode = false
             this.resetDetailModel(ctrl)
-            this.dialogService.openSnackBar("Data has been updated successfully", "OK");              
-            
+            this.dialogService.openSnackBar("Data has been updated successfully", "OK");   
+            let values:any={}
+              values["_id"]=res.data["insert ID"]
+                Object.assign(data,values)           
+            const transaction: any = {
+              add: [ data],
+              };
+              const result = ctrl.gridApi.applyTransaction(transaction);
+              console.log(transaction, result)
+           
             if (findIndex >= 0) {
               //data already in the grid
               ctrl.listData[findIndex] = data
             } else {
               ctrl.listData.unshift(data)
             }
-            ctrl.tempListData = ctrl.listData;
-            ctrl.listData = [...ctrl.listData]
-            ctrl.tempListData = ctrl.listData;
+            // ctrl.tempListData = ctrl.listData;
+            // ctrl.listData = [...ctrl.listData]
+            // ctrl.tempListData = ctrl.listData;
             resolve(data)
 
           },
@@ -303,8 +324,9 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
           delete data._id //? IdK
 
           this.dataService.update(ctrl.config.detailForm.collectionName, id,   data).subscribe(
-            res => {
+            (res:any) => {
               ctrl.isEditMode = false
+             
               this.resetDetailModel(ctrl)
               this.dialogService.openSnackBar("Data has been updated successfully", "OK");              
              
@@ -315,9 +337,18 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
               } else {
                 ctrl.listData.unshift(data)
               }
-              ctrl.tempListData = ctrl.listData;
-              ctrl.listData = [...ctrl.listData]
-              ctrl.tempListData = ctrl.listData;
+              // ctrl.tempListData = ctrl.listData;
+              // ctrl.listData = [...ctrl.listData]
+              // ctrl.tempListData = ctrl.listData;
+              let values:any={}
+              values["_id"]=res.data["insert ID"]
+                Object.assign(data,values)
+              const transaction: any = {
+                update: [ data],
+                };
+                const result = ctrl.gridApi.applyTransaction(transaction);
+                console.log(transaction, result)
+             
               resolve(data)
 
             },

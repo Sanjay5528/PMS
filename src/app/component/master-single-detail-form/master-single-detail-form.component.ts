@@ -9,7 +9,7 @@ import { FormService } from 'src/app/services/form.service';
 
 import { environment } from 'src/environments/environment';
 import { MasterButtonComponent } from './master-button';
-import { ColDef, FirstDataRenderedEvent, GetRowIdFunc, GetRowIdParams, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { ColDef, FirstDataRenderedEvent, GetRowIdFunc, GetRowIdParams, GridApi, GridReadyEvent, ServerSideTransaction } from 'ag-grid-community';
 import { HelperService } from 'src/app/services/helper.service';
 import { Location } from '@angular/common';
 import{DropDownAgggrid}from'./dropdownAggrid'
@@ -97,7 +97,7 @@ export class MasterSingleDetailFormComponent {
   otherdetails: any = {}
   value: any = {}
   valueformGrupo: any = new FormGroup({})
-  // public getRowId: GetRowIdFunc = (params: GetRowIdParams) => `${params.data[this.config.keyField ? this.config.keyField  : "_id"]}`;
+  public getRowId: GetRowIdFunc = (params: GetRowIdParams) => `${params.data[this.config.keyField ? this.config.keyField  : "_id"]}`;
 
   @ViewChild('popupEdit', { static: true }) popupEdit!: TemplateRef<any>;
   @ViewChild('otherpopupEdit', { static: true }) otherpopupEdit!: TemplateRef<any>;
@@ -189,18 +189,18 @@ console.log(data);
 if(this.butText == "Add"){
   var defaultValues = this.config.detailForm.defaultValues || []
   this.formService.loadDefaultValues(defaultValues, data, this.model)
-
-this.dataService.save(this.config.detailForm.collectionName,data).subscribe(
+  this.dataService.save(this.config.detailForm.collectionName,data).subscribe(
   res => {
     this.isEditMode = false
     this.formService.resetDetailModel(this)
     this.dialogService.openSnackBar("Data has been updated successfully", "OK");              
     this.dialogService.CloseALL()
-    this.tempListData = this.listData;
-    this.listData = [...this.listData]
-    this.tempListData = this.listData;
-    
-
+    const transaction: any = {
+      add: [ data],
+      };
+      const result = this.gridApi.applyTransaction(transaction);
+      console.log(transaction, result)
+      
   },
   error => {
     this.dialogService.openSnackBar(error.message, "OK");              
@@ -243,7 +243,12 @@ return
       this.tempListData = this.listData;
       this.listData = [...this.listData]
       this.tempListData = this.listData;
-     
+      const transaction: any = {
+        update: [ data],
+        };
+        const result = this.gridApi.applyTransaction(transaction);
+        console.log(transaction, result)
+        
 
     },
     error => {
@@ -357,7 +362,11 @@ return
               "Data has been deleted successfully",
               "OK"
             );
-
+            const transaction: any = {
+              remove: [data],
+            };
+            const result = this.gridApi.applyTransaction(transaction);
+            console.log(transaction, result);
           }
         );
       }
