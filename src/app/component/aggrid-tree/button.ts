@@ -345,7 +345,7 @@ parentRouteName:any
     }
      if( data.parentmodulename==''){
        this.model_heading="Requirement - Edit"
-       this.dataService.loadConfig("bug").subscribe((frmConfig: any) => {
+       this.dataService.loadConfig(this.parentRouteName.toLowerCase()).subscribe((frmConfig: any) => {
          this.formAction = "Edit";
          this.butText="Update"
          this.config = frmConfig;
