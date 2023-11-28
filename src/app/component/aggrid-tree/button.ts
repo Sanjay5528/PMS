@@ -87,7 +87,7 @@ import { v4 as uuidv4 } from "uuid";
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
       </button>
       <mat-menu #Team_Membermenu="matMenu">
-      <button  mat-menu-item *ngIf="params?.data?.team_id" (click)="onclickTEamMembers('addsubchild', params.data)">
+      <button  mat-menu-item *ngIf="params?.data?.name" (click)="onclickTEamMembers('addsubchild', params.data)">
           <mat-icon>add</mat-icon>
           <span>Team Member</span>
         </button>
@@ -707,7 +707,7 @@ values["taskeditable"]=true
         // values.project_name = this.ParentComponent.response?.project_name;
         if (this.gridData.modulename &&this.model_heading!="Module - Edit" ) {
           values.parentmodulename = this.gridData.modulename;
-      } else if (this.gridData.team_id) {
+      } else if (this.gridData._id && this.parentRouteName=="projectteam") {
           values.parentmodulename = this.gridData.team_id;
       } 
       

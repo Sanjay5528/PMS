@@ -132,7 +132,7 @@ collection="project"
         this.addbutton=true;
         this.id=sessionStorage.getItem("project_id")
       } else if(this.formName=="team_member"){
-        this.pageHeading="Team Member"
+        this.pageHeading="Task Assign"
         collection="project"
         this.addbutton=true;
       }
@@ -1262,13 +1262,13 @@ if(!isEmpty(data)){
       for (let idx = 0; idx < res.data[0].response.length; idx++) {
         const row = res.data[0].response[idx];
         if (row.parentmodulename == "" || !row.parentmodulename) {
-          row.treePath = [row.team_id];
+          row.treePath = [row._id];
         } else {
-          var parentNode = this.listData.find((d) => d.team_id == row.parentmodulename);
+          var parentNode = this.listData.find((d) => d._id == row.parentmodulename);
           if (
             parentNode &&
             parentNode.treePath &&
-            !parentNode.treePath.includes(row.team_id)
+            !parentNode.treePath.includes(row._id)
           ) {
             row.treePath = [...parentNode.treePath];
             row.treePath.push(row.user_id);
@@ -1684,7 +1684,9 @@ console.log(value);
   values.client_name= this.response?.client_name
   values.project_id= this.response?.project_id
   // values.project_name= this.response?.project_name
-
+if(this.formName=="projectteam"){
+  values._id=`SEQ|${values.project_id}`
+}
   values.parentmodulename= ""
   this.dataService.save(this.config.form.collectionName,values).subscribe((data:any)=>{
     console.log(data);
