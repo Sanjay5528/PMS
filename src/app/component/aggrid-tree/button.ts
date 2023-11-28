@@ -633,7 +633,8 @@ values["taskeditable"]=true
       });
           }
  
-    }else if(formName=='test_result'){
+    }
+    else if(formName=='test_result'){
       let updateBug:any=false
       if(  this.model_heading=="Test Case - Add"){
         values.project_id = this.ParentComponent.response?.project_id;
@@ -704,7 +705,7 @@ values["taskeditable"]=true
         // values.client_name = this.ParentComponent.response?.client_name;
         values.project_id = this.ParentComponent.response?.project_id;
         // values.project_name = this.ParentComponent.response?.project_name;
-        if (this.gridData.modulename) {
+        if (this.gridData.modulename &&this.model_heading!="Module - Edit" ) {
           values.parentmodulename = this.gridData.modulename;
       } else if (this.gridData.team_id) {
           values.parentmodulename = this.gridData.team_id;

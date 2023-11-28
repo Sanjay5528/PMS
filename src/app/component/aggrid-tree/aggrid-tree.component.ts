@@ -133,7 +133,6 @@ collection="project"
         this.id=sessionStorage.getItem("project_id")
       } else if(this.formName=="team_member"){
         this.pageHeading="Team Member"
-
         collection="project"
         this.addbutton=true;
       }
@@ -151,6 +150,12 @@ collection="project"
           this.ValueToCompareRequriementSprint == undefined || isEmpty(this.ValueToCompareRequriementSprint) ? this.sprintCellEditorParams(true) : this.ValueToCompareRequriementSprint;            
 
           this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
+        }
+        if(this.formName=="team_member"){
+          // this.sprintCellEditorParams('')
+          this.ValueToCompareEmployee == undefined || isEmpty(this.ValueToCompareEmployee) ? this.AssignTOCellEditorParams(true) : this.ValueToCompareEmployee;            
+
+          // this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
         }
         // sessionStorage.setItem("projectname", this.response.projectname)
         
@@ -662,7 +667,7 @@ this.defaultColDef.editable=false;
     )
   }else if(this.formName=="team_member"){
     this.pageHeading="Team Member"
-  
+    const Assigned:any=this.AssignTOCellEditorParams
 this.gridOptions.treeData=true
 this.gridOptions.pagination=true
 this.gridOptions.paginationPageSize=100
@@ -679,33 +684,16 @@ this.gridOptions.paginationPageSize=100
 // this.gridOptions.groupDisplayType='groupRows'
 this.gridOptions.rowSelection='single'
 this.gridOptions.groupSuppressBlankHeader=true;
+this.gridOptions.groupDefaultExpanded=-1
 this.gridOptions.getRowId=function(rowData:any){
   return rowData.data['_id']
 }
     this.columnDefs.push(  
-      // {
-      //   headerName: "Requirement Name",
-      //   field: "requirement_name",
-      //   width: 40,
     
-      // },  
       {
         headerName: "Task Id",
         field: "task_id",
         cellDataType: "text",
-  
-        // valueFormatter: function (parms:any){
-        //   console.log(parms);
-
-        //   if( parms.value == undefined){
-        //     let rowindex=parms?.node.rowIndex
-        //     if( rowindex!=1){
-        //       rowindex=rowindex-1
-        //     }
-        //     return "T" +rowindex
-        //   }
-        //   return parms.value
-        // },
         editable: false,
         sortable: true,
       },
@@ -735,7 +723,7 @@ this.gridOptions.getRowId=function(rowData:any){
       {
         headerName: "Allocated Hours",
         cellDataType: "number",
-        field: "hours",
+        field: "allocated_hours",
         editable: function(parms) {
           return parms.data.taskeditable
         } ,cellEditor: "agNumberCellEditor",
@@ -792,12 +780,16 @@ this.gridOptions.getRowId=function(rowData:any){
         }      },
       {
         headerName: "Assigned to ",
-        field: "employee_id",
+        field: "assigned_to",
         cellDataType: "text",
 
         editable: function(parms) {
           return parms.data.taskeditable
-        }      },
+        } ,     cellEditor: 'agRichSelectCellEditor',
+        cellEditorParams: {
+          values:Assigned
+        },
+      },
       {
         field: 'Action',
         width: 40,
@@ -819,6 +811,7 @@ OnlyValueRequriementSprint:any[]=[]
 
 ValueToCompareRequriementModules:any[]=[]
 OnlyValueRequriementModules:any[]=[]
+
 poupimage(data:any){
 this.imageFile=data;
 this.dialogService.openDialog(this.imagepoup)
@@ -852,19 +845,92 @@ sprintCellEditorParams = (params: any) => {
 }};
 
 
-Changethetask(taskData:any,selectedData:any,index:any){
-  let data:any={}
-  data['assigned_to']=selectedData.employee_id
-  data['previous_assigned_to']=taskData.assigned_to
-  this.dataService.update("task",taskData._id,data).subscribe((xyz:any)=>{
-    console.log(xyz);
-    this.dialogService.openSnackBar("Task updated successfully","OK")
-    this.reassignemployee[index]=null
-  })
-}
+// Changethetask(taskData:any,selectedData:any,index:any){
+//   let data:any={}
+//   data['assigned_to']=selectedData.employee_id
+//   data['previous_assigned_to']=taskData.assigned_to
+//   this.dataService.update("task",taskData._id,data).subscribe((xyz:any)=>{
+//     console.log(xyz);
+//     this.dialogService.openSnackBar("Task updated successfully","OK")
+//     this.reassignemployee[index]=null
+//   })
+// }
 
+OnlyValueEmployee:any[]=[]  
+ValueToCompareEmployee:any[]=[]
+AssignTOCellEditorParams =  (params: any) => {
+  if (!isEmpty(this.OnlyValueEmployee)) {
+    console.warn("Data Exist");
+    return this.OnlyValueEmployee;
+  } else {
+   this.dataService.lookupTreeData("team_specification", this.response.project_id).subscribe((res: any) => {
+      if (isEmpty(res.data.response)) {
+        // Handle the case when there is no response data
+        // this.dialogService.openSnackBar("There Were No Sprint To be Found","OK");
+        return;
+      }
 
-  
+      console.log(res);
+
+      res.data.response.forEach((each: any) => {
+        if (!this.OnlyValueEmployee.includes(each.employe_name)) {
+          this.ValueToCompareEmployee.push({ label: each.employe_name, value: each.user_id });
+          this.OnlyValueEmployee.push(each.employe_name);
+        }
+      });
+      return this.OnlyValueEmployee
+    });
+    if (params == true) {
+    //   if(isEmpty(this.ValueToCompareEmployee)){
+    //     this.ValueToCompareEmployee=this.AssignTOCellEditorParams('');
+
+    //   }else{
+
+        return this.ValueToCompareEmployee ;
+      }
+    // }
+
+    // If params is true, return ValueToCompareEmployee, otherwise return OnlyValueEmployee
+    return this.OnlyValueEmployee;
+  }
+};
+
+// AssignTOCellEditorParams = (params: any): Promise<any[]> => {
+//   if (!isEmpty(this.OnlyValueEmployee)) {
+//     console.warn("Data Exist");
+//     return Promise.resolve(this.OnlyValueEmployee);
+//   } else {
+//     return new Promise((resolve, reject) => {
+//       this.dataService.lookupTreeData("team_specification", this.response.project_id)
+//         .subscribe((res: any) => {
+//           if (isEmpty(res.data.response)) {
+//             // Handle the case when there is no response data
+//             // this.dialogService.openSnackBar("There Were No Sprint To be Found","OK");
+//             reject("No response data");
+//             return;
+//           }
+
+//           console.log(res);
+
+//           res.data.response.forEach((each: any) => {
+//             if (!this.OnlyValueEmployee.includes(each.employe_name)) {
+//               this.ValueToCompareEmployee.push({ label: each.employe_name, value: each.user_id });
+//               this.OnlyValueEmployee.push(each.employe_name);
+//             }
+//           });
+
+//           // If params is true, resolve with ValueToCompareEmployee, otherwise continue recursion
+//           if (params == true) {
+//             resolve(this.ValueToCompareEmployee);
+//           } else {
+//             // Continue recursion (you might want to add a base case to prevent infinite recursion)
+//             this.AssignTOCellEditorParams(params).then(resolve).catch(reject);
+//           }
+//         });
+//     });
+//   }
+// };
+
 moduleCellEditorParams =  (params: any)  => {
   if(!isEmpty(this.OnlyValueRequriementModules)){
   console.warn("Data Exists")
@@ -884,7 +950,7 @@ let filer:any={
 }
 this.dataService.getDataByFilter("modules",filer).subscribe((res:any) =>{
     if(isEmpty(res.data[0].response)){
-      this.dialogService.openSnackBar("There Were No Modules To be Found","OK")
+      // this.dialogService.openSnackBar("There Were No Modules To be Found","OK")
       return
     }
   res.data[0].response.forEach((each:any)=>{
@@ -1312,13 +1378,37 @@ GroupRow(data: any) {
 this.listData = [];
 let plainRequirements: any[] = [];
 let existTasks: any[] = [];
-
-// Separate data into plain requirements and existing tasks
 data.forEach((element: any) => {
   if (!isEmpty(element.task)) {
  
         element.task.forEach((task:any) => {
+        //   if (task && task.assigned_to) {
+        //     // Check if this.ValueToCompareEmployee is undefined or empty
+        //     let datafound = this.ValueToCompareEmployee === undefined || isEmpty(this.ValueToCompareEmployee)
+        //         ? this.AssignTOCellEditorParams(true)
+        //         : this.ValueToCompareEmployee;
+        
+        //     // Find the matching value in datafound
+        //     let findValue: any = datafound.find((val: any) => val.value == task.assigned_to);
+        
+        //     // If a matching value is found, update task.assigned_to
+        //     if (findValue !== undefined) {
+        //         task.assigned_to = findValue.label;
+        //     }
+        // }
+        // valueFormatter:function(parms) {
+          let datafound :any= isEmpty(this.ValueToCompareEmployee)?this.AssignTOCellEditorParams(true) : this.ValueToCompareEmployee
+          console.log(datafound);
+          
+      let findValue: any = datafound.find((val: any) => val.value == task.assigned_to);
+  console.warn(findValue);
   
+      // If a matching value is found, update task.assigned_to
+      if (findValue !== undefined) {
+          task.assigned_to = findValue.label;
+      }
+          // return findValue.label
+        // },
       existTasks.push(task);
 });
 let Value: any = {};
@@ -1461,18 +1551,30 @@ if(this.formName=="Requirement"){
  if(this.formName=="team_member"){
 let update:any={}
 let value:any=[]
+let findValue:any={}
 update[fieldName] = params.value;
-
-  if (fieldName == "hours") {
+if(fieldName=="assigned_to"){
+  findValue=this.ValueToCompareEmployee.find(val=>val.label==params.value)
+  console.log(findValue);
+  
+  data[fieldName] = findValue.label;
+  update[fieldName] = findValue.value;
+}
+  if (fieldName == "allocated_hours") {
   console.log(data);
   // !todo
-  let hrsconvertedDay=params.value/8
+  let hrsFlag= params.value>=8? true : false
+  
+  let hrsconvertedDay=hrsFlag==true? Math.ceil(params.value/8) : 1
+  console.log(hrsconvertedDay);
+  
   update["start_date"] = moment();
-  update["end_date"] = moment().add(params.value, "day");
+  update["end_date"] = moment().add(hrsconvertedDay, "day");
   }
 if(fieldName=="depend_task"){
   // 
-  this.depend_task(params.value)
+  this.depend_task(params.value,params)
+  return 
 }
 this.dataService.update("task",params.data._id,update).subscribe((res:any)=>{
   // console.log();
@@ -1481,6 +1583,10 @@ this.dataService.update("task",params.data._id,update).subscribe((res:any)=>{
 
   // value["treePath"]=[...params.data.treePath,res.data["insert ID"]]
 value["taskeditable"]=true
+if(fieldName=="assigned_to"){
+
+  value[fieldName] = findValue.label;
+}
 console.log(value);
 
   const result = params.api.applyTransaction({ update: [value] });
@@ -1492,14 +1598,35 @@ console.log(value);
 
   }
 
-  depend_task(id:any){
-    this.gridApi.forEachNode((res:any)=>{
-      console.log();
-      let toCheckData:any=res.data
+  depend_task(id: string,params:any) {
+    // Split the input string into an array
+    const separatedArray: string[] = id.split(',');
+    console.log(separatedArray);
+    if (separatedArray.includes(params.data.task_id.toString())) {
+      // valuesMatchTaskId.push(node.data);
+      this.dialogService.openSnackBar("The Present Task Cannot Be Depended Task ","OK")
+      return
+    }
 
-      
-    })
+    // Array to store values matching task_id
+    let valuesMatchTaskId: any[] = [];
+  
+    // Iterate through grid nodes
+    this.gridApi.forEachNode((node: any) => {
+      if (node.data && node.data.task_id) {
+        // Check if the task_id matches any value in the separatedArray
+        if (separatedArray.includes(node.data.task_id.toString())) {
+          valuesMatchTaskId.push(node.data);
+        }
+      }
+    });
+  if(isEmpty(valuesMatchTaskId)){
+    this.dialogService.openSnackBar("No tasks were found ","OK")
+    return
   }
+    console.log(valuesMatchTaskId);
+  }
+  
   /**gridReady for ag grid */
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;

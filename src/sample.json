@@ -12,13 +12,26 @@
 				"fieldGroupClassName": "display-flex",
 				"fieldGroup": [
 					{
-						"type": "input",
+						"type": "input-text-enterkey",
 						"key": "client_id",
 						"className": "flex-6",
 						"props": {
 							"label": "Client Id",
 							"placeholder": "Client Id",
 							"pattern": "^[a-zA-Z0-9-_]*$",
+							"valueType":"Dynamic", 
+							 "searchableField": true,"searchCollectionName":"client",
+							"multifilter_condition": {
+								"clause": "AND",
+								"conditions": [
+								  {
+									"column": "client_id",
+									"operator": "EQUALS",
+									"type": "string",
+									"value": ""
+								  }
+								]
+							  },
 							"required": true
 						},
 						 "expressions": {
