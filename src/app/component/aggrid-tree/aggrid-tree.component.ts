@@ -146,7 +146,8 @@ collection="project"
           this.response.enddate=moment(this.response?.enddate).format("D/M/ YYYY")
         }
         if(this.formName=="Requirement"){
-          // this.sprintCellEditorParams('')
+          this.sprintCellEditorParams('')
+          this.moduleCellEditorParams('')
           this.ValueToCompareRequriementSprint == undefined || isEmpty(this.ValueToCompareRequriementSprint) ? this.sprintCellEditorParams(true) : this.ValueToCompareRequriementSprint;            
 
           this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
@@ -157,7 +158,7 @@ collection="project"
 
           // this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
         }
-        // sessionStorage.setItem("projectname", this.response.projectname)
+        sessionStorage.setItem("projectname", this.response.projectname)
         
         // if(this.formName=="projectteam"){
         //   this.getList()
@@ -255,7 +256,9 @@ this.gridOptions.paginationPageSize=100
 
 this.gridOptions.treeData=true
 this.gridOptions.groupDefaultExpanded=-1
-  
+  this.gridOptions.getRowId=function(params:any){
+    return params.data._id
+  }
 this.gridOptions.pagination=true
 this.gridOptions.paginationPageSize=100
     this.gridOptions.autoGroupColumnDef={
@@ -376,7 +379,7 @@ this.gridOptions.groupDefaultExpanded=-1
     this.columnDefs.push(	
 				
 		{ 
-			"headerName": "Employee Name", "field": "user_id" 
+			"headerName": "Employee Name", "field": "employe_name" 
 		},
 	  { 
 		"headerName": "Project Role", "field": "role_id" 
@@ -666,7 +669,7 @@ this.defaultColDef.editable=false;
     
     )
   }else if(this.formName=="team_member"){
-    this.pageHeading="Team Member"
+    // this.pageHeading="Team Member"
     const Assigned:any=this.AssignTOCellEditorParams
 this.gridOptions.treeData=true
 this.gridOptions.pagination=true
@@ -1250,17 +1253,19 @@ if(!isEmpty(data)){
         
           clause: "AND",
           conditions: [
-            {column: "project_id",operator: "EQUALS",type: "string",value: this.response.project_id},
+            {column: "project_id",operator: "EQUALS",type: "string",value:this.response.project_id },
           ],
         
       }]
     }
-    this.dataService.getDataByFilter("team_specification", Projectfiler).subscribe((res: any) => {
+    let allvalues:any=[]
+    // this.dataService.getDataByFilter("team_specificationList",Projectfiler )
+    this.dataService.lookupTreeData("team_specificationList",this.response.project_id ).subscribe((res: any) => {
       this.listData = []
       console.log(res);
       
-      for (let idx = 0; idx < res.data[0].response.length; idx++) {
-        const row = res.data[0].response[idx];
+      for (let idx = 0; idx < res.data.response.length; idx++) {
+        const row = res.data.response[idx];
         if (row.parentmodulename == "" || !row.parentmodulename) {
           row.treePath = [row._id];
         } else {
@@ -1275,8 +1280,9 @@ if(!isEmpty(data)){
           }
         }
         console.log(row);
-        
+        allvalues.push(res)
         this.listData.push(row);
+
       }
     });
   }else if(this.formName=="test_result"){
@@ -1686,6 +1692,11 @@ console.log(value);
   // values.project_name= this.response?.project_name
 if(this.formName=="projectteam"){
   values._id=`SEQ|${values.project_id}`
+}
+
+if(values._id==undefined|| values._id ==null){
+  values._id=`SEQ|${values.project_id}`
+
 }
   values.parentmodulename= ""
   this.dataService.save(this.config.form.collectionName,values).subscribe((data:any)=>{

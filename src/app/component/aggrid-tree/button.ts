@@ -29,15 +29,15 @@ import { v4 as uuidv4 } from "uuid";
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
       </button>
       <mat-menu #modulemenu="matMenu">
-        <button mat-menu-item (click)="onClickMenuItem('edit', params.data)">
+        <button mat-menu-item (click)="onClickMenuItem('edit', params)">
           <mat-icon>edit</mat-icon>
           <span>Edit</span>
         </button>
-        <button mat-menu-item (click)="onClickMenuItem('delete', params.data)">
+        <button mat-menu-item (click)="onClickMenuItem('delete', params)">
           <mat-icon>delete</mat-icon>
           <span>Delete</span>
         </button>
-        <button  mat-menu-item (click)="onClickMenuItem('submodules', params.data)">
+        <button  mat-menu-item (click)="onClickMenuItem('submodules', params)">
           <mat-icon>task</mat-icon>
           <span>Sub Modules</span>
         </button>
@@ -59,19 +59,19 @@ import { v4 as uuidv4 } from "uuid";
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
       </button>
       <mat-menu #Requirementmenu="matMenu">
-      <button  mat-menu-item (click)="onClickRequirementMenuItem('addsubchild', params.data)">
+      <button  mat-menu-item (click)="onClickRequirementMenuItem('addsubchild', params)">
           <mat-icon>add</mat-icon>
           <span>Sub Requriement</span>
         </button>
-        <button mat-menu-item (click)="onClickRequirementMenuItem('edit', params.data)">
+        <button mat-menu-item (click)="onClickRequirementMenuItem('edit', params)">
           <mat-icon>edit</mat-icon>
           <span>Edit</span>
         </button>
-        <button mat-menu-item (click)="onClickRequirementMenuItem('delete', params.data)">
+        <button mat-menu-item (click)="onClickRequirementMenuItem('delete', params)">
           <mat-icon>delete</mat-icon>
           <span>Delete</span>
         </button>
-         <button mat-menu-item (click)="onClickRequirementMenuItem('task', params.data)">
+         <button mat-menu-item (click)="onClickRequirementMenuItem('task', params)">
           <mat-icon>task</mat-icon>
           <span>Task</span>
         </button>
@@ -87,15 +87,15 @@ import { v4 as uuidv4 } from "uuid";
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
       </button>
       <mat-menu #Team_Membermenu="matMenu">
-      <button  mat-menu-item *ngIf="params?.data?.name" (click)="onclickTEamMembers('addsubchild', params.data)">
+      <button  mat-menu-item *ngIf="params?.data?.name" (click)="onclickTEamMembers('addsubchild', params)">
           <mat-icon>add</mat-icon>
           <span>Team Member</span>
         </button>
-        <button mat-menu-item (click)="onclickTEamMembers('edit', params.data)">
+        <button mat-menu-item (click)="onclickTEamMembers('edit', params)">
           <mat-icon>edit</mat-icon>
           <span>Edit</span>
         </button>
-        <button mat-menu-item (click)="onclickTEamMembers('delete', params.data)">
+        <button mat-menu-item (click)="onclickTEamMembers('delete', params)">
           <mat-icon>delete</mat-icon>
           <span>Delete</span>
         </button>
@@ -107,15 +107,15 @@ import { v4 as uuidv4 } from "uuid";
       </button>
       <mat-menu #test_resultmenu="matMenu">
         
-      <button mat-menu-item   (click)="onclicktestResulr('add', params.data)">
+      <button mat-menu-item   (click)="onclicktestResulr('add', params)">
           <mat-icon>add</mat-icon>
           <span>Add Test Case</span>
         </button>
-        <button mat-menu-item *ngIf="params?.data?.test_case_name" (click)="onclicktestResulr('edit', params.data)">
+        <button mat-menu-item *ngIf="params?.data?.test_case_name" (click)="onclicktestResulr('edit', params)">
           <mat-icon>edit</mat-icon>
           <span>Edit Test Case</span>
         </button>
-        <button  mat-menu-item *ngIf="params?.data?.test_case_name"  (click)="onclicktestResulr('testresult', params.data)">
+        <button  mat-menu-item *ngIf="params?.data?.test_case_name"  (click)="onclicktestResulr('testresult', params)">
           <mat-icon>task</mat-icon>
           <span>Test Result</span>
         </button>
@@ -127,11 +127,11 @@ import { v4 as uuidv4 } from "uuid";
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
       </button>
       <mat-menu #Bugmenu="matMenu">
-      <button  mat-menu-item (click)="onclickBug('bug', params.data)">
+      <button  mat-menu-item (click)="onclickBug('bug', params)">
       <mat-icon>edit</mat-icon>
           <span>Bug Result</span>
         </button>
-        <button mat-menu-item (click)="onclickBug('delete', params.data)">
+        <button mat-menu-item (click)="onclickBug('delete', params)">
           <mat-icon>delete</mat-icon>
           <span>Delete</span>
         </button>
@@ -202,7 +202,7 @@ import { v4 as uuidv4 } from "uuid";
         <mat-card-actions>
           <div style="text-align-last: end; width: 100%">
             <button style="margin: 5px" mat-button  mat-dialog-close (click)="closedia()" > Cancel </button>
-            <button style="margin: 5px" mat-button (click)="resetBtn()"> Reset </button> 
+            <button style="margin: 5px" mat-button (click)="this.form.reset();resetBtn()"> Reset </button> 
             <button style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn"  mat-button (click)="saveForm(this.parentRouteName, 'modulesViewPopup')" *ngIf="continue_Save==true"> Continue & Save</button> 
             <button  style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn" (click)="this.continue_Save=false;saveForm(this.parentRouteName, 'modulesViewPopup')" > {{butText}}   </button>
           </div>
@@ -263,7 +263,8 @@ parentRouteName:any
     this.dialogService.CloseALL()
   }
 
-  onClickMenuItem(formAction: any, data?: any) {
+  onClickMenuItem(formAction: any, params?: any) {
+  let  data:any=params.data
      if (formAction == "submodules") {
       this.dataService.loadConfig("module").subscribe((frmConfig: any) => {
         this.formAction = "Add";
@@ -320,6 +321,12 @@ parentRouteName:any
           .subscribe((res: any) => {
             console.log(res);
             this.dialogService.openSnackBar(res.message, "OK");
+            const transaction: any = {
+              remove: [data],
+            };
+            const result = params.api.applyTransaction(transaction);
+            console.log(transaction, result);
+          // });
           });
       }
     } else {
@@ -327,7 +334,8 @@ parentRouteName:any
       // this.router.navigate(["/list/testcase/" + `${this.data.moduleid}`]);
     }
   }
-  onClickRequirementMenuItem(formAction: any, data?: any) { 
+  onClickRequirementMenuItem(formAction: any, params?: any) { 
+    let data:any=params.data
     if (formAction == "addsubchild") {
      this.dataService.loadConfig(this.parentRouteName.toLowerCase()).subscribe((frmConfig: any) => {
        this.formAction = "Add";
@@ -375,6 +383,12 @@ parentRouteName:any
          .subscribe((res: any) => {
            console.log(res);
            this.dialogService.openSnackBar(res.message, "OK");
+           const transaction: any = {
+            remove: [data],
+          };
+          const result = params.api.applyTransaction(transaction);
+          console.log(transaction, result);
+        // });
          });
      }
    } else  if (formAction == "task") {
@@ -403,7 +417,8 @@ parentRouteName:any
   }
  }
 
- onclickTEamMembers(formAction:any,data?:any){
+ onclickTEamMembers(formAction:any,params?:any){
+  let data:any=params.data
   if (formAction == "addsubchild") {
     this.dataService.loadConfig("teamaddmember").subscribe((frmConfig: any) => {
       this.formAction = "Add";
@@ -452,6 +467,12 @@ parentRouteName:any
         .subscribe((res: any) => {
           console.log(res);
           this.dialogService.openSnackBar(res.message, "OK");
+          const transaction: any = {
+            remove: [data],
+          };
+          const result = params.api.applyTransaction(transaction);
+          console.log(transaction, result);
+        // });
         });
     }
   } 
@@ -461,8 +482,9 @@ parentRouteName:any
  }
  }
 
- onclicktestResulr(formAction:any,data?:any){
-  // 
+ onclicktestResulr(formAction:any,params?:any){
+  let data:any=params.data
+
   if (formAction == "add") {
     this.dataService.loadConfig("testcase").subscribe((frmConfig: any) => {
       this.formAction = "Add";
@@ -518,8 +540,8 @@ parentRouteName:any
   //   }
   // }
 
- onclickBug(formAction:any,data:any){
-
+ onclickBug(formAction:any,params:any){
+  let data:any=params.data
   if (formAction == "bug") {
     this.dataService.loadConfig("bug").subscribe((frmConfig: any) => {
       this.formAction = "Edit";
@@ -552,6 +574,12 @@ parentRouteName:any
         .subscribe((res: any) => {
           console.log(res);
           this.dialogService.openSnackBar(res.message, "OK");
+          const transaction: any = {
+            remove: [data],
+          };
+          const result = params.api.applyTransaction(transaction);
+          console.log(transaction, result);
+        // });
         });
     }
   } 
@@ -615,19 +643,43 @@ values["taskeditable"]=true
         if(this.continue_Save!==true){
           this.dialogService.CloseALL();
         }
-        this.form.reset();   
+        if(this.model_heading=="Sub Requirement - Add" ){
 
+        }
+        values._id=data.data["insert ID"]
+        this.form.reset();   
+        const transaction: any = {
+          add: [ values],
+          };
+       const result= this.params.context.componentParent.gridApi.applyTransaction(transaction)
+       console.log(result);
+       
       });
           }
           else{
       console.log('update');
+      delete values._id
       this.dataService.update(this.config.form.collectionName, this.id,values).subscribe((data: any) => {
         console.log(data);
+        values._id=this.id
         if(this.continue_Save!==true){
           this.id=undefined
           this.dialogService.CloseALL();
         }
         this.form.reset();  
+ if(this.model_heading=="Sub Requirement - Add" ){
+  values.treePath=[...this.gridData.treePath]
+  values.treePath.push(values.requirement_name)
+        }        
+        this.form.reset();   
+        const transaction: any = {
+          update: [ values],
+          };
+          console.log(values);
+          
+       const result= this.params.context.componentParent.gridApi.applyTransaction(transaction)
+       console.log(result);
+       
           // this.ParentComponent.ngOnInit()
 
       });
@@ -769,7 +821,7 @@ values["taskeditable"]=true
 
 
   resetBtn(data?: any) {
-    debugger;
+    this.form.reset()
     this.form.reset()
     this.model = {};
     this.formAction = this.model.id ? "Edit" : "Add";

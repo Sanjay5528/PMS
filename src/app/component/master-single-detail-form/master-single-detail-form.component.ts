@@ -97,7 +97,7 @@ export class MasterSingleDetailFormComponent {
   otherdetails: any = {}
   value: any = {}
   valueformGrupo: any = new FormGroup({})
-  public getRowId: GetRowIdFunc = (params: GetRowIdParams) => `${params.data[this.config.keyField ? this.config.keyField  : "_id"]}`;
+  public getRowId: GetRowIdFunc = (params: GetRowIdParams) => `${params.data[this.config.keyField != undefined ? this.config.keyField  : "_id"]}`;
 
   @ViewChild('popupEdit', { static: true }) popupEdit!: TemplateRef<any>;
   @ViewChild('otherpopupEdit', { static: true }) otherpopupEdit!: TemplateRef<any>;
@@ -231,18 +231,8 @@ return
       this.formService.resetDetailModel(this)
       this.dialogService.openSnackBar("Data has been updated successfully", "OK");              
     this.dialogService.CloseALL()
-    this.dialogService.CloseALL()
      
   data._id =id;
-      if (findIndex >= 0) {
-        //data already in the grid
-        this.listData[findIndex] = data
-      } else {
-        this.listData.unshift(data)
-      }
-      this.tempListData = this.listData;
-      this.listData = [...this.listData]
-      this.tempListData = this.listData;
       const transaction: any = {
         update: [ data],
         };
@@ -295,7 +285,7 @@ return
     event.preventDefault();
     event.stopPropagation();
     this.formService.updateDetailFormData(this).then((res: any) => {
-      // this.dialogService.closeModal()
+      
       this.dialogService.CloseALL()
 
     })

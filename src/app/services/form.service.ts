@@ -34,6 +34,7 @@ export class FormService {
       console.log(config);
       
         ctrl.config = config
+        
         ctrl.pageHeading = config.pageHeading
         ctrl.collectionName = config.form.collectionName
         // ctrl.model = config.model ? config.model : {};
@@ -241,9 +242,10 @@ export class FormService {
                 } else {
                   ctrl.listData.unshift(data)
                 }
-                ctrl.tempListData = ctrl.listData;
-                ctrl.listData = [...ctrl.listData]
-                ctrl.tempListData = ctrl.listData;
+                // ctrl.tempListData = ctrl.listData;
+                // ctrl.listData = [...ctrl.listData]
+                // ctrl.tempListData = ctrl.listData;
+                data["_id"]=id
                 const transaction: any = {
                   update: [ data],
                   };
@@ -276,9 +278,10 @@ export class FormService {
             ctrl.isEditMode = false
             this.resetDetailModel(ctrl)
             this.dialogService.openSnackBar("Data has been updated successfully", "OK");   
-            let values:any={}
-              values["_id"]=res.data["insert ID"]
-                Object.assign(data,values)           
+            // let values:any={}
+            //   values["_id"]=res.data["insert ID"]
+                // Object.assign(data,values)           
+                data["_id"]=res.data["insert ID"]
             const transaction: any = {
               add: [ data],
               };
@@ -331,18 +334,18 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
               this.dialogService.openSnackBar("Data has been updated successfully", "OK");              
              
           data._id =id;
-              if (findIndex >= 0) {
-                //data already in the grid
-                ctrl.listData[findIndex] = data
-              } else {
-                ctrl.listData.unshift(data)
-              }
+              // if (findIndex >= 0) {
+              //   //data already in the grid
+              //   ctrl.listData[findIndex] = data
+              // } else {
+              //   ctrl.listData.unshift(data)
+              // }
               // ctrl.tempListData = ctrl.listData;
               // ctrl.listData = [...ctrl.listData]
               // ctrl.tempListData = ctrl.listData;
-              let values:any={}
-              values["_id"]=res.data["insert ID"]
-                Object.assign(data,values)
+              
+              data["_id"]=id
+              // Object.assign(data,ctrl.model)  
               const transaction: any = {
                 update: [ data],
                 };

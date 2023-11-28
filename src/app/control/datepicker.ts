@@ -5,6 +5,7 @@ import { ThemePalette } from '@angular/material/core';
 
 import { FieldType } from '@ngx-formly/core';
 import * as moment from 'moment';
+import { DialogService } from '../services/dialog.service';
 
 @Component({
   selector: 'date-input',
@@ -15,6 +16,8 @@ import * as moment from 'moment';
   <mat-datepicker-toggle matSuffix [for]="frompicker" [disabled]="field.props?.readonly"></mat-datepicker-toggle>
   <mat-datepicker #frompicker  disabled="false" ></mat-datepicker>
   <mat-error *ngIf="this?.formControl?.errors?.required">This {{ this.field.props?.label }} is required</mat-error>
+  <mat-error *ngIf="this?.formControl?.errors?.dob">This {{ this.field.props?.label }} is more than 18 years </mat-error>
+
 </mat-form-field> 
 `,
 })
@@ -35,7 +38,7 @@ opt:any
   public get FormControl() {
     return this.formControl as FormControl;
   }
-  constructor(private datePipe: DatePipe) {
+  constructor(private datePipe: DatePipe,private dialogSerivce:DialogService) {
     super();
   }
   ngOnInit(): void {
@@ -44,6 +47,7 @@ this.currentField = this.field
 this.required=this.field.props?.required
     this.opt=this.field.props
     if(this?.opt?.attributes?.hide=="past_date"){
+      
       this.minFromDate=moment().add(this?.opt?.attributes?.add_days || 0, 'day')
   }
     if(this?.model?.isEdit==true&& this?.opt?.dynamic==true){
@@ -77,7 +81,26 @@ this.required=this.field.props?.required
   // currentPeriodClicked(data:any){}
 
   currentPeriodClicked(data:any){
-    debugger
+    console.log(this.field.dynamicvaltidateDate);
+    console.log(this.field.validiotionType);
+    
+    if(this.field.dynamicvaltidateDate == true){
+      console.log(this.field.validiotionType=="dob");
+      
+      if(this.field.validiotionType=="dob"){
+        let presentDate = moment();
+        let differenceInYears = moment(presentDate).diff(data.value, 'years');
+        
+        console.log(differenceInYears);
+        
+        if (differenceInYears <= 18) {
+          this.dialogSerivce.openSnackBar(`The Date You Chose (${this.opt.label}) should be 18 years or more.`, "OK");
+          this.formControl.setErrors({dob:true})
+        }
+        
+      }
+    }
+
     if(this.field.valtidateDate == true){
 if(this.field.childKey){
   if (typeof this.model[this.field.childKey] === 'string') {
