@@ -72,6 +72,7 @@ import { FormlyFieldset } from "./fieldsetform";
 import { OnlyDecimalDirective } from "./decimal-directive";
 import { FormlyMultiImageUpload } from "./multiimage_upload";
 import { CarsoalComponent } from './carsoal.component';
+import { FormlyFieldInputTextEnterKey } from "./inputcheck";
 
 export function minLengthValidationMessage(err: any, field: FormlyFieldConfig) {
   console.log(field);
@@ -133,6 +134,7 @@ export function uniqueItemsValidationMessag(
   err: any,
   field: FormlyFieldConfig
 ) {
+  console.clear()
   console.log(field);
 
   return `This ${field.props?.label} is already exists in database `;
@@ -166,6 +168,10 @@ const formlyConfig = {
 
   types: [
     { name: "tab-input", component: Tab },
+    {
+      name: 'input-text-enterkey',
+      component: FormlyFieldInputTextEnterKey
+    },
     {
       name: "select-input",
       component: SelectInput,
@@ -363,7 +369,7 @@ const formlyConfig = {
     CallingcodeInput,
     patchWork,
     Chips,
-    CarsoalComponent,
+    CarsoalComponent,FormlyFieldInputTextEnterKey
   ],
   imports: [
     BrowserModule,
@@ -417,7 +423,7 @@ const formlyConfig = {
     MultiSelectInput,
     SelectInput,
     DateTimeInput,
-    ImageInput,
+    ImageInput,FormlyFieldInputTextEnterKey,
     AutogenerateId,
     RepeatTypeComponent,
     ButtonInput,

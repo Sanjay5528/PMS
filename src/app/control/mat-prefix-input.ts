@@ -3,6 +3,7 @@ import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
 import { Subscription } from "rxjs";
 import { DataService } from "../services/data.service";
+import { isEmpty } from "lodash";
 @Component({
   selector: "multiselect-input",
   template: `
@@ -29,7 +30,7 @@ import { DataService } from "../services/data.service";
       />                
       <mat-error *ngIf="this?.formControl?.errors?.required">This {{ this.field.props?.label }} is required</mat-error>
       <mat-error *ngIf="this?.formControl?.errors?.pattern">This {{ this.field.props?.label }} is Pattern Not Match</mat-error>
-
+      <mat-error *ngIf="this?.formControl?.errors?.uniqueItems==false">This {{ this.field.props?.label }}  Already Present </mat-error>
       <!-- errors.pattern -->
     </mat-form-field>
   `,
@@ -40,7 +41,7 @@ export class MatPrefixInput extends FieldType<any> implements OnInit {
   currentField: any;
   prefix: any;
   parent_field:any
-  constructor() {
+  constructor(private dataService:DataService) {
     super();
   }
 
@@ -82,11 +83,44 @@ export class MatPrefixInput extends FieldType<any> implements OnInit {
   }
 
   onselect(event: any) {
-    // let pathcData:any=this.prefix+event.target.value
-    this.formControl.setValue(event.target.value)
-    console.log(this.formControl);
-    console.log(this.field);
+    let pathcData:any=this.prefix+event.target.value
     
+    // let value:any =  event.target.value
+    if(this.field.props.searchableField) {
+          let query:any={        start:0,end:1000,filter:[]              }
+          this?.opt?.multifilter_condition?.conditions.map((res:any)=>{
+       
+            if(this?.opt?.multifiltertype=="local"){
+             let value = sessionStorage.getItem(this.opt.filtervalueKey)
+              res.value=value
+            }else if(this.opt.valueType=="Dynamic"){
+              res.value=pathcData
+            }else{
+              res.value=this.model[this.opt.filtervalueKey]
+  
+            }
+          
+          })
+          query.filter.push(this.opt.multifilter_condition)
+      //   }
+       this.dataService.getDataByFilter(this.field.templateOptions.searchCollectionName,query).subscribe(
+         (result:any) => {
+          //  var list = result.data || [];
+          console.log(result.data[0].response);
+          
+          //  field.parent.formControl.value[field.templateOptions.searchResult] = list;
+          if(!isEmpty(result.data[0].response)){
+            
+            this.field.formControl.setErrors({uniqueItems:false}) //we are setting the error manually
+          };
+          //  field.parent.formControl.get(field.templateOptions.columnName)._fields[0].templateOptions.options = list
+         },
+         error => {
+             //Show the error popup
+             console.error('There was an error!', error);
+         }
+       );
+      }
     // this.model[this.currentField.parentKey]=this.prefix+event.target.value
    
   }

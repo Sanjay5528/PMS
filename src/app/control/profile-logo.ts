@@ -141,3 +141,12 @@ export class LogoComponent extends FieldType implements OnInit {
     }
   }
 }
+// ! SAmple
+// 	{
+//   "type": "logo",
+//   "key": "Org_logo",
+//   "className": "flex-6",
+//   "templateOptions": {
+//     "label": "Organization Logo"
+//   }
+// },
