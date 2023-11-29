@@ -1438,6 +1438,51 @@ func team_specification(c *fiber.Ctx) error {
 	})
 }
 
+func RealseSpirntList(c *fiber.Ctx) error {
+	org, exists := helper.GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
+	}
+
+	query := bson.A{
+		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "sprint"},
+					{"localField", "_id"},
+					{"foreignField", "release_id"},
+					{"as", "sprint"},
+				},
+			},
+		},
+		bson.D{
+			{"$project",
+				bson.D{
+					{"_id", 1},
+					{"name", 1},
+					{"start_date", 1},
+					{"end_date", 1},
+					{"description", 1},
+					{"project_id", 1},
+					{"status", 1},
+					{"sprint_ids", "$sprint._id"},
+				},
+			},
+		},
+	}
+
+	response, err := helper.GetAggregateQueryResult(org.Id, "release", query)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	return shared.SuccessResponse(c, fiber.Map{
+		"response": response,
+		// "pipeline": filter,
+	})
+}
+
 func team_specificationList(c *fiber.Ctx) error {
 	//Get the orgId from Header
 	org, exists := helper.GetOrg(c)
