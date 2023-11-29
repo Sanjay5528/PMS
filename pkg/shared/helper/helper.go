@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"reflect"
 	"strconv"
 
@@ -44,6 +45,11 @@ func DocIdFilter(id string) bson.M {
 	// If the ID is empty, return an empty filter.
 	if id == "" {
 		return bson.M{}
+	}
+
+	id, err := url.QueryUnescape(id)
+	if err != nil {
+		// fmt.Println("Error decoding:", err)
 	}
 
 	// Attempt to convert the ID to a hexadecimal ObjectID.
