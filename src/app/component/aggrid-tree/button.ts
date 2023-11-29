@@ -592,7 +592,7 @@ let values:any={}
 // values['requirement_name']=params.data.requirement_name
 values['requirement_id']=params.data._id
 values["_id"]=`SEQ|${params.data.project_id}`
-
+debugger
 this.dataService.save("task",values).subscribe((res:any)=>{
   // console.log();
   values["_id"]=res.data["insert ID"]
@@ -655,11 +655,13 @@ values["taskeditable"]=true
         }
         values._id=data.data["insert ID"]
         this.form.reset();   
-        const transaction: any = {
-          add: [ values],
-          };
-       const result= this.params.context.componentParent.gridApi.applyTransaction(transaction)
-       console.log(result);
+        this.ParentComponent.ngOnInit()
+
+      //   const transaction: any = {
+      //     add: [ values],
+      //     };
+      //  const result= this.params.context.componentParent.gridApi.applyTransaction(transaction)
+      //  console.log(result);
        
       });
           }
@@ -677,17 +679,23 @@ values["taskeditable"]=true
  if(this.model_heading=="Sub Requirement - Add" ){
   values.treePath=[...this.gridData.treePath]
   values.treePath.push(values.requirement_name)
+  // childIndex[row.parentmodulename] = (childIndex[row.parentmodulename] || 0) + 1;
+  // values.treePath = [...parent.treePath, values.requirement_name];
+  // values.parentIndex = this.gridData.index;
+  // values.index = `${values.parentIndex}.${childIndex[values.parentmodulename]}`;
+  // values.CheckIndex=values.index+' ' +values.requirement_name
+  // // parentTreeData.push(row);
         }        
         this.form.reset();   
        
-        const transaction: any = {
-          update: [ values],
-          };
-          console.log(values);
+      //   const transaction: any = {
+      //     update: [ values],
+      //     };
+      //     console.log(values);
           
-       const result= this.params.context.componentParent.gridApi.applyTransaction(transaction)
-       console.log(result);
-          // this.ParentComponent.ngOnInit()
+      //  const result= this.params.context.componentParent.gridApi.applyTransaction(transaction)
+      //  console.log(result);
+          this.ParentComponent.ngOnInit()
 
       });
           }
@@ -744,13 +752,12 @@ values["taskeditable"]=true
           this.form.reset();
     //       else{
     // 
-    // this.ParentComponent.ngOnInit()
+    this.ParentComponent.ngOnInit()
     //
 
     //       }
             });
           }else{
-        console.log('update');
         this.dataService.update(this.config.form.collectionName, this.id,values).subscribe((data: any) => {
           console.log(data);
           if(this.continue_Save!==true){

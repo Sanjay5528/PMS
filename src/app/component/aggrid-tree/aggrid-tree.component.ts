@@ -281,12 +281,12 @@ this.gridOptions.paginationPageSize=100
     //   editable: true,
     //   hide: true
     // },  
-     {
-      headerName: 'Requirement Name',
-      field: 'requirement_name',
-      width: 40,
-      filter: 'agTextColumnFilter',
-    },
+    //  {
+    //   headerName: 'Requirement Name',
+    //   field: 'requirement_name',
+    //   width: 40,
+    //   filter: 'agTextColumnFilter',
+    // },
     {
       headerName: 'Sprint Id',
       field: 'sprint_id',
@@ -1443,7 +1443,7 @@ for (let idx = 0; idx < plainRequirements.length; idx++) {
     row.taskeditable = false;
     parentTreeData.push(row);
   } else {
-    const parent = parentTreeData.find((d) => d.requirement_name === row.parentmodulename);
+    const parent = parentTreeData.find((d) => d._id === row.parentmodulename);
     console.log(parent);
 
     if (parent) {
