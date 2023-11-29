@@ -243,14 +243,17 @@ this.gridOptions.paginationPageSize=100
       },
   },
   {
-
+  
     field: 'Action',
-    width: 40,
-    sortable:false,
-    filter:false,
+    maxWidth:85,sortable:false,filter: false,
+   menuTabs: [],
+   lockPosition: 'right',
+   lockPinned: true,
+    pinned:'right',
     cellRenderer: 'buttonRenderer'
 
-  })
+  }
+  )
   }else if(formName=="Requirement"){
   
 
@@ -310,16 +313,17 @@ this.gridOptions.paginationPageSize=100
     }, {
       headerName: 'Test Case Count',
       field: 'number_of_TestCase_count',
-      width: 40,
+      maxWidth: 160,
       editable: false,
       filter: 'agNumberColumnFilter',
     }, {
       headerName: 'Task Count',
       field: 'number_of_Task_count',
-      width: 40,
+      maxWidth: 160,
       editable: false,
       filter: 'agNumberColumnFilter',
     },
+ 
     // {
     //   headerName: 'Start Date',
     //   field: 'startdate',
@@ -333,8 +337,8 @@ this.gridOptions.paginationPageSize=100
     //   valueFormatter: function (params) {
     //     return moment(params.value).format('D/M/ YYYY');
     //   },
-  
     // },
+    
     // {
     //   headerName: 'End Date',
     //   field: 'enddate',
@@ -352,9 +356,11 @@ this.gridOptions.paginationPageSize=100
     {
   
       field: 'Action',
-      width: 40,
-      sortable:false,
-      filter:false,
+      maxWidth:85,sortable:false,filter: false,
+     menuTabs: [],
+     lockPosition: 'right',
+     lockPinned: true,
+      pinned:'right',
       cellRenderer: 'buttonRenderer'
   
     }
@@ -417,15 +423,17 @@ this.gridOptions.groupDefaultExpanded=-1
 		"headerName": "status", "field": "status" 
 	}
   ,
-    {
+  {
   
-      field: 'Action',
-      width: 40,
-      sortable:false,
-      filter:false,
-      cellRenderer: 'buttonRenderer'
-  
-    }
+    field: 'Action',
+    maxWidth:85,sortable:false,filter: false,
+   menuTabs: [],
+   lockPosition: 'right',
+   lockPinned: true,
+    pinned:'right',
+    cellRenderer: 'buttonRenderer'
+
+  }
   // {
 	// 			"headerName": "Team Id",
 	// 			"field": "team_id",
@@ -531,15 +539,14 @@ this.gridOptions.paginationPageSize=100
     //     rows: '6',
     //   },
     // }, 
-      {
+    {
   
       field: 'Action',
-      // width: 40,
-      sortable:false,
-      filter:false,
-      resizable:false,
-      maxWidth: 110,
-
+      maxWidth:85,sortable:false,filter: false,
+     menuTabs: [],
+     lockPosition: 'right',
+     lockPinned: true,
+      pinned:'right',
       cellRenderer: 'buttonRenderer'
   
     }
@@ -701,13 +708,24 @@ this.gridOptions.getRowId=function(rowData:any){
         sortable: true,
       },
       {
-        headerName: "Team Name",
+        headerName: "Task Type",
         cellDataType: "text",
-        field: "team_name",
+        field: "task_type",
+        editable: function(parms) {
+          return parms.data.taskeditable
+        },cellEditor: 'agRichSelectCellEditor',
+        cellEditorParams: {
+          values:["UI/UX","API","Testing","UI Development"]
+        },
+      },{
+        headerName: "Task Name",
+        cellDataType: "text",
+        field: "task_name",
         editable: function(parms) {
           return parms.data.taskeditable
         }
       },
+      
       // {
       //   headerName: "Days",
       //   field: "days",
@@ -739,7 +757,7 @@ this.gridOptions.getRowId=function(rowData:any){
       {
         headerName: "Start Date",
         cellDataType: "date",
-        field: "start_date",
+        field: "scheduled_start_date",
         cellEditor: "agDateCellEditor",
         // cellEditorParams: {
         //     min: moment
@@ -759,7 +777,7 @@ this.gridOptions.getRowId=function(rowData:any){
       {
         headerName: "End Date",
         cellDataType: "date",
-        field: "end_date",
+        field: "scheduled_end_date",
         valueFormatter: function (params: any) {
           if (params.value) {
             console.log(params.value);
@@ -794,10 +812,13 @@ this.gridOptions.getRowId=function(rowData:any){
         },
       },
       {
+  
         field: 'Action',
-        width: 40,
-        sortable:false,
-        filter:false,
+        maxWidth:85,sortable:false,filter: false,
+       menuTabs: [],
+       lockPosition: 'right',
+       lockPinned: true,
+        pinned:'right',
         cellRenderer: 'buttonRenderer'
     
       }
@@ -841,7 +862,7 @@ sprintCellEditorParams = (params: any) => {
       }
     res.data[0].response.forEach((each:any)=>{
     // this.ValueToCompareRequriementSprint.push({label:each.name,value:each.id})
-    this.OnlyValueRequriementSprint.push(each.id)
+    this.OnlyValueRequriementSprint.push(each._id)
   })  
 })
     return this.OnlyValueRequriementSprint
@@ -1573,13 +1594,39 @@ if(fieldName=="assigned_to"){
   
   let hrsconvertedDay=hrsFlag==true? Math.ceil(params.value/8) : 1
   console.log(hrsconvertedDay);
-  
-  update["start_date"] = moment();
-  update["end_date"] = moment().add(hrsconvertedDay, "day");
+  if(params.data.hasOwnProperty("scheduled_start_date")){
+
+    update["scheduled_start_date"] = moment(params.data["scheduled_start_date"]);
+  }else{
+    update["scheduled_start_date"] = moment();
+
+  }
+  if(params.data.hasOwnProperty("scheduled_end_date")){
+    update["scheduled_end_date"] = moment(params.data["scheduled_end_date"]).add(hrsconvertedDay, "day");
+  }else{
+    update["scheduled_end_date"] = moment().add(hrsconvertedDay, "day");
+
+  }
   }
 if(fieldName=="depend_task"){
-  // 
-  update["end_date"] =  this.depend_task(params.value,params)
+  // ? Depend Task Written in anther F it emit Only bitest date 
+  // ? the biggest date is start date
+  update["scheduled_start_date"] =  this.depend_task(params.value,params)
+  update["scheduled_end_date"] = moment(update["scheduled_start_date"])
+  
+  console.log(params.data.hasOwnProperty("allocated_hours"),"params.data.hasOwnProperty()");
+  
+  if (params.data.hasOwnProperty("allocated_hours")) {
+    // console.log(data);
+    // !todo
+    let hrsFlag= params.value>=8? true : false
+    
+    let hrsconvertedDay=hrsFlag==true? Math.ceil(params.value/8) : 1
+    console.log(hrsconvertedDay);
+    
+    // update["start_date"] =update["start_date"]
+    update["scheduled_end_date"] = moment(update["scheduled_end_date"]).add(hrsconvertedDay, "day");
+    }
 }
 this.dataService.update("task",params.data._id,update).subscribe((res:any)=>{
   // console.log();
@@ -1644,7 +1691,7 @@ console.log(value);
   }
   let bigdate:any =moment()
   valuesMatchTaskId.forEach((xyz:any)=>{
-    bigdate = getHigherDate(bigdate,xyz.end_date);
+    bigdate = getHigherDate(bigdate,xyz.scheduled_end_date);
     console.log(bigdate);
     
   })

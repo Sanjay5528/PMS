@@ -146,6 +146,36 @@ console.log(element[this.opt.specification]);
         
       });
     }
+    if (this?.opt?.lookup==true) {
+      let name = this.opt.endPoint;
+      let value
+      if(this?.opt?.multifiltertype=="local"){
+         value= sessionStorage.getItem(this.opt.local_name)
+    
+       }
+     
+      this.dataService.lookupTreeData(name,value).subscribe((res: any) => {
+        console.log(res);       
+         let totalvalue:any[]=[]
+
+        res.data.response.forEach((data:any)=>{
+          console.log(data);
+          let datas:any={}
+          datas[this.labelProp]=data[this.labelProp]
+          datas[this.valueProp]=data[this.valueProp]
+          totalvalue.push(datas)
+        })
+        this.opt.options=totalvalue
+
+        // this.dataService.buildOptions(res.data[0].response, this.opt);
+      
+          this.currentField.formControl.setValue(this.formControl.value);
+          if(this.model.isEdit){
+            this.valueSlected()
+          }
+        
+      });
+    }
 
     if (this?.opt?.optionsDataSource?.collectionNameById!=undefined) {
       let name = this.opt.optionsDataSource.collectionNameById;

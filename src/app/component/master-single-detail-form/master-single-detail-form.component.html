@@ -40,7 +40,7 @@
       </div>
       <!-- Left Panel End -->
       <!-- Dynamic Data Table-->
-      <div class="table-container" style="width:80%" *ngIf="config && config.detailListConfig">
+      <div class="table-container" style="width:80%" *ngIf="config && config?.detailListConfig">
         <div fxLayout="column">
           <div fxFlex="auto">
             <!-- Column filter-->
@@ -49,7 +49,7 @@
                 <app-dynamic-filter  [showdefaultFilter]="showdefaultFilter" (filterValue)=" ' ' "></app-dynamic-filter>
               </div>
               <div style="float:right;" fxLayout="column" fxFlex="10%">
-                {{this.listData.length}} Record(s) found
+                {{this?.listData?.length}} Record(s) found
               </div>
               <div>
                 <!-- <mat-icon *ngIf="config['printScreen']" (click)="printTable('table')">print</mat-icon> -->

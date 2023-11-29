@@ -1567,13 +1567,13 @@ updateVAluecustomfield(value:any) {
   }
 
   Preview() {
-    this.SelctedColumns = [];
+    // this.SelctedColumns = [];
     let dataset: any = this.dataSet.value;
     dataset.Filter = [];
     if (!isEmpty(this.grp)) {
       dataset.Filter = this.savegrp();
     }
-    dataset.SelectedList = [];
+    dataset.SelectedList =this.SelctedColumns
     dataset.start = 0;
     dataset.end = 200;
 

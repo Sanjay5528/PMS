@@ -1,68 +1,152 @@
 {
-	"pageHeading": "Team Group",
+	"pageHeading": "Task",
 	"formType": "simple",
+	"editMode": "page",
 	"keyField": "_id",
 	"form": {
-		"collectionName": "team_specification",
-		"fields": [
-			{
-				"fieldGroupClassName": "display-flex",
-				"fieldGroup": [
+	  "collectionName": "task",
+	  "fields": [
+		{
+			"fieldGroupClassName": "display-flex",
+			"fieldGroup": [		{
+		  "type": "input",
+			  "className": "flex-9",
+			  "key": "task_name",
+		  "props": {
+			"label": "Task Name",
+			"placeholder": "Task Name",
+			"pattern": "^[a-zA-Z&>/;,:-_/]+( [a-zA-Z&>/;,:-_/!@-]+)*$",
+			"required": true
+		  },
+		  "expressions": {
+			"props.readonly": "model.isEdit"
+		  }
+		},{
+			"type": "select",
+			  "className": "flex-5",
+			  "key": "task_type",
+			"props": {
+				"label": "Task Type",
+				"options": [
 					{
-						"type": "input",
-						"key": "name",
-						"className": "flex-5",
-						"templateOptions": {
-							"label": "Team  Name",
-							"maxLength": 50,
-							"required": true,              
-							"pattern": "^[a-zA-Z0-9&>/;,:-_/@]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
-							"placeholder": "Team  Name"
-						}
+						"label": "UI/UX",
+						"value": "UI/UX"
+					},{
+						"label": "API",
+						"value": "API"
+					},{
+						"label": "Testing",
+						"value": "Testing"
+					},
+					{
+						"label": "UI Development",
+						"value": "UI Development"
 					}
-				]
+				],
+				"required": true
+			
+			},
+			"expressions": {
+			  "props.readonly": "model.isEdit"
+			}
+		  }
+		
+		]},
+		{
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "key": "scheduled_start_date",
+			  "type": "date-input",
+			  "className": "flex-6",
+  
+			  "props": {
+				"label": "Scheduled Start Date",
+				"placeholder": "Scheduled Start Date",
+				"required": true
+			  }
 			},
 			{
-				"type": "html-input",
-				"key": "description",
-				"templateOptions": {
-					"label": "Anything about this Team ",
-					"placeholder": "Description",
-					"rows": 5
-				}
-			},
+			  "key": "scheduled_end_date",
+			  "type": "date-input",
+			  "className": "flex-6",
+  
+			  "parentKey": "scheduled_start_date",
+			  "parentCollectionName": "task",
+			  "props": {
+				"label": "Scheduled End Date",
+				"placeholder": "Scheduled End Date",
+				"required": true
+			  }
+			}
+		  ]
+		},
+		{
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
 			{
-				"key": "status",
-				"type": "select",
-				"defaultValue": "A",
-				"templateOptions": {
-					"label": "Status",
-					"options": [
-						{
-							"label": "Active",
-							"value": "A"
-						},
-						{
-							"label": "Disable",
-							"value": "D"
-						}
-					],
-					"required": true
+			  "type": "number",
+			  "key": "allocated_hours",
+			  "className": "flex-6",
+  
+			  "props": {
+				"label": "Allocated Hours",
+				"placeholder": "Allocated Hours",
+				"pattern": "^(?:|[1-9][0-9]*)$",
+				"required": true
+			  }
+			},
+  
+			{
+			  "type": "select-input",
+			  "key": "assigned_to",
+			  "className": "flex-6",
+  
+			  "props": {
+				"label": "Assigned To",
+				"placeholder": "Assigned To",
+				"lookup": true,
+				"endPoint": "team_specification",
+				"multifiltertype": "local",
+				"local_name": "project_id",
+				"multifilter_condition": {
+				  "clause": "AND",
+				  "conditions": [
+					{
+					  "column": "project_id",
+					  "operator": "EQUALS",
+					  "type": "string",
+					  "value": ""
+					},  {
+					  "column": "user_id",
+					  "operator": "EXISTS",
+					  "type": "string",
+					  "value": true
+					}
+				  ]
 				},
-				"hideExpression": "!model.isEdit"
+				"labelProp": "employe_name",
+				"valueProp": "user_id",
+				"required": true
+			  },
+			  "expressions": {
+				"hide": "model.isEdit"
+			  }
 			}
-		],
-		"defaultValues": [
-			{
-				"colName": "status",
-				"value": "A",
-				"type": "string"
-			},{
-				"colName": "_id",
-				"value": "SEQ|TEAM|{{project_id}}",
-				"type": "string"
-			}
-		]
-	},
-	"onCancelRoute": "/list/projectteam"
-}
+		  ]
+		},
+		{
+		  "type": "html-input",
+		  "key": "description",
+		  "className": "flex-6",
+		  "props": {
+			"label": "Task Description",
+			"required": true
+		  },
+  
+		  "maxlength": 2000
+		}
+	  ]
+	}
+  }
+  

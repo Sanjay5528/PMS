@@ -270,7 +270,7 @@ export class FormService {
         if(ctrl.butText == "Add"){
           var defaultValues = ctrl.config.detailForm.defaultValues || []
           this.loadDefaultValues(defaultValues, data, ctrl.model)
-          if(ctrl?.config?.detailForm?.Change_id){
+          if(ctrl?.config?.detailForm?.Change_id){  
             data[ctrl?.config?.detailForm?.changekeyfield]=data[ctrl?.config?.detailForm?.addkeyfield]+"-"+data[ctrl?.config?.detailForm?.changekeyfield]
           }
         this.dataService.save(ctrl.config.detailForm.collectionName,data).subscribe(
@@ -282,18 +282,15 @@ export class FormService {
             //   values["_id"]=res.data["insert ID"]
                 // Object.assign(data,values)           
                 data["_id"]=res.data["insert ID"]
-            const transaction: any = {
-              add: [ data],
-              };
-              const result = ctrl.gridApi.applyTransaction(transaction);
-              console.log(transaction, result)
+             data.Apitype="Add"
+
            
-            if (findIndex >= 0) {
-              //data already in the grid
-              ctrl.listData[findIndex] = data
-            } else {
-              ctrl.listData.unshift(data)
-            }
+            // if (findIndex >= 0) {
+            //   //data already in the grid
+            //   ctrl.listData[findIndex] = data
+            // } else {
+            //   ctrl.listData.unshift(data)
+            // }
             // ctrl.tempListData = ctrl.listData;
             // ctrl.listData = [...ctrl.listData]
             // ctrl.tempListData = ctrl.listData;
@@ -329,7 +326,7 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
           this.dataService.update(ctrl.config.detailForm.collectionName, id,   data).subscribe(
             (res:any) => {
               ctrl.isEditMode = false
-             
+             data.Apitype="Update"
               this.resetDetailModel(ctrl)
               this.dialogService.openSnackBar("Data has been updated successfully", "OK");              
              
@@ -346,12 +343,7 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
               
               data["_id"]=id
               // Object.assign(data,ctrl.model)  
-              const transaction: any = {
-                update: [ data],
-                };
-                const result = ctrl.gridApi.applyTransaction(transaction);
-                console.log(transaction, result)
-             
+            
               resolve(data)
 
             },
@@ -418,21 +410,48 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
         };
       }
       if (e.type == "arraytostring") {
-        e.valueGetter = (params: any) => {
+        console.log("INSIDE");
+        
+        e.valueFormatter = (params: any) => {
+          console.log(params.data[e.field]);
           if (params.data && params.data[e.field]&& !_.isEmpty(params.data[e.field])) {
             let txt = "";
-            let input=params.data[e.field] ;
-            let attribute=e.value
-            for (let i=0; i < input?.length;i++){
+            console.log("SUB INSIE");
+            console.log(e.valueType=="plainArray");
+            console.log(e.valueType);
+            
+            if(e.valueType=="plainArray"){
+              let input=params.data[e.field] ;
+              
+              for (let i=0; i < input?.length;i++){
+                txt += input[i] +","
+               }
+               console.log("txt",txt);
+               
+               var n =txt.lastIndexOf(",")
+               var value=txt.substring(0,n)
+               console.log(value);
+               
+               return value
+              
+            }else{
+              let input=params.data[e.field] ;
+              let attribute=e.value
+              for (let i=0; i < input?.length;i++){
                 txt += (input[i][attribute]) +","
-             }
-             var n =txt.lastIndexOf(",")
-             var value=txt.substring(0,n)
-             return value
-            } return
+               }
+               var n =txt.lastIndexOf(",")
+               var value=txt.substring(0,n)
+               return value
+              }
+
+            }
+            return
 
         };
       }
+      console.log(e.value);
+      
       if (e.width) {
         e["width"] = e.width;
       } 
@@ -638,57 +657,74 @@ console.log(ctrl);
 
 // !Need TO do in same componenet for server side pagination
   LoadDetailDataList(ctrl:any,id:string,addtionalFilterConditions?:any) {
-    console.log(ctrl,'LoadDetailDataList');
-    let filterCondition :any
-    //master-detail mapping record filter condition
-    if(ctrl?.config?.detailForm?.customfilter){
-       filterCondition = [
-        { column: ctrl.config.detailForm.mapColumn,
-            operator: "EQUALS",
-          value:ctrl.model[ctrl?.config?.detailForm?.customkey]
-          },
-        ]
-    
-    }else{
 
-      filterCondition = [
-        { column: ctrl.config.detailForm.mapColumn,
-            operator: "EQUALS",
-          value:id
-          },
-        ]
-    }
-    console.log(filterCondition);
-
-  this.dataService.makeFilterConditions(ctrl.detailListConfig.defaultFilter,filterCondition,ctrl.detailModel)
-  this.dataService.makeFilterConditions(ctrl.detailListConfig.fixedFilter,filterCondition,ctrl.detailModel)
-
-    //when we apply filter the top filter controls,
-    //this conditions to be merged with the above filter condition
-    if (addtionalFilterConditions) {
-    
-    filterCondition = _.merge(filterCondition,addtionalFilterConditions)
-    }
-    //load detail (child) collection data
-    var filterQuery = {filter:[{
-      clause: "AND",
-      conditions: filterCondition
-    }]}
-    
-
-  this.dataService.getDataByFilter(ctrl.config.detailForm.collectionName,filterQuery).subscribe(
-    (result:any) => {
-        ctrl.listData = result.data[0].response|| [];
+    if(ctrl.config.diffApi==true){
+      let key:any=ctrl.model[ctrl.config.idToSend]
+      this.dataService.lookupTreeData(ctrl.config.endPoint,key).subscribe((res:any)=>{
+        console.log(res);
+        ctrl.listData=res.data.response
+        // ctrl.listData = res.data[0].response|| [];
         ctrl.tempListData = ctrl.listData;
         ctrl.gridApi.sizeColumnsToFit();
-      },
-      error => {
-        ctrl.listData = []
-        ctrl.tempListData = ctrl.listData;
-        //Show the error popup
-        console.error('There was an error!', error);
+      })
+    }else{
+
+
+
+
+
+      let filterCondition :any
+      //master-detail mapping record filter condition
+      if(ctrl?.config?.detailForm?.customfilter){
+         filterCondition = [
+          { column: ctrl.config.detailForm.mapColumn,
+              operator: "EQUALS",
+            value:ctrl.model[ctrl?.config?.detailForm?.customkey]
+            },
+          ]
+      
+      }else{
+  
+        filterCondition = [
+          { column: ctrl.config.detailForm.mapColumn,
+              operator: "EQUALS",
+            value:id
+            },
+          ]
       }
-    );
+      console.log(filterCondition);
+  
+    this.dataService.makeFilterConditions(ctrl.detailListConfig.defaultFilter,filterCondition,ctrl.detailModel)
+    this.dataService.makeFilterConditions(ctrl.detailListConfig.fixedFilter,filterCondition,ctrl.detailModel)
+  
+      //when we apply filter the top filter controls,
+      //this conditions to be merged with the above filter condition
+      if (addtionalFilterConditions) {
+      
+      filterCondition = _.merge(filterCondition,addtionalFilterConditions)
+      }
+      //load detail (child) collection data
+      var filterQuery = {filter:[{
+        clause: "AND",
+        conditions: filterCondition
+      }]}
+      
+  
+    this.dataService.getDataByFilter(ctrl.config.detailForm.collectionName,filterQuery).subscribe(
+      (result:any) => {
+          ctrl.listData = result.data[0].response|| [];
+          ctrl.tempListData = ctrl.listData;
+          ctrl.gridApi.sizeColumnsToFit();
+        },
+        error => {
+          ctrl.listData = []
+          ctrl.tempListData = ctrl.listData;
+          //Show the error popup
+          console.error('There was an error!', error);
+        }
+      );
+    }
+
   }
   /**
  * This method used for the Get the data from the database 

@@ -52,6 +52,7 @@
 
            </mat-card-header>
              <span style="font-size: medium;font-family: cursive;margin-left: 20px;color: grey;">  {{  datefunction(task.scheduled_start_date)}} to {{  datefunction(task.scheduled_end_date)}}  <span style="font-size: small;margin-left: 10px;font-weight: bold;">  ( {{task.allocated_hours}}  <span style="font-size: xx-small;font-weight: bold;">Hr</span> )  </span>  </span>
+             <p  style="margin-left: 30px;"> <b>Task Type </b>{{task.task_type}}</p>
            
            <mat-card-content style="margin-left: 30px;">
              <p [innerHTML]="task.description"></p>

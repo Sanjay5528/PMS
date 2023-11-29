@@ -97,7 +97,7 @@ export class MasterSingleDetailFormComponent {
   otherdetails: any = {}
   value: any = {}
   valueformGrupo: any = new FormGroup({})
-  public getRowId: GetRowIdFunc = (params: GetRowIdParams) => `${params.data[this.config.keyField != undefined ? this.config.keyField  : "_id"]}`;
+  public getRowId: GetRowIdFunc = (params: GetRowIdParams) => `${params.data["_id"]}`;
 
   @ViewChild('popupEdit', { static: true }) popupEdit!: TemplateRef<any>;
   @ViewChild('otherpopupEdit', { static: true }) otherpopupEdit!: TemplateRef<any>;
@@ -285,9 +285,24 @@ return
     event.preventDefault();
     event.stopPropagation();
     this.formService.updateDetailFormData(this).then((res: any) => {
-      
+      this.form.reset();
       this.dialogService.CloseALL()
+      if(res.Apitype=="Add"){
 
+        const transaction: any = {
+          add: [ res],
+          };
+          const result = this.gridApi.applyTransaction(transaction);
+          console.log(transaction, result)
+      }else{
+
+        const transaction: any = {
+          update: [ res],
+          };
+          const result = this.gridApi.applyTransaction(transaction);
+          console.log(transaction, result)
+      }
+     
     })
   }
 
@@ -334,15 +349,22 @@ return
     if (item.formAction == "listpopup") {
       if(item.add===true) {
         if(item.type == "local"){
+          console.log(data[item.field]);
+          
           sessionStorage.setItem(item.local_label,data[item.field])
+        }
+        if(item.type == "grid"){
+          this.selectedRow[item.prefixlabel] = this.selectedRow[item.prefixValue]
         }
       }
       this.dataService.loadScreenConfigJson(item.formName).subscribe((xyz: any) => {
         console.log(xyz);
-
+        if(this.selectedRow._id != undefined ||this.isDetailEditMode==true){
+          this.selectedRow.isEdit=true
+        }
         this.otherdetails = xyz
         this.dialogService.openDialog(this.otherpopupEdit, null, null, this.selectedRow)
-
+return
       })
     } else if (item.formAction == "delete") {
       if (confirm("Do you wish to delete this record?")) {
@@ -439,6 +461,7 @@ values.release_id=data._id
     this.dataService.save(this.otherdetails.form.collectionName, values).subscribe((data: any) => {
       console.log(data);
       this.dialogService.closeModal();
+      this.form.reset()
     })
   }
 
