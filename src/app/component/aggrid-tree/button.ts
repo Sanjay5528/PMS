@@ -618,22 +618,29 @@ values["taskeditable"]=true
     }
     let values: any = this.form.value;
     if(formName=='Requirement'){
-    if (val == "modulesViewPopup"&&(this.model_heading=="Sub Requirement - Add" || this.model_heading=="Requirement - Edit" || this.model_heading=="Sub Requirement - Edit" )) {
+    if (val == "modulesViewPopup"&&(this.model_heading=="Sub Requirement - Add" )) {
       values.project_id = this.ParentComponent.response?.project_id;
-      values.parentmodulename = this.gridData.requirement_name;
-      values._id= "SEQ|requriment|"+values.project_id;
+      values.parentmodulename = this.gridData._id;
+      // values._id= "SEQ|requriment|"+values.project_id;
+      values._id= "SEQ|"+values.project_id;
+
     }
+ 
     else if(  this.model_heading=="Task - Add"){
       values.project_id = this.ParentComponent.response?.project_id;
       values.requirement_id = this.gridData._id;
-      values._id = "SEQ|Task|"+values.project_id ;
+      values._id = "SEQ|"+values.project_id ;
+      // values._id = "SEQ|Task|"+values.project_id ;
+
       
       // values._id="SEQ|TASK"
     }  else if(  this.model_heading=="Test Case - Add"){
       values.project_id = this.ParentComponent.response?.project_id;
       values.requirement_id = this.gridData._id;
       values.testCase_Created=this.helperServices.getEmp_id()
-      values._id = "SEQ|Test_Case|"+values.project_id ;
+      // values._id = "SEQ|Test_Case|"+values.project_id ;
+      values._id = "SEQ|"+values.project_id ;
+
 
     }
     if(this.id==undefined&&this.butText=="Save"|| this.formAction == 'Add'){
@@ -672,6 +679,7 @@ values["taskeditable"]=true
   values.treePath.push(values.requirement_name)
         }        
         this.form.reset();   
+       
         const transaction: any = {
           update: [ values],
           };
@@ -679,7 +687,6 @@ values["taskeditable"]=true
           
        const result= this.params.context.componentParent.gridApi.applyTransaction(transaction)
        console.log(result);
-       
           // this.ParentComponent.ngOnInit()
 
       });
@@ -692,14 +699,18 @@ values["taskeditable"]=true
         values.project_id = this.ParentComponent.response?.project_id;
         values.requirement_id = this.gridData.requriment_id;    
         values.testCase_Created=this.helperServices.getEmp_id()
-        values._id = "SEQ|Test_Case|"+values.project_id ;
+        // values._id = "SEQ|Test_Case|"+values.project_id ;
+        values._id = "SEQ|"+values.project_id ;
+
 
       } else if(this.model_heading=="Test Result - Add"){
         values.project_id = this.ParentComponent.response?.project_id;
         // values.requirement_id = this.gridData.requriment_id;
         values.testCase_id = this.gridData.test_case_id;
         values.doneBy=this.helperServices.getEmp_id()
-        values._id = "SEQ|Test_Result|"+values.project_id ;
+        // values._id = "SEQ|Test_Result|"+values.project_id ;
+        values._id = "SEQ|"+values.project_id ;
+
         values.regression_id = this.ParentComponent.response.regression_id    ;
         if(values.result_status=='F'){
           updateBug=true;
@@ -766,7 +777,9 @@ values["taskeditable"]=true
       if(this.model_heading=="Test Case - Add"){
         values.project_id = this.ParentComponent.response?.project_id;
         values.requirement_id = this.gridData._id;  
-              values._id = "SEQ|[Test_Case]|"+values.project_id ;
+              values._id = "SEQ|"+values.project_id ;
+              // values._id = "SEQ|Test_Case|"+values.project_id ;
+
 
       }
       values.status='A'

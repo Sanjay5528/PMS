@@ -35,7 +35,7 @@ import { isEmpty } from 'lodash';
       (focus)="onFocus($event)"
     />     <mat-error *ngIf="this?.formControl?.errors?.required">This {{ this.field.props?.label }} is required</mat-error>
       <mat-error *ngIf="this?.formControl?.errors?.pattern">This {{ this.field.props?.label }} is Pattern Not Match</mat-error>
-      <mat-error *ngIf="!this?.formControl?.errors?.uniqueItems&&this.value">This {{ this.field.props?.label }}  Already Present </mat-error>
+      <mat-error *ngIf="!this?.formControl?.errors?.uniqueItems&&this.value&&!this?.formControl?.errors?.pattern">This {{ this.field.props?.label }}  Already Present </mat-error>
 
 </mat-form-field>
 

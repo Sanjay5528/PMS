@@ -158,7 +158,7 @@ collection="project"
 
           // this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
         }
-        sessionStorage.setItem("projectname", this.response.projectname)
+        sessionStorage.setItem("project_id", this.response.project_id)
         
         // if(this.formName=="projectteam"){
         //   this.getList()
@@ -1227,7 +1227,7 @@ if(!isEmpty(data)){
       row.parentIndex = null; // Use null for top-level elements
       parentTreeData.push(row);
     } else {
-      const parent = parentTreeData.find((d) => d.requirement_name === row.parentmodulename);
+      const parent = parentTreeData.find((d) => d._id === row.parentmodulename);
       if (parent) {
         childIndex[row.parentmodulename] = (childIndex[row.parentmodulename] || 0) + 1;
         row.treePath = [...parent.treePath, row.requirement_name];
