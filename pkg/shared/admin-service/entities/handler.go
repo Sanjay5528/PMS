@@ -934,7 +934,7 @@ func TaskRequeriment(c *fiber.Ctx) error {
 	}
 
 	filter := bson.A{
-		bson.D{{"$match", bson.D{{"project_id", "testclientID-R1"}}}},
+		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
 		bson.D{
 			{"$lookup",
 				bson.D{
@@ -946,6 +946,30 @@ func TaskRequeriment(c *fiber.Ctx) error {
 			},
 		},
 	}
+
+	// bson.A{
+	// 	bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "task"},
+	// 				{"localField", "_id"},
+	// 				{"foreignField", "requirement_id"},
+	// 				{"as", "task"},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{
+	// 		{"$unwind",
+	// 			bson.D{
+	// 				{"path", "$task"},
+	// 				{"preserveNullAndEmptyArrays", true},
+	// 			},
+	// 		},
+	// 	},
+	// 	// bson.D{{"$addFields", bson.D{{"task_id", "$task._id"}}}},
+	// 	// bson.D{{"$addFields", bson.D{{"task._id", "$task.requirement_id"}}}},
+	// }
 	response, err := helper.GetAggregateQueryResult(org.Id, "requirement", filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
@@ -1174,10 +1198,11 @@ func HandlerBugReport(c *fiber.Ctx) error {
 	filter := bson.A{}
 	regression_id := c.Params("regression_id")
 	if regression_id != "" {
+		fmt.Println("INSIDE")
 		filter = append(filter, bson.D{{"$match", bson.D{{"regression_id", regression_id}}}})
 	}
 	filter = append(filter,
-		bson.D{{"$match", bson.D{{"project_id", "testclientID-R1"}}}},
+		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
 		bson.D{
 			{"$lookup",
 				bson.D{
@@ -1198,8 +1223,22 @@ func HandlerBugReport(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{{"$unwind", bson.D{{"path", "$testcase"}}}},
-		bson.D{{"$unwind", bson.D{{"path", "$test_result"}}}},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$testcase"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$test_result"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
 		bson.D{
 			{"$lookup",
 				bson.D{
@@ -1210,7 +1249,14 @@ func HandlerBugReport(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{{"$unwind", bson.D{{"path", "$requirement"}}}},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$requirement"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
 		bson.D{
 			{"$lookup",
 				bson.D{
@@ -1221,7 +1267,14 @@ func HandlerBugReport(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{{"$unwind", bson.D{{"path", "$task"}}}},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$task"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
 		bson.D{
 			{"$lookup",
 				bson.D{
@@ -1232,7 +1285,14 @@ func HandlerBugReport(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{{"$unwind", bson.D{{"path", "$taskemployee"}}}},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$taskemployee"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
 		bson.D{
 			{"$addFields",
 				bson.D{
@@ -1260,7 +1320,7 @@ func HandlerBugReport(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{{"$unwind", bson.D{{"path", "$bugemployee"}}}},
+		bson.D{{"$unwind", bson.D{{"path", "$bugemployee"}, {"preserveNullAndEmptyArrays", true}}}},
 		bson.D{
 			{"$addFields",
 				bson.D{
@@ -1280,49 +1340,12 @@ func HandlerBugReport(c *fiber.Ctx) error {
 		},
 	)
 
-	// filter = append(filter, bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "testcase"},
-	// 				{"localField", "test_case_id"},
-	// 				{"foreignField", "_id"},
-	// 				{"as", "testcase"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "test_result"},
-	// 				{"localField", "test_result_id"},
-	// 				{"foreignField", "_id"},
-	// 				{"as", "test_result"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$unwind", bson.D{{"path", "$testcase"}}}},
-	// 	bson.D{{"$unwind", bson.D{{"path", "$test_result"}}}},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "requirement"},
-	// 				{"localField", "testcase.requirement_id"},
-	// 				{"foreignField", "_id"},
-	// 				{"as", "requirement"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$unwind", bson.D{{"path", "$requirement"}}}},
-	// )
-
 	response, err := helper.GetAggregateQueryResult(org.Id, "bug", filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
 	return shared.SuccessResponse(c, fiber.Map{
 		"response": response,
-		// "pipeline": filter,
 	})
 }
 
@@ -1334,8 +1357,47 @@ func team_specification(c *fiber.Ctx) error {
 
 		return shared.BadRequest("Invalid Org Id")
 	}
+	// query := bson.A{
+	// 	bson.D{{"$match", bson.D{{"parentmodulename", bson.D{{"$ne", ""}}}}}},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "employee"},
+	// 				{"localField", "user_id"},
+	// 				{"foreignField", "employee_id"},
+	// 				{"as", "employee"},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unwind", bson.D{{"path", "$employee"}}}},
+	// 	bson.D{
+	// 		{"$addFields",
+	// 			bson.D{
+	// 				{"employe_name",
+	// 					bson.D{
+	// 						{"$concat",
+	// 							bson.A{
+	// 								"$employee.first_name",
+	// 								" ",
+	// 								"$employee.first_name",
+	// 							},
+	// 						},
+	// 					},
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unset", "employee"}},
+	// }
 	query := bson.A{
-		bson.D{{"$match", bson.D{{"parentmodulename", bson.D{{"$ne", ""}}}}}},
+		bson.D{
+			{"$match",
+				bson.D{
+					{"project_id", c.Params("projectid")},
+					{"parentmodulename", bson.D{{"$ne", ""}}},
+				},
+			},
+		},
 		bson.D{
 			{"$lookup",
 				bson.D{
@@ -1346,7 +1408,7 @@ func team_specification(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{{"$unwind", bson.D{{"path", "$employee"}}}},
+		bson.D{{"$unwind", "$employee"}},
 		bson.D{
 			{"$addFields",
 				bson.D{
@@ -1356,7 +1418,7 @@ func team_specification(c *fiber.Ctx) error {
 								bson.A{
 									"$employee.first_name",
 									" ",
-									"$employee.first_name",
+									"$employee.last_name",
 								},
 							},
 						},
@@ -1366,7 +1428,133 @@ func team_specification(c *fiber.Ctx) error {
 		},
 		bson.D{{"$unset", "employee"}},
 	}
-	response, err := helper.GetAggregateQueryResult(org.Id, "bug", query)
+	response, err := helper.GetAggregateQueryResult(org.Id, "team_specification", query)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	return shared.SuccessResponse(c, fiber.Map{
+		"response": response,
+		// "pipeline": filter,
+	})
+}
+
+func team_specificationList(c *fiber.Ctx) error {
+	//Get the orgId from Header
+	org, exists := helper.GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
+	}
+	// query := bson.A{
+	// 	bson.D{{"$match", bson.D{{"parentmodulename", bson.D{{"$ne", ""}}}}}},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "employee"},
+	// 				{"localField", "user_id"},
+	// 				{"foreignField", "employee_id"},
+	// 				{"as", "employee"},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unwind", bson.D{{"path", "$employee"}}}},
+	// 	bson.D{
+	// 		{"$addFields",
+	// 			bson.D{
+	// 				{"employe_name",
+	// 					bson.D{
+	// 						{"$concat",
+	// 							bson.A{
+	// 								"$employee.first_name",
+	// 								" ",
+	// 								"$employee.first_name",
+	// 							},
+	// 						},
+	// 					},
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unset", "employee"}},
+	// }
+	// query := bson.A{
+	// 	bson.D{
+	// 		{"$match",
+	// 			bson.D{
+	// 				{"project_id", c.Params("projectid")},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "employee"},
+	// 				{"localField", "user_id"},
+	// 				{"foreignField", "employee_id"},
+	// 				{"as", "employee"},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unwind", "$employee"},{"preserveNullAndEmptyArrays", true},},
+	// 	bson.D{
+	// 		{"$addFields",
+	// 			bson.D{
+	// 				{"employe_name",
+	// 					bson.D{
+	// 						{"$concat",
+	// 							bson.A{
+	// 								"$employee.first_name",
+	// 								" ",
+	// 								"$employee.last_name",
+	// 							},
+	// 						},
+	// 					},
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unset", "employee"}},
+	// }
+	query := bson.A{
+		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "employee"},
+					{"localField", "user_id"},
+					{"foreignField", "employee_id"},
+					{"as", "employee"},
+				},
+			},
+		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$employee"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
+		bson.D{
+			{"$addFields",
+				bson.D{
+					{"employe_name",
+						bson.D{
+							{"$concat",
+								bson.A{
+									"$employee.first_name",
+									" ",
+									"$employee.last_name",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		bson.D{{"$unset", "employee"}},
+	}
+	response, err := helper.GetAggregateQueryResult(org.Id, "team_specification", query)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
