@@ -309,6 +309,7 @@ func TimeSheetByIdHandler(c *fiber.Ctx) error {
 				bson.D{
 					{"from", "timesheet"},
 					{"localField", "_id"},
+					{"localField", "_id"},
 					{"foreignField", "task_id"},
 					{"as", "result"},
 				},
@@ -1686,8 +1687,8 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 			{"$match",
 				bson.D{
 					{"assigned_to", c.Params("employee_id")},
-					{"scheduled_start_date", bson.D{{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}},
-					{"scheduled_end_date", bson.D{{"$gte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}},
+					{"scheduled_start_date", bson.D{{"$gte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}},
+					{"scheduled_end_date", bson.D{{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}},
 				},
 			},
 		},
@@ -1695,7 +1696,7 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 			{"$lookup",
 				bson.D{
 					{"from", "timesheet"},
-					{"localField", "_id"},
+					{"localField", "task_id"},
 					{"foreignField", "task_id"},
 					{"as", "timesheet"},
 				},
@@ -1720,14 +1721,14 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 			},
 		},
 		bson.D{{"$addFields", bson.D{{"project_Name", "$project.project_name"}}}},
-		// bson.D{
-		// 	{"$unwind",
-		// 		bson.D{
-		// 			{"path", "$timesheet"},
-		// 			{"preserveNullAndEmptyArrays", true},
-		// 		},
-		// 	},
-		// },
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$timesheet"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
 		bson.D{{"$unset", "project"}},
 		bson.D{
 			{"$lookup",
