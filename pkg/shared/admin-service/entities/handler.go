@@ -1695,7 +1695,7 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 			{"$lookup",
 				bson.D{
 					{"from", "timesheet"},
-					{"localField", "task_id"},
+					{"localField", "_id"},
 					{"foreignField", "task_id"},
 					{"as", "timesheet"},
 				},
