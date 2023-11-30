@@ -1,85 +1,83 @@
 <div>
-    <div style="
-        height: 50px;
-        margin: 30px;
-        text-align: center;
-        display: flex;
-        flex-direction: row;
-      ">
-        <div class="head">
-            <span>
-                <p>Timesheet</p>
-            </span>
-        </div>
+  <div
+    style="
+      height: 50px;
+      margin: 30px;
+      text-align: center;
+      display: flex;
+      flex-direction: row;
+    "
+  >
+    <div class="head">
+      <span>
+        <p>Timesheet</p>
+      </span>
     </div>
+  </div>
 </div>
-
-
 
 <div class="datepicker">
-    <form [formGroup]="dateform">
-        <mat-form-field class="datepicker-field" appearance="outline"  >
-            <input matInput [max]="maxDate" [matDatepicker]="minmaxvalidation" placeholder="Pick a date" formControlName="datepicker">
-            <mat-datepicker-toggle matSuffix [for]="minmaxvalidation"></mat-datepicker-toggle>
-           
+  <form [formGroup]="dateform">
+    <mat-form-field class="datepicker-field" appearance="outline">
+      <input
+        matInput
+        [matDatepicker]="minmaxvalidation"
+        placeholder="Pick a date"
+        formControlName="datepicker"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="minmaxvalidation"
+      ></mat-datepicker-toggle>
 
-                <mat-datepicker #minmaxvalidation >
-
-
-                <mat-datepicker-actions>
+      <mat-datepicker #minmaxvalidation>
+        <!-- <mat-datepicker-actions>
                   <button mat-button matDatepickerCancel>Cancel</button>
-                    <button mat-raised-button color="primary" matDatepickerApply (click)="search()">Apply</button>
-                </mat-datepicker-actions>
-            </mat-datepicker>
-        </mat-form-field>&nbsp;&nbsp;
-        <!-- <button mat-raised-button style="width: 90px; background-color: #90c0e5 !important; color: black;" (click)="search()">Search</button> -->
-     </form> 
+                    <button mat-raised-button color="primary" matDatepickerApply >Apply</button>
+                </mat-datepicker-actions> -->
+      </mat-datepicker> </mat-form-field
+    >&nbsp;&nbsp;
+    <!-- <button mat-raised-button style="width: 90px; background-color: #90c0e5 !important; color: black;" (click)="search()">Search</button> -->
+  </form>
 </div>
 
- 
- 
- <mat-tab-group preserveContent>
-    <mat-tab label="Schedule Activities">
-     <div *ngIf="this.userPermissions === 'SA' ">
-      <div class="sample"  >
-
-        <button 
-     mat-button class="buttonColor1"
-     (click)="approveButton()"
-     > TeamMember
-    </button>
-    &nbsp;&nbsp;
-        <button
-        mat-button class="buttonColor1"
-        (click)="approveButton()"
-      >
-         Approve
-      </button>&nbsp;&nbsp;
-       <!-- <button mat-button class="buttonColor1" (click)="cancel()">Cancel</button>  -->
-      
-     
-  </div>
+<mat-tab-group preserveContent>
+  <mat-tab label="Schedule Activities">
+    <!-- <div *ngIf="this.userPermissions === 'SA'">
+      <div class="sample">
+        <button mat-button class="buttonColor1" (click)="approveButton()">
+          TeamMember
+        </button>
+        &nbsp;&nbsp;
+        <button mat-button class="buttonColor1" (click)="approveButton()">
+          Approve</button
+        >&nbsp;&nbsp;
+      </div>
     </div>
-  <div  *ngIf="this.userPermissions === 'SA' ">
-<div class="table">
-    <ag-grid-angular style="width: 99%; height: 65vh; "class="ag-theme-alpine" [columnDefs]="columnDefs" [singleClickEdit]="true"
-        [defaultColDef]="defaultColDef" [rowData]="rowData" (gridReady)="onGridReady($event)"  [pagination]="true" [paginationPageSize]="10" 
-        (selectionChanged)="onSelectionChanged($event)"       [getRowId]="getRowId"  [groupDisplayType]="groupDisplayType"
-        (selectionChanged)="onSelectionChanged1($event)"  [rowSelection]="'multiple'"   
-        (cellValueChanged)="onCellValueChanged($event)"></ag-grid-angular>
-</div>
-</div>
-<div  *ngIf="this.userPermissions !== 'SA' ">
-  <div class="table">
-      <ag-grid-angular style="width: 99%; height: 65vh; "class="ag-theme-alpine" [columnDefs]="columnDefs"
-          [defaultColDef]="defaultColDef" [rowData]="rowData" (gridReady)="onGridReady($event)" [singleClickEdit]="true" [pagination]="true" [paginationPageSize]="10" 
-          (selectionChanged)="onSelectionChanged($event)"      [getRowId]="getRowId" [groupDisplayType]="groupDisplayType"
-          (selectionChanged)="onSelectionChanged1($event)"  [rowSelection]="'multiple'"   
-          (cellValueChanged)="onCellValueChanged($event)"></ag-grid-angular>
-  </div>
-  </div>
+  -->
+        <!-- <button mat-button class="buttonColor1" (click)="cancel()">Cancel</button>  -->
 
- <!-- <div *ngIf=" this.userPermissions !== 'SA'">
+      <div class="table">
+        <ag-grid-angular
+          style="width: 99%; height: 65vh"
+          class="ag-theme-alpine"
+          [columnDefs]="columnDefs"
+          [defaultColDef]="defaultColDef"
+          [rowData]="rowData"
+          (gridReady)="onGridReady($event)"
+          [singleClickEdit]="true"
+          [pagination]="true"
+          [paginationPageSize]="10"
+          (selectionChanged)="onSelectionChanged($event)"
+          [getRowId]="getRowId"
+          [groupDisplayType]="groupDisplayType"
+          (selectionChanged)="onSelectionChanged($event)"
+          [rowSelection]="'multiple'"
+          (cellValueChanged)="onCellValueChanged($event)"
+        ></ag-grid-angular>
+      </div>
+
+    <!-- <div *ngIf=" this.userPermissions !== 'SA'">
  <div class="table">
     <ag-grid-angular style="width: 76%; height: 65vh; "class="ag-theme-alpine" [columnDefs]="columnDefs"
         [defaultColDef]="defaultColDef" [rowData]="rowData" (gridReady)="onGridReady($event)"  [pagination]="true" [paginationPageSize]="10" 
@@ -87,9 +85,9 @@
         (cellValueChanged)="onCellValueChanged($event)"></ag-grid-angular>
 </div>
  </div> -->
-    </mat-tab>
+  </mat-tab>
 
-<!-- <div>
+  <!-- <div>
     <div style="
         height: 50px;
         margin: 30px;
@@ -104,64 +102,95 @@
         </div>
     </div>
 </div> -->
-<mat-tab label="Unschedule Activities">
-
-<div style="width: 65%; padding-left: 275px; margin-bottom: 20px;">
-    <button mat-raised-button style="width: 100px; background-color: #90c0e5 !important; color: black;"
-        (click)="addRow()">Add Row</button>
-</div>
-
-
-
-
-
-<div class="table">
-    <ag-grid-angular style="width: 57%; height: 60vh" class="ag-theme-alpine" [columnDefs]="colDefs"
-        [defaultColDef]="defaultColDef" [rowData]="listData" (gridReady)="onGridReadys($event)" [pagination]="true" [paginationPageSize]="10" 
+  <mat-tab label="Unschedule Activities">
+    <div style="width: 65%; padding-left: 275px; margin-bottom: 20px">
+      <button
+        mat-raised-button
+        style="width: 100px; background-color: #90c0e5 !important; color: black"
+        (click)="addRow()"
+      >
+        Add Row
+      </button>
+    </div>
+    <ag-grid-angular 
+    style="width: 100%; height: calc(100vh - 250px); flex: 1 1 auto"
+    class="ag-theme-alpine"
+    [defaultColDef]="defaultColDef"
+    [columnDefs]="columnDefs" 
+    [rowData]="listData"
+    [gridOptions]='gridOptions'
+    [context]="context"
+    [rowSelection]="'single'"
+    [animateRows]="true"
+    [singleClickEdit]="true"
+    (selectionChanged)="onSelectionChanged($event)"
+    (cellValueChanged)="onCellValueChanged($event)"
+    (gridReady)="onGridReady($event)" 
+    ></ag-grid-angular>
+    <!-- <div class="table">
+      <ag-grid-angular
+        style="width: 57%; height: 60vh"
+        class="ag-theme-alpine"
+        [columnDefs]="colDefs"
+        [defaultColDef]="defaultColDef"
+        [rowData]="listData"
+        (gridReady)="onGridReadys($event)"
+        [pagination]="true"
+        [paginationPageSize]="10"
         (selectionChanged)="onSelectionChanged($event)"
-        (cellValueChanged)="onUnscheduleValueChanged($event)"></ag-grid-angular>
-</div>
-</mat-tab>
-</mat-tab-group> 
+        [context]="context"
+        (cellValueChanged)="onUnscheduleValueChanged($event)"
+      ></ag-grid-angular>
+    </div> -->
+  </mat-tab>
+</mat-tab-group>
 <div>
-    <ng-template #editViewPopup let-data>
-         <mat-card>
-            <mat-card-header style="flex: 1 1 auto;">
-              <div style="width: 100%">
-                <h2 style="text-align: center;" class="page-title">{{ pageHeading }}</h2>
-              </div>
-              <div style="text-align-last: end" >
-                <mat-icon mat-dialog-close>close</mat-icon>
-              </div>
-            </mat-card-header>
-            <mat-card-content style="padding-top: 10px">
-              <form [formGroup]="form">
-                <formly-form [model]="selectedModel" [fields]="fields" [form]=form></formly-form>
-                 <!-- <formly-form  [fields]="fields" [form]="form">
+  <ng-template #editViewPopup let-data>
+    <mat-card>
+      <mat-card-header style="flex: 1 1 auto">
+        <div style="width: 100%">
+          <h2 style="text-align: center" class="page-title">
+            {{ pageHeading }}
+          </h2>
+        </div>
+        <div style="text-align-last: end">
+          <mat-icon mat-dialog-close>close</mat-icon>
+        </div>
+      </mat-card-header>
+      <mat-card-content style="padding-top: 10px">
+        <form [formGroup]="form">
+          <formly-form
+            [model]="selectedModel"
+            [fields]="fields"
+            [form]="form"
+          ></formly-form>
+          <!-- <formly-form  [fields]="fields" [form]="form">
             </formly-form>  -->
-               </form>
-            </mat-card-content>
-            <mat-card-actions>
-              <div style="text-align-last: end; width: 100%">
-                <button style="margin: 5px" mat-button mat-dialog-close>
-                  Cancel
-                </button>
-                <button style="margin: 5px" mat-button (click)="resetBtn('reset')" *ngIf="this.id" >
-                  Reset
-                </button>
-                <button
-                style="margin: 5px; background: rgb(59, 146, 155)"
-                (click)="saveForm(data)"
-                mat-raised-button
-                color="warn"
-               
-              >
-                save
-              </button>
-              
-        
-              </div>
-            </mat-card-actions>
-            </mat-card>  
-    </ng-template>
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <div style="text-align-last: end; width: 100%">
+          <button style="margin: 5px" mat-button mat-dialog-close>
+            Cancel
+          </button>
+          <button
+            style="margin: 5px"
+            mat-button
+            (click)="resetBtn('reset')"
+            *ngIf="this.id"
+          >
+            Reset
+          </button>
+          <button
+            style="margin: 5px; background: rgb(59, 146, 155)"
+            (click)="saveForm(data)"
+            mat-raised-button
+            color="warn"
+          >
+            save
+          </button>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </ng-template>
 </div>

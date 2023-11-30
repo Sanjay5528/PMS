@@ -20,7 +20,9 @@ import { HelperService } from 'src/app/services/helper.service';
 export class TimesheetComponent implements OnInit {
   gridApi!: GridApi<any>;
   form!: FormGroup
-  dateform!:FormGroup
+  dateform:FormGroup= this.fb.group({
+    datepicker: [moment()]
+   });
   private gridColumnApi!: ColumnApi;
   groupDefaultExpanded = -1;
   rowData: any[] = [];
@@ -29,9 +31,18 @@ export class TimesheetComponent implements OnInit {
   valueChanged: any
   ctrl: any
   selectedRow: any
-  listData: any
-  public gridOptions!: GridOptions
-  date: any
+  listData: any[]=[]
+  public gridOptions: GridOptions={
+  autoGroupColumnDef:{
+      headerName: "Parent Name",
+      field:"project_Name",
+    minWidth: 200,
+    cellRendererParams: { suppressCount: true },
+    sortable: false,
+resizable: true,
+filter: false}
+  }
+  // date: any
   public defaultColDef: ColDef = {
    
     resizable: true,
@@ -57,7 +68,6 @@ export class TimesheetComponent implements OnInit {
   editedRow: any;
   editedCols: any;
   selectedRows: any;
-  selectedRow1:any
 
   /**gridReady for ag TimeSheet grid */
   onGridReady(params: GridReadyEvent) {
@@ -74,26 +84,28 @@ export class TimesheetComponent implements OnInit {
     // this.gridApi.sizeColumnsToFit();
   }
    groupDisplayType:RowGroupingDisplayType = 'groupRows'
+   context:any
+  //  
   public columnDefs: ColDef[] = [
     {
       headerName: "Project Name",
-      field: "project_name",
+      field: "project_Name",
       editable: false,
       rowGroup: true,
     },
     {
       headerName: "Task Id",
-      field: "task_id",
+      field: "_id",
       editable: false,
       width: 96,
-      maxWidth:96,
+      maxWidth: 320,
     },
     {
       headerName: "Task Name",
       field: "task_name",
       editable: false,
-
-    },
+    }, 
+   
     {
       headerName: "Start Date",
       field: "scheduled_start_date",
@@ -128,6 +140,10 @@ export class TimesheetComponent implements OnInit {
       headerName: "Allocated Hours",
       field: "allocated_hours",
       editable: false,
+    }, {
+      headerName: "Total Worked Hours",
+      field: "total_work_hours",
+      editable: false,
     },
     {
       headerName: "Today Worked Hours",
@@ -141,18 +157,25 @@ export class TimesheetComponent implements OnInit {
       cellEditor: 'agNumberCellEditor',
       cellEditorParams: {
         min: 1,
-        max: 10,
-        precision: 0,
-      },
-      cellStyle: (params) => {
-      let timeSheetWorkedHours =parseInt( params.data.totalworkedhours )
-      let timeSheetAllocatedHours = params.data.allocated_hours;
-      if (!(timeSheetAllocatedHours >= timeSheetWorkedHours)) {
-        return { color: 'red' };
+        max: function(params:any){
+          console.warn(params,"params");
+          return params.data["allocated_hours"]
+        },
+        precision: 1,
       }
-      return 
-    },
-    suppressColumnsToolPanel: true
+      
+      
+      
+    //   ,
+    //   cellStyle: (params) => {
+    //   let timeSheetWorkedHours =parseInt( params.data.totalworkedhours )
+    //   let timeSheetAllocatedHours = params.data.allocated_hours;
+    //   if (!(timeSheetAllocatedHours >= timeSheetWorkedHours)) {
+    //     return { color: 'red' };
+    //   }
+    //   return 
+    // },
+    // suppressColumnsToolPanel: true
   },
   
 
@@ -165,7 +188,7 @@ export class TimesheetComponent implements OnInit {
       cellEditorParams: {
         values: ['In Progress', 'Completed', 'Hold', 'Closed'],
       },
-      
+      enableRowGroup: true,
       editable: function (params) {
         
         return params.data["approval_Status"] !== "Approved"  && params.data["status"] !== "Completed";
@@ -190,6 +213,14 @@ export class TimesheetComponent implements OnInit {
       cellEditor: "agRichSelectCellEditor",
       cellEditorParams: {
         values: ['Approved', 'Rejected', 'Hold'],
+      },
+      
+      editable:function(params:any){
+        console.log(params);
+        
+        
+        return false
+
       },
       cellStyle: (params) => {
         if (params.data["approval_Status"] === "Approved") {
@@ -250,7 +281,8 @@ export class TimesheetComponent implements OnInit {
    
     constructor(private dataService: DataService, private helperServices:HelperService, private activatedRoute: ActivatedRoute, private route: Router, private dialogService: DialogService, private httpclient: HttpClient, private fb: FormBuilder, public jwtService: JwtHelperService,private formservice: FormService) 
     {
-      this.route.routeReuseStrategy.shouldReuseRoute = () => false;
+      this.context = { componentParent: this };
+      // this.route.routeReuseStrategy.shouldReuseRoute = () => false;
     }
 
 
@@ -259,110 +291,110 @@ export class TimesheetComponent implements OnInit {
 
  
   ngOnInit() {
-    this.activatedRoute.params.subscribe(params => {
+    let TodayDate=moment()
+    // this.dateform.get("datepicker")?.setValue(TodayDate)
+    // this.activatedRoute.params.subscribe(params => {
       this.employee_id = this.helperServices.getEmp_id();
       let role_id: any = this.helperServices.getRole();
-      this.calendarDate = params['date']
-      this.userPermissions=role_id
-      this.dateform = this.fb.group({
-       datepicker: this.calendarDate
-      });
-    });
+      this.calendarDate = TodayDate.format('YYYY-MM-DDT00:00:00.000+00:00');
+      this.userPermissions=""
+    
     this.redefineColdef()
-    this.getData();
+    this.getData(this.calendarDate);
     this.getUnScheduleData();
-     
-   
-     
+    this.dateform.get("datepicker")?.valueChanges.subscribe((changeDate:any)=>{
+      console.log(changeDate._d);
+      let date=moment(changeDate).format('YYYY-MM-DDT00:00:00.000+00:00');
+      this.getData(date)
+    })
       this.maxDate = new Date();
-     
   }
 
-  search() {
-    debugger
-    this.date = this.dateform.value.datepicker._d;
-    this.formatedDate = moment(this.date).format('YYYY-MM-DDT00:00:00.000+00:00');
-    this.calendarDate = this.formatedDate
-    //     // ! UNDO
+//   search() {
+//     debugger
+//     // this.date = this.dateform.value.datepicker._d;
+//     this.formatedDate = moment(this.dateform.value.datepicker._d).format('YYYY-MM-DDT00:00:00.000+00:00');
+//     this.calendarDate = this.formatedDate
+//     //     // ! UNDO
 
-    // if (this.userPermissions === 'SA' || this.userPermissions === 'team lead') {
-    //   // Execute this block of code when userPermissions is 'SA' or 'team lead'
-    //   this.dataService.getTimesheetdatabyadmin(this.formatedDate).subscribe((res: any) => {
-    //     let rowData: any = res.data;
-    //     console.log(res, 'res');
+//     // if (this.userPermissions === 'SA' || this.userPermissions === 'team lead') {
+//     //   // Execute this block of code when userPermissions is 'SA' or 'team lead'
+//     //   this.dataService.getTimesheetdatabyadmin(this.formatedDate).subscribe((res: any) => {
+//     //     let rowData: any = res.data;
+//     //     console.log(res, 'res');
     
-    //     this.dataService.workhours(this.formatedDate).subscribe((val: any) => {
-    //       let data: any = val.data;
-    //       console.log(val, 'val');
-    //       console.log(val.data);
+//     //     this.dataService.workhours(this.formatedDate).subscribe((val: any) => {
+//     //       let data: any = val.data;
+//     //       console.log(val, 'val');
+//     //       console.log(val.data);
     
-    //       if (!isEmpty(data)) {
-    //         rowData.forEach((arr: any) => {
-    //           for (let index = 0; index < data.length; index++) {
-    //             const element = data[index];
-    //             console.log(element);
+//     //       if (!isEmpty(data)) {
+//     //         rowData.forEach((arr: any) => {
+//     //           for (let index = 0; index < data.length; index++) {
+//     //             const element = data[index];
+//     //             console.log(element);
     
-    //             if (element.task_id == arr.task_id) {
-    //               console.log(arr, 'asdsdasdasda');
-    //               console.log(element.result, 'result');
-    //               arr.workedhours = element?.result?.workedhours || 0;
-    //               arr.status = element?.result?.status;
-    //               arr['approval_Status'] = element['approval_Status'];
-    //               arr.remarks = element.result.remarks;
-    //               console.log(arr);
-    //             }
-    //           }
-    //         });
-    //         console.log(this.rowData);
-    //         this.rowData = rowData;
-    //       } else {
-    //         this.rowData = rowData;
-    //       }
-    //       console.log(this.rowData);
-    //     });
-    //   });
-    // } else {
-    //   // Execute this block of code when userPermissions is neither 'SA' nor 'team lead'
-    //   this.dataService.getTimesheetdata(name, this.formatedDate).subscribe((res: any) => {
-    //     let rowData: any = res.data;
+//     //             if (element.task_id == arr.task_id) {
+//     //               console.log(arr, 'asdsdasdasda');
+//     //               console.log(element.result, 'result');
+//     //               arr.workedhours = element?.result?.workedhours || 0;
+//     //               arr.status = element?.result?.status;
+//     //               arr['approval_Status'] = element['approval_Status'];
+//     //               arr.remarks = element.result.remarks;
+//     //               console.log(arr);
+//     //             }
+//     //           }
+//     //         });
+//     //         console.log(this.rowData);
+//     //         this.rowData = rowData;
+//     //       } else {
+//     //         this.rowData = rowData;
+//     //       }
+//     //       console.log(this.rowData);
+//     //     });
+//     //   });
+//     // } else {
+//     //   // Execute this block of code when userPermissions is neither 'SA' nor 'team lead'
+//     //   this.dataService.getTimesheetdata(name, this.formatedDate).subscribe((res: any) => {
+//     //     let rowData: any = res.data;
     
-    //     // Fetch data from the second service (getworkhours)
-    //     this.dataService.getworkhours(name, this.formatedDate).subscribe((val: any) => {
-    //       let data: any = val.data;
-    //       console.log(val.data);
+//     //     // Fetch data from the second service (getworkhours)
+//     //     this.dataService.getworkhours(name, this.formatedDate).subscribe((val: any) => {
+//     //       let data: any = val.data;
+//     //       console.log(val.data);
     
-    //       if (!isEmpty(data)) {
-    //         rowData.forEach((arr: any) => {
-    //           for (let index = 0; index < data.length; index++) {
-    //             const element = data[index];
-    //             console.log(element);
+//     //       if (!isEmpty(data)) {
+//     //         rowData.forEach((arr: any) => {
+//     //           for (let index = 0; index < data.length; index++) {
+//     //             const element = data[index];
+//     //             console.log(element);
     
-    //             if (element.task_id == arr.task_id) {
-    //               arr.workedhours = element.result.workedhours;
-    //               arr.status = element.result.status;
-    //             }
-    //           }
-    //         });
+//     //             if (element.task_id == arr.task_id) {
+//     //               arr.workedhours = element.result.workedhours;
+//     //               arr.status = element.result.status;
+//     //             }
+//     //           }
+//     //         });
     
-    //         console.log(this.rowData);
+//     //         console.log(this.rowData);
     
-    //         this.rowData = rowData;
-    //       } else {
-    //         this.rowData = rowData;
-    //       }
-    //     });
-    //   });
-    // }
-this.route.navigate(['timesheet',this.formatedDate])
-// this.getData()
+//     //         this.rowData = rowData;
+//     //       } else {
+//     //         this.rowData = rowData;
+//     //       }
+//     //     });
+//     //   });
+//     // }
+// this.route.navigate(['timesheet',this.formatedDate])
+// // this.getData()
     
    
-  //  this.getsearch()
-    //this.getUnScheduleData()
-    //this.getDataUnschedule();
-    // this.redefineColdef()
-    // this.OpenPopup();
-  }
+//   //  this.getsearch()
+//     //this.getUnScheduleData()
+//     //this.getDataUnschedule();
+//     // this.redefineColdef()
+//     // this.OpenPopup();
+//   }
 
   redefineColdef() {
     debugger
@@ -390,9 +422,10 @@ this.route.navigate(['timesheet',this.formatedDate])
       {
         headerName: "Employee Name",
         field: "assigned_to",
+        type:"hide",
         editable: false,
         headerCheckboxSelection: true,
-        checkboxSelection: true,      
+        checkboxSelection: true,      enableRowGroup: true,
       },
       )
       this.columnDefs.forEach((column: any) => {
@@ -422,50 +455,45 @@ this.route.navigate(['timesheet',this.formatedDate])
     this.selectedRow = $event.api.getSelectedRows()[0];
     console.log(this.gridApi.getSelectedRows());
   }
-  onSelectionChanged1($event: any) {
-    this.selectedRow1 = $event.api.getSelectedRows();
-    console.log(this.selectedRow1);
-  }
+//   approveButton(){
+//     debugger
+//    for(let i=0; this.selectedRow1.length>i;i++){
 
-  approveButton(){
-    debugger
-   for(let i=0; this.selectedRow1.length>i;i++){
+//     this.selectedRow1[i]
+//     let data: any = {};
+//    data['task_id'] = this.selectedRow1[i].task_id
+//    data['assigned_to'] = this.selectedRow1[i].assigned_to
 
-    this.selectedRow1[i]
-    let data: any = {};
-   data['task_id'] = this.selectedRow1[i].task_id
-   data['assigned_to'] = this.selectedRow1[i].assigned_to
-
-   data['ref_id'] = this.selectedRow1[i].id
-data['approval_Status'] =  "Approved"
+//    data['ref_id'] = this.selectedRow1[i].id
+// data['approval_Status'] =  "Approved"
 
 
   
-if(this.date = this.dateform.value.datepicker?._d){
-  // this.date = this.form.value.datepicker?._d
+// // if(this.date = this.dateform.value.datepicker?._d){
+// //   // this.date = this.form.value.datepicker?._d
 
-let formatedDate: any = moment(this.formatedDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-Object.assign(data, { formatedDate: formatedDate}) 
-}
-else{
+// // let formatedDate: any = moment(this.formatedDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+// // Object.assign(data, { formatedDate: formatedDate}) 
+// // }
+// // else{
 
-let formatedDate: any = moment(this.calendarDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+// // let formatedDate: any = moment(this.calendarDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
 
-Object.assign(data, { formatedDate: formatedDate }) 
-}
+// // Object.assign(data, { formatedDate: formatedDate }) 
+// // }
 
 
-    // ! UNDO
+//     // ! UNDO
 
-this.dataService.savetimesheet(data).subscribe((res: any) => {
-  this.rowData = res.data;
-this.getData()
+// this.dataService.savetimesheet(data).subscribe((res: any) => {
+//   this.rowData = res.data;
+// this.getData()
 
-});
+// });
 
-   } 
-  //  this.selectedRow1
-  }
+//    } 
+//   //  this.selectedRow1
+//   }
 
   public getRowId: GetRowIdFunc = (params: GetRowIdParams) => `${params.data[ "id"]}`;
 
@@ -494,14 +522,14 @@ this.getData()
       this.valueChanged = params.value;
       let data: any = {};
       data['assigned_to'] = params.data.assigned_to;
-        data['task_id'] = params.data.task_id;
+        data['task_id'] = params.data._id;
         data['ref_id'] = params.data.id;
         // data['created_on'] = date
         data[fieldName] = params.value;
      
         if (fieldName === "workedhours") {
-          let timeSheetWorkedHours =parseInt( params.data.totalworkedhours )+ params.value;
-          let timeSheetAllocatedHours = params.data.allocated_hours;
+          // let timeSheetWorkedHours =parseInt( params.data.totalworkedhours )+ params.value;
+          // let timeSheetAllocatedHours = params.data.allocated_hours;
           
           // this.gridApi.forEachNodeAfterFilterAndSort(function (rowNode, index) {
           //   // only do first 2
@@ -515,31 +543,31 @@ this.getData()
           // const res = this.gridApi.applyTransaction({ update: itemsToUpdate })!;
           // ! To Check the total Wored Hours is Lesser than the Allocated Hours
       
-          if (!(timeSheetAllocatedHours >= timeSheetWorkedHours)) {
-            let maxTime:any=timeSheetAllocatedHours-timeSheetWorkedHours
-            this.dialogService.openSnackBar(`The Time You Enter Is More than Allocated Hours${maxTime} `,"OK")
-            let alldata:any=params.data
-            alldata["workedhours"]=params.oldValue
-            let data:RowDataTransaction={
-             addIndex:params.node.rowIndex,
-             update:[alldata]
-            }
-            this.gridApi.applyTransaction(data)
-            return;
-          }
+          // if (!(timeSheetAllocatedHours >= timeSheetWorkedHours)) {
+          //   let maxTime:any=timeSheetAllocatedHours-timeSheetWorkedHours
+          //   this.dialogService.openSnackBar(`The Time You Enter Is More than Allocated Hours${maxTime} `,"OK")
+          //   let alldata:any=params.data
+          //   alldata["workedhours"]=params.oldValue
+          //   let data:RowDataTransaction={
+          //    addIndex:params.node.rowIndex,
+          //    update:[alldata]
+          //   }
+          //   this.gridApi.applyTransaction(data)
+          //   return;
+          // }
           
         
         }
-      if(this.date == this.dateform.value.datepicker?._d){      
-  let formatedDate: any = moment(this.formatedDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+//       if(this.date == this.dateform.value.datepicker?._d){      
+//   let formatedDate: any = moment(this.formatedDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
 
-Object.assign(data, { formatedDate: formatedDate}) 
-      }
-      else{
+// Object.assign(data, { formatedDate: formatedDate}) 
+//       }
+//       else{
       
-     let formatedDate: any = moment(this.calendarDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-   Object.assign(data, { formatedDate: formatedDate }) 
-      }
+//      let formatedDate: any = moment(this.calendarDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+//    Object.assign(data, { formatedDate: formatedDate }) 
+//       }
      
 
       if (fieldName == "approval_Status" ){
@@ -556,19 +584,18 @@ Object.assign(data, { formatedDate: formatedDate})
     }
     if(fieldName=="workedhours"&& params.data["status"]=="Closed"){
       data.status="In Progress"
-      
     }
 
     // ! UNDO
 
-      this.dataService.savetimesheet(data).subscribe((res: any) => {
+      this.dataService.save("timesheet",data).subscribe((res: any) => {
         this.rowData = res.data;
 
 
-        if (params.colDef.field === "approval_Status" && params.newValue === "Rejected") {
-          this.OpenPopup(data)
-        }
-        this.getData()
+        // if (params.colDef.field === "approval_Status" && params.newValue === "Rejected") {
+        //   this.OpenPopup(data)
+        // }
+        this.getData(this.calendarDate)
       });
 
 
@@ -660,100 +687,117 @@ Object.assign(data, { formatedDate: formatedDate})
 
   }
   
- getData() {
+ getData(date?:any) {
     debugger
-
+  console.log(moment(date).isValid());
+  
+this.calendarDate=date
     if (this.userPermissions === 'SA' || this.userPermissions === 'team lead') {
     
     this.dataService.getTimesheetdatabyadmin(this.calendarDate).subscribe((res: any) => {
       let rowData:any = res.data
       
-      this.dataService.workhours(this.calendarDate).subscribe((val:any)=>{
-        let data:any=val.data
-        if(!isEmpty(data)){
-          rowData.forEach((arr:any)=>{
-            for (let index = 0; index < data.length; index++) {
-              const element = data[index];
-              if(element.task_id==arr.task_id){
-                arr.workedhours=element?.result?.workedhours || 0;
-                arr.status=element?.result?.status;
-                arr['approval_Status']=element['approval_Status']
-                arr.remarks=element.result.remarks
-              }
-             }}
-          )
- this.rowData=rowData
-this.gridApi.sizeColumnsToFit()
+//       this.dataService.workhours(this.calendarDate).subscribe((val:any)=>{
+//         let data:any=val.data
+//         if(!isEmpty(data)){
+//           rowData.forEach((arr:any)=>{
+//             for (let index = 0; index < data.length; index++) {
+//               const element = data[index];
+//               if(element.task_id==arr.task_id){
+//                 arr.workedhours=element?.result?.workedhours || 0;
+//                 arr.status=element?.result?.status;
+//                 arr['approval_Status']=element['approval_Status']
+//                 arr.remarks=element.result.remarks
+//               }
+//              }}
+//           )
+//  this.rowData=rowData
+// this.gridApi.sizeColumnsToFit()
 
-        }else{
-          this.rowData=rowData
-          this.gridApi.sizeColumnsToFit()
+//         }else{
+//           this.rowData=rowData
+//           this.gridApi.sizeColumnsToFit()
 
-        }
+//         }
 
-         // console.log(val,'datasssssss');
+//          // console.log(val,'datasssssss');
         
-      }
-    )}
-    
+//       }
+//     )}
+    }
    ) 
       
   // this.getsuperadmin();
     
   }else{
 
-    this.activatedRoute.params.subscribe(params => {
-      this.calendarDate = params['date'];
-    });
+ 
     
     
-    this.dataService.getTimesheetdata(this.employee_id, this.calendarDate).subscribe((res: any) => {
-      let rowData:any = res.data
-      this.dataService.getworkhours(this.employee_id,this.calendarDate).subscribe((val:any)=>{
-        let data:any=val.data
-          rowData.forEach((arr:any)=>{
-            
-            // console.log('scheduled_start_date',arr.scheduled_start_date);
-            // console.log('scheduled_end_date',arr.scheduled_end_date);
-            // console.log("this.calendarDate",this.calendarDate);
-            // console.log(0>=(moment(this.calendarDate).diff(arr.scheduled_start_date,'days')));
-            // // console.log(0<=(moment(this.calendarDate).diff(arr.scheduled_end_date,'days')));
-            // console.log(0>=(moment(this.calendarDate).diff(arr.scheduled_end_date,'days')));
-            // if(!(0>=(moment(this.calendarDate).diff(arr.scheduled_end_date,'days')))){
-            //   arr.task_status="Not Completed"
-            // }else{
-            //   arr.task_status="On Going"
-            // }
-
-            // else if( )
-
-        if(!isEmpty(data)){
-            
-            for (let index = 0; index < data.length; index++) {
-              const element = data[index];
-              
-              if(element.task_id==arr.task_id){
-                arr.workedhours=element?.result?.workedhours || 0;
-                arr.status=element?.result?.status;
-                arr['approval_Status']=element['approval_Status']
-                arr.remarks=element?.result?.remarks
-              }
-            }
-             }}
-          )
- this.rowData=rowData
-this.gridApi.sizeColumnsToFit()
-        // }else{
-        //   this.rowData=rowData
-        //   this.gridApi.sizeColumnsToFit()
-
-        // }
-         // console.log(val,'datasssssss');
+    this.dataService.getTimesheetdata( this.employee_id,this.calendarDate).subscribe((res: any) => {
+      let rowData:any =res.data.response
+      // this.rowData=res.data.response
+      rowData.forEach((element:any) => {
+        console.log(!isEmpty(element.timesheet));
         
-      }
-    )}
+        if(!isEmpty(element.timesheet)){
+let Timesheet:any = element.timesheet
+let workedhours:any=0
+      Timesheet.forEach((element:any) => {
+        workedhours+=element.workedhours
+      });
+      element.total_work_hours=workedhours
+        }
+
+      });
+      this.rowData=rowData
+      console.log(rowData);
+      
+//       this.dataService.getworkhours(this.employee_id,this.calendarDate).subscribe((val:any)=>{
+//         let data:any=val.data
+//           rowData.forEach((arr:any)=>{
+            
+//             // console.log('scheduled_start_date',arr.scheduled_start_date);
+//             // console.log('scheduled_end_date',arr.scheduled_end_date);
+//             // console.log("this.calendarDate",this.calendarDate);
+//             // console.log(0>=(moment(this.calendarDate).diff(arr.scheduled_start_date,'days')));
+//             // // console.log(0<=(moment(this.calendarDate).diff(arr.scheduled_end_date,'days')));
+//             // console.log(0>=(moment(this.calendarDate).diff(arr.scheduled_end_date,'days')));
+//             // if(!(0>=(moment(this.calendarDate).diff(arr.scheduled_end_date,'days')))){
+//             //   arr.task_status="Not Completed"
+//             // }else{
+//             //   arr.task_status="On Going"
+//             // }
+
+//             // else if( )
+
+//         if(!isEmpty(data)){
+            
+//             for (let index = 0; index < data.length; index++) {
+//               const element = data[index];
+              
+//               if(element.task_id==arr.task_id){
+//                 arr.workedhours=element?.result?.workedhours || 0;
+//                 arr.status=element?.result?.status;
+//                 arr['approval_Status']=element['approval_Status']
+//                 arr.remarks=element?.result?.remarks
+//               }
+//             }
+//              }}
+//           )
+//  this.rowData=rowData
+// this.gridApi.sizeColumnsToFit()
+//         // }else{
+//         //   this.rowData=rowData
+//         //   this.gridApi.sizeColumnsToFit()
+
+//         // }
+//          // console.log(val,'datasssssss');
+        
+//       }
+//     )}
     
-   ) }
+     } ) }
   }
 
   addRow() {
@@ -806,19 +850,19 @@ this.gridApi.sizeColumnsToFit()
     let data1: any = localStorage.getItem('auth');
 
     let name = JSON.parse(data1).profile.assigned_to
-    if(this.date = this.dateform.value.datepicker?._d){
-      // this.date = this.form.value.datepicker?._d
+//     if(this.date = this.dateform.value.datepicker?._d){
+//       // this.date = this.form.value.datepicker?._d
     
-let formatedDate: any = moment(this.formatedDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-Object.assign(data, { formatedDate: formatedDate}) 
-    }
-    else{
+// let formatedDate: any = moment(this.formatedDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+// Object.assign(data, { formatedDate: formatedDate}) 
+//     }
+//     else{
     
-   let formatedDate: any = moment(this.calendarDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
- Object.assign(data, { formatedDate: formatedDate }) 
-    }
-    Object.assign(data, { assigned_to: name })
-        // ! UNDO
+//    let formatedDate: any = moment(this.calendarDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+//  Object.assign(data, { formatedDate: formatedDate }) 
+//     }
+//     Object.assign(data, { assigned_to: name })
+//         // ! UNDO
 
     // if (params.data._id) {
     //   this.dataService.updateUnschedule(data, params.data._id).subscribe((res: any) => {
@@ -847,15 +891,15 @@ Object.assign(data, { formatedDate: formatedDate})
     // })
     // let data: any = localStorage.getItem('auth');
     // let name = JSON.parse(data).profile.assigned_to
-    this.activatedRoute.params.subscribe(params => {
-      let date = params['date'];
-          // ! UNDO
+    // this.activatedRoute.params.subscribe(params => {
+    //   let date = params['date'];
+    //       // ! UNDO
 
-      // this.dataService.getunschedule(name,date).subscribe((res:any)=>{
-      //   this.listData=res.data;
-      //   console.log('ii', this.listData)
-      // })
-    });
+    //   // this.dataService.getunschedule(name,date).subscribe((res:any)=>{
+    //   //   this.listData=res.data;
+    //   //   console.log('ii', this.listData)
+    //   // })
+    // });
      
   }
 

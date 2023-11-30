@@ -189,7 +189,7 @@ const routes: Routes = [
       // }
     ],
   }, {
-    path: "timesheet/:date",
+    path: "timesheet",
     component: DefaultLayoutComponent,
     children: [
       {

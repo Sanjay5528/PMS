@@ -591,6 +591,7 @@ parentRouteName:any
 let values:any={}
 // values['requirement_name']=params.data.requirement_name
 values['requirement_id']=params.data._id
+values['project_id']=params.data.project_id
 values["_id"]=`SEQ|${params.data.project_id}`
 debugger
 this.dataService.save("task",values).subscribe((res:any)=>{
@@ -632,7 +633,7 @@ values["taskeditable"]=true
       values._id = "SEQ|"+values.project_id ;
       // values._id = "SEQ|Task|"+values.project_id ;
 
-      
+      values.status="Open"
       // values._id="SEQ|TASK"
     }  else if(  this.model_heading=="Test Case - Add"){
       values.project_id = this.ParentComponent.response?.project_id;
@@ -655,7 +656,7 @@ values["taskeditable"]=true
         }
         values._id=data.data["insert ID"]
         this.form.reset();   
-        this.ParentComponent.ngOnInit()
+        this.ParentComponent.getTreeData()
 
       //   const transaction: any = {
       //     add: [ values],
@@ -780,7 +781,10 @@ values["taskeditable"]=true
       } else if (this.gridData._id && this.parentRouteName=="projectteam") {
           values.parentmodulename = this.gridData.team_id;
       } 
-      
+      if(formName=='team_member'){
+        values.project_id = this.ParentComponent.response?.project_id;
+
+      }
       if(this.model_heading=="Test Case - Add"){
         values.project_id = this.ParentComponent.response?.project_id;
         values.requirement_id = this.gridData._id;  

@@ -248,10 +248,10 @@ public imageupload(folder:any,refId:any,data: any) {
     }
     return data;
   }
-  public  getTimesheetdata(data: any, id: any) {
+  public  getTimesheetdata(employee_id: any, date: any) {
     //console.log(format_date);
-    
-    return this.http.get(this.getWsBaseUrl() + 'lookup/timesheet/' + `${data}` + "/" + `${id}`,  data);
+    // finaltimesheet/:employee_id/:date
+    return this.http.get(this.getWsBaseUrl() + 'lookup/finaltimesheet/' + `${employee_id}` + "/" + `${date}`);
   }
   public getTimesheetdatabyadmin( data: any) {
     

@@ -750,7 +750,7 @@ this.gridOptions.getRowId=function(rowData:any){
         } ,cellEditor: "agNumberCellEditor",
         cellEditorParams: {
           min: 0,
-          max: 100,
+          max: 40,
           precision: 0,
         },
       },
@@ -1230,6 +1230,8 @@ if(this.formName=="module"){
 // console.log(parentTreeData);
 // this.listData = parentTreeData;
 const data = res.data.response;
+console.log(data);
+
 let parentTreeData: any[] = [];
 let childIndex: { [key: string]: number } = {};
 let parentIndex: number = 1; // Initialize parentIndex
@@ -1493,25 +1495,43 @@ this.listData = concat(parentTreeData,taskData);
 
   onCellClicked(event: any){
 let clickCell:any=event.column.getColId()
+
+
 if(this.formName=="Requirement"){
   this.drawer.close() 
   if(clickCell== 'number_of_TestCase_count'||clickCell=="number_of_Task_count"){
+    if (event.data[clickCell] > 0) {
       console.log(event.data);
-      this.cellClicked=clickCell
-      this.drawer.open()
+      this.cellClicked = clickCell;
+      this.drawer.open();
+    }
+    
+
     }
   }else if(this.formName=="test_result"){
     this.drawer.close()
     if(clickCell== 'test_cases_length'||clickCell=="bug_count"){
-      console.log(event.data);
-      this.cellClicked=clickCell
-      this.drawer.open()
+      // console.log(event.data);
+      // this.cellClicked=clickCell
+      // this.drawer.open()
+      if (event.data[clickCell] > 0) {
+        console.log(event.data);
+        this.cellClicked = clickCell;
+        this.drawer.open();
+      }
+      
     }}
     else if(this.formName=="bug_list"){
       // console.log(event.data);
-      this.cellClicked=clickCell
+      // this.cellClicked=clickCell
       
-      this.drawer.open()
+      // this.drawer.open()
+      if (event.data[clickCell] > 0) {
+        console.log(event.data);
+        this.cellClicked = clickCell;
+        this.drawer.open();
+      }
+      
     }
     else {
     this.drawer.close()
@@ -1568,6 +1588,7 @@ if(fieldName=="module_id"){
 
 }
 if(this.formName=="Requirement"){
+
   this.dataService.update("requirement",params.data._id,data ).subscribe((res: any) => {
     // this.rowData = res.data;
     console.log(res);
@@ -1623,11 +1644,10 @@ if(fieldName=="depend_task"){
     
     let hrsconvertedDay=hrsFlag==true? Math.ceil(params.value/8) : 1
     console.log(hrsconvertedDay);
-    
-    // update["start_date"] =update["start_date"]
     update["scheduled_end_date"] = moment(update["scheduled_end_date"]).add(hrsconvertedDay, "day");
     }
 }
+update.status="Open"
 this.dataService.update("task",params.data._id,update).subscribe((res:any)=>{
   // console.log();
   

@@ -62,6 +62,9 @@
   
 			  "props": {
 				"label": "Scheduled Start Date",
+				"attributes":{
+					"hide":"past_date"
+				},
 				"placeholder": "Scheduled Start Date",
 				"required": true
 			  }
@@ -140,8 +143,7 @@
 		  "key": "description",
 		  "className": "flex-6",
 		  "props": {
-			"label": "Task Description",
-			"required": true
+			"label": "Task Description"
 		  },
   
 		  "maxlength": 2000
