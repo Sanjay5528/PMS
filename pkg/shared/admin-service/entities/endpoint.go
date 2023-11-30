@@ -84,7 +84,7 @@ func SetupLookupRoutes(app *fiber.App) {
 	r.Put("/timesheet", postTimesheetDocHandler)
 	r.Get("/unschedule/:employee_id/:date", getUnscheduleIdHandler)
 	r.Get("/workedhour/:employee_id/:scheduledstartdate", TimeSheetByiiIdHandler)
-
+	r.Get("finaltimesheet/:employee_id/:date", getFinalTimesheet)
 }
 
 func SetupDownloadRoutes(app *fiber.App) {

@@ -308,7 +308,7 @@ func TimeSheetByIdHandler(c *fiber.Ctx) error {
 			{"$lookup",
 				bson.D{
 					{"from", "timesheet"},
-					{"localField", "task_id"},
+					{"localField", "_id"},
 					{"foreignField", "task_id"},
 					{"as", "result"},
 				},
@@ -798,7 +798,6 @@ func postTimesheetDocHandler(c *fiber.Ctx) error {
 	}
 	return nil
 }
-
 func timesheetgroup(orgId string, response []primitive.M) ([]primitive.M, error) {
 	if len(response) == 0 {
 		return nil, errors.New("response is empty")
@@ -988,95 +987,94 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 	}
 
 	filter :=
-	bson.A{
-		bson.D{{"$match", bson.D{{"project_id",c.Params("projectid")}}}},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "task"},
-					{"localField", "_id"},
-					{"foreignField", "requirement_id"},
-					{"as", "taskresult"},
+		bson.A{
+			bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
+			// bson.D{{"$addFields", bson.D{{"_id", bson.D{{"$toString", "$_id"}}}}}},
+			bson.D{
+				{"$lookup",
+					bson.D{
+						{"from", "task"},
+						{"localField", "_id"},
+						{"foreignField", "requirement_id"},
+						{"as", "taskresult"},
+					},
 				},
 			},
-		},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "testcase"},
-					{"localField", "_id"},
-					{"foreignField", "requirement_id"},
-					{"as", "tasecaseresult"},
+			bson.D{
+				{"$lookup",
+					bson.D{
+						{"from", "testcase"},
+						{"localField", "_id"},
+						{"foreignField", "requirement_id"},
+						{"as", "tasecaseresult"},
+					},
 				},
 			},
-		},
-		bson.D{{"$match", bson.D{{"taskresult.status", bson.D{{"$ne", "Completed"}}}}}},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "employee"},
-					{"localField", "taskresult.assigned_to"},
-					{"foreignField", "employee_id"},
-					{"as", "employeeResult"},
+			bson.D{{"$match", bson.D{{"taskresult.status", bson.D{{"$ne", "Completed"}}}}}},
+			bson.D{
+				{"$lookup",
+					bson.D{
+						{"from", "employee"},
+						{"localField", "taskresult.assigned_to"},
+						{"foreignField", "employee_id"},
+						{"as", "employeeResult"},
+					},
 				},
 			},
-		},
-		bson.D{{"$unwind", bson.D{{"path", "$taskresult"}}}},
-		bson.D{{"$unwind", bson.D{{"path", "$employeeResult"}}}},
-		bson.D{
-			{"$addFields",
-				bson.D{
-					{"taskresult.employee_name",
-						bson.D{
-							{"$concat",
-								bson.A{
-									"$employeeResult.first_name",
-									" ",
-									"$employeeResult.last_name",
+			bson.D{
+				{"$addFields",
+					bson.D{
+						{"number_of_Task_count", bson.D{{"$size", "$taskresult"}}},
+						{"number_of_TestCase_count", bson.D{{"$size", "$tasecaseresult"}}},
+					},
+				},
+			},
+			bson.D{
+				{"$addFields",
+					bson.D{
+						{"taskresult.employee_name",
+							bson.D{
+								{"$reduce",
+									bson.D{
+										{"input", "$employeeResult"},
+										{"initialValue", ""},
+										{"in",
+											bson.D{
+												{"$concat",
+													bson.A{
+														"$$value",
+														bson.D{
+															{"$cond",
+																bson.A{
+																	bson.D{
+																		{"$eq",
+																			bson.A{
+																				"$$value",
+																				"",
+																			},
+																		},
+																	},
+																	"",
+																	" ",
+																},
+															},
+														},
+														"$$this.first_name",
+														" ",
+														"$$this.last_name",
+													},
+												},
+											},
+										},
+									},
 								},
 							},
 						},
 					},
 				},
 			},
-		},
-		bson.D{{"$unset", "employeeResult"}},
-		bson.D{
-			{"$group",
-				bson.D{
-					{"_id",
-						bson.D{
-							{"id", "$_id"},
-							{"created_on", "$created_on"},
-							{"requirement_description", "$requirement_description"},
-							{"project_id", "$project_id"},
-							{"requirement_name", "$requirement_name"},
-							{"created_by", "$created_by"},
-							{"parentmodulename", "$parentmodulename"},
-							{"sprint_id", "$sprint_id"},
-							{"update_by", "$update_by"},
-							{"update_on", "$update_on"},
-							{"module_id", "$module_id"},
-						},
-					},
-					{"taskresult1", bson.D{{"$push", "$taskresult"}}},
-				},
-			},
-		},
-		bson.D{
-			{"$project",
-				bson.D{
-					{"_id", "$_id.id"},
-					{"created_on", "$_id.created_on"},
-					{"project_id", "$_id.project_id"},
-					{"requirement_name", "$_id.requirement_name"},
-					{"created_by", "$_id.created_by"},
-					{"parentmodulename", "$_id.parentmodulename"},
-					{"taskresult1", "$taskresult1"},
-				},
-			},
-		},
-	}
+			bson.D{{"$unset", "employeeResult"}},
+		}
 	response, err := helper.GetAggregateQueryResult(org.Id, "requirement", filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
@@ -1609,4 +1607,172 @@ func team_specificationList(c *fiber.Ctx) error {
 		"response": response,
 		// "pipeline": filter,
 	})
+
+}
+func getFinalTimesheet(c *fiber.Ctx) error {
+	fmt.Println("asdasdasdasdddddddddddddddd")
+	org, exists := helper.GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
+	}
+	scheduledstartdate := c.Params("date")
+	date, _ := time.Parse(time.RFC3339, scheduledstartdate)
+	fmt.Println("date", date)
+	fmt.Println("employee_id", c.Params("employee_id"))
+	// day := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
+	// var query
+	// query := bson.A{
+	// 	bson.D{
+	// 		{"$match",
+	// 			bson.D{
+	// 				{"assigned_to", c.Params("employee_id")},
+	// 				{"scheduled_start_date", bson.D{{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 23, 59, 0, 0, time.UTC)}}},
+	// 				{"scheduled_end_date", bson.D{{"$gte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "timesheet"},
+	// 				{"localField", "task_id"},
+	// 				{"foreignField", "task_id"},
+	// 				{"as", "timesheet"},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "project"},
+	// 				{"localField", "project_id"},
+	// 				{"foreignField", "project_id"},
+	// 				{"as", "project"},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{
+	// 		{"$unwind",
+	// 			bson.D{
+	// 				{"path", "$project"},
+	// 				{"preserveNullAndEmptyArrays", true},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$addFields", bson.D{{"project_Name", "$project.project_name"}}}},
+	// 	bson.D{
+	// 		{"$unwind",
+	// 			bson.D{
+	// 				{"path", "$timesheet"},
+	// 				{"preserveNullAndEmptyArrays", true},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unset", "project"}},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "employee"},
+	// 				{"localField", "assigned_to"},
+	// 				{"foreignField", "employee_id"},
+	// 				{"as", "employee"},
+	// 			},
+	// 		},
+	// 	},
+	// }
+	query := bson.A{
+		bson.D{
+			{"$match",
+				bson.D{
+					{"assigned_to", c.Params("employee_id")},
+					{"scheduled_start_date", bson.D{{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}},
+					{"scheduled_end_date", bson.D{{"$gte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}},
+				},
+			},
+		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "timesheet"},
+					{"localField", "_id"},
+					{"foreignField", "task_id"},
+					{"as", "timesheet"},
+				},
+			},
+		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "project"},
+					{"localField", "project_id"},
+					{"foreignField", "project_id"},
+					{"as", "project"},
+				},
+			},
+		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$project"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
+		bson.D{{"$addFields", bson.D{{"project_Name", "$project.project_name"}}}},
+		// bson.D{
+		// 	{"$unwind",
+		// 		bson.D{
+		// 			{"path", "$timesheet"},
+		// 			{"preserveNullAndEmptyArrays", true},
+		// 		},
+		// 	},
+		// },
+		bson.D{{"$unset", "project"}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "employee"},
+					{"localField", "assigned_to"},
+					{"foreignField", "employee_id"},
+					{"as", "employee"},
+				},
+			},
+		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$employee"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
+		bson.D{
+			{"$addFields",
+				bson.D{
+					{"employee_name",
+						bson.D{
+							{"$concat",
+								bson.A{
+									"$employee.first_name",
+									" ",
+									"$employee.last_name",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		bson.D{{"$unset", "employee"}},
+	}
+	response, err := helper.GetAggregateQueryResult(org.Id, "task", query)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	return shared.SuccessResponse(c, fiber.Map{
+		"response": response,
+		// "pipeline": filter,
+	})
+
 }
