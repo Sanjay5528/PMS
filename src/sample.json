@@ -1,152 +1,363 @@
 {
-	"pageHeading": "Task",
+	"pageHeading": "Event",
 	"formType": "simple",
 	"editMode": "page",
+	"screenEditMode": "page",
+	"user": true,
 	"keyField": "_id",
 	"form": {
-	  "collectionName": "task",
+	  "collectionName": "event",
 	  "fields": [
 		{
-			"fieldGroupClassName": "display-flex",
-			"fieldGroup": [		{
-		  "type": "input",
-			  "className": "flex-9",
-			  "key": "task_name",
-		  "props": {
-			"label": "Task Name",
-			"placeholder": "Task Name",
-			"pattern": "^[a-zA-Z&>/;,:-_/]+( [a-zA-Z&>/;,:-_/!@-]+)*$",
-			"required": true
-		  },
-		  "expressions": {
-			"props.readonly": "model.isEdit"
-		  }
-		},{
-			"type": "select",
-			  "className": "flex-5",
-			  "key": "task_type",
-			"props": {
-				"label": "Task Type",
-				"options": [
+		  "type": "stepper",
+  
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "props": { "label": "Basic Event Details" },
+  
+			  "fieldGroup": [
+				{
+				  "fieldGroupClassName": "display-flex",
+				  "fieldGroup": [
 					{
-						"label": "UI/UX",
-						"value": "UI/UX"
-					},{
-						"label": "API",
-						"value": "API"
-					},{
-						"label": "Testing",
-						"value": "Testing"
+					  "type": "input-text-enterkey",
+					  "key": "_id",
+					  "className": "flex-6",
+					  "props": {
+						"label": "Event Id",
+						"placeholder": "Event Id",
+						
+						"valueType": "Dynamic",
+						"searchableField": true,
+						"searchCollectionName": "event",
+						"multifilter_condition": {
+						  "clause": "AND",
+						  "conditions": [
+							{
+							  "column": "_id",
+							  "operator": "EQUALS",
+							  "type": "string",
+							  "value": ""
+							}
+						  ]
+						},
+						"required": true
+					  },
+					  "expressions": {
+						"props.readonly": "model.isEdit"
+					  }
 					},
 					{
-						"label": "UI Development",
-						"value": "UI Development"
-					}
-				],
-				"required": true
-			
-			},
-			"expressions": {
-			  "props.readonly": "model.isEdit"
-			}
-		  }
-		
-		]},
-		{
-		  "fieldGroupClassName": "display-flex",
-		  "fieldGroup": [
-			{
-			  "key": "scheduled_start_date",
-			  "type": "date-input",
-			  "className": "flex-6",
-  
-			  "props": {
-				"label": "Scheduled Start Date",
-				"placeholder": "Scheduled Start Date",
-				"required": true
-			  }
-			},
-			{
-			  "key": "scheduled_end_date",
-			  "type": "date-input",
-			  "className": "flex-6",
-  
-			  "parentKey": "scheduled_start_date",
-			  "parentCollectionName": "task",
-			  "props": {
-				"label": "Scheduled End Date",
-				"placeholder": "Scheduled End Date",
-				"required": true
-			  }
-			}
-		  ]
-		},
-		{
-		  "fieldGroupClassName": "display-flex",
-		  "fieldGroup": [
-			{
-			  "type": "number",
-			  "key": "allocated_hours",
-			  "className": "flex-6",
-  
-			  "props": {
-				"label": "Allocated Hours",
-				"placeholder": "Allocated Hours",
-				"pattern": "^(?:|[1-9][0-9]*)$",
-				"required": true
-			  }
-			},
-  
-			{
-			  "type": "select-input",
-			  "key": "assigned_to",
-			  "className": "flex-6",
-  
-			  "props": {
-				"label": "Assigned To",
-				"placeholder": "Assigned To",
-				"lookup": true,
-				"endPoint": "team_specification",
-				"multifiltertype": "local",
-				"local_name": "project_id",
-				"multifilter_condition": {
-				  "clause": "AND",
-				  "conditions": [
+					  "type": "input",
+					  "key": "event_name",
+					  "className": "flex-6",
+					  "props": {
+						"label": "Event Name",
+						"placeholder": "Event Name",
+					   
+						"required": true
+					  }
+					  
+					},
 					{
-					  "column": "project_id",
-					  "operator": "EQUALS",
-					  "type": "string",
-					  "value": ""
-					},  {
-					  "column": "user_id",
-					  "operator": "EXISTS",
-					  "type": "string",
-					  "value": true
+					  "type": "input",
+					  "key": "event_type",
+					  "className": "flex-6",
+					  "props": {
+						"label": "Event Type",
+						"placeholder": "Event Type",
+						
+						"required": true
+					  },
+					  "expressions": {
+						"props.readonly": "model.isEdit"
+					  }
 					}
 				  ]
 				},
-				"labelProp": "employe_name",
-				"valueProp": "user_id",
-				"required": true
-			  },
-			  "expressions": {
-				"hide": "model.isEdit"
-			  }
+				{
+				  "fieldGroupClassName": "display-flex",
+				  "fieldGroup": [
+					{
+					  "key": "start_date",
+					  "type": "date-input",
+					  "className": "flex-6",
+					  "props": {
+						"label": "Scheduled Start Date",
+						"placeholder": "Scheduled Start Date",
+						"type": "date",
+						"required": true
+					  }
+					},
+					{
+					  "key": "end_date",
+					  "type": "date-input",
+					  "className": "flex-6",
+					  "props": {
+						"label": "Scheduled End Date",
+						"placeholder": "Scheduled End Date",
+						"type": "date",
+						"required": true
+					  }
+					},
+					{
+					  "key": "time",
+					  "type": "time-input",
+					  "className": "flex-6",
+					  "props": {
+						"label": "Start Time",
+						"placeholder": "Start Time",
+						"type": "date",
+						"required": true
+					  }
+					},
+					{
+					  "key": "duration",
+					  "type": "time-input",
+					  "className": "flex-6",
+					  "props": {
+						"label": "Duration",
+						"placeholder": "Duration",
+						"type": "date",
+						"required": true
+					  }
+					}
+				  ]
+				},
+				{
+				  "fieldGroupClassName": "display-flex",
+				  "fieldGroup": [
+					{
+					  "key": "maximum_of_participants",
+					  "type": "input",
+					  "className": "flex-2",
+					  "props": {
+						"label": "Maximum of participants",
+						"placeholder": "Maximum of participants",
+  
+						"required": true
+					  }
+					}, {
+					  "type": "html-input",
+					  "key": "event_description",
+					  "className": "flex-6",
+					  "props": {
+						"label": "Event Description",
+						"disabled": false
+					  }
+					}
+				  ]
+				}
+			  ]
+			},
+  
+			{
+			  "props": { "label": "Event Image" },
+			  "fieldGroup": [
+				  {
+					  "type": "muti-image",
+					  "key": "result_proof",           
+					   "className": "flex-4",
+					 "role":"event_image",
+					  "props": {
+						  "refId": "event_id",
+						  "label": "Event Image"
+					  }
+				  
+					
+					}
+			  ]
+			},
+  
+			{
+			  "props": { "label": "Contacts Details" },
+  
+			  "fieldGroup": [
+				  {
+					"fieldGroupClassName": "display-flex",
+					"fieldGroup": [
+					  {
+						"type": "label-view", 
+						"key": "contact_details.first_name",
+						"className": "flex-6",
+						"props": {            
+						  "label": "First Name", 
+						"label_width":100,        
+						"value_width":200,       
+						"value_in_next_row":true
+						},"hideExpression": "!model.isEdit"
+						
+						},
+						{
+						"type": "label-view", 
+						"key": "contact_details.last_name",
+						"className": "flex-6",
+						"props": {            
+						  "label": "Last Name", 
+						"label_width":100,        
+						"value_width":200,       
+						"value_in_next_row":true
+						},"hideExpression": "!model.isEdit"
+						
+						},
+					  
+					  {
+						"key": "contact_details.first_name",
+						"type": "input",
+						"className": "flex-6",
+						"props": {
+						  "label": "First Name",
+						  "placeholder": "First Name",
+						  "pattern": "^[a-zA-Z]+$",
+						  "required": true
+						},"hideExpression": "model.isEdit"
+				
+					  },
+					  {
+						"key": "contact_details.last_name",
+						"type": "input",
+						"className": "flex-6",
+						"props": {
+						  "label": "Last Name",
+						  "placeholder": "Last Name",
+						  "pattern": "^[a-zA-Z]+$",
+						  "required": true
+						},"hideExpression": "model.isEdit"
+				
+					  }
+					]
+				  },
+				  {
+					"fieldGroupClassName": "display-flex",
+					"fieldGroup": [
+					  
+						{
+						"type": "label-view", 
+						"key": "contact_details.email_id",
+						"className": "flex-6",
+						"props": {            
+						  "label": "Email Id", 
+						"label_width":100,        
+						"value_width":200,       
+						"value_in_next_row":true
+						},"hideExpression": "!model.isEdit"
+						
+						},{
+						"type": "label-view", 
+						"key": "contact_details.mobile_number",
+						"className": "flex-6",
+						"props": {            
+						  "label": "Moblie Number", 
+						"label_width":100,        
+						"value_width":200,       
+						"value_in_next_row":true
+						},"hideExpression": "!model.isEdit"
+						
+						},
+						  {
+						"key": "contact_details.email_id",
+						"type": "input",
+						"className": "flex-6",
+						"props": {
+						  "label": "Email Id",
+						  "placeholder": "Email Id",
+						  "pattern": "[a-z0-9._%+-]+@[a-z.-]+\\.[a-z]{2,4}$",
+						  "required": true
+						},"hideExpression": "model.isEdit"
+				
+					  },
+					  {
+						"key": "contact_details.mobile_number",
+						"type": "input",
+						"className": "flex-6",
+						"props": {
+						  "label": "Moblie Number",											
+						  "pattern": "[6-9]{1}[0-9]{9}",
+						  "maxLength":10,
+						  "required": true
+						},"hideExpression": "model.isEdit"
+				
+					  }
+					]
+				  }
+				]
+			},
+  
+			{
+			  "props": { "label": "Speaker Details" },
+  
+			  "fieldGroup": [
+				{
+				  "type": "input-text-enterkey",
+				  "key": "_id",
+				  "className": "flex-6",
+				  "props": {
+					"label": "Event Id",
+					"placeholder": "Event Id",
+					"pattern": "^[a-zA-Z0-9-_]*$",
+					"valueType": "Dynamic",
+					"searchableField": true,
+					"searchCollectionName": "event",
+					"multifilter_condition": {
+					  "clause": "AND",
+					  "conditions": [
+						{
+						  "column": "_id",
+						  "operator": "EQUALS",
+						  "type": "string",
+						  "value": ""
+						}
+					  ]
+					},
+					"required": true
+				  },
+				  "expressions": {
+					"props.readonly": "model.isEdit"
+				  }
+				},
+				{
+				  "type": "input",
+				  "key": "event_name",
+				  "className": "flex-6",
+				  "props": {
+					"label": "Event Name",
+					"placeholder": "Event Name",
+					"pattern": "^[A-Z][a-zA-Z]{3,}?(?: [a-zA-Z]+)*$",
+					"required": true
+				  },
+				  "expressions": {
+					"props.readonly": "model.isEdit"
+				  }
+				},
+				{
+				  "type": "input",
+				  "key": "event_type",
+				  "className": "flex-6",
+				  "props": {
+					"label": "Event Type",
+					"placeholder": "Event Type",
+					"pattern": "^[A-Z][a-zA-Z]{3,}?(?: [a-zA-Z]+)*$",
+					"required": true
+				  },
+				  "expressions": {
+					"props.readonly": "model.isEdit"
+				  }
+				}
+			  ]
 			}
 		  ]
-		},
-		{
-		  "type": "html-input",
-		  "key": "description",
-		  "className": "flex-6",
-		  "props": {
-			"label": "Task Description",
-			"required": true
-		  },
-  
-		  "maxlength": 2000
 		}
 	  ]
-	}
+	},
+	"defaultValues": [
+	  {
+		"colName": "status",
+		"type": "string",
+		"value": "Active"
+	  }
+	],
+  
+	"onCancelRoute": "/list/event"
   }
   
