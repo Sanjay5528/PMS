@@ -1,10 +1,12 @@
 {
-	"pageHeading": "Task",
+	"pageHeading": "Event",
 	"formType": "simple",
 	"editMode": "page",
+	"screenEditMode": "page",
+	"user": true,
 	"keyField": "_id",
 	"form": {
-	  "collectionName": "task",
+	  "collectionName": "event",
 	  "fields": [
 		{
 			"fieldGroupClassName": "display-flex",
@@ -62,9 +64,6 @@
   
 			  "props": {
 				"label": "Scheduled Start Date",
-				"attributes":{
-					"hide":"past_date"
-				},
 				"placeholder": "Scheduled Start Date",
 				"required": true
 			  }
@@ -143,12 +142,22 @@
 		  "key": "description",
 		  "className": "flex-6",
 		  "props": {
-			"label": "Task Description"
+			"label": "Task Description",
+			"required": true
 		  },
   
 		  "maxlength": 2000
 		}
 	  ]
-	}
+	},
+	"defaultValues": [
+	  {
+		"colName": "status",
+		"type": "string",
+		"value": "Active"
+	  }
+	],
+  
+	"onCancelRoute": "/list/event"
   }
   
