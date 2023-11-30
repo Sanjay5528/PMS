@@ -23,7 +23,7 @@ import { DateTimeInput } from "./datetime-input";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { NgxMatDatetimePickerModule } from "@angular-material-components/datetime-picker";
 import { NgxMatMomentModule } from "@angular-material-components/moment-adapter";
-
+ 
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { NgxMatTimepickerModule } from "ngx-mat-timepicker";
@@ -73,6 +73,9 @@ import { OnlyDecimalDirective } from "./decimal-directive";
 import { FormlyMultiImageUpload } from "./multiimage_upload";
 import { CarsoalComponent } from './carsoal.component';
 import { FormlyFieldInputTextEnterKey } from "./inputcheck";
+import { MatStepperModule } from '@angular/material/stepper';
+import { FormlyFieldStepper } from "./stepper";
+
 
 export function minLengthValidationMessage(err: any, field: FormlyFieldConfig) {
   console.log(field);
@@ -167,6 +170,42 @@ const formlyConfig = {
   ],
 
   types: [
+
+    // {
+    //   validationMessages: [{ name: 'required', message: 'This field is required' }],
+    //   types: [{ name: 'stepper', component: FormlyFieldStepper, wrappers: [] }],
+    // },
+    {
+      name: "multiselect-input",
+      component: MultiSelectInput,
+      validationMessages: [
+        { name: "required", message: required },
+        { name: "null", message: "Should be null" },
+        { name: "minLength", message: minLengthValidationMessage },
+        { name: "maxLength", message: maxLengthValidationMessage },
+        { name: "min", message: minValidationMessage },
+        { name: "max", message: maxValidationMessage },
+        { name: "multipleOf", message: multipleOfValidationMessage },
+        {
+          name: "exclusiveMinimum",
+          message: exclusiveMinimumValidationMessage,
+        },
+        {
+          name: "exclusiveMaximum",
+          message: exclusiveMaximumValidationMessage,
+        },
+        { name: "uniqueItems", message: uniqueItemsValidationMessag },
+        { name: "pattern", message: patternValidationMessage },
+      ],
+    },
+
+    { name: "tab-input", component: Tab },
+
+
+
+
+
+
     { name: "tab-input", component: Tab },
     {
       name: 'input-text-enterkey',
@@ -193,8 +232,10 @@ const formlyConfig = {
         },
         { name: "uniqueItems", message: uniqueItemsValidationMessag },
         { name: "pattern", message: patternValidationMessage },
+
       ],
     },
+    
     { name: "html-input", component: HtmlInput },
     {
       name: "multiselect-input",
@@ -299,6 +340,7 @@ const formlyConfig = {
         { name: "pattern", message: patternValidationMessage },
       ],
     },
+
     {
       name: "select-autocomplete",
       component: FormlyFieldSelectAutocomplete,
@@ -314,12 +356,13 @@ const formlyConfig = {
           name: "exclusiveMinimum",
           message: exclusiveMinimumValidationMessage,
         },
-        {
+        {MatStepperModule,
           name: "exclusiveMaximum",
           message: exclusiveMaximumValidationMessage,
         },
         { name: "uniqueItems", message: uniqueItemsValidationMessag },
         { name: "pattern", message: patternValidationMessage },
+       
       ],
     },
     { name: "custompopup-input", component: CustomPopupInput },
@@ -333,8 +376,10 @@ const formlyConfig = {
     { name: "repeat", component: RepeatTypeComponent },
     { name: "chips", component: Chips },
     { name: "muti-image", component: FormlyMultiImageUpload },
+    {name:"stepper",component:FormlyFieldStepper},
+
   ],
-};
+}; 
 
 @NgModule({
   declarations: [
@@ -369,6 +414,7 @@ const formlyConfig = {
     CallingcodeInput,
     patchWork,
     Chips,
+    FormlyFieldStepper,
     CarsoalComponent,FormlyFieldInputTextEnterKey
   ],
   imports: [
@@ -395,6 +441,7 @@ const formlyConfig = {
     MatIconModule,
     MatMenuModule,
     MatSelectModule,
+    MatStepperModule,
     MatInputModule,
     MatOptionModule,
     MatFormFieldModule,
@@ -414,6 +461,7 @@ const formlyConfig = {
     MatIconModule,
     MatSlideToggleModule,
     NgxMatDatetimePickerModule,
+    MatStepperModule,
   ],
   exports: [
     Tab,
@@ -437,7 +485,6 @@ const formlyConfig = {
     Location,
     LogoComponent,
     OnlyDecimalDirective,
-    CarsoalComponent,
 
     CallingcodeInput,
     patchWork,
