@@ -309,7 +309,6 @@ func TimeSheetByIdHandler(c *fiber.Ctx) error {
 				bson.D{
 					{"from", "timesheet"},
 					{"localField", "_id"},
-					{"localField", "_id"},
 					{"foreignField", "task_id"},
 					{"as", "result"},
 				},
