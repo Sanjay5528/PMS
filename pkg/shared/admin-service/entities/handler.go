@@ -987,94 +987,95 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 	}
 
 	filter :=
-		bson.A{
-			bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
-			// bson.D{{"$addFields", bson.D{{"_id", bson.D{{"$toString", "$_id"}}}}}},
-			bson.D{
-				{"$lookup",
-					bson.D{
-						{"from", "task"},
-						{"localField", "_id"},
-						{"foreignField", "requirement_id"},
-						{"as", "taskresult"},
-					},
+	bson.A{
+		bson.D{{"$match", bson.D{{"project_id",c.Params("projectid")}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "task"},
+					{"localField", "_id"},
+					{"foreignField", "requirement_id"},
+					{"as", "taskresult"},
 				},
 			},
-			bson.D{
-				{"$lookup",
-					bson.D{
-						{"from", "testcase"},
-						{"localField", "_id"},
-						{"foreignField", "requirement_id"},
-						{"as", "tasecaseresult"},
-					},
+		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "testcase"},
+					{"localField", "_id"},
+					{"foreignField", "requirement_id"},
+					{"as", "tasecaseresult"},
 				},
 			},
-			bson.D{{"$match", bson.D{{"taskresult.status", bson.D{{"$ne", "Completed"}}}}}},
-			bson.D{
-				{"$lookup",
-					bson.D{
-						{"from", "employee"},
-						{"localField", "taskresult.assigned_to"},
-						{"foreignField", "employee_id"},
-						{"as", "employeeResult"},
-					},
+		},
+		bson.D{{"$match", bson.D{{"taskresult.status", bson.D{{"$ne", "Completed"}}}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "employee"},
+					{"localField", "taskresult.assigned_to"},
+					{"foreignField", "employee_id"},
+					{"as", "employeeResult"},
 				},
 			},
-			bson.D{
-				{"$addFields",
-					bson.D{
-						{"number_of_Task_count", bson.D{{"$size", "$taskresult"}}},
-						{"number_of_TestCase_count", bson.D{{"$size", "$tasecaseresult"}}},
-					},
-				},
-			},
-			bson.D{
-				{"$addFields",
-					bson.D{
-						{"taskresult.employee_name",
-							bson.D{
-								{"$reduce",
-									bson.D{
-										{"input", "$employeeResult"},
-										{"initialValue", ""},
-										{"in",
-											bson.D{
-												{"$concat",
-													bson.A{
-														"$$value",
-														bson.D{
-															{"$cond",
-																bson.A{
-																	bson.D{
-																		{"$eq",
-																			bson.A{
-																				"$$value",
-																				"",
-																			},
-																		},
-																	},
-																	"",
-																	" ",
-																},
-															},
-														},
-														"$$this.first_name",
-														" ",
-														"$$this.last_name",
-													},
-												},
-											},
-										},
-									},
+		},
+		bson.D{{"$unwind", bson.D{{"path", "$taskresult"}}}},
+		bson.D{{"$unwind", bson.D{{"path", "$employeeResult"}}}},
+		bson.D{
+			{"$addFields",
+				bson.D{
+					{"taskresult.employee_name",
+						bson.D{
+							{"$concat",
+								bson.A{
+									"$employeeResult.first_name",
+									" ",
+									"$employeeResult.last_name",
 								},
 							},
 						},
 					},
 				},
 			},
-			bson.D{{"$unset", "employeeResult"}},
-		}
+		},
+		bson.D{{"$unset", "employeeResult"}},
+		bson.D{
+			{"$group",
+				bson.D{
+					{"_id",
+						bson.D{
+							{"id", "$_id"},
+							{"created_on", "$created_on"},
+							{"requirement_description", "$requirement_description"},
+							{"project_id", "$project_id"},
+							{"requirement_name", "$requirement_name"},
+							{"created_by", "$created_by"},
+							{"parentmodulename", "$parentmodulename"},
+							{"sprint_id", "$sprint_id"},
+							{"update_by", "$update_by"},
+							{"update_on", "$update_on"},
+							{"module_id", "$module_id"},
+						},
+					},
+					{"taskresult1", bson.D{{"$push", "$taskresult"}}},
+				},
+			},
+		},
+		bson.D{
+			{"$project",
+				bson.D{
+					{"_id", "$_id.id"},
+					{"created_on", "$_id.created_on"},
+					{"project_id", "$_id.project_id"},
+					{"requirement_name", "$_id.requirement_name"},
+					{"created_by", "$_id.created_by"},
+					{"parentmodulename", "$_id.parentmodulename"},
+					{"taskresult1", "$taskresult1"},
+				},
+			},
+		},
+	}
 	response, err := helper.GetAggregateQueryResult(org.Id, "requirement", filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
