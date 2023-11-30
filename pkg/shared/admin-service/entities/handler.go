@@ -190,6 +190,7 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 	collectionName := c.Params("model_name")
 	var UpdateData map[string]interface{}
 	c.BodyParser(&UpdateData)
+	helper.UpdateDateObject(UpdateData)
 
 	update := bson.M{
 		"$set": UpdateData,
