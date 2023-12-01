@@ -175,9 +175,7 @@ const formlyConfig = {
     //   validationMessages: [{ name: 'required', message: 'This field is required' }],
     //   types: [{ name: 'stepper', component: FormlyFieldStepper, wrappers: [] }],
     // },
-    {
-      name: "multiselect-input",
-      component: MultiSelectInput,
+    {  name: "multiselect-input", component: MultiSelectInput,
       validationMessages: [
         { name: "required", message: required },
         { name: "null", message: "Should be null" },
@@ -200,20 +198,11 @@ const formlyConfig = {
     },
 
     { name: "tab-input", component: Tab },
-
-
-
-
-
-
-    { name: "tab-input", component: Tab },
     {
       name: 'input-text-enterkey',
       component: FormlyFieldInputTextEnterKey
     },
-    {
-      name: "select-input",
-      component: SelectInput,
+    { name: "select-input", component: SelectInput,
       validationMessages: [
         { name: "required", message: required },
         { name: "null", message: "Should be null" },
@@ -237,36 +226,34 @@ const formlyConfig = {
     },
     
     { name: "html-input", component: HtmlInput },
-    {
-      name: "multiselect-input",
-      component: MultiSelectInput,
-      validationMessages: [
-        { name: "required", message: required },
-        { name: "null", message: "Should be null" },
-        { name: "minLength", message: minLengthValidationMessage },
-        { name: "maxLength", message: maxLengthValidationMessage },
-        { name: "min", message: minValidationMessage },
-        { name: "max", message: maxValidationMessage },
-        { name: "multipleOf", message: multipleOfValidationMessage },
-        {
-          name: "exclusiveMinimum",
-          message: exclusiveMinimumValidationMessage,
-        },
-        {
-          name: "exclusiveMaximum",
-          message: exclusiveMaximumValidationMessage,
-        },
-        { name: "uniqueItems", message: uniqueItemsValidationMessag },
-        { name: "pattern", message: patternValidationMessage },
-      ],
-    },
+    // {
+    //   name: "multiselect-input",
+    //   component: MultiSelectInput,
+    //   validationMessages: [
+    //     { name: "required", message: required },
+    //     { name: "null", message: "Should be null" },
+    //     { name: "minLength", message: minLengthValidationMessage },
+    //     { name: "maxLength", message: maxLengthValidationMessage },
+    //     { name: "min", message: minValidationMessage },
+    //     { name: "max", message: maxValidationMessage },
+    //     { name: "multipleOf", message: multipleOfValidationMessage },
+    //     {
+    //       name: "exclusiveMinimum",
+    //       message: exclusiveMinimumValidationMessage,
+    //     },
+    //     {
+    //       name: "exclusiveMaximum",
+    //       message: exclusiveMaximumValidationMessage,
+    //     },
+    //     { name: "uniqueItems", message: uniqueItemsValidationMessag },
+    //     { name: "pattern", message: patternValidationMessage },
+    //   ],
+    // },
     { name: "label-view", component: LabelView },
     { name: "map", component: MapComponent },
     { name: "logo", component: LogoComponent },
     { name: "datetime-input", component: DateTimeInput },
-    {
-      name: "date-input",
-      component: DateInput,
+    { name: "date-input", component: DateInput,
       validationMessages: [
         { name: "required", message: required },
         { name: "null", message: "Should be null" },
@@ -287,9 +274,7 @@ const formlyConfig = {
         { name: "pattern", message: patternValidationMessage },
       ],
     },
-    {
-      name: "custom-decimal-input",
-      component: CustomDecimalInputType,
+    { name: "custom-decimal-input", component: CustomDecimalInputType,
       validationMessages: [
         { name: "required", message: required },
         { name: "null", message: "Should be null" },
@@ -311,15 +296,12 @@ const formlyConfig = {
       ],
     },
     { name: "file-input", component: FileInput },
-
     { name: "fieldset", component: FormlyFieldset },
     { name: "image-input", component: ImageInput },
     { name: "autoId-input", component: AutogenerateId }, // input text entry key
     { name: "button-input", component: ButtonInput },
     { name: "password-input", component: PasswordInput },
-    {
-      name: "matprefix-input",
-      component: MatPrefixInput,
+    { name: "matprefix-input", component: MatPrefixInput,
       validationMessages: [
         { name: "required", message: required },
         { name: "null", message: "Should be null" },
@@ -341,9 +323,7 @@ const formlyConfig = {
       ],
     },
 
-    {
-      name: "select-autocomplete",
-      component: FormlyFieldSelectAutocomplete,
+    { name: "select-autocomplete", component: FormlyFieldSelectAutocomplete,
       validationMessage: [
         { name: "required", message: required },
         { name: "null", message: "Should be null" },
@@ -485,7 +465,7 @@ const formlyConfig = {
     Location,
     LogoComponent,
     OnlyDecimalDirective,
-
+    CarsoalComponent,
     CallingcodeInput,
     patchWork,
     FormlyFieldSelectAutocomplete,

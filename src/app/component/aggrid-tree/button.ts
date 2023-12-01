@@ -586,25 +586,47 @@ parentRouteName:any
  }
 
  onclickTask(formAction:any,params:any){
-  console.log(params);
-  params.data
-let values:any={}
-// values['requirement_name']=params.data.requirement_name
-values['requirement_id']=params.data._id
-values['project_id']=params.data.project_id
-values["_id"]=`SEQ|${params.data.project_id}`
-debugger
-this.dataService.save("task",values).subscribe((res:any)=>{
-  // console.log();
-  values["_id"]=res.data["insert ID"]
-  values["task_id"]=res.data["insert ID"]
-  values["treePath"]=[...params.data.treePath,res.data["insert ID"]]
-values["taskeditable"]=true
-  const result = params.api.applyTransaction({ add: [values] });
-  console.log(result);
-  // params.context.componentParent.TaskIdChange()
-  
-})
+  if(formAction=="add"){
+
+    let values:any={}
+    // values['requirement_name']=params.data.requirement_name
+    values['requirement_id']=params.data._id
+    values['project_id']=params.data.project_id
+    values["_id"]=`SEQ|${params.data.project_id}`
+    debugger
+    this.dataService.save("task",values).subscribe((res:any)=>{
+      // console.log();
+      values["_id"]=res.data["insert ID"]
+      values["task_id"]=res.data["insert ID"]
+      values["treePath"]=[...params.data.treePath,res.data["insert ID"]]
+    values["taskeditable"]=true
+      const result = params.api.applyTransaction({ add: [values] });
+      console.log(result);
+      // params.context.componentParent.TaskIdChange()
+      
+    })
+  }
+
+  if(formAction=="delete"){
+    if (confirm("Do you wish to delete this record?")) {
+      this.dataService.deleteDataById(
+        "task",
+        params.data._id
+      ).subscribe((res: any) => {
+        this.dialogService.openSnackBar(
+          "Data has been deleted successfully",
+          "OK"
+        );
+        const result = params.api.applyTransaction({ remove: [ params.data] });
+        console.log(result);
+        // const transaction: ServerSideTransaction = {
+        //   remove: [data],
+        // };
+        // const result = this.gridApi.applyServerSideTransaction(transaction);
+        // console.log(transaction, result);
+      });
+    }
+  }
 // values["treePath"]=params.data.treePath
  }
 

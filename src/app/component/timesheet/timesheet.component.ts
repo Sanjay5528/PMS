@@ -141,7 +141,7 @@ filter: false}
       field: "allocated_hours",
       editable: false,
     }, {
-      headerName: "Total Worked Hours",
+      headerName: "Remaning Hours",
       field: "total_work_hours",
       editable: false,
     },
@@ -735,6 +735,7 @@ this.calendarDate=date
     
     
     this.dataService.getTimesheetdata( this.employee_id,this.calendarDate).subscribe((res: any) => {
+     
       let rowData:any =res.data.response
       // this.rowData=res.data.response
       rowData.forEach((element:any) => {
