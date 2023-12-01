@@ -738,19 +738,19 @@ this.calendarDate=date
      
       let rowData:any =res.data.response
       // this.rowData=res.data.response
-      rowData.forEach((element:any) => {
-        console.log(!isEmpty(element.timesheet));
+//       rowData.forEach((element:any) => {
+//         console.log(!isEmpty(element.timesheet));
         
-        if(!isEmpty(element.timesheet)){
-let Timesheet:any = element.timesheet
-let workedhours:any=0
-      Timesheet.forEach((element:any) => {
-        workedhours+=element.workedhours
-      });
-      element.total_work_hours=workedhours
-        }
+//         if(!isEmpty(element.timesheet)){
+// let Timesheet:any = element.timesheet
+// let workedhours:any=0
+//       Timesheet.forEach((element:any) => {
+//         workedhours+=element.workedhours
+//       });
+//       element.total_work_hours=workedhours
+//         }
 
-      });
+//       });
       this.rowData=rowData
       console.log(rowData);
       
