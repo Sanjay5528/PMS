@@ -1686,8 +1686,8 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 			{"$match",
 				bson.D{
 					{"assigned_to", c.Params("employee_id")},
-					{"scheduled_start_date", bson.D{{"$gte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}},
-					{"scheduled_end_date", bson.D{{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}},
+					{"scheduled_start_date", bson.D{{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}},
+					{"scheduled_end_date", bson.D{{"$gte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}},
 				},
 			},
 		},
