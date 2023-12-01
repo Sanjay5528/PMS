@@ -524,7 +524,7 @@ filter: false}
       data['assigned_to'] = params.data.assigned_to;
         data['task_id'] = params.data._id;
         data['ref_id'] = params.data.id;
-        // data['created_on'] = date
+        data['entry_Date'] = this.dateform.value.datepicker?._d
         data[fieldName] = params.value;
      
         if (fieldName === "workedhours") {
@@ -570,23 +570,23 @@ filter: false}
 //       }
      
 
-      if (fieldName == "approval_Status" ){
+    //   if (fieldName == "approval_Status" ){
 
-      data[fieldName] = params.value;
-      if (params.newValue === "Approved") {
+    //   data[fieldName] = params.value;
+    //   if (params.newValue === "Approved") {
        
-        this.columnDefs.forEach((column: any) => {
-          if (column.field === 'workedhours' || column.field === 'status') {
-            column.editable = false;
-          }
-        });
-      }
-    }
-    if(fieldName=="workedhours"&& params.data["status"]=="Closed"){
-      data.status="In Progress"
-    }
+    //     this.columnDefs.forEach((column: any) => {
+    //       if (column.field === 'workedhours' || column.field === 'status') {
+    //         column.editable = false;
+    //       }
+    //     });
+    //   }
+    // }
+    // if(fieldName=="workedhours"&& params.data["status"]=="Closed"){
+    //   data.status="In Progress"
+    // }
 
-    // ! UNDO
+    // // ! UNDO
 
       this.dataService.save("timesheet",data).subscribe((res: any) => {
         this.rowData = res.data;
