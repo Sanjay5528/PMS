@@ -1832,14 +1832,6 @@ fmt.Println(t)
 			},
 		},
 		bson.D{
-			{"$unwind",
-				bson.D{
-					{"path", "$project"},
-					{"preserveNullAndEmptyArrays", true},
-				},
-			},
-		},
-		bson.D{
 			{"$group",
 				bson.D{
 					{"_id",
@@ -1877,7 +1869,7 @@ fmt.Println(t)
 	}
 
 	if employee_id != "SA" {
-		filter = append(filter, bson.D{{"$match", bson.D{{"assigned_to", employee_id}}}})
+		// filter = append(filter, bson.D{{"$match", bson.D{{"assigned_to", employee_id}}}})
 	}
 
 	response, err := helper.GetAggregateQueryResult(org.Id, "task", filter)
