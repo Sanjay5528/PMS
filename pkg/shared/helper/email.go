@@ -35,7 +35,7 @@ func SendEmail(orgId string, to []string, cc []string, subject string, htmlBody 
 	server.Username = config.UserName
 	server.Password = config.Password
 	server.Encryption = mail.EncryptionSTARTTLS
-	// server.Encryption = mail.Encryption(mail.AuthNone)
+	// serv/er.Encryption = mail.Encryption(mail.AuthNone)
 
 	// Since v2.3.0 you can specified authentication type:
 	// - PLAIN (default)
