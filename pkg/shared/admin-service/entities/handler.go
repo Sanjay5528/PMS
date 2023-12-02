@@ -101,7 +101,7 @@ func handleIDGeneration(inputData bson.M, orgID string) {
 			inputData["_id"] = result
 		}
 	} else {
-		fmt.Println("sdagsd")
+		// fmt.Println("sdagsd")
 		inputData["_id"] = helper.Generateuniquekey()
 	}
 }
@@ -1675,6 +1675,45 @@ func team_specificationList(c *fiber.Ctx) error {
 	// 	},
 	// 	bson.D{{"$unset", "employee"}},
 	// }
+	// query := bson.A{
+	// 	bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "employee"},
+	// 				{"localField", "user_id"},
+	// 				{"foreignField", "employee_id"},
+	// 				{"as", "employee"},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{
+	// 		{"$unwind",
+	// 			bson.D{
+	// 				{"path", "$employee"},
+	// 				{"preserveNullAndEmptyArrays", true},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{
+	// 		{"$addFields",
+	// 			bson.D{
+	// 				{"employe_name",
+	// 					bson.D{
+	// 						{"$concat",
+	// 							bson.A{
+	// 								"$employee.first_name",
+	// 								" ",
+	// 								"$employee.last_name",
+	// 							},
+	// 						},
+	// 					},
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unset", "employee"}},
+	// }
 	query := bson.A{
 		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
 		bson.D{
@@ -1712,7 +1751,49 @@ func team_specificationList(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{{"$unset", "employee"}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "employee"},
+					{"localField", "approved_by"},
+					{"foreignField", "employee_id"},
+					{"as", "approved_by"},
+				},
+			},
+		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$approved_by"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
+		bson.D{
+			{"$addFields",
+				bson.D{
+					{"approved_by_name",
+						bson.D{
+							{"$concat",
+								bson.A{
+									"$approved_by.first_name",
+									" ",
+									"$approved_by.last_name",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		bson.D{
+			{"$unset",
+				bson.A{
+					"approved_by",
+					"employee",
+				},
+			},
+		},
 	}
 	response, err := helper.GetAggregateQueryResult(org.Id, "team_specification", query)
 	if err != nil {
@@ -1729,8 +1810,8 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 	scheduledstartdate := c.Params("date")
 	t, _ := time.Parse(time.RFC3339, scheduledstartdate)
 	employee_id := c.Params("employee_id")
-fmt.Println(t)
-	filter :=  bson.A{
+	fmt.Println(t)
+	filter := bson.A{
 		bson.D{
 			{"$match",
 				bson.D{
@@ -1787,6 +1868,14 @@ fmt.Println(t)
 					{"timesheet", bson.D{{"$addToSet", "$timesheet"}}},
 					{"timeSheetDate1", bson.D{{"$last", "$timesheet.timeSheetDate"}}},
 					{"timeSheetDate", bson.D{{"$first", "$timesheet.timeSheetDate"}}},
+				},
+			},
+		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$project"},
+					{"preserveNullAndEmptyArrays", true},
 				},
 			},
 		},
@@ -1877,7 +1966,5 @@ fmt.Println(t)
 		return shared.BadRequest(err.Error())
 	}
 	fmt.Println(response)
-	return shared.SuccessResponse(c, fiber.Map{
-		"response": response,
-	})
+	return shared.SuccessResponse(c, response)
 }
