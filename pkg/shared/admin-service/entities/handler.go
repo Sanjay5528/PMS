@@ -323,6 +323,7 @@ func TimeSheetByIdHandler(c *fiber.Ctx) error {
 				},
 			},
 		},
+
 		bson.D{
 			{"$group",
 				bson.D{
@@ -393,6 +394,7 @@ func TimeSheetByIdHandler(c *fiber.Ctx) error {
 			},
 		},
 	}
+
 	if employee_id == "SA" {
 
 		filter = filter
@@ -1855,14 +1857,14 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{
-			{"$unwind",
-				bson.D{
-					{"path", "$employee"},
-					{"preserveNullAndEmptyArrays", true},
-				},
-			},
-		},
+		// bson.D{
+		// 	{"$unwind",
+		// 		bson.D{
+		// 			{"path", "$employee"},
+		// 			{"preserveNullAndEmptyArrays", true},
+		// 		},
+		// 	},
+		// },
 		bson.D{
 			{"$addFields",
 				bson.D{
