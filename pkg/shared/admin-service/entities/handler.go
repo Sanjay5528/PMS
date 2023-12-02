@@ -1810,8 +1810,10 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 	scheduledstartdate := c.Params("date")
 	t, _ := time.Parse(time.RFC3339, scheduledstartdate)
 	employee_id := c.Params("employee_id")
-	fmt.Println(t)
-	filter := bson.A{
+	fmt.Println(employee_id)
+	query := primitive.A{}
+
+	query = bson.A{
 		bson.D{
 			{"$match",
 				bson.D{
@@ -1957,11 +1959,13 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 		},
 	}
 
-	if employee_id != "SA" {
-		// filter = append(filter, bson.D{{"$match", bson.D{{"assigned_to", employee_id}}}})
-	}
+	// if employee_id != "SA" {
+	// 	// query = append(query, bson.D{{"$match", bson.D{{"assigned_to", employee_id}}}})
 
-	response, err := helper.GetAggregateQueryResult(org.Id, "task", filter)
+	// }
+
+	///conditions = append(conditions, bson.M{column: bson.M{"$gte": minValue, "$lte": maxValue}})
+	response, err := helper.GetAggregateQueryResult(org.Id, "task", query)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
