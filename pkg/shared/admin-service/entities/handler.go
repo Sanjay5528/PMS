@@ -1774,7 +1774,7 @@ fmt.Println(t)
 							{"task_id", "$_id"},
 						},
 					},
-					{"totalworkedhours", bson.D{{"$first", "$totalworkedhours"}}},
+					{"totalworkedhours", bson.D{{"$sum", "$timesheet.workedhours"}}},
 					{"id", bson.D{{"$first", "$_id"}}},
 					{"allocated_hours", bson.D{{"$first", "$allocated_hours"}}},
 					{"requirement_id", bson.D{{"$first", "$requirement_id"}}},
