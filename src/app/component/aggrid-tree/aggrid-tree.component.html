@@ -336,7 +336,7 @@
                       <div style="display: flex; font-size:medium; color: grey;align-items: baseline;">
                         <span style=" margin-bottom:  -7px;" *ngIf="response?.client_name">From {{response?.client_name}}</span>
                         <span style=" margin-bottom:  -7px;" *ngIf="response?.sprint_id">Sprint {{response?.sprint_id}}</span>
-                        <span [ngStyle]="{'background-color': response?.status === 'A' ? 'green' : 'red', 'width': '10px', 'height': '10px', 'border-radius': '50%', 'display': 'inline-block', 'margin-right': '5px','margin-left':'5px'}"></span>
+                        <span [ngStyle]="{'background-color': response?.status === 'A' || 'Active'? 'green' : 'red', 'width': '10px', 'height': '10px', 'border-radius': '50%', 'display': 'inline-block', 'margin-right': '5px','margin-left':'5px'}"></span>
                       </div>
                       <div style="display: flex; font-size: small; color: grey;" *ngIf="response?.enddate">
                         <span>{{response?.startdate}} to {{response?.enddate}}</span>

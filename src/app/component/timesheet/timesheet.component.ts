@@ -76,34 +76,29 @@ filter: false}
     // this.gridApi.sizeColumnsToFit();
   }
       /**gridReady for ag Unsheduled TimeSheet grid */
-
-
-  onGridReadys(params: GridReadyEvent) {
-    this.gridApiUnschedule = params.api;
-    this.gridColumnApi = params.columnApi;
-    // this.gridApi.sizeColumnsToFit();
-  }
-   groupDisplayType:RowGroupingDisplayType = 'groupRows'
+  //  groupDisplayType:RowGroupingDisplayType = 'groupRows'
    context:any
   //  
   public columnDefs: ColDef[] = [
     {
       headerName: "Project Name",
-      field: "project_Name",
+      field: "project_name",
       editable: false,
-      rowGroup: true,
+      rowGroup: true,hide:true,
     },
     {
       headerName: "Task Id",
       field: "_id",
       editable: false,
-      width: 96,
+      sortable:false,
+      width: 250,
       maxWidth: 320,
     },
     {
       headerName: "Task Name",
       field: "task_name",
       editable: false,
+      sortable:false
     }, 
    
     {
@@ -112,10 +107,10 @@ filter: false}
       width: 120,
       maxWidth:120,
       valueFormatter: function (params) {
-        let data:any=moment(params.value).startOf('day')
-        data.subtract(1,'days')
+        // let data:any=moment(params.value).startOf('day')
+        // data.subtract(1,'days')
         
-        return moment(data).format('DD/MM/ YYYY')
+        return moment(params.value).format('DD/MM/ YYYY')
       },
       
     },
@@ -123,13 +118,14 @@ filter: false}
       headerName: "End Date",
       field: "scheduled_end_date",
       editable: false,
+      sortable:false,
       width: 120,
       maxWidth:120,
       valueFormatter: function (params) {
-        let data:any=moment(params.value).startOf('day')
-        data.subtract(1,'days')
+        // let data:any=moment(params?.value).startOf('day')
+        // data.subtract(1,'days')
         
-        return moment(data).format('DD/MM/ YYYY')
+        return moment(params.value).format('DD/MM/ YYYY')
         // console.log( moment(params.value).startOf('day').format('DD/MM/ YYYY'));
         
         // return moment(params.value).startOf('day').format('DD/MM/ YYYY');
@@ -140,10 +136,12 @@ filter: false}
       headerName: "Allocated Hours",
       field: "allocated_hours",
       editable: false,
+      sortable:false
     }, {
       headerName: "Remaning Hours",
-      field: "total_work_hours",
+      field: "remaing_hrs",
       editable: false,
+      sortable:false
     },
     {
       headerName: "Today Worked Hours",
@@ -151,7 +149,7 @@ filter: false}
       
       editable: function (params) {
          
-        return params.data["approval_Status"] !== "Approved"  && params.data["status"] !== "Completed";
+        return params?.data["approval_Status"] !== "Approved"  && params?.data["status"] !== "Approved";
     }, 
       cellDataType: 'number',
       cellEditor: 'agNumberCellEditor',
@@ -221,16 +219,17 @@ filter: false}
         
         return false
 
-      },
-      cellStyle: (params) => {
-        if (params.data["approval_Status"] === "Approved") {
-          return { color: 'green' };
-        } else if (params.data["approval_Status"] === "Rejected") {
-          return { color: 'red' };
-        }
-        return null; // Default styling for other cases
-      },
-      suppressColumnsToolPanel: true
+      } 
+      // ,
+      // cellStyle: (params) => {
+      //   if (params?.data["approval_Status"] === "Approved") {
+      //     return { color: 'green' };
+      //   } else if (params?.data["approval_Status"] === "Rejected") {
+      //     return { color: 'red' };
+      //   }
+      //   return null; // Default styling for other cases
+      // },
+      // suppressColumnsToolPanel: true
     },
     {
       headerName: "Remarks",
@@ -514,8 +513,21 @@ filter: false}
     // console.log(scheduled_end_date <= date);
     
     // if (!(scheduled_end_date <= date)) {
-
-
+      console.log(params.value);
+      // (params.value)
+if(params.value==''||params.value==null){
+  let field:any=params.colDef.field.toUpperCase()
+  this.dialogService.openSnackBar(`${field} Field Should be not be empty`,"CLEAR")
+  let data:any={...params.data}
+  data[field]=params.oldValue
+  const result :any=this.gridApi.applyTransaction({
+    
+    update:[data]
+  })
+  console.warn(result);
+  
+  return
+}
 
       debugger
       let fieldName = params.colDef.field;
@@ -528,81 +540,38 @@ filter: false}
         data[fieldName] = params.value;
      
         if (fieldName === "workedhours") {
-          // let timeSheetWorkedHours =parseInt( params.data.totalworkedhours )+ params.value;
-          // let timeSheetAllocatedHours = params.data.allocated_hours;
-          
-          // this.gridApi.forEachNodeAfterFilterAndSort(function (rowNode, index) {
-          //   // only do first 2
-          //   if (index >= 2) {
-          //     return;
-          //   }
-          //   const data = rowNode.data;
-          //   data.price = Math.floor(Math.random() * 20000 + 20000);
-          //   itemsToUpdate.push(data);
-          // });
-          // const res = this.gridApi.applyTransaction({ update: itemsToUpdate })!;
-          // ! To Check the total Wored Hours is Lesser than the Allocated Hours
-      
-          // if (!(timeSheetAllocatedHours >= timeSheetWorkedHours)) {
-          //   let maxTime:any=timeSheetAllocatedHours-timeSheetWorkedHours
-          //   this.dialogService.openSnackBar(`The Time You Enter Is More than Allocated Hours${maxTime} `,"OK")
-          //   let alldata:any=params.data
-          //   alldata["workedhours"]=params.oldValue
-          //   let data:RowDataTransaction={
-          //    addIndex:params.node.rowIndex,
-          //    update:[alldata]
-          //   }
-          //   this.gridApi.applyTransaction(data)
-          //   return;
-          // }
+          let timeSheetWorkedHours =parseInt( params?.data?.totalworkedhours || 0 )+ params.value;
+          let timeSheetAllocatedHours = params.data.allocated_hours;
+          if (!(timeSheetAllocatedHours >= timeSheetWorkedHours)) {
+            let maxTime:any=timeSheetAllocatedHours-timeSheetWorkedHours
+            this.dialogService.openSnackBar(`The Time You Enter Is More than Allocated Hours${maxTime} `,"OK")
+            let alldata:any=params.data
+            alldata["workedhours"]=params.oldValue
+            let data:RowDataTransaction={
+             update:[alldata]
+            }
+            this.gridApi.applyTransaction(data)
+            return;
+          }
           
         
-        }
-//       if(this.date == this.dateform.value.datepicker?._d){      
-//   let formatedDate: any = moment(this.formatedDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-
-// Object.assign(data, { formatedDate: formatedDate}) 
-//       }
-//       else{
-      
-//      let formatedDate: any = moment(this.calendarDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-//    Object.assign(data, { formatedDate: formatedDate }) 
-//       }
-     
-
-    //   if (fieldName == "approval_Status" ){
-
-    //   data[fieldName] = params.value;
-    //   if (params.newValue === "Approved") {
-       
-    //     this.columnDefs.forEach((column: any) => {
-    //       if (column.field === 'workedhours' || column.field === 'status') {
-    //         column.editable = false;
-    //       }
-    //     });
-    //   }
-    // }
-    // if(fieldName=="workedhours"&& params.data["status"]=="Closed"){
-    //   data.status="In Progress"
-    // }
-
-    // // ! UNDO
+        } 
+    if(params?.data?.timesheet_id){
+      this.dataService.update("timesheet",params.data.timesheet_id,data).subscribe((res: any) => {
+         
+console.log(res);
+      });
+      return 
+    }
 
       this.dataService.save("timesheet",data).subscribe((res: any) => {
-        this.rowData = res.data;
-
-
-        // if (params.colDef.field === "approval_Status" && params.newValue === "Rejected") {
-        //   this.OpenPopup(data)
-        // }
+        // this.rowData = res.data
+        console.log(res);
+        
         this.getData(this.calendarDate)
       });
 
-
-    // } else {
-    //   this.dialogService.openSnackBar("You Can not Able to do Time Sheet ", 'ok')
-    // }
-   
+ 
    
   }
  
@@ -626,20 +595,7 @@ filter: false}
       this.ctrl.config = config
       this.ctrl.collectionName = config.form.collectionName
       this.ctrl.formAction = 'Add';
-      this.ctrl.butText = 'Save';   //buttons based on the id
-
-      // if (this.ctrl.formAction == 'Edit' && this.ctrl.config.mode == 'page') {
-      //   this.ctrl.fields = config.form.fields
-      // }
-      // else if (this.ctrl.formAction == 'Edit' && this.ctrl.mode == 'popup') {
-      //   this.ctrl.model['isEdit'] = true
-      //   this.ctrl.model['isshow'] = true
-      //   this.ctrl.model['ishide'] = true
-      //   this.ctrl.isFormDataLoaded = true
-      //   this.ctrl.formAction = this.ctrl.config.formAction || 'Edit';
-      //   this.ctrl.isEditMode = true;
-      // }
-      // this.fields = config.form.fields
+      this.ctrl.butText = 'Save';  
     })
   }
 
@@ -692,65 +648,76 @@ filter: false}
   console.log(moment(date).isValid());
   
 this.calendarDate=date
-    if (this.userPermissions === 'SA' || this.userPermissions === 'team lead') {
+//     if (this.userPermissions === 'SA' || this.userPermissions === 'team lead') {
     
-    this.dataService.getTimesheetdatabyadmin(this.calendarDate).subscribe((res: any) => {
-      let rowData:any = res.data
+//     this.dataService.getTimesheetdatabyadmin(this.calendarDate).subscribe((res: any) => {
+//   this.rowData = res.data
       
-//       this.dataService.workhours(this.calendarDate).subscribe((val:any)=>{
-//         let data:any=val.data
-//         if(!isEmpty(data)){
-//           rowData.forEach((arr:any)=>{
-//             for (let index = 0; index < data.length; index++) {
-//               const element = data[index];
-//               if(element.task_id==arr.task_id){
-//                 arr.workedhours=element?.result?.workedhours || 0;
-//                 arr.status=element?.result?.status;
-//                 arr['approval_Status']=element['approval_Status']
-//                 arr.remarks=element.result.remarks
-//               }
-//              }}
-//           )
-//  this.rowData=rowData
-// this.gridApi.sizeColumnsToFit()
+// //       this.dataService.workhours(this.calendarDate).subscribe((val:any)=>{
+// //         let data:any=val.data
+// //         if(!isEmpty(data)){
+// //           rowData.forEach((arr:any)=>{
+// //             for (let index = 0; index < data.length; index++) {
+// //               const element = data[index];
+// //               if(element.task_id==arr.task_id){
+// //                 arr.workedhours=element?.result?.workedhours || 0;
+// //                 arr.status=element?.result?.status;
+// //                 arr['approval_Status']=element['approval_Status']
+// //                 arr.remarks=element.result.remarks
+// //               }
+// //              }}
+// //           )
+// //  this.rowData=rowData
+// // this.gridApi.sizeColumnsToFit()
 
-//         }else{
-//           this.rowData=rowData
-//           this.gridApi.sizeColumnsToFit()
+// //         }else{
+// //           this.rowData=rowData
+// //           this.gridApi.sizeColumnsToFit()
 
-//         }
+// //         }
 
-//          // console.log(val,'datasssssss');
+// //          // console.log(val,'datasssssss');
         
-//       }
-//     )}
-    }
-   ) 
+// //       }
+// //     )}
+//     }
+//    ) 
       
-  // this.getsuperadmin();
+//   // this.getsuperadmin();
     
-  }else{
+//   }else{
 
  
     
     
     this.dataService.getTimesheetdata( this.employee_id,this.calendarDate).subscribe((res: any) => {
      
-      let rowData:any =res.data.response
-      // this.rowData=res.data.response
-//       rowData.forEach((element:any) => {
-//         console.log(!isEmpty(element.timesheet));
-        
-//         if(!isEmpty(element.timesheet)){
-// let Timesheet:any = element.timesheet
-// let workedhours:any=0
-//       Timesheet.forEach((element:any) => {
-//         workedhours+=element.workedhours
-//       });
-//       element.total_work_hours=workedhours
-//         }
+      let rowData:any =res.data  
+       rowData.forEach((element:any) => {
+        element.project_name=element?.project_name[0]
+        element._id=element?._id?.task_id
+let yyy=element?.timesheet
+        if(!isEmpty(element?.timesheet)){
+          console.log();
+          
+          element?.timesheet.forEach((Sheet:any) => {
+            console.warn(Sheet,moment(Sheet.entry_Date).isSame(this.calendarDate,'day'));
+            if(moment(Sheet.entry_Date).isSame(this.calendarDate,'day'))
+            {
+            element.timesheet_id=element?.timesheet[0]?._id
+            element.workedhours=element?.timesheet[0]?.workedhours
+          }
+            
+          });
+          let TimeSheetDAta:any= yyy.find((obj:any) => moment(obj?.entry_Date).isSame(this?.calendarDate, 'day'));
+console.log(TimeSheetDAta);
 
-//       });
+        }
+        element.remaing_hrs=(element?.allocated_hours|| 0) - element?.total_work_hours 
+if(element.remaing_hrs=="NaN"){
+  element.remaing_hrs=element.allocated_hours
+}
+      });
       this.rowData=rowData
       console.log(rowData);
       
@@ -798,9 +765,14 @@ this.calendarDate=date
 //       }
 //     )}
     
-     } ) }
+     }
+     )
+    //  }
   }
-
+  onGridReadys(params:any){
+    this.gridApiUnschedule = params.api;
+    // this.gridColumnApi = params.columnApi;
+  }
   addRow() {
     this.gridApiUnschedule.applyTransaction({
       add: [
@@ -839,6 +811,7 @@ this.calendarDate=date
   }
   onUnscheduleValueChanged(params: any) {
     debugger
+
     let fieldName = params.colDef.field;
     this.valueChanged = params.value;
     let data: any = {};
@@ -903,108 +876,6 @@ this.calendarDate=date
     // });
      
   }
-
-
-// getsearch(){
-//   let data: any = localStorage.getItem('auth');
- 
-//   let emp = JSON.parse(data).profile.assigned_to
-  
-
-//   this.date = this.dateform.value.datepicker._d
-//   let formatedDate = moment(this.date).format('YYYY-MM-DDT00:00:00.000+00:00');
-//  console.log("search",formatedDate)
-
-//     // ! UNDO
-
-//   // this.dataService.getunschedule(emp, formatedDate).subscribe((res: any) => {
-//   //   this.listData = res.data
-//   //   console.log('yyy', this.listData);
-//   // }
-//   // )
-// }
-
-
  
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//date picker take 
-
-// this.date = this.form.value.datepicker?._d
-      
-// let formatedDate: any = moment(this.formatedDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-// console.log(formatedDate,'formatedDate');
-// console.log(data,'data');
-
-// Object.assign(data, { formatedDate: formatedDate}) 
-
-// else if(date=this.formatedDate) {
-//   this.date = this.form.value.datepicker?._d
-
-//   let formatedDate: any = moment(this.formatedDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-//   console.log(formatedDate,'formatedDate');
-// console.log(data,'data');
-  
-//   Object.assign(data, { formatedDate: formatedDate}) 
-// }
-
-// this.date = this.form.value.datepicker?._d
-      
-// let SelectedDate: any = moment(this.SelectedDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-// console.log(SelectedDate,'formatedDate');
-// console.log(data,'data');
-
-// Object.assign(data, { formatedDate: SelectedDate})
-// console.log(data,'data');
-//////////////////
-  
-// this.date = this.form.value.datepicker?._d
-      
-// let SelectedDate: any = moment(this.SelectedDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-// console.log(SelectedDate,'formatedDate');
-// console.log(data,'data');
-
-// Object.assign(data, { formatedDate: SelectedDate}) 
-//   console.log(data,'data');

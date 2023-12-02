@@ -660,13 +660,22 @@ console.log(ctrl);
 
     if(ctrl.config.diffApi==true){
       let key:any=ctrl.model[ctrl.config.idToSend]
-      this.dataService.lookupTreeData(ctrl.config.endPoint,key).subscribe((res:any)=>{
-        console.log(res);
-        ctrl.listData=res.data.response
+      this.dataService.lookupTreeData(ctrl.config.endPoint,key).subscribe(
+        (result:any) => {
+          console.log(result);
+        ctrl.listData=result.data.response || []
         // ctrl.listData = res.data[0].response|| [];
         ctrl.tempListData = ctrl.listData;
         ctrl.gridApi.sizeColumnsToFit();
-      })
+        },
+        error => {
+          ctrl.listData = []
+          ctrl.tempListData = ctrl.listData;
+          //Show the error popup
+          console.error('There was an error!', error);
+        })
+       
+      
     }else{
 
 
@@ -1013,7 +1022,7 @@ Create_struct(ctrl:any,value:any): Promise<any> {
      let val
        if (obj.type=="date") {
         formData[obj.colName] = moment().utc().startOf('day').add(obj.addDays || 0 ,'day').format(obj.format||'yyyy-MM-DDT00:00:00.000Z')
-      } else if (obj.value.startsWith('@')) {
+      } else if (obj?.value?.startsWith('@')) {
            val= obj.value.slice(1)
           formData[obj.colName] = model[val]
       } else if (obj.type == "exp") {
@@ -1022,6 +1031,12 @@ Create_struct(ctrl:any,value:any): Promise<any> {
           let data = val[obj.object][obj.object1]
           formData[obj.colName] = data
         }
+      }else if (obj.type == "prefix") {
+        // if (obj.source == "project_id") {
+          val =formData[obj.source]
+          // let data = val[obj.object][obj.object1]
+          formData[obj.colName] ="SEQ|"+val
+        // }
       }
       else {
         formData[obj.colName] = obj.value

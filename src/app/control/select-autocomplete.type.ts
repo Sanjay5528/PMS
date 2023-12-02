@@ -7,6 +7,7 @@ import { DataService } from '../services/data.service';
 @Component({
   selector: 'formly-field-select-autocomplete',
   template: `
+   <mat-form-field>
      <input type="text"
            matInput
            #autoCompleteInput
@@ -18,6 +19,7 @@ import { DataService } from '../services/data.service';
         {{ op[this.labelProp] }}
       </mat-option>
     </mat-autocomplete>
+</mat-form-field>
   `,
 })
 export class FormlyFieldSelectAutocomplete extends FieldType<any> implements OnInit {
@@ -52,21 +54,40 @@ data:any={}
      if (this.to.optionsDataSource.collectionName) {
      this.dataService.getDataByFilter(this.to.optionsDataSource.collectionName,this.to.optionsDataSource.filter)
      .subscribe((res :any)=>{
-         this.dataService.buildOptions(res.data[0].response,this.opt)
+      this.opt.options=[]   
+      res.data[0].response.forEach((data:any)=>{
+        console.log(data);
+        let datas:any={}
+        datas[this.labelProp]=data[this.labelProp]
+        datas[this.valueProp]=data[this.valueProp]
+        this.filteredOptions.push(datas)
+        this.opt.options.push(datas)
+      })
+
+        //  this.dataService.buildOptions(res.data[0].response,this.opt)
      })
     }
     this.formControl.valueChanges.subscribe((val:any)=>{
+      console.log(val);
+      console.log(this.opt.options);
+      
         const filterValue = val.toLowerCase();
-        this.filteredOptions = this.opt.options.filter((option:any) => option.name.toLowerCase().includes(filterValue));
+        // this.filteredOptions = this.opt.options.filter((option:any) => option[this.labelProp].toLowerCase().includes(filterValue));
+        this.filteredOptions = this.opt.options.filter((option: any) => {
+        let data=  option[this.labelProp]
+         return data.toLowerCase().includes(filterValue)
+        
+        });
+
     })
   }
 
   selectionChange(ctrl:any,inputObj:any){
-     let obj = this.filteredOptions.find(o=>o[this.valueProp] == ctrl.formControl.value)
-     if (obj) inputObj.value = obj[this.labelProp]
-     if (this.onValueChangeUpdate) {
-      ctrl.formControl.parent.controls[this.onValueChangeUpdate.key].setValue(obj[this.onValueChangeUpdate.labelProp])
-      //ctrl.model[this.onValueChangeUpdate.key] = obj[this.onValueChangeUpdate.labelProp]
-     }
+    //  let obj = this.filteredOptions.find(o=>o[this.valueProp] == ctrl.formControl.value)
+    //  if (obj) inputObj.value = obj[this.labelProp]
+    //  if (this.onValueChangeUpdate) {
+    //   ctrl.formControl.parent.controls[this.onValueChangeUpdate.key].setValue(obj[this.onValueChangeUpdate.labelProp])
+    //   //ctrl.model[this.onValueChangeUpdate.key] = obj[this.onValueChangeUpdate.labelProp]
+    //  }
   }
 }

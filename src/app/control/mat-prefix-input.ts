@@ -73,7 +73,7 @@ export class MatPrefixInput extends FieldType<any> implements OnInit {
                  console.log(val);
                  
             this.prefix=val+"-"    
-        
+          this.onselect('')
         });
       };
     }
@@ -81,10 +81,13 @@ export class MatPrefixInput extends FieldType<any> implements OnInit {
    console.log(this.formControl);
    
   }
-
+CurrentVAlue:any
   onselect(event: any) {
-    let pathcData:any=this.prefix+event.target.value
-    
+    let data = event !=='' ? event.target.value : this.CurrentVAlue
+
+    let pathcData:any=this.prefix+data
+    console.log(this.prefix);
+    this.CurrentVAlue=data
     // let value:any =  event.target.value
     if(this.field.props.searchableField) {
           let query:any={        start:0,end:1000,filter:[]              }
@@ -112,8 +115,15 @@ export class MatPrefixInput extends FieldType<any> implements OnInit {
           if(!isEmpty(result.data[0].response)){
             
             this.field.formControl.setErrors({uniqueItems:false}) //we are setting the error manually
-          };
-          //  field.parent.formControl.get(field.templateOptions.columnName)._fields[0].templateOptions.options = list
+          }else{
+
+            this.field.formControl.setErrors({required:true}) //we are setting the error manually
+            if(this.CurrentVAlue!==''){
+              this.field.formControl.setErrors() 
+
+            }
+
+          }
          },
          error => {
              //Show the error popup
@@ -121,8 +131,6 @@ export class MatPrefixInput extends FieldType<any> implements OnInit {
          }
        );
       }
-    // this.model[this.currentField.parentKey]=this.prefix+event.target.value
-   
   }
 
 }

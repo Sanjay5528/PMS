@@ -29,7 +29,11 @@ import { v4 as uuidv4 } from "uuid";
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
       </button>
       <mat-menu #modulemenu="matMenu">
-        <button mat-menu-item (click)="onClickMenuItem('edit', params)">
+      <button  mat-menu-item (click)="onClickMenuItem('submodules', params)">
+          <mat-icon>add</mat-icon>
+          <span>Sub Modules</span>
+        </button>
+         <button mat-menu-item (click)="onClickMenuItem('edit', params)">
           <mat-icon>edit</mat-icon>
           <span>Edit</span>
         </button>
@@ -37,10 +41,7 @@ import { v4 as uuidv4 } from "uuid";
           <mat-icon>delete</mat-icon>
           <span>Delete</span>
         </button>
-        <button  mat-menu-item (click)="onClickMenuItem('submodules', params)">
-          <mat-icon>task</mat-icon>
-          <span>Sub Modules</span>
-        </button>
+       
         <!-- <button mat-menu-item (click)="onClickMenuItem('task', params.data)">
           <mat-icon>task</mat-icon>
           <span>Task</span>
@@ -73,11 +74,11 @@ import { v4 as uuidv4 } from "uuid";
         </button>
          <button mat-menu-item (click)="onClickRequirementMenuItem('task', params)">
           <mat-icon>task</mat-icon>
-          <span>Task</span>
+          <span>Add Task</span>
         </button>
         <button mat-menu-item (click)="onClickRequirementMenuItem('testcase', this)">
           <mat-icon>description</mat-icon>
-          <span>Test Case </span>
+          <span>Add Test Case </span>
         </button>
       </mat-menu>
     </div>
@@ -117,7 +118,7 @@ import { v4 as uuidv4 } from "uuid";
         </button>
         <button  mat-menu-item *ngIf="params?.data?.test_case_name"  (click)="onclicktestResulr('testresult', params)">
           <mat-icon>task</mat-icon>
-          <span>Test Result</span>
+          <span>Add Test Result</span>
         </button>
       </mat-menu>
     </div>
@@ -317,7 +318,7 @@ parentRouteName:any
       if (confirm("Do you wish to delete this record?")) {
         // !Look Up delete
         this.dataService
-          .deleteDataById("module", data._id)
+          .deleteDataById("modules", data._id)
           .subscribe((res: any) => {
             console.log(res);
             this.dialogService.openSnackBar(res.message, "OK");

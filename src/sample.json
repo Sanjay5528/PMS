@@ -1,116 +1,78 @@
 {
-	"pageHeading": "Event",
-	"formType": "simple",
-	"editMode": "page",
-	"screenEditMode": "page",
-	"user": true,
-	"keyField": "_id",
+	"pageHeading": "Functional Testing",
+	"formType": "master-detail",
+	"localSet": true,
+	"localSetField": "project_id",
+	"mapColumnDiff": true,
+	"mapColumnfield": "project_id",
 	"form": {
-	  "collectionName": "event",
+	  "collectionName": "project",
 	  "fields": [
 		{
-			"fieldGroupClassName": "display-flex",
-			"fieldGroup": [		{
-		  "type": "input",
-			  "className": "flex-9",
-			  "key": "task_name",
+		  "type": "label-view",
+		  "key": "client_id",
 		  "props": {
-			"label": "Task Name",
-			"placeholder": "Task Name",
-			"pattern": "^[a-zA-Z&>/;,:-_/]+( [a-zA-Z&>/;,:-_/!@-]+)*$",
+			"label": "Client Name",
+			"label_width": 100,
+			"value_width": 200,
+			"value_in_next_row": false,
+			"placeholder": "Client Name",
 			"required": true
-		  },
-		  "expressions": {
-			"props.readonly": "model.isEdit"
 		  }
-		},{
-			"type": "select",
-			  "className": "flex-5",
-			  "key": "task_type",
-			"props": {
-				"label": "Task Type",
-				"options": [
-					{
-						"label": "UI/UX",
-						"value": "UI/UX"
-					},{
-						"label": "API",
-						"value": "API"
-					},{
-						"label": "Testing",
-						"value": "Testing"
-					},
-					{
-						"label": "UI Development",
-						"value": "UI Development"
-					}
-				],
-				"required": true
-			
-			},
-			"expressions": {
-			  "props.readonly": "model.isEdit"
-			}
-		  }
-		
-		]},
-		{
-		  "fieldGroupClassName": "display-flex",
-		  "fieldGroup": [
-			{
-			  "key": "scheduled_start_date",
-			  "type": "date-input",
-			  "className": "flex-6",
-  
-			  "props": {
-				"label": "Scheduled Start Date",
-				"placeholder": "Scheduled Start Date",
-				"required": true
-			  }
-			},
-			{
-			  "key": "scheduled_end_date",
-			  "type": "date-input",
-			  "className": "flex-6",
-  
-			  "parentKey": "scheduled_start_date",
-			  "parentCollectionName": "task",
-			  "props": {
-				"label": "Scheduled End Date",
-				"placeholder": "Scheduled End Date",
-				"required": true
-			  }
-			}
-		  ]
 		},
 		{
+		  "type": "label-view",
+		  "key": "project_name",
+		  "props": {
+			"label": "Project Name",
+			"label_width": 100,
+			"value_width": 200,
+			"value_in_next_row": false,
+			"placeholder": "Project Name",
+			"required": true
+		  }
+		},
+		{
+		  "type": "label-view",
+		  "key": "status",
+		  "props": {
+			"label_width": 100,
+			"value_width": 200,
+			"value_in_next_row": true,
+			"label": "Project Status",
+			"placeholder": "Project Status",
+			"required": true
+		  }
+		}
+	  ],
+	  "buttons": {
+		"start": false,
+		"newEntry": false
+	  }
+	},
+	"detailForm": {
+	  "customfilter": true,
+	  "customkey": "project_id",
+	  "mapColumn": "project_id",
+	  "collectionName": "regression",
+	  "keyColumn": "_id",
+	  "isPopupEdit": true,
+	  "fields": [
+		{
 		  "fieldGroupClassName": "display-flex",
 		  "fieldGroup": [
 			{
-			  "type": "number",
-			  "key": "allocated_hours",
-			  "className": "flex-6",
-  
-			  "props": {
-				"label": "Allocated Hours",
-				"placeholder": "Allocated Hours",
-				"pattern": "^(?:|[1-9][0-9]*)$",
-				"required": true
-			  }
-			},
-  
-			{
 			  "type": "select-input",
-			  "key": "assigned_to",
-			  "className": "flex-6",
-  
+			  "key": "sprint_id",
+			  "className": "flex-2",
 			  "props": {
-				"label": "Assigned To",
-				"placeholder": "Assigned To",
-				"lookup": true,
-				"endPoint": "team_specification",
+				"label": "Sprint Id",
+				"placeholder": "Sprint Id",
+				"labelPropTemplate": " {{_id}}",
+				"Collections": "sprint",
+				"multifilter":true,
 				"multifiltertype": "local",
-				"local_name": "project_id",
+				"local_name":"project_id",
 				"multifilter_condition": {
 				  "clause": "AND",
 				  "conditions": [
@@ -119,45 +81,158 @@
 					  "operator": "EQUALS",
 					  "type": "string",
 					  "value": ""
-					},  {
-					  "column": "user_id",
-					  "operator": "EXISTS",
-					  "type": "string",
-					  "value": true
 					}
 				  ]
 				},
-				"labelProp": "employe_name",
-				"valueProp": "user_id",
-				"required": true
-			  },
-			  "expressions": {
-				"hide": "model.isEdit"
+				"required": true,
+				"labelProp": "_id",
+				"valueProp": "_id"
+			  }
+			},
+			{
+			  "type": "input",
+			  "key": "regression_id",
+			  "className": "flex-6",
+			  "props": {
+				"label": "Regression Name/ID",
+				"placeholder": "Regression Name/ID",
+				"required": true,
+				"maxLength": 10,
+				"pattern": "^[a-zA-Z0-9]+$"
 			  }
 			}
 		  ]
 		},
+  
 		{
 		  "type": "html-input",
 		  "key": "description",
 		  "className": "flex-6",
 		  "props": {
-			"label": "Task Description",
-			"required": true
-		  },
-  
-		  "maxlength": 2000
+			"label": "Regression Description"
+		  }
 		}
-	  ]
+	  ], "defaultValues":[
+        {
+           "colName":"status",
+           "value":"A",
+           "type":"string"
+        },  {
+            "colName":"_id",
+            "source":"project_id",
+            "type":"prefix"
+            
+         }
+     ]
 	},
-	"defaultValues": [
-	  {
-		"colName": "status",
-		"type": "string",
-		"value": "Active"
-	  }
-	],
+	"detailListConfig": {
+	  "sectionHeading": "Project Team",
+	  "actions": [
+		{
+		  "label": "Edit",
+		  "icon": "edit",
+		  "formName": "project"
+		},
+		{
+		  "label": "Test Result",
+		  "icon": "view_module",
+		  "formName": "test_result",
+		  "formAction": "components",
+		  "route_type": "CustomRoute",
+		  "Custom_Route": "project/test_result",
+		  "Custom_Key_filed": "_id"
+		},{
+			"label": "Bug Reports",
+			"icon": "view_module",
+			"formName": "individual_report",
+			"formAction": "individual_report",
+			"Custom_Route": "project/regression",
+			"SaveType":"local",
+			"Save_Field":"project_id",
+			"Custom_Key_filed": "_id"
+		  },
+		{
+		  "label": "Delete",
+		  "icon": "delete",
+		  "formName": "delete",
+		  "formAction": "delete"
+		}
+	  ],
+	  "addRoute": "add/regression",
+	  "editRoute": "edit/regression",
+	  "fields": [
+		{
+		  "headerName": "Regression Id",
+		  "field": "regression_id",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Sprint Id",
+		  "field": "sprint_id",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
   
-	"onCancelRoute": "/list/event"
+		{
+		  "headerName": "Schedule Start Date",
+		  "field": "startdate",
+		  "sortable": true,
+		  "filter": "agDateColumnFilter",
+		  "type": "date"
+		},
+		{
+		  "headerName": "Schedule End Date",
+		  "field": "enddate",
+		  "sortable": true,
+		  "filter": "agDateColumnFilter",
+		  "type": "date"
+		},
+		{
+		  "headerName": "Test Case Count",
+		  "field": "number_of_TestCase_count",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Positive Result",
+		  "field": "positive_result",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Negative Result",
+		  "field": "negative_result",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+            "headerName": "Status",
+            "field": "status",   "maxWidth":100,
+            "filter": "agTextColumnFilter",
+            "sortable": true
+          }, 
+          {
+          "type": "rightAligned",
+          "headerName": "Actions",
+          "menuTabs": [],    "maxWidth":85,
+          
+          "lockPosition": "right",
+          "lockPinned": true,
+          "pinned":"right",
+          "cellRenderer": "buttonRenderer",
+          "cellRendererParams": {
+          "onClick": "this.onBtnClick1.bind(this)",
+          "label": "Click 1"
+          },
+          "filter":false,"sortable":false
+          }
+	  ],
+	  "filterOptions": [],
+	  "defaultFilter": []
+	},
+	"designConfig": {
+	  "leftPanelWidth": "320px"
+	}
   }
   

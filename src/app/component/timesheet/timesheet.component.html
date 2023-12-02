@@ -65,12 +65,8 @@
           [defaultColDef]="defaultColDef"
           [rowData]="rowData"
           (gridReady)="onGridReady($event)"
-          [singleClickEdit]="true"
-          [pagination]="true"
+        [groupDisplayType]="'groupRows'"
           [paginationPageSize]="10"
-          (selectionChanged)="onSelectionChanged($event)"
-          [getRowId]="getRowId"
-          [groupDisplayType]="groupDisplayType"
           (selectionChanged)="onSelectionChanged($event)"
           [rowSelection]="'multiple'"
           (cellValueChanged)="onCellValueChanged($event)"
@@ -111,23 +107,8 @@
       >
         Add Row
       </button>
-    </div>
-    <ag-grid-angular 
-    style="width: 100%; height: calc(100vh - 250px); flex: 1 1 auto"
-    class="ag-theme-alpine"
-    [defaultColDef]="defaultColDef"
-    [columnDefs]="columnDefs" 
-    [rowData]="listData"
-    [gridOptions]='gridOptions'
-    [context]="context"
-    [rowSelection]="'single'"
-    [animateRows]="true"
-    [singleClickEdit]="true"
-    (selectionChanged)="onSelectionChanged($event)"
-    (cellValueChanged)="onCellValueChanged($event)"
-    (gridReady)="onGridReady($event)" 
-    ></ag-grid-angular>
-    <!-- <div class="table">
+    </div> 
+   <!-- <div class="table"> -->
       <ag-grid-angular
         style="width: 57%; height: 60vh"
         class="ag-theme-alpine"
@@ -137,11 +118,9 @@
         (gridReady)="onGridReadys($event)"
         [pagination]="true"
         [paginationPageSize]="10"
-        (selectionChanged)="onSelectionChanged($event)"
-        [context]="context"
-        (cellValueChanged)="onUnscheduleValueChanged($event)"
+         (cellValueChanged)="onUnscheduleValueChanged($event)"
       ></ag-grid-angular>
-    </div> -->
+    <!-- </div>  -->
   </mat-tab>
 </mat-tab-group>
 <div>

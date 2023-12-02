@@ -184,7 +184,7 @@ loadConfig(formName:any){
         cellRendererParams: { suppressCount: true },
         sortable: false,
     resizable: true,
-    filter: false
+    filter: false 
   }
 
 this.gridOptions.pagination=true
@@ -206,13 +206,13 @@ this.gridOptions.paginationPageSize=100
   //   width: 40,
   //   filter: 'agTextColumnFilter',
   // },
-  {
-    headerName: 'Task Name',
-    field: 'task_name',
-    width: 40,
-    editable: true,
-    filter: 'agTextColumnFilter',hide:true
-  },
+  // {
+  //   headerName: 'Task Name',
+  //   field: 'task_name',
+  //   width: 40,
+  //   editable: true,
+  //   filter: 'agTextColumnFilter',hide:true
+  // },
   {
     headerName: 'Start Date',
     field: 'startdate',
@@ -245,7 +245,8 @@ this.gridOptions.paginationPageSize=100
   {
   
     field: 'Action',
-    maxWidth:85,sortable:false,filter: false,
+    maxWidth:85,
+    sortable:false,filter: false,
    menuTabs: [],
    lockPosition: 'right',
    lockPinned: true,
@@ -262,6 +263,7 @@ this.gridOptions.groupDefaultExpanded=-1
   this.gridOptions.getRowId=function(params:any){
     return params.data._id
   }
+  this.gridOptions.excludeChildrenWhenTreeDataFiltering=true;
 this.gridOptions.pagination=true
 this.gridOptions.paginationPageSize=100
     this.gridOptions.autoGroupColumnDef={
@@ -389,11 +391,13 @@ this.gridOptions.groupDefaultExpanded=-1
 		},
 	  { 
 		"headerName": "Project Role", "field": "role_id" 
+	},  { 
+		"headerName": "Reporting Person", "field": "approved_by_name" 
 	},
   {
     headerName: 'Start Date',
     field: 'scheduled_start_date',
-    width: 40,
+    width: 45,
     editable: false,
     filter: 'agDateColumnFilter',
     valueFormatter: function (params) {
@@ -981,7 +985,7 @@ this.dataService.getDataByFilter("modules",filer).subscribe((res:any) =>{
 
   // Check if each.modulename is not already in OnlyValueRequriementModules
 if (!this.OnlyValueRequriementModules.includes(each.modulename)) {
-  this.ValueToCompareRequriementModules.push({ label: each.modulename, value: each.moduleid });
+  this.ValueToCompareRequriementModules.push({ label: each.modulename, value: each._id });
   this.OnlyValueRequriementModules.push(each.modulename);
 }
 
@@ -1005,21 +1009,24 @@ if(params==true){
 // ! UNDO
 
 if(this.formName=="module"){
-//   let Projectfiler:any={
-//     start:0,end:1000,filter:[{
+  let Projectfiler:any={
+    start:0,end:1000,filter:[{
       
-//         clause: "AND",
-//         conditions: [
-//           {column: "project_id",operator: "EQUALS",type: "string",value: this.response.project_id},
-//         ],
+        clause: "AND",
+        conditions: [
+          {column: "project_id",operator: "EQUALS",type: "string",value: this.response.project_id},
+        ],
       
-//     }]
-//   }
+    }]
+  }
 // this.response.project_id
-    this.dataService.getModuleFilter("modules", this.response.project_id).subscribe((res: any) => {
+    this.dataService.getDataByFilter("modules", Projectfiler).subscribe((res: any) => {
       this.listData = []
-      for (let idx = 0; idx < res.data.length; idx++) {
-        const row = res.data[idx];
+      console.log(res);
+
+      let data:any=res.data[0].response
+      for (let idx = 0; idx < data.length; idx++) {
+        const row = data[idx];
         if (row.parentmodulename == "" || !row.parentmodulename) {
           row.treePath = [row.modulename];
         } else {
