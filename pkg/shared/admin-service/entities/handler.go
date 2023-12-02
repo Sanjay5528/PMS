@@ -1790,6 +1790,14 @@ fmt.Println(t)
 				},
 			},
 		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$project"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
 		bson.D{{"$unwind", "$timesheet"}},
 		bson.D{{"$match", bson.D{{"scheduled_start_date", bson.D{{"$lte", time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 0, time.UTC)}}}}}},
 		bson.D{
@@ -1877,7 +1885,5 @@ fmt.Println(t)
 		return shared.BadRequest(err.Error())
 	}
 	fmt.Println(response)
-	return shared.SuccessResponse(c, fiber.Map{
-		"response": response,
-	})
+	return shared.SuccessResponse(c, response)
 }
