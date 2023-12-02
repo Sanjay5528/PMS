@@ -1811,13 +1811,14 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 	t, _ := time.Parse(time.RFC3339, scheduledstartdate)
 	employee_id := c.Params("employee_id")
 	fmt.Println(employee_id)
+	start_date :=time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)
 	query := primitive.A{}
-
+end_date := time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 0, time.UTC)
 	query = bson.A{
 		bson.D{
 			{"$match",
 				bson.D{
-					{"scheduled_start_date", bson.D{{"$lte", time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)}}},
+					{"scheduled_start_date", bson.D{{"$lte", start_date}}},
 					{"status",
 						bson.D{
 							{"$nin",
@@ -1881,8 +1882,8 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{{"$unwind", "$timesheet"}},
-		bson.D{{"$match", bson.D{{"scheduled_start_date", bson.D{{"$lte", time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 0, time.UTC)}}}}}},
+		// bson.D{{"$unwind", "$timesheet"}},
+		bson.D{{"$match", bson.D{{"scheduled_start_date", bson.D{{"$lte", end_date}}}}}},
 		bson.D{
 			{"$match",
 				bson.D{
@@ -1892,7 +1893,7 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 								{"$and",
 									bson.A{
 										bson.D{{"status", "Completed"}},
-										bson.D{{"timeSheetDate", bson.D{{"$lte", time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)}}}},
+										bson.D{{"timeSheetDate", bson.D{{"$lte", start_date}}}},
 									},
 								},
 							},
@@ -1900,8 +1901,8 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 								{"$and",
 									bson.A{
 										bson.D{{"status", bson.D{{"$ne", "Completed"}}}},
-										bson.D{{"scheduled_start_date", bson.D{{"$lte", time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 0, time.UTC)}}}},
-										bson.D{{"scheduled_start_date", bson.D{{"$lte", time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)}}}},
+										bson.D{{"scheduled_start_date", bson.D{{"$lte", end_date}}}},
+										bson.D{{"scheduled_start_date", bson.D{{"$lte", start_date}}}},
 									},
 								},
 							},
@@ -1958,6 +1959,9 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 			},
 		},
 	}
+
+
+
 
 	// if employee_id != "SA" {
 	// 	// query = append(query, bson.D{{"$match", bson.D{{"assigned_to", employee_id}}}})
