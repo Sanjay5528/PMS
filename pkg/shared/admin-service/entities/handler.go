@@ -173,7 +173,7 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 
 	// collectionName, err := helper.CollectionNameGet(c.Params("model_name"), org.Id)
 	// if err != nil {
-	// 	return shared.BadRequest("Invalid CollectionName")
+	// return shared.BadRequest("Invalid CollectionName")
 	// }
 
 	// // Validate the input data based on the data model
@@ -425,50 +425,166 @@ func TimeSheetByiiIdHandler(c *fiber.Ctx) error {
 
 	var collectionName = "task"
 	var filter primitive.A
-	filter =
-		bson.A{
-			bson.D{
-				{"$lookup",
-					bson.D{
-						{"from", "timesheet"},
-						{"localField", "task_id"},
-						{"foreignField", "task_id"},
-						{"as", "result"},
-					},
-				},
-			},
-			bson.D{
-				{"$unwind",
-					bson.D{
-						{"path", "$result"},
-						{"includeArrayIndex", "string"},
-						{"preserveNullAndEmptyArrays", true},
-					},
-				},
-			},
-			bson.D{
-				{"$match",
-					bson.D{
-						{"$and",
-							bson.A{
-								bson.D{
-									{"result.formatedDate",
-										bson.D{
-											{"$gte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)},
-											{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 23, 59, 59, 0, time.UTC)},
-										},
-									},
-								},
-								//bson.D{{"status", bson.D{{"$ne", "Completed"}}}},
-							},
-						},
-					},
-				},
-			},
-		}
+ filter = bson.A{
+    bson.D{
+        {"$match",
+            bson.D{
+                {"scheduled_start_date", bson.D{{"$lte", time.Date(2023, 12, 1, 18, 30, 0, 0, time.UTC)}}},
+                {"status",
+                    bson.D{
+                        {"$nin",
+                            bson.A{
+                                "Completed",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
+    bson.D{
+        {"$lookup",
+            bson.D{
+                {"from", "timesheet"},
+                {"localField", "_id"},
+                {"foreignField", "task_id"},
+                {"as", "timesheet"},
+            },
+        },
+    },
+    bson.D{
+        {"$unwind",
+            bson.D{
+                {"path", "$timesheet"},
+                {"preserveNullAndEmptyArrays", true},
+            },
+        },
+    },
+    bson.D{
+        {"$group",
+            bson.D{
+                {"_id",
+                    bson.D{
+                        {"employeeid", "$assigned_to"},
+                        {"task_id", "$_id"},
+                    },
+                },
+                {"totalworkedhours", bson.D{{"$first", "$totalworkedhours"}}},
+                {"id", bson.D{{"$first", "$_id"}}},
+                {"allocated_hours", bson.D{{"$first", "$allocated_hours"}}},
+                {"requirement_id", bson.D{{"$first", "$requirement_id"}}},
+                {"totalworkedhours", bson.D{{"$sum", "$timesheet.workedhours"}}},
+                {"status", bson.D{{"$first", "$status"}}},
+                {"task_name", bson.D{{"$first", "$task_name"}}},
+                {"scheduled_start_date", bson.D{{"$first", "$scheduled_start_date"}}},
+                {"scheduled_end_date", bson.D{{"$first", "$scheduled_end_date"}}},
+                {"project_id", bson.D{{"$first", "$project_id"}}},
+                {"task_type", bson.D{{"$first", "$task_type"}}},
+                {"timesheet", bson.D{{"$addToSet", "$timesheet"}}},
+                {"timeSheetDate1", bson.D{{"$last", "$timesheet.timeSheetDate"}}},
+                {"timeSheetDate", bson.D{{"$first", "$timesheet.timeSheetDate"}}},
+            },
+        },
+    },
+    bson.D{{"$unwind", bson.D{{"path", "$timesheet"}}}},
+    bson.D{
+        {"$match",
+            bson.D{
+                {"scheduled_start_date", bson.D{{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 23, 59, 59, 0, time.UTC)}}},
+                {"scheduled_end_date", bson.D{{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}},
+            },
+        },
+    },
+    bson.D{
+        {"$match",
+            bson.D{
+                {"$or",
+                    bson.A{
+                        bson.D{
+                            {"$and",
+                                bson.A{
+                                    // bson.D{{"status", bson.D{{"$eq", "Completed"}}}},
+									bson.D{{"status", "Completed"}},
+                                    bson.D{{"timeSheetDate", bson.D{{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}}},
+                                    bson.D{{"timeSheetDate1", bson.D{{"$gte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}}},
+                                },
+                            },
+                        },
+                        bson.D{
+                            {"$and",
+                                bson.A{
+                                    bson.D{{"status", bson.D{{"$ne", "Completed"}}}},
+                                    bson.D{{"scheduled_start_date", bson.D{{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 23, 32, 5, 0, time.UTC)}}}},
+                                    bson.D{{"scheduled_start_date", bson.D{{"$lte", time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)}}}},
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
+    bson.D{{"$addFields", bson.D{{"employeeid", "$employeeid"}}}},
+    bson.D{{"$addFields", bson.D{{"_id", "$id"}}}},
+	bson.D{
+        {"$lookup",
+            bson.D{
+                {"from", "project"},
+                {"localField", "project_id"},
+                {"foreignField", "project_id"},
+                {"as", "project"},
+            },
+        },
+    },
+    bson.D{
+        {"$group",
+            bson.D{
+                {"_id",
+                    bson.D{
+                        {"employeeid", "$assigned_to"},
+                        {"task_id", "$_id"},
+                    },
+                },
+                {"totalworkedhours", bson.D{{"$first", "$totalworkedhours"}}},
+                {"id", bson.D{{"$first", "$_id"}}},
+                {"allocated_hours", bson.D{{"$first", "$allocated_hours"}}},
+                {"requirement_id", bson.D{{"$first", "$requirement_id"}}},
+                {"totalworkedhours", bson.D{{"$sum", "$timesheet.workedhours"}}},
+                {"status", bson.D{{"$first", "$status"}}},
+                {"task_name", bson.D{{"$first", "$task_name"}}},
+                {"project_name", bson.D{{"$first", "$project.project_name"}}},
+
+                {"scheduled_start_date", bson.D{{"$first", "$scheduled_start_date"}}},
+                {"scheduled_end_date", bson.D{{"$first", "$scheduled_end_date"}}},
+                {"project_id", bson.D{{"$first", "$project_id"}}},
+                {"task_type", bson.D{{"$first", "$task_type"}}},
+                {"timesheet", bson.D{{"$addToSet", "$timesheet"}}},
+                {"timeSheetDate1", bson.D{{"$last", "$timesheet.timeSheetDate"}}},
+                {"timeSheetDate", bson.D{{"$first", "$timesheet.timeSheetDate"}}},
+            },
+        },
+    },
+    bson.D{
+        {"$unset",
+            bson.A{
+                "id",
+                "timeSheetDate1",
+                "timeSheetDate",
+            },
+        },
+    },
+}
+
+
+fmt.Println(date)
+
+
+
 	if employee_id == "SA" {
+
 		filter = filter
 	} else {
+		// fmt.Println(employee_id)
 		filter = append(filter, bson.D{{"$match", bson.D{{"assigned_to", employee_id}}}})
 	}
 
@@ -504,7 +620,7 @@ func getDocsHandler(c *fiber.Ctx) error {
 			return shared.BadRequest(cmdErr.Message)
 		}
 	}
-
+	fmt.Println(Response)
 	return shared.SuccessResponse(c, Response)
 }
 
