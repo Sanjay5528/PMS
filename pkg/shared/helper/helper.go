@@ -51,7 +51,7 @@ func DocIdFilter(id string) bson.M {
 	if err != nil {
 		// fmt.Println("Error decoding:", err)
 	}
-return bson.M{"_id": id}
+	return bson.M{"_id": id}
 	// // Attempt to convert the ID to a hexadecimal ObjectID.
 	// docId, err := primitive.ObjectIDFromHex(id)
 
@@ -399,7 +399,7 @@ func BuildPipeline(orgId string, inputData DataSetConfiguration) (DataSetConfigu
 		inputData.Pipeline = pipelinestring
 
 	}
-
+	// .
 	//final pagination TO add the Filter
 	PagiantionPipeline := PagiantionPipeline(inputData.Start, inputData.End)
 	Pipeline = append(Pipeline, PagiantionPipeline)
