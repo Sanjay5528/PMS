@@ -598,6 +598,7 @@ export class TimesheetComponent implements OnInit {
       params.data[fieldName] = params.value
       params.data.remaing_hrs = (params.data?.allocated_hours || 0) - (params.data?.today_totalworkedhours + params.value);
       params.data.status == "Open" ? "In Progress" : params.data.status
+      params.data.remaing_hrs = isNaN(params.data.remaing_hrs) ? params.data.allocated_hours :parseInt( params.data.remaing_hrs);
 
       let data: RowDataTransaction = {
         update: [params.data]
