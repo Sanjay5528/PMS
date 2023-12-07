@@ -56,7 +56,7 @@ func LoginHandler(c *fiber.Ctx) error {
 	claims := utils.GetNewJWTClaim()
 	claims["id"] = user["_id"]
 	claims["role"] = user["role"]
-	// claims["uo_id"] = org.Id
+	claims["uo_id"] = "pms"
 	// claims["uo_type"] = org.Type
 
 	userName := user["name"]
@@ -81,11 +81,11 @@ func LoginHandler(c *fiber.Ctx) error {
 }
 
 func postResetPasswordHandler(c *fiber.Ctx) error {
-	org, exists := helper.GetOrg(c)
-	if !exists {
+	// org, exists := helper.GetOrg(c)
+	// if !exists {
 
-		return shared.BadRequest("Invalid Org Id")
-	}
+	// 	return shared.BadRequest("Invalid Org Id")
+	// }
 
 	userToken := utils.GetUserTokenValue(c)
 	ctx := context.Background()
@@ -99,7 +99,7 @@ func postResetPasswordHandler(c *fiber.Ctx) error {
 		req.Id = userToken.UserId
 	}
 
-	result := database.GetConnection(org.Id).Collection("user").FindOne(ctx, bson.M{
+	result := database.GetConnection("pms").Collection("user").FindOne(ctx, bson.M{
 		"_id": req.Id,
 	})
 	var user bson.M
@@ -125,7 +125,7 @@ func postResetPasswordHandler(c *fiber.Ctx) error {
 
 	// TODO set random string - hard coded for now
 	passwordHash, _ := helper.GeneratePasswordHash(req.NewPwd)
-	_, err = database.GetConnection(org.Id).Collection("user").UpdateByID(ctx,
+	_, err = database.GetConnection("pms").Collection("user").UpdateByID(ctx,
 		req.Id,
 		bson.M{"$set": bson.M{"pwd": bson.M{"$binary": passwordHash, "$type": "0"}}},
 	)
