@@ -77,7 +77,7 @@
       [rowData]="listData"
       [rowSelection]="'single'"
       [pagination]="true"
-      (getRowId)="getRowId"
+      [getRowId]="getRowId"
       [paginationPageSize]="15"
       (gridReady)="onGridReady($event)"
       [components]="components"

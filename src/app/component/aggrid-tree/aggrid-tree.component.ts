@@ -584,7 +584,8 @@ this.defaultColDef.editable=false;
         // rowGroup:true,
         // showRowGroup:false,
         // hide:true,
-        
+        enableValue: true,
+
         filter: 'agTextColumnFilter',
       },
   //  {
@@ -598,7 +599,8 @@ this.defaultColDef.editable=false;
    {
       headerName: 'Test Case Name',
       field: 'testcase.test_case_name',
-      width: 40,
+      width: 40,        enableValue: true,
+
       editable: false,
       filter: 'agTextColumnFilter',
     }, 
@@ -606,14 +608,16 @@ this.defaultColDef.editable=false;
       headerName: 'Test Case Type',
       field: 'testcase.test_case_scenario',
       width: 40,
-      editable: false,
+      editable: false,        enableValue: true,
+
       filter: 'agTextColumnFilter',
     }, 
     {
       headerName: 'Issue Type',
       field: 'test_result.error_type',
       width: 40,
-      editable: false,
+      editable: false,        enableValue: true,
+
       filter: 'agTextColumnFilter',
       valueFormatter:function(parse:any){
         if(parse?.value){
@@ -625,7 +629,8 @@ this.defaultColDef.editable=false;
     {
       headerName: 'Issue Priority',
       field: 'test_result.error_priority',
-      width: 40,
+      width: 40,        enableValue: true,
+
       editable: false,
       valueFormatter:function(parse:any){
         if(parse?.value){
@@ -637,7 +642,8 @@ this.defaultColDef.editable=false;
     }, {
       headerName: 'Raised By',
       field: 'bugemploye_name',
-      width: 40,
+      width: 40,        enableValue: true,
+
       editable: false,
       
       enableRowGroup:true,
@@ -647,7 +653,8 @@ this.defaultColDef.editable=false;
       headerName: 'assign to',
       field: 'taskemploye_name',
       width: 40,
-      editable: false,
+      editable: false,        enableValue: true,
+
       
       enableRowGroup:true,
       filter: 'agTextColumnFilter',
@@ -662,7 +669,8 @@ this.defaultColDef.editable=false;
     {
       headerName: 'Status',
       field: 'devops_Status',
-      width: 40,
+      width: 40,        enableValue: true,
+
       editable: false,
       filter: 'agTextColumnFilter',
     }

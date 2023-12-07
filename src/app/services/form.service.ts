@@ -15,12 +15,6 @@ import { ArrayToStringPipe } from '../pipe/arraytostring';
   providedIn: 'root'
 })
 export class FormService {
-  authdata: any
-  user_id: any
-  email: any
-  role_id: any
-  formData = new FormData();
-
   constructor(
     private helperService: HelperService,
     private dataService: DataService,

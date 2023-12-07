@@ -90,7 +90,9 @@ margin-bottom: 20px;
 <ng-template  #editViewPopup let-data>
 <nestedform (onClose)="close($event)" [formName]="formName" [model]="data" ></nestedform>
 </ng-template>
+<div *ngIf="displayType=='text'"  >
 
+</div>
 
 <div *ngFor="let field of storedDate ; let i=index " class="list-item" (mouseenter)="toggleButtons(i, true)" (mouseleave)="toggleButtons(i, false)" >
 <div class="storedDate">
@@ -122,6 +124,8 @@ export class ButtonInput extends FieldType<any> implements OnInit {
   formName: any
   public fields!: FormlyFieldConfig[]
   config: any
+  displayType:any="text"
+  formType:any ="popup"
   onClose = new EventEmitter<any>();
 
   // form = new FormGroup({});
@@ -148,7 +152,7 @@ export class ButtonInput extends FieldType<any> implements OnInit {
       localStorage.setItem('projectmembers',JSON.stringify(this.storedDate))
     
     }
-
+    this.formType=this?.field?.props?.formType || "popup"
     this.label = this.field.props?.label
     this.formName = this.field.props?.attributes
 
@@ -159,9 +163,6 @@ export class ButtonInput extends FieldType<any> implements OnInit {
   close_icon() {
     this.dialogService.closeModal()
   }
-
-
-  // ...
 
   toggleButtons(index: number, show: boolean): void {
     this.storedDate[index].showButtons = show;

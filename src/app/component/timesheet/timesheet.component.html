@@ -23,6 +23,7 @@
         matInput
         [matDatepicker]="minmaxvalidation"
         placeholder="Pick a date"
+        maxlength="maxDate"
         formControlName="datepicker"
       />
       <mat-datepicker-toggle
@@ -64,8 +65,15 @@
           [columnDefs]="columnDefs"
           [defaultColDef]="defaultColDef"
           [rowData]="rowData"
+          [groupDefaultExpanded]="-1"
           (gridReady)="onGridReady($event)"
-        [groupDisplayType]="'groupRows'"
+          [getRowId]="getRowId"   
+          [getRowClass]="getRowClass"
+          [groupDisplayType]="'groupRows'"
+          [singleClickEdit]="true"
+          [pagination]="true"
+          [paginateChildRows]="true"
+          [paginationAutoPageSize]="true"
           [paginationPageSize]="10"
           (selectionChanged)="onSelectionChanged($event)"
           [rowSelection]="'multiple'"
@@ -99,20 +107,21 @@
     </div>
 </div> -->
   <mat-tab label="Unschedule Activities">
-    <div style="width: 65%; padding-left: 275px; margin-bottom: 20px">
-      <button
+    <div fxLayout="row" fxLayoutAlign="end none" style="margin-bottom: 10px;" >
+            <button
         mat-raised-button
-        style="width: 100px; background-color: #90c0e5 !important; color: black"
+         
         (click)="addRow()"
       >
         Add Row
       </button>
     </div> 
-   <!-- <div class="table"> -->
-      <ag-grid-angular
-        style="width: 57%; height: 60vh"
-        class="ag-theme-alpine"
-        [columnDefs]="colDefs"
+    
+    <div class="table">
+            <ag-grid-angular
+      style="width: 99%; height: 65vh"
+          class="ag-theme-alpine"
+           [columnDefs]="colDefs"
         [defaultColDef]="defaultColDef"
         [rowData]="listData"
         (gridReady)="onGridReadys($event)"
@@ -120,7 +129,7 @@
         [paginationPageSize]="10"
          (cellValueChanged)="onUnscheduleValueChanged($event)"
       ></ag-grid-angular>
-    <!-- </div>  -->
+    </div> 
   </mat-tab>
 </mat-tab-group>
 <div>
@@ -156,7 +165,6 @@
             style="margin: 5px"
             mat-button
             (click)="resetBtn('reset')"
-            *ngIf="this.id"
           >
             Reset
           </button>

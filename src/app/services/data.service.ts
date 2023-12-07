@@ -250,7 +250,7 @@ public imageupload(folder:any,refId:any,data: any) {
   }
   public  getTimesheetdata(employee_id: any, date: any) {
     //console.log(format_date);
-    // finaltimesheet/:employee_id/:date
+    // finaltimesheet/:employee_id/:datefinaltimesheet
     return this.http.get(this.getWsBaseUrl() + 'lookup/finaltimesheet/' + `${employee_id}` + "/" + `${date}`);
   }
   public getTimesheetdatabyadmin( data: any) {

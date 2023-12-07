@@ -33,7 +33,15 @@
   .mat-mdc-form-field-infix .mat-mdc-radio-button .mdc-label{
     padding-right:  10px; 
    }
+
    
+.not_completed { 
+  background-color: #f7f0f0 !important;
+}
+   
+.rejected { 
+  background-color: rgb(255, 182, 182) !important;
+}
 /* .mat-mdc-form-field-infix .mat-mdc-radio-button .mdc-radio{
   height: auto !important;
   padding: 0;
