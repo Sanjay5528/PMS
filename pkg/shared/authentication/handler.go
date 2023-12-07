@@ -21,10 +21,10 @@ var ctx = context.Background()
 
 // LoginHandler - Method to Valid the user id and password Auth
 func LoginHandler(c *fiber.Ctx) error {
-	org, exists := helper.GetOrg(c)
-	if !exists {
-		return shared.BadRequest("Invalid Org Id")
-	}
+	// org, exists := helper.GetOrg(c)
+	// if !exists {
+	// 	return shared.BadRequest("Invalid Org Id")
+	// }
 
 	loginRequest := new(LoginRequest)
 	if err := c.BodyParser(loginRequest); err != nil {
@@ -37,7 +37,7 @@ func LoginHandler(c *fiber.Ctx) error {
 
 	filter := bson.D{{"_id", loginRequest.Id}}
 
-	user, err := helper.FindOneDocument(org.Id, "user", filter)
+	user, err := helper.FindOneDocument("pms", "user", filter)
 	if err != nil {
 		fmt.Println("Error:", err.Error())
 	}
@@ -56,8 +56,8 @@ func LoginHandler(c *fiber.Ctx) error {
 	claims := utils.GetNewJWTClaim()
 	claims["id"] = user["_id"]
 	claims["role"] = user["role"]
-	claims["uo_id"] = org.Id
-	claims["uo_type"] = org.Type
+	// claims["uo_id"] = org.Id
+	// claims["uo_type"] = org.Type
 
 	userName := user["name"]
 	if userName == nil {
@@ -69,7 +69,7 @@ func LoginHandler(c *fiber.Ctx) error {
 	response := &LoginResponse{
 		Name:       userName.(string),
 		UserRole:   user["role"].(string),
-		UserOrg:    org,
+		// UserOrg:    org,
 		Token:      token,
 		EmployeeID: user["employee_id"].(string),
 	}
