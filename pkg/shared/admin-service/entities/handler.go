@@ -1944,19 +1944,27 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 			},
 			bson.D{{"$unset", "id"}},
 			bson.D{{"$unwind", "$project_name"}},
-			bson.D{{"$unwind", "$timesheet"}},
+			// bson.D{{"$unwind", "$timesheet"},{"preserveNullAndEmptyArrays", true},},
 			bson.D{
-				{"$match",
+				{"$unwind",
 					bson.D{
-						{"timesheet.entry_Date",
-							bson.D{
-								{"$lte", end_date},
-								{"$gte", start_date},
-							},
-						},
+						{"path", "$timesheet"},
+						{"preserveNullAndEmptyArrays", true},
 					},
 				},
 			},
+			// bson.D{
+			// 	{"$match",
+			// 		bson.D{
+			// 			{"timesheet.entry_Date",
+			// 				bson.D{
+			// 					{"$lte", end_date},
+			// 					{"$gte", start_date},
+			// 				},
+			// 			},
+			// 		},
+			// 	},
+			// },
 		}
 
 	if employee_id != "SA" {
