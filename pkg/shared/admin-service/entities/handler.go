@@ -1104,7 +1104,6 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 	filter :=
 		bson.A{
 			bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
-			// bson.D{{"$addFields", bson.D{{"_id", bson.D{{"$toString", "$_id"}}}}}},
 			bson.D{
 				{"$lookup",
 					bson.D{
@@ -1125,7 +1124,7 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 					},
 				},
 			},
-			bson.D{{"$match", bson.D{{"taskresult.status", bson.D{{"$ne", "Completed"}}}}}},
+			// bson.D{{"$match", bson.D{{"taskresult.status", bson.D{{"$ne", "Completed"}}}}}},
 			bson.D{
 				{"$lookup",
 					bson.D{
