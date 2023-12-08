@@ -1800,6 +1800,129 @@ func team_specificationList(c *fiber.Ctx) error {
 	}
 	return c.JSON(response)
 }
+
+func regressionTestcase(c *fiber.Ctx) error {
+	//Get the orgId from Header
+	org, exists := helper.GetOrg(c)
+	if !exists {
+
+		return shared.BadRequest("Invalid Org Id")
+	}
+	query := bson.A{
+		bson.D{{"$match", bson.D{{"project_id", "C001-SAN"}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "testcase"},
+					{"localField", "project_id"},
+					{"foreignField", "project_id"},
+					{"as", "testcase"},
+				},
+			},
+		},
+		bson.D{{"$unwind", "$testcase"}},
+		bson.D{
+			{"$group",
+				bson.D{
+					{"_id", "$_id"},
+					{"ResultPassCount",
+						bson.D{
+							{"$sum",
+								bson.D{
+									{"$cond",
+										bson.A{
+											bson.D{
+												{"$eq",
+													bson.A{
+														"$testcase.test_case_scenario",
+														"P",
+													},
+												},
+											},
+											1,
+											0,
+										},
+									},
+								},
+							},
+						},
+					},
+					{"ResultFailCount",
+						bson.D{
+							{"$sum",
+								bson.D{
+									{"$cond",
+										bson.A{
+											bson.D{
+												{"$eq",
+													bson.A{
+														"$testcase.test_case_scenario",
+														"N",
+													},
+												},
+											},
+											1,
+											0,
+										},
+									},
+								},
+							},
+						},
+					},
+					{"regression_id", bson.D{{"$first", "$regression_id"}}},
+					{"status", bson.D{{"$first", "$status"}}},
+					{"description", bson.D{{"$first", "$description"}}},
+					{"project_id", bson.D{{"$first", "$project_id"}}},
+					{"created_on", bson.D{{"$first", "$created_on"}}},
+					{"created_by", bson.D{{"$first", "$created_by"}}},
+					{"sprint_id", bson.D{{"$first", "$sprint_id"}}},
+				},
+			},
+		},
+		bson.D{
+			{"$addFields",
+				bson.D{
+					{"ResultCount",
+						bson.D{
+							{"$sum",
+								bson.A{
+									"$ResultPassCount",
+									"$ResultFailCount",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		bson.D{
+			{"$project",
+				bson.D{
+					{"_id", 1},
+					{"regression_id", 1},
+					{"description", 1},
+					{"project_id", 1},
+					{"created_on", 1},
+					{"status", 1},
+					{"created_by", 1},
+					{"sprint_id", 1},
+					{"ResultPassCount", 1},
+					{"ResultFailCount", 1},
+					{"ResultCount", 1},
+				},
+			},
+		},
+	}
+	response, err := helper.GetAggregateQueryResult(org.Id, "regression", query)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	return shared.SuccessResponse(c, fiber.Map{
+		"response": response,
+		// "pipeline": filter,
+	})
+}
+
 func team_specifcaiton(c *fiber.Ctx) error {
 
 	org, exists := helper.GetOrg(c)

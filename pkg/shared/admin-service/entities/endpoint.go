@@ -77,6 +77,7 @@ func SetupLookupRoutes(app *fiber.App) {
 	r.Get("/regression/:regression_id", regressionproject)
 	r.Get("/team_specification/:projectid", team_specification)
 	r.Get("/team_specificationList/:projectid", team_specificationList)
+	r.Get("/testing/:projectid", regressionTestcase)
 
 	r.Get("/RealseSpirntList/:projectid", RealseSpirntList)
 
