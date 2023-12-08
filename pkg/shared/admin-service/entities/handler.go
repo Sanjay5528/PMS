@@ -1800,8 +1800,173 @@ func team_specificationList(c *fiber.Ctx) error {
 	}
 	return c.JSON(response)
 }
+func team_specifcaiton(c *fiber.Ctx) error {
 
- 
+	org, exists := helper.GetOrg(c)
+	if !exists {
+		return shared.BadRequest("Invalid Org Id")
+	}
+
+	scheduledstartdate, _ := time.Parse(time.RFC3339, c.Params("startdate"))
+
+	scheduledenddate, _ := time.Parse(time.RFC3339, c.Params("enddate"))
+
+	start_start_date := time.Date(scheduledstartdate.Year(), scheduledstartdate.Month(), scheduledstartdate.Day(), 0, 0, 0, 0, time.UTC)
+
+	start_end_date := time.Date(scheduledstartdate.Year(), scheduledstartdate.Month(), scheduledstartdate.Day(), 23, 59, 59, 0, time.UTC)
+
+	start_date := time.Date(scheduledenddate.Year(), scheduledenddate.Month(), scheduledenddate.Day(), 0, 0, 0, 0, time.UTC)
+
+	end_date := time.Date(scheduledenddate.Year(), scheduledenddate.Month(), scheduledenddate.Day(), 23, 59, 59, 0, time.UTC)
+
+	pipeline := bson.A{
+		bson.D{{"$match", bson.D{{"approved_by", c.Params("approved_by")}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "employee"},
+					{"localField", "user_id"},
+					{"foreignField", "employee_id"},
+					{"as", "employee"},
+				},
+			},
+		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$employee"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "project"},
+					{"localField", "project_id"},
+					{"foreignField", "project_id"},
+					{"as", "project"},
+				},
+			},
+		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$project"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
+		bson.D{
+			{"$addFields",
+				bson.D{
+					{"User_name",
+						bson.D{
+							{"$concat",
+								bson.A{
+									"$employee.first_name",
+									" ",
+									"$employee.last_name",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		bson.D{{"$addFields", bson.D{{"project_name", "$project.project_name"}}}},
+		bson.D{
+			{"$unset",
+				bson.A{
+					"employee",
+					"project",
+				},
+			},
+		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "task"},
+					{"localField", "user_id"},
+					{"foreignField", "assigned_to"},
+					{"as", "task"},
+				},
+			},
+		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$task"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "timesheet"},
+					{"localField", "task._id"},
+					{"foreignField", "task_id"},
+					{"as", "timesheet"},
+				},
+			},
+		},
+		bson.D{{"$addFields", bson.D{{"totalworkedhours", bson.D{{"$sum", "$timesheet.workedhours"}}}}}},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$timesheet"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
+		bson.D{
+			{"$match",
+				bson.D{
+					{"task.status", "Completed"},
+					{"timesheet.status", "Completed"},
+				},
+			},
+		},
+		bson.D{{"$addFields", bson.D{{"end", "$task.scheduled_end_date"}}}},
+		bson.D{{"$addFields", bson.D{{"start", "$task.scheduled_start_date"}}}},
+		bson.D{
+			{"$match",
+				bson.D{
+					{"$and",
+						bson.A{
+							bson.D{
+								{"start",
+									bson.D{
+										{"$gte", start_start_date},
+										{"$lte", start_end_date},
+									},
+								},
+							},
+							bson.D{
+								{"end",
+									bson.D{
+										{"$gte", start_date},
+										{"$lte", end_date},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	response, err := helper.GetAggregateQueryResult(org.Id, "team_specification", pipeline)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	// fmt.Println(response)
+	return shared.SuccessResponse(c, response)
+
+}
+
 func getFinalTimesheet(c *fiber.Ctx) error {
 	org, exists := helper.GetOrg(c)
 	if !exists {

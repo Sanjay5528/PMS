@@ -71,6 +71,7 @@ func SetupTesting(app *fiber.App) {
 func SetupLookupRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/lookup", "Data Lookup API")
 	r.Get("/task_requriment/:projectid", TaskRequeriment)
+	r.Get("team_specifcaiton/:approved_by/:startdate/:enddate", team_specifcaiton)
 
 	r.Get("/requriment/:projectid", RequrimentObjectproject)
 	r.Get("/regression/:regression_id", regressionproject)
