@@ -403,17 +403,10 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
           return { color: "blue" };
         };
       }
-      if (e.type == "arraytostring") {
-        console.log("INSIDE");
-        
+      if (e.type == "arraytostring") {        
         e.valueFormatter = (params: any) => {
-          console.log(params.data[e.field]);
-          if (params.data && params.data[e.field]&& !_.isEmpty(params.data[e.field])) {
+            if (params.data && params.data[e.field]&& !_.isEmpty(params.data[e.field])) {
             let txt = "";
-            console.log("SUB INSIE");
-            console.log(e.valueType=="plainArray");
-            console.log(e.valueType);
-            
             if(e.valueType=="plainArray"){
               let input=params.data[e.field] ;
               
@@ -443,9 +436,7 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
             return
 
         };
-      }
-      console.log(e.value);
-      
+      }  
       if (e.width) {
         e["width"] = e.width;
       } 
@@ -454,7 +445,7 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
       //     e.filterParams = {
       //       values: (params: any) => {
       //         let filter:any={
-      //           start: 0,
+       //           start: 0,
       //           end: 1000,
       //           filter: this.filterQuery,
       //         }
@@ -656,8 +647,7 @@ console.log(ctrl);
       let key:any=ctrl.model[ctrl.config.idToSend]
       this.dataService.lookupTreeData(ctrl.config.endPoint,key).subscribe(
         (result:any) => {
-          console.log(result);
-        ctrl.listData=result.data.response || []
+        ctrl.listData=result.data.response ||  []
         // ctrl.listData = res.data[0].response|| [];
         ctrl.tempListData = ctrl.listData;
         ctrl.gridApi.sizeColumnsToFit();

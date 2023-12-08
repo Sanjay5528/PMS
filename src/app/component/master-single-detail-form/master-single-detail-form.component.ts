@@ -148,7 +148,6 @@ export class MasterSingleDetailFormComponent {
     //! amd remove in componet destroy 
     if (this.isPopupEdit) {
       this.isDetailEditMode = mode != "add"
-      console.log(this, mode);
       this.butText = 'Add'
       let data:any={}
       
@@ -328,13 +327,15 @@ return
   onSelect(event: any) {
     this.selectedRow = event.api.getSelectedRows()[0]
     
-    
-    this.detailFields[this.detailDefaultFocusIndex].focus = true
-    this.detailModel = this.selectedRow
-    this.detailModel['isEdit'] = true
-    this.detailOldData = _.cloneDeep(this.detailModel)
-    this.isDetailEditMode = true
-    this.butText = "Update"
+    // this.detailModel={}
+    // this.detailFields[this.detailDefaultFocusIndex].focus = true
+    // let data:any = this.selectedRow
+    // data['isEdit'] = true
+    // this.detailModel=data
+    // this.detailOldData = _.cloneDeep(this.detailModel)
+    // this.isDetailEditMode = true
+    // this.butText = "Update"
+
   }
 
 
@@ -346,6 +347,11 @@ return
   // flag:boolean=false;
   onActionButtonClick($event: any, item: any, data: any) {
     console.log(data, item);
+    if(this.selectedRow?._id != undefined ||this?.isDetailEditMode==true){
+      this.selectedRow.isEdit=true
+    this.isDetailEditMode = true
+
+    }
     if (item.formAction == "listpopup") {
       if(item.add===true) {
         if(item.type == "local"){
@@ -358,13 +364,9 @@ return
         }
       }
       this.dataService.loadScreenConfigJson(item.formName).subscribe((xyz: any) => {
-        console.log(xyz);
-        if(this.selectedRow._id != undefined ||this.isDetailEditMode==true){
-          this.selectedRow.isEdit=true
-        }
         this.otherdetails = xyz
         this.dialogService.openDialog(this.otherpopupEdit, null, null, this.selectedRow)
-return
+        return
       })
     } else if (item.formAction == "delete") {
       if (confirm("Do you wish to delete this record?")) {
@@ -414,7 +416,6 @@ return
 
     }
     else {
-      this.selectedRow = data
       if (this.config.extraData) {
 
         this.formService.split_Struct(data).then((vals: any) => {

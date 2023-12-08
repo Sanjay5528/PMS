@@ -188,16 +188,28 @@ const routes: Routes = [
       //   component: AggridTreeComponent,
       // }
     ],
-  }, {
-    path: "timesheet",
+  }, 
+  {
+    path: "profile",
     component: DefaultLayoutComponent,
     children: [
       {
-        path: "",
+        path: ":component",
         component: TimesheetComponent,
       },
     ],
   }, 
+  // {
+  //   path: "approval",
+  //   component: DefaultLayoutComponent,
+  //   children: [
+  //     {
+  //       path: "",
+  //       component: TimesheetComponent,
+  //     },
+  //   ],
+  // }, 
+
   //  {
   //   path: "createcv",
   //   component: DefaultLayoutComponent,

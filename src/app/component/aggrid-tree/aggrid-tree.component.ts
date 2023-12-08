@@ -850,6 +850,9 @@ OnlyValueRequriementModules:any[]=[]
 
 poupimage(data:any){
 this.imageFile=data;
+console.log(data);
+console.log(this.imageFile);
+
 this.dialogService.openDialog(this.imagepoup)
 }
 sprintCellEditorParams = (params: any) => {
@@ -1246,6 +1249,8 @@ if(this.formName=="module"){
 // this.listData = parentTreeData;
 const data = res.data.response;
 console.log(data);
+let ParentValue:any []=data.filter((row:any)=>{ return row.parentmodulename == "" || !row.parentmodulename })
+console.log(ParentValue);
 
 let parentTreeData: any[] = [];
 let childIndex: { [key: string]: number } = {};
@@ -1302,8 +1307,10 @@ if(!isEmpty(data)){
       this.listData = []
       console.log(res);
       
-      for (let idx = 0; idx < res.data.response.length; idx++) {
-        const row = res.data.response[idx];
+      // for (let idx = 0; idx < res.data.response.length; idx++) {
+      //   const row = res.data.response[idx];
+      for (let idx = 0; idx < res.length; idx++) {
+        const row = res[idx];
         if (row.parentmodulename == "" || !row.parentmodulename) {
           row.treePath = [row._id];
         } else {
@@ -1638,7 +1645,7 @@ if(fieldName=="assigned_to"){
 
   }
   if(params.data.hasOwnProperty("scheduled_end_date")){
-    update["scheduled_end_date"] = moment(params.data["scheduled_end_date"]).add(hrsconvertedDay, "day");
+    update["scheduled_end_date"] = moment(params.data["scheduled_start_date"]).add(hrsconvertedDay, "day");
   }else{
     update["scheduled_end_date"] = moment().add(hrsconvertedDay, "day");
 
@@ -1649,19 +1656,28 @@ if(fieldName=="depend_task"){
   // ? the biggest date is start date
   update["scheduled_start_date"] =  this.depend_task(params.value,params)
   update["scheduled_end_date"] = moment(update["scheduled_start_date"])
-  
   console.log(params.data.hasOwnProperty("allocated_hours"),"params.data.hasOwnProperty()");
   
   if (params.data.hasOwnProperty("allocated_hours")) {
     // console.log(data);
     // !todo
-    let hrsFlag= params.value>=8? true : false
+    let hrsFlag= params.data.allocated_hours>=8? true : false
     
-    let hrsconvertedDay=hrsFlag==true? Math.ceil(params.value/8) : 1
+    let hrsconvertedDay=hrsFlag==true? Math.ceil(params.data.allocated_hours/8) : 1
     console.log(hrsconvertedDay);
     update["scheduled_end_date"] = moment(update["scheduled_end_date"]).add(hrsconvertedDay, "day");
     }
+    params.data["scheduled_start_date"] =  update["scheduled_start_date"]
+    params.data["scheduled_end_date"] = update["scheduled_end_date"]
 }
+if(params.data.hasOwnProperty("scheduled_start_date")){
+
+  update["scheduled_start_date"] = moment(params.data["scheduled_start_date"]).add(2,'hours').add(59,'minutes').add(999,'milliseconds');
+} 
+if(params.data.hasOwnProperty("scheduled_end_date")){
+  update["scheduled_end_date"] = moment(params.data["scheduled_end_date"]).add(2,'hours').add(59,'minutes').add(999,'milliseconds');
+}  
+
 update.status="Open"
 this.dataService.update("task",params.data._id,update).subscribe((res:any)=>{
   // console.log();
@@ -1724,8 +1740,16 @@ console.log(value);
       return null; // or handle the case when both dates are equal
     }
   }
-  let bigdate:any =moment()
-  valuesMatchTaskId.forEach((xyz:any)=>{
+  let bigdate:any 
+  // let pastDate:any
+  if(valuesMatchTaskId.length==1){
+    return valuesMatchTaskId[0].scheduled_end_date
+  }
+  valuesMatchTaskId.forEach((xyz:any,index:any)=>{
+  //  let  nextdate=valuesMatchTaskId[index+1].scheduled_end_date
+   if(index==0){
+    bigdate=valuesMatchTaskId[0].scheduled_end_date
+   }
     bigdate = getHigherDate(bigdate,xyz.scheduled_end_date);
     console.log(bigdate);
     

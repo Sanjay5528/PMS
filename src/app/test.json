@@ -1,68 +1,121 @@
-{
-	"pageHeading": "Team Group",
-	"formType": "simple",
-	"keyField": "_id",
-	"form": {
-		"collectionName": "team_specification",
-		"fields": [
+[
+	{
+		"displayName": "Production",
+		"iconName": "group",
+		"children": [
 			{
-				"fieldGroupClassName": "display-flex",
-				"fieldGroup": [
-					{
-						"type": "input",
-						"key": "name",
-						"className": "flex-5",
-						"templateOptions": {
-							"label": "Team  Name",
-							"maxLength": 50,
-							"required": true,              
-							"pattern": "^[a-zA-Z0-9&>/;,:-_/@]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
-							"placeholder": "Team  Name"
-						}
-					}
-				]
-			},
-			{
-				"type": "html-input",
-				"key": "description",
-				"templateOptions": {
-					"label": "Anything about this Team ",
-					"placeholder": "Description",
-					"rows": 5
-				}
-			},
-			{
-				"key": "status",
-				"type": "select",
-				"defaultValue": "A",
-				"templateOptions": {
-					"label": "Status",
-					"options": [
-						{
-							"label": "Active",
-							"value": "A"
-						},
-						{
-							"label": "Disable",
-							"value": "D"
-						}
-					],
-					"required": true
-				},
-				"hideExpression": "!model.isEdit"
-			}
-		],
-		"defaultValues": [
-			{
-				"colName": "status",
-				"value": "A",
-				"type": "string"
+				"displayName": "Screen Configuration",
+				"iconName": "edit",
+				"route": "/list/screen"
 			},{
-				"colName": "_id",
-				"value": "SEQ|TEAM|{{project_id}}",
-				"type": "string"
+				"displayName": "Model Configuration",
+				"iconName": "edit",
+				"route": "/list/model_config"
+			},{
+				"displayName": "Group Configuration",
+				"iconName": "group",
+				"route": "/list/group"
+			},{
+				"displayName": "Data Set Configuration",
+				"iconName": "group",
+				"route": "/list/dataset"
+			}
+		]
+	},	
+	{
+		"displayName": "Master",
+		"iconName": "perm_identity",
+		"children": [
+			{
+				"displayName": "Client",
+				"iconName": "assignment_ind",
+				"route": "/list/client"
+			},
+			{
+				"displayName": "Project",
+				"iconName": "assignment_ind",
+				"route": "/list/project"
+			}
+		]
+	},{
+		"displayName": "Look Up Data",
+		"iconName": "perm_identity",
+		"children": [
+			
+			{
+				"displayName": "Employee",
+				"iconName": "assignment_ind",
+				"route": "/list/employee"
+			},
+            {
+				"displayName": "Sprint",
+				"iconName": "assignment_ind",
+				"route": "/list/sprint"
+			},{
+				"displayName": "Designation",
+				"iconName": "assignment_ind",
+				"route": "/list/designation"
+			},{
+				"displayName": "Project Role",
+				"iconName": "assignment_ind",
+				"route": "/list/project_role"
+			},
+            {
+				"displayName": "Team Specification",
+				"iconName": "assignment_ind",
+				"route": "/list/team_specification"
+			}
+ 
+ 
+		]
+	},
+	{
+		"displayName": "Personal",
+		"iconName": "assignment_ind",
+		"children": [
+				 
+			{
+				"displayName": "My Task",
+				"iconName": "assignment_ind",
+				"route": "/list/task" 
+			},		 
+			{
+				"displayName": "My Profile",
+				"iconName": "assignment_ind",
+				"route": "/list/profile" 
+			},
+			{
+				"displayName": "Time Sheet",
+				"iconName": "assignment_ind",
+				"route": "profile/timesheet" 
+			},{
+				"displayName": "Time Sheet Approval",
+				"iconName": "assignment_ind",
+				"route": "profile/approval" 
 			}
 		]
 	},
-	"onCancelRoute": "/list/projectteam"
-}
+	{
+		"displayName": "Seeker",
+		"iconName": "event",
+		"children": [
+				 
+			{
+				"displayName": "My Event",
+				"iconName": "group",
+				"route": "/add/event" 
+			},		 
+			{
+				"displayName": "speaker",
+				"iconName": "group",
+				"route": "/list/speaker" 
+			},
+			{
+				"displayName": "Team member",
+				"iconName": "group",
+				"route": "/list/teammember" 
+			}
+		]
+	}
+
+]

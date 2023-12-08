@@ -10,13 +10,23 @@
   >
     <div class="head">
       <span>
-        <p>Timesheet</p>
+        <p>  {{this.FormName=="timesheet"? "Timesheet" : 'Time Sheet Approval'}} </p>
       </span>
     </div>
   </div>
 </div>
-
-<div class="datepicker">
+<div  class="datepicker" *ngIf="this.FormName=='approval'" >
+  <mat-form-field   style="width: 20%;" >
+    <!-- <mat-label>Enter a date range</mat-label> -->
+    <mat-date-range-input [formGroup]="dateform" [rangePicker]="picker">
+      <input matStartDate formControlName="start" placeholder="Start date">
+      <input matEndDate formControlName="end" placeholder="End date">
+    </mat-date-range-input>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+  </mat-form-field>
+</div>
+<div class="datepicker" *ngIf="this.FormName=='timesheet'">
   <form [formGroup]="dateform">
     <mat-form-field class="datepicker-field" appearance="outline">
       <input
@@ -24,10 +34,12 @@
         [matDatepicker]="minmaxvalidation"
         placeholder="Pick a date"
         maxlength="maxDate"
+        [max]="maxDate"
         formControlName="datepicker"
       />
       <mat-datepicker-toggle
         matSuffix
+        
         [for]="minmaxvalidation"
       ></mat-datepicker-toggle>
 
@@ -36,13 +48,13 @@
                   <button mat-button matDatepickerCancel>Cancel</button>
                     <button mat-raised-button color="primary" matDatepickerApply >Apply</button>
                 </mat-datepicker-actions> -->
-      </mat-datepicker> </mat-form-field
-    >&nbsp;&nbsp;
+      </mat-datepicker> 
+      </mat-form-field> 
     <!-- <button mat-raised-button style="width: 90px; background-color: #90c0e5 !important; color: black;" (click)="search()">Search</button> -->
   </form>
 </div>
 
-<mat-tab-group preserveContent>
+<mat-tab-group preserveContent *ngIf="this.FormName=='timesheet'" >
   <mat-tab label="Schedule Activities">
     <!-- <div *ngIf="this.userPermissions === 'SA'">
       <div class="sample">
@@ -132,7 +144,35 @@
     </div> 
   </mat-tab>
 </mat-tab-group>
-<div>
+       <!-- [autoGroupColumnDef]="autoGroupColumnDef" -->
+       <!-- <div>  -->
+  <div class="table"  *ngIf="this.FormName=='approval'">
+    <ag-grid-angular
+      style="width: 99%; height: 65vh"
+      class="ag-theme-alpine"
+      [columnDefs]="columnDefs"
+      [rowData]="rowData" 
+      [groupAllowUnbalanced]="true"
+      [getContextMenuItems]="getContextMenuItems"
+
+      [groupDefaultExpanded]="-1"
+      (gridReady)="onGridReady($event)"
+      [getRowId]="getRowId"  
+      [suppressRowClickSelection]="true"
+      [groupDisplayType]="'groupRows'"
+      [groupRowRendererParams]="groupRowRendererParams"
+      [groupSelectsChildren]="true"
+      [singleClickEdit]="true"
+      [pagination]="true"
+      [paginateChildRows]="true"
+      [paginationAutoPageSize]="true"  
+      [context]="context"
+      [paginationPageSize]="10"
+      (selectionChanged)="onSelectionChanged($event)"
+      [rowSelection]="'multiple'"
+      (cellValueChanged)="OnValuesChanged($event)"
+    ></ag-grid-angular>
+  </div>
   <ng-template #editViewPopup let-data>
     <mat-card>
       <mat-card-header style="flex: 1 1 auto">
@@ -180,4 +220,4 @@
       </mat-card-actions>
     </mat-card>
   </ng-template>
-</div>
+<!-- </div> -->

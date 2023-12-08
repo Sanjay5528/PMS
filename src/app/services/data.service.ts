@@ -253,9 +253,9 @@ public imageupload(folder:any,refId:any,data: any) {
     // finaltimesheet/:employee_id/:datefinaltimesheet
     return this.http.get(this.getWsBaseUrl() + 'lookup/finaltimesheet/' + `${employee_id}` + "/" + `${date}`);
   }
-  public getTimesheetdatabyadmin( data: any) {
+  public getTimesheetforApproval( employee_id: any,start_date:any,end_date:any) {
     
-    return this.http.get(this.getWsBaseUrl() + 'lookup/timesheet/SA/' + `${data}` );
+    return this.http.get(this.getWsBaseUrl() + 'lookup/team_specifcaiton/' + `${employee_id}`+ "/" + `${start_date}`+ "/" + `${end_date}` );
   }
   public workhours(scheduledstartdate:any) {
     
