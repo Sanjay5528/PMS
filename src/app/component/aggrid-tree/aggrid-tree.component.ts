@@ -458,7 +458,7 @@ this.gridOptions.groupDefaultExpanded=-1
       )
   }else if(this.formName=="test_result"){
     this.gridOptions.groupDefaultExpanded=-1
-
+this.gridOptions.groupAllowUnbalanced=true;
 this.gridOptions.pagination=true
 this.gridOptions.paginationPageSize=100
     this.gridOptions.autoGroupColumnDef={

@@ -13,9 +13,9 @@ import { MatDialog } from '@angular/material/dialog';
     <p style="font-style: italic;display: contents;font-weight: bold;">{{to['label']}}</p>
     <div *ngIf="UploadShow">
             <button mat-raised-button  style="color: white; background-color: grey; text-align: center; margin: 20px;" 
-        (click)="fileInput.click()">Select File</button>
+        (click)="fileInput.click();dispableTrue=true">Select File</button>
 <button style="height: 40px; width: 90px; border-radius: 10%; color: gray;" button color="gray" 
-        (click)="uploadFiles()" [disabled]="!imageList.length">
+        (click)="uploadFiles()" [disabled]="dispableTrue">
   <span class="glyphicon glyphicon-upload"></span> Upload
 </button>
 <input style="display: none" #attachments type="file" id="pic" accept=".jpg, .png" 
@@ -34,7 +34,8 @@ import { MatDialog } from '@angular/material/dialog';
 
 <div style="display:flex; flex-direction: row;" *ngIf="showUploadedImages">
   <div *ngFor="let data of imageFile" style="margin: 2px; display:flex">
-    <span style="display:inline-block;"><img (click)="carsoasls()" [src]="docBasePath + data.storage_name" width="100px" height="100px" [alt]='data.file_name'></span>
+    <span style="display:inline-block;">
+    <img (click)="carsoasls()" [src]="docBasePath + data.storage_name" width="100px" height="100px" [alt]='data.file_name'></span>
   </div>
 </div>
 
@@ -96,12 +97,13 @@ export class FormlyMultiImageUpload extends FieldType<any>   {
 
        }
     }
-
+dispableTrue:boolean=false
   uploadFiles() {
-    debugger
+    
     if(!this.image){
       return this.dialogService.openSnackBar("Select the File First","OK")
     }
+
      let ref=this?.field?.props?.['refId']
      this.refId=this.model[ref]
      if(this.field?.['bind_key']){
@@ -109,6 +111,7 @@ export class FormlyMultiImageUpload extends FieldType<any>   {
             return this.dialogService.openSnackBar(`${this.field.bind_key.toUpperCase().replace('_', ' ')} Is Missing`,"OK")
         }
       }
+      this.dispableTrue=true
 
       var formData = new FormData();
       for (const file of this.image) {
@@ -120,6 +123,7 @@ export class FormlyMultiImageUpload extends FieldType<any>   {
 
       this.dataservice.imageupload(this.field.role,this.model[this.field.bind_key],formData).subscribe((res: any) => {
       if (res.data) {
+        this.dispableTrue=false
         this.res.push(...res.data)
         this.formControl.setValue(this.res)
         this.dialogService.openSnackBar("File Uploaded successfully", "OK")

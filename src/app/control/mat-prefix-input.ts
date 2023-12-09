@@ -28,7 +28,7 @@ import { isEmpty } from "lodash";
         [formControl]="FormControl"
         [formlyAttributes]="field"
       />                
-      <mat-error *ngIf="this?.formControl?.errors?.required">This {{ this.field.props?.label }} is required</mat-error>
+      <mat-error *ngIf="this.FormControl.touched && this?.formControl?.errors?.required">This {{ this.field.props?.label }} is required</mat-error>
       <mat-error *ngIf="this?.formControl?.errors?.pattern">This {{ this.field.props?.label }} is Pattern Not Match</mat-error>
       <mat-error *ngIf="this?.formControl?.errors?.uniqueItems==false">This {{ this.field.props?.label }}  Already Present </mat-error>
       <!-- errors.pattern -->

@@ -33,7 +33,10 @@ import { FormControl } from '@angular/forms';
      <angular-editor height="50px" minHeight="50px"
         [formlyAttributes]="field"
         [formControl]="FormControl"
-        [config]="editorConfig" [(ngModel)]="data"></angular-editor>
+        [config]="editorConfig" [(ngModel)]="data">
+      </angular-editor>
+      
+      <mat-error *ngIf=" this.FormControl.touched && this.FormControl?.errors?.['required']">This {{ this.field.props!.label }} is required</mat-error>
      </div>
      
   `

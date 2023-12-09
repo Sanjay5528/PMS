@@ -632,6 +632,8 @@ parentRouteName:any
  }
 
   saveForm(formName: any, val?: any) {
+console.log(this.form);
+console.log(this.form.valid);
 
     
     if(!this.form.valid){
