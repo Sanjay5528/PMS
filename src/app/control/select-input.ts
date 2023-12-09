@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   OnInit,
 } from "@angular/core";
@@ -12,8 +13,9 @@ import { DialogService } from "../services/dialog.service";
   selector: "select-input",
   template: `
     <!-- <div class="center"><span>{{field.props!['label']}}</span></div> -->
+    <!-- {{this.opt.options|json}} -->
 
-    <mat-form-field>
+    <mat-form-field >
       <mat-label>{{ field.props!["label"] }}</mat-label>
       <mat-select
         #matSelectInput
@@ -27,7 +29,9 @@ import { DialogService } from "../services/dialog.service";
           [value]="op[this.valueProp]"
           (click)="selectionChange(op)"
         >
-          <span [innerHTML]="op[this.labelProp]"></span>
+          <span *ngIf="this.opt.labeltype!='name'" [innerHTML]="op[this.labelProp]"></span>
+          <span *ngIf="this.opt.labeltype == 'name'"> {{op["first_name"]}} {{op["last_name"]}}</span>
+          
         </mat-option>
       </mat-select>
       <mat-error *ngIf="this.field.props.required">This {{ this.field.props?.label }} is required</mat-error>
@@ -53,7 +57,7 @@ export class SelectInput extends FieldType<any> implements OnInit {
   selectedValue: any = "";
   selectedObject: any;
   // optionsValue:any;
-  constructor(public dataService: DataService,public dialogServices:DialogService) {
+  constructor(public dataService: DataService,private cf: ChangeDetectorRef,public dialogServices:DialogService) {
     super();
   }
 
@@ -94,8 +98,7 @@ let values :any[] =[]
 if(this.opt.specification){
       res.data[0].response.forEach((element:any) => {
         if(element&&element[this.opt.specification]){
-console.log(element[this.opt.specification]);
-
+       this.cf.detectChanges();
           values.push(element[this.opt.specification])
         }
       });
@@ -103,7 +106,6 @@ console.log(element[this.opt.specification]);
         // Update the options array within the subscription
         let totalvalue:any[]=[]
         values.forEach((data:any)=>{
-          //  data.map((data: any) => {
             let val:any={...data}
             if(!isEmpty(val)){
             totalvalue.push( { label:val[0][this.opt.innerArray], value:val[0][this.opt.innerArray] });
@@ -112,8 +114,8 @@ console.log(element[this.opt.specification]);
         })
         console.log(totalvalue);
         this.field.props.options=totalvalue
-        // this.optionsValue = totalvalue     
            this.opt.options=totalvalue
+           this.cf.detectChanges();
 
       }
       else{
@@ -127,11 +129,13 @@ console.log(element[this.opt.specification]);
         // this.dropdown=values
         // this.optionsValue=values
         this.opt.options=values
+        this.cf.detectChanges();
         // this.dataService.buildOptions(res.data[0].response, this.opt);
 
       }
     })
-}
+    this.cf.detectChanges();
+  }
     if (this?.opt?.optionsDataSource?.collectionName!=undefined) {
       let name = this.opt.optionsDataSource.collectionName;
       this.dataService.getDataByFilter(name,{}).subscribe((res: any) => {
@@ -145,6 +149,7 @@ console.log(element[this.opt.specification]);
           }
         
       });
+      this.cf.detectChanges();
     }
     if (this?.opt?.lookup==true) {
       let name = this.opt.endPoint;
@@ -174,6 +179,7 @@ console.log(element[this.opt.specification]);
             this.valueSlected()
           }
         
+          this.cf.detectChanges();
       });
     }
 
@@ -198,20 +204,23 @@ console.log(element[this.opt.specification]);
           this.field.formControl.setValue(data);
        
         } else {
-     
+
           this.field.formControl.setValue(this.model[this.field.key]);
         }
+        this.cf.detectChanges();
       });
     }
-
     if (this.currentField.parentKey != undefined) {
-      (this.field.hooks as any).afterViewInit = (f: any) => {
+     
+      // (this.field.hooks as any).afterViewInit = (f: any) => {
         const parentControl:any = this.form.get(this.currentField.parentKey); //this.opt.parent_key);        
         console.log(parentControl);
         
         parentControl?.valueChanges.subscribe((val: any) => {
-          if(this?.opt?.Properties?.formVAlueChange && val!==undefined){
+          if(val==undefined)return
+           if(this?.opt?.Properties?.formVAlueChange && val!==undefined){
             this.opt.multifilter_condition.conditions.map((res:any)=>{
+              res.value = val;
              if(this.opt.multifiltertype=="Simple"){
               if(this.model.isEdit){
                 res.value=parentControl.defaultValue
@@ -224,9 +233,10 @@ console.log(element[this.opt.specification]);
               res.value=sessionStorage.getItem(this.opt.local_name)
             }
             })
-            let filter_condition={filter:[
+            let filter_condition:any={ start:0,end:5000, filter:[
               this.opt.multifilter_condition
-            ]}
+            ]
+          }
             let collectionName: any = this?.field?.parentCollectionName ? this?.field?.parentCollectionName : this.opt?.optionsDataSource?.collectionName;
             this.dataService.getDataByFilter(collectionName,filter_condition).subscribe((res:any)=>{
               // this.dataService.buildOptions(res.data[0].response, this.opt);
@@ -243,6 +253,7 @@ console.log(element[this.opt.specification]);
                 this.dialogServices.openSnackBar(`No Data ${currentField} Available ${parentField}`,"OK")
                 return
               }
+
               if (this?.opt?.multifilterFieldName!==undefined) { //! To Take the value of array
                 let specificField: any = res?.data[0]?.response[0]?.[this?.opt?.multifilterFieldName];
                 if (specificField) {
@@ -253,19 +264,40 @@ console.log(element[this.opt.specification]);
                 
                 if(this.model.isEdit){
                   this.valueSlected()
+                  this.cf.detectChanges();
+
                 }
+            this.cf.detectChanges();
+
               }
 
     
            
-            } else {
+            }
+             else if(this?.opt && this?.opt?.changefield) {
               // this.dataService.buildOptions(res.data[0].response, this.opt);
               this.field.props.options = res.data[0].response.map((values: any) => {
                 return { label: values[this.opt.changefield], value: values[this.opt.changefield] };
             });
             this.opt.options = this.field.props.options 
+            }else
+               {
+              // this.opt.options=[]
+              // this.dataService.buildOptions(res.data[0].response, this.opt);
+              this.field.props.options = res.data[0].response
+            // // res.data[0].response.map((values: any) => {
+            // //     return { label: values[this.labelProp], value: values[this.valueProp] };
+            // // });
+
+            this.opt.options = res.data[0].response
+            this.cf.detectChanges();
+
+            if(this.model.isEdit){
+              this.valueSlected()
+              this.currentField.formControl.setValue(this.formControl.value);
+          }
             }
-              
+
             })
         }
         //   let selectedOption: any;
@@ -304,7 +336,7 @@ console.log(element[this.opt.specification]);
         //       });
         //   }
         });
-      };
+      // }; 
     }
  
   }

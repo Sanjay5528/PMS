@@ -169,11 +169,8 @@ collection="project"
        
       })
     });
-    // console.log(this.route.snapshot.routeConfig?.path);
-  
   }
-// gridChange:any=false
-public sideBar: SideBarDef | string | string[] | boolean | null = 'columns';
+ // public sideBar: SideBarDef | string | string[] | boolean | null = 'columns' ;
 
 loadConfig(formName:any){
 
@@ -256,7 +253,7 @@ this.gridOptions.paginationPageSize=100
   }
   )
   }else if(formName=="Requirement"){
-  
+ 
 
 this.gridOptions.treeData=true
 this.gridOptions.groupDefaultExpanded=-1
@@ -558,26 +555,45 @@ this.gridOptions.paginationPageSize=100
     )
   }else if(this.formName=="bug_list"||this.formName=="regression"){
     this.pageHeading="Bug List"
-    // this.gridOptions.groupDefaultExpanded=-1
-this.gridOptions.sideBar=this.sideBar
+this.gridOptions.sideBar=true
 this.gridOptions.pagination=true
 this.gridOptions.paginationPageSize=100
 this.gridOptions.pivotMode=false
-//     this.gridOptions.autoGroupColumnDef={
-//       headerName: "Requirement Name",
-//       field:"requirement.requirement_name",
-//       maxWidth: 280,
-//       cellRendererParams: { suppressCount: true },
-//       sortable: false,
-//       resizable: true,
-//       filter: false
-// }
+this.gridOptions.enableCellExpressions=true 
 this.defaultColDef.enablePivot=true;
+this.gridOptions.suppressAggFuncInHeader=true
 this.defaultColDef.sortable=true;
 this.defaultColDef.editable=false;
-// this.defaultColDef.enablePivot: true 
+this.defaultColDef.enableValue=true;
+this.defaultColDef.pivot=true;
+// this.gridOptions.columnTypes= {
+//   valueColumn: {
+//     editable: true,
+//     aggFunc: 'sum',
+//     valueParser: 'Number(newValue)',
+//     cellClass: 'number-cell',
+//     cellRenderer: 'agAnimateShowChangeCellRenderer',
+//     filter: 'agNumberColumnFilter',
+//   },
+//   totalColumn: {
+//     cellRenderer: 'agAnimateShowChangeCellRenderer',
+//     cellClass: 'number-cell',
+//   },
+// };
+
+this.defaultColDef.menuTabs=['generalMenuTab','filterMenuTab','columnsMenuTab'];
+// this.defaultColDef.menuTabs.push('')
     this.columnDefs.push(  
-      {
+      // {
+      //   headerName: 'Total',
+      //   type: 'totalColumn',
+      //   // we use getValue() instead of data.a so that it gets the aggregated values at the group level
+      //   valueGetter:
+      //     'getValue("a")',
+      // }, { field: 'a', type: 'valueColumn',valueFormatter:(params:any)=>{
+      //    return params.node.rowIndex
+      // } },
+        {
         headerName: 'Issue ID',
         field: 'test_case_id',
         width: 40,

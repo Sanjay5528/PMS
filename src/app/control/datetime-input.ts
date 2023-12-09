@@ -40,7 +40,7 @@ export class DateTimeInput extends FieldType implements AfterViewInit, OnInit {
   public stepHour = 1;
   public stepMinute = 1;
   public stepSecond = 1;
-  public color: ThemePalette = 'primary';
+  public color: ThemePalette = 'accent';
   public defaultTime = [new Date().setHours(0, 0, 0, 0)]
   hideTime = false
   placeholder: any

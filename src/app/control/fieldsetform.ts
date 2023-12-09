@@ -68,6 +68,8 @@ export class FormlyFieldset extends FieldType {
       let valueKey: any = this.opt.patch;
       let patchKey: any = this.opt.patch_value;
       this.checkboxValue=true;
+      const areValuesEqual = this.areObjectsEqual(value[valueKey], value[patchKey]);
+  console.log("Are values equal?", areValuesEqual);
       for (const key in value[patchKey]) {
         // if (Object.prototype.hasOwnProperty.call(value[patchKey], key)) {
         //   const element = object[key];
@@ -120,6 +122,11 @@ this.checkboxValue=false
     }
     return result;
   }
+  
+  areObjectsEqual(obj1: any, obj2: any): boolean {
+    return JSON.stringify(obj1) === JSON.stringify(obj2);
+  }
+
 }
 // {
 //   "type":"fieldset",

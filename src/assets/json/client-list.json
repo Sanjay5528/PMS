@@ -1,77 +1,121 @@
 {
-    "pageHeading": "Team Members",
-    "formType": "simple",
-    "editMode": "popup",
-    "form": {
-        "collectionName": "team_specification",
-        "fields": [
-            {
-                "fieldGroupClassName": "display-flex",
-                "fieldGroup": [
-                    {
-                        "type": "select-input",
-                        "key": "user_id",
-                        "className": "flex-6",
-                        "props": {
-                            "label": "User Name",
-                            "placeholder": "User Name",
-                            "labelPropTemplate": " {{first_name}}",
-                            "multifilter": true,
-                            "optionsDataSource": {
-                                "collectionName": "employee"
-                            },
-                            "labelProp": "first_name",
-                            "valueProp": "employee_id",
-                            "required": true
-                        }
-                    },
-                    {
-                        "type": "select-input",
-                        "key": "role_id",
-                        "className": "flex-6",
-                        "props": {
-                            "label": "Role Name",
-                            "placeholder": "Role Name",
-                            "labelPropTemplate": " {{name}}",
-                            "multifilter": true,
-                            "optionsDataSource": {
-                                "collectionName": "project_role"
-                            },
-                            "labelProp": "name",
-                            "valueProp": "_id",
-                            "required": true
-                        }
-                    }
-                ]
-            },
-            {
-                "fieldGroupClassName": "display-flex",
-                "fieldGroup": [
-                    {
-                        "key": "scheduled_start_date",
-                        "type": "date-input",
-                        "className": "flex-6",
-                        "props": {
-                            "label": "Scheduled Start Date",
-                            "placeholder": "Scheduled Start Date",
-                            "required": true
-                        }
-                    },
-                    {
-                        "key": "scheduled_end_date",
-                        "type": "date-input",
-                        "className": "flex-6",
-                        "parentKey": "scheduled_start_date",
-                        "parentCollectionName": "task",
-                        "props": {
-                            "label": "Scheduled End Date",
-                            "placeholder": "Scheduled End Date",
-                            "required": true
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    "onCancelRoute": "/list/teammembers"
+	"pageHeading": "Requirement",
+	"formType": "simple",
+	"editMode": "popup",
+	"keyField": "_id",
+	"form": {
+	"collectionName": "requirement",
+	"fields": [
+	
+				
+				{
+					"type": "input",
+					"key": "requirement_name",				
+					"className": "flex-2",
+					"props": {
+					"label": "Requirement Name",
+					"placeholder": "Requirement Name",
+					"pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+					"required": true
+					}
+				},
+		
+		{
+		"type": "html-input",
+		"key": "requirement_description",
+		"className": "flex-6",
+		"props": {
+			"label": "Requirement Description"
+		},
+		
+		"maxlength": 2000
+	},
+	{
+		"fieldGroupClassName": "display-flex",
+		"fieldGroup": [
+	{
+		"type": "select-input",
+		"key": "sprint_id",
+		"className": "flex-6",
+		"props": {
+			"label": "Sprint Id",
+			"placeholder": "Sprint Id",
+			"multifilter": true,
+			"Collections": "sprint",
+			"multifiltertype": "local",
+			"local_name": "project_id",
+			"multifilter_condition": {
+			  "clause": "AND",
+			  "conditions": [
+				{
+				  "column": "project_id",
+				  "operator": "EQUALS",
+				  "type": "string",
+				  "value": ""
+				}
+			  ]
+			},
+			"labelProp": "_id",
+			"valueProp": "_id"
+		}
+	},
+	{
+		"type": "select-input",
+		"key": "module_id",
+		"className": "flex-6",
+		"props": {
+			"label": "Module Name",
+			"placeholder": "Module Name",
+			"multifilter": true,
+			"Collections": "modules",
+			"multifiltertype": "local",
+			"local_name": "project_id",
+			"multifilter_condition": {
+			  "clause": "AND",
+			  "conditions": [
+				{
+				  "column": "project_id",
+				  "operator": "EQUALS",
+				  "type": "string",
+				  "value": ""
+				}
+			  ]
+			},
+			"labelProp": "modulename",
+			"valueProp": "moduleid"
+		}
+	}
+]
+},
+			{
+				"key": "status",
+				"type": "select",
+				"defaultValue": "A",
+				"templateOptions": {
+					"label": "Status",
+					"options": [
+						{
+							"label": "Active",
+							"value": "A"
+						},
+						{
+							"label": "Disable",
+							"value": "D"
+						}
+					],
+					"required": true
+				},
+				"hideExpression": "!model.isEdit"
+			}
+	
+	],
+		"defaultValues": [
+			{
+				"colName": "status",
+				"value": "A",
+				"type": "string"
+			}
+		]
+	},
+	"onCancelRoute": "list/requirement"
 }

@@ -16,7 +16,7 @@
   </div>
 </div>
 <div  class="datepicker" *ngIf="this.FormName=='approval'" >
-  <mat-form-field   style="width: 20%;" >
+  <mat-form-field   style="width: 271px;" >
     <!-- <mat-label>Enter a date range</mat-label> -->
     <mat-date-range-input [formGroup]="dateform" [rangePicker]="picker">
       <input matStartDate formControlName="start" placeholder="Start date">
@@ -163,9 +163,7 @@
       [groupRowRendererParams]="groupRowRendererParams"
       [groupSelectsChildren]="true"
       [singleClickEdit]="true"
-      [pagination]="true"
-      [paginateChildRows]="true"
-      [paginationAutoPageSize]="true"  
+      [alwaysShowVerticalScroll]="true"
       [context]="context"
       [paginationPageSize]="10"
       (selectionChanged)="onSelectionChanged($event)"

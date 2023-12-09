@@ -194,7 +194,6 @@ export class TimesheetComponent implements OnInit {
   }
 
 
-
   employee_id: any
   FormName:any
   ngOnInit() {
@@ -218,26 +217,29 @@ export class TimesheetComponent implements OnInit {
           this.getData(date)
         })
       }else if(params['component']=='approval'){
-        let start=moment().startOf('month')
-        let end=moment().endOf('month')
+        let start:any=moment().startOf('month')
+        let end:any=moment().endOf('month')
         this.dateform=  this.fb.group({
           start: [moment(start)],
           end: [moment(end)]
           });
+          start=start.format('YYYY-MM-DDT00:00:00.000+00:00')
+          end=end.format('YYYY-MM-DDT00:00:00.000+00:00')
+
           this.getapprovalData(start,end)
 
           this.dateform.get("start")?.valueChanges.subscribe((startDate: any) => {
             console.log(startDate._d);
             let start_date = moment(startDate).format('YYYY-MM-DDT00:00:00.000+00:00');
             
-          let end_date=this.dateform.value.end || moment().format('YYYY-MM-DDT00:00:00.000+00:00')
+          let end_date=this.dateform.value.end.format('YYYY-MM-DDT00:00:00.000+00:00') || moment().format('YYYY-MM-DDT00:00:00.000+00:00')
 
             this.getapprovalData(start_date,end_date)
           })
           this.dateform.get("end")?.valueChanges.subscribe((endDate: any) => {
             console.log(endDate._d);
             let end_date = moment(endDate).format('YYYY-MM-DDT00:00:00.000+00:00');
-            let start_date=this.dateform.value.start || moment().format('YYYY-MM-DDT00:00:00.000+00:00')
+            let start_date=this.dateform.value.start.format('YYYY-MM-DDT00:00:00.000+00:00') || moment().format('YYYY-MM-DDT00:00:00.000+00:00').toString()
 
             this.getapprovalData(start_date,end_date)
           })
@@ -451,20 +453,34 @@ export class TimesheetComponent implements OnInit {
         headerName: "Task Name",
         field: "task.task_name",
         editable: false,
+        resizable:true,    
+            filter: 'agTextColumnFilter',
+
+        sortable: false
+      },
+      {
+        headerName: "Task Type",
+        field: "task.task_type",
+        editable: false,       
+         filter: 'agTextColumnFilter',
+
         resizable:true,
         sortable: false
       },
-  
       {
         headerName: "Start Date",
         field: "task.scheduled_start_date",
         width: 120,
+        filter: 'agDateColumnFilter',
         resizable:true,
         maxWidth: 120,
         valueFormatter: function (params) {
-          return moment(params.value).format('DD/MM/ YYYY')
+          if(params.value){
+
+            return moment(params.value).format('DD/MM/ YYYY')
+          }
+          return ''
         },
-  
       },
       {
         headerName: "End Date",
@@ -472,23 +488,48 @@ export class TimesheetComponent implements OnInit {
         editable: false,
         sortable: false,
         width: 120,
+        filter: 'agDateColumnFilter',
         maxWidth: 120,
         resizable:true,
         valueFormatter: function (params) {
-          return moment(params.value).format('DD/MM/ YYYY')
+          if(params.value){
+
+            return moment(params.value).format('DD/MM/ YYYY')
+          }
+          return ''
+        },
+      }, {
+        headerName: "Completed Date",
+        field: "Completed_On",
+        editable: false,
+        filter: 'agDateColumnFilter',
+        sortable: false,
+        width: 160,
+        minWidth:160,
+        maxWidth: 160,
+        resizable:true,
+        valueFormatter: function (params) {
+          if(params.value){
+
+            return moment(params.value).format('DD/MM/ YYYY')
+          }
+          return ''
         },
   
       }, 
       {
         headerName: "Allocated Hours",
         field: "task.allocated_hours",
-        editable: false,
+        editable: false,   
+             filter: 'agNumberColumnFilter',
+
         resizable:true,
         sortable: false
       },  
       {
         headerName: "Total Worked Hours",
         field: "totalworkedhours",
+        filter: 'agNumberColumnFilter',
         editable: false,
         resizable:true,
         sortable:false
@@ -496,14 +537,22 @@ export class TimesheetComponent implements OnInit {
       {
         headerName: "Task Status",
         field: "task.status",
-        resizable:true,
-        cellEditor: "task.agRichSelectCellEditor", 
+        resizable:true,        
+        filter: 'agSetColumnFilter',
+
+        cellEditor: "task.status", 
          editable:false 
       }, 
       {
         headerName: "Approval Status",
   
-        field: "task.Approval_Status",
+        field: "task.Approval_Status",      
+          filter: 'agSetColumnFilter',
+          "maxWidth":190,
+
+          "lockPosition": "right",
+          "lockPinned": true,
+           "pinned":"right",
         cellEditor: "agRichSelectCellEditor",
         resizable:true,
         cellEditorParams: {
@@ -522,7 +571,9 @@ export class TimesheetComponent implements OnInit {
           cellEditorParams: {
               maxLength: 100
           }
-            })
+            
+        }
+        )
     }
     // If the user is 'superadmin' or 'team lead', make the specific columns editable
     // this.columnDefs.push({

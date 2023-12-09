@@ -13,10 +13,10 @@ import { MatDialog } from '@angular/material/dialog';
     <p style="font-style: italic;display: contents;font-weight: bold;">{{to['label']}}</p>
     <div *ngIf="UploadShow">
             <button mat-raised-button  style="color: white; background-color: grey; text-align: center; margin: 20px;" 
-        (click)="fileInput.click();dispableTrue=true">Select File</button>
+        (click)="fileInput.click();">Select File</button>
 <button style="height: 40px; width: 90px; border-radius: 10%; color: gray;" button color="gray" 
         (click)="uploadFiles()" [disabled]="dispableTrue">
-  <span class="glyphicon glyphicon-upload"></span> Upload
+  <span ></span> Upload
 </button>
 <input style="display: none" #attachments type="file" id="pic" accept=".jpg, .png" 
        (change)="onFileSelection($event)" #fileInput multiple="true">

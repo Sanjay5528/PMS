@@ -3,12 +3,10 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-carsoal',
-  template:`<div  style="display: contents; ">
-  <div
-    *ngFor="let image of data; let index = index"
-   
-  >
-    <div *ngIf="CurrentImageIndex == index" style="display: flex;align-items: center;">
+  template:`
+  <!-- <div fxLayout="row" fxLayoutAlign="center center" >
+  <div  *ngFor="let image of data; let index = index"   >
+    <div *ngIf="CurrentImageIndex == index" fxLayoutGap="20px" fxLayout="row"  fxLayoutAlign="space-between center">
       <mat-icon 
         (click)="imageIndexMove('Left')"
         >keyboard_arrow_left</mat-icon
@@ -24,7 +22,19 @@ import { environment } from 'src/environments/environment';
       >
     </div>
   </div>
-  </div>`
+  </div>
+   -->
+   <div fxLayout="row" fxLayoutAlign="center center">
+  <div *ngFor="let image of data; let index = index">
+    <div *ngIf="CurrentImageIndex == index"style="display: flex;justify-content: space-between;  align-items: center;  gap: 20px;">
+      <mat-icon (click)="imageIndexMove('Left')">keyboard_arrow_left</mat-icon>
+      <img [src]="DocImagePAth + image.storage_name" [alt]="image.file_name" [height]="calcHeight()" />
+      <mat-icon (click)="imageIndexMove('Right')">keyboard_arrow_right</mat-icon>
+    </div>
+  </div>
+</div>
+
+  `
 })
 export class CarsoalComponent  {
   DocImagePAth:any=environment.ImageBaseUrl;

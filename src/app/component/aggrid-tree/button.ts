@@ -803,13 +803,12 @@ console.log(this.form.valid);
         // values.project_name = this.ParentComponent.response?.project_name;
         if (this.gridData.modulename &&this.model_heading!="Module - Edit" ) {
           values.parentmodulename = this.gridData.modulename;
-      } else if (this.gridData._id && this.parentRouteName=="projectteam") {
-          values.parentmodulename = this.gridData.team_id;
-      } 
+      }   
       if(formName=='team_member'){
         values.project_id = this.ParentComponent.response?.project_id;
 
       }
+       
       if(this.model_heading=="Test Case - Add"){
         values.project_id = this.ParentComponent.response?.project_id;
         values.requirement_id = this.gridData._id;  
@@ -843,6 +842,9 @@ console.log(this.form.valid);
       // });
       if(this.id==undefined&&this.butText=="Save"|| this.formAction == 'Add'){
         console.log('save');
+        if (this.gridData._id && this.parentRouteName=="projectteam") {
+          values.parentmodulename = this.gridData._id;
+      } 
         this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
           console.log(data);
           if(this.continue_Save!==true){
@@ -881,7 +883,8 @@ console.log(formData);
 console.warn(refId);
 console.error(this.gridData);
 let data:any={}
-data['_id']="SEQ|BUG|"+this.gridData.project_id
+// data['_id']="SEQ|BUG|"+this.gridData.project_id
+data['_id']="SEQ|"+this.gridData.project_id
 
 data['test_result_id']=refId.data["insert ID"]
 data['test_case_id']=this.gridData.test_case_id;
