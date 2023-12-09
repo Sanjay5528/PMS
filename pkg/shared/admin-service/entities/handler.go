@@ -1756,14 +1756,14 @@ func team_specificationList(c *fiber.Ctx) error {
 					{"from", "employee"},
 					{"localField", "approved_by"},
 					{"foreignField", "employee_id"},
-					{"as", "approved_by"},
+					{"as", "approved"},
 				},
 			},
 		},
 		bson.D{
 			{"$unwind",
 				bson.D{
-					{"path", "$approved_by"},
+					{"path", "$approved"},
 					{"preserveNullAndEmptyArrays", true},
 				},
 			},
@@ -1775,9 +1775,9 @@ func team_specificationList(c *fiber.Ctx) error {
 						bson.D{
 							{"$concat",
 								bson.A{
-									"$approved_by.first_name",
+									"$approved.first_name",
 									" ",
-									"$approved_by.last_name",
+									"$approved.last_name",
 								},
 							},
 						},
@@ -1788,7 +1788,7 @@ func team_specificationList(c *fiber.Ctx) error {
 		bson.D{
 			{"$unset",
 				bson.A{
-					"approved_by",
+					"approved",
 					"employee",
 				},
 			},
@@ -1808,23 +1808,154 @@ func regressionTestcase(c *fiber.Ctx) error {
 
 		return shared.BadRequest("Invalid Org Id")
 	}
+	// query := bson.A{
+	// 	bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
+	// 	bson.D{
+	// 		{"$lookup",
+	// 			bson.D{
+	// 				{"from", "testcase"},
+	// 				{"localField", "project_id"},
+	// 				{"foreignField", "project_id"},
+	// 				{"as", "testcase"},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{{"$unwind", "$testcase"}},
+	// 	bson.D{
+	// 		{"$group",
+	// 			bson.D{
+	// 				{"_id", "$_id"},
+	// 				{"ResultPassCount",
+	// 					bson.D{
+	// 						{"$sum",
+	// 							bson.D{
+	// 								{"$cond",
+	// 									bson.A{
+	// 										bson.D{
+	// 											{"$eq",
+	// 												bson.A{
+	// 													"$testcase.test_case_scenario",
+	// 													"P",
+	// 												},
+	// 											},
+	// 										},
+	// 										1,
+	// 										0,
+	// 									},
+	// 								},
+	// 							},
+	// 						},
+	// 					},
+	// 				},
+	// 				{"ResultFailCount",
+	// 					bson.D{
+	// 						{"$sum",
+	// 							bson.D{
+	// 								{"$cond",
+	// 									bson.A{
+	// 										bson.D{
+	// 											{"$eq",
+	// 												bson.A{
+	// 													"$testcase.test_case_scenario",
+	// 													"N",
+	// 												},
+	// 											},
+	// 										},
+	// 										1,
+	// 										0,
+	// 									},
+	// 								},
+	// 							},
+	// 						},
+	// 					},
+	// 				},
+	// 				{"regression_id", bson.D{{"$first", "$regression_id"}}},
+	// 				{"status", bson.D{{"$first", "$status"}}},
+	// 				{"description", bson.D{{"$first", "$description"}}},
+	// 				{"project_id", bson.D{{"$first", "$project_id"}}},
+	// 				{"created_on", bson.D{{"$first", "$created_on"}}},
+	// 				{"created_by", bson.D{{"$first", "$created_by"}}},
+	// 				{"sprint_id", bson.D{{"$first", "$sprint_id"}}},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{
+	// 		{"$addFields",
+	// 			bson.D{
+	// 				{"ResultCount",
+	// 					bson.D{
+	// 						{"$sum",
+	// 							bson.A{
+	// 								"$ResultPassCount",
+	// 								"$ResultFailCount",
+	// 							},
+	// 						},
+	// 					},
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.D{
+	// 		{"$project",
+	// 			bson.D{
+	// 				{"_id", 1},
+	// 				{"regression_id", 1},
+	// 				{"description", 1},
+	// 				{"project_id", 1},
+	// 				{"created_on", 1},
+	// 				{"status", 1},
+	// 				{"created_by", 1},
+	// 				{"sprint_id", 1},
+	// 				{"ResultPassCount", 1},
+	// 				{"ResultFailCount", 1},
+	// 				{"ResultCount", 1},
+	// 			},
+	// 		},
+	// 	},
+	// }c.Params("projectid")
 	query := bson.A{
 		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
 		bson.D{
 			{"$lookup",
 				bson.D{
+					{"from", "requirement"},
+					{"localField", "sprint_id"},
+					{"foreignField", "sprint_id"},
+					{"as", "requirement"},
+				},
+			},
+		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$requirement"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
+		bson.D{
+			{"$lookup",
+				bson.D{
 					{"from", "testcase"},
-					{"localField", "project_id"},
-					{"foreignField", "project_id"},
+					{"localField", "requirement._id"},
+					{"foreignField", "requirement_id"},
 					{"as", "testcase"},
 				},
 			},
 		},
-		bson.D{{"$unwind", "$testcase"}},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$testcase"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
 		bson.D{
 			{"$group",
 				bson.D{
-					{"_id", "$_id"},
+					{"_id", "$sprint_id"},
+					{"id", bson.D{{"$first", "$_id"}}},
 					{"ResultPassCount",
 						bson.D{
 							{"$sum",
@@ -1880,25 +2011,9 @@ func regressionTestcase(c *fiber.Ctx) error {
 			},
 		},
 		bson.D{
-			{"$addFields",
-				bson.D{
-					{"ResultCount",
-						bson.D{
-							{"$sum",
-								bson.A{
-									"$ResultPassCount",
-									"$ResultFailCount",
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-		bson.D{
 			{"$project",
 				bson.D{
-					{"_id", 1},
+					{"_id", "$id"},
 					{"regression_id", 1},
 					{"description", 1},
 					{"project_id", 1},
@@ -1908,7 +2023,16 @@ func regressionTestcase(c *fiber.Ctx) error {
 					{"sprint_id", 1},
 					{"ResultPassCount", 1},
 					{"ResultFailCount", 1},
-					{"ResultCount", 1},
+					{"ResultCount",
+						bson.D{
+							{"$add",
+								bson.A{
+									"$ResultPassCount",
+									"$ResultFailCount",
+								},
+							},
+						},
+					},
 				},
 			},
 		},
@@ -2077,7 +2201,8 @@ func team_specifcaiton(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, response)
 
 }
-// too 
+
+// too
 func getFinalTimesheet(c *fiber.Ctx) error {
 	org, exists := helper.GetOrg(c)
 	if !exists {
@@ -2091,11 +2216,10 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 	start_date := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)
 
 	end_date := time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 0, time.UTC)
- 
-	formattedDate := start_date.Format("2006-01-02")
- 
 
-	pipeline :=  bson.A{
+	formattedDate := start_date.Format("2006-01-02")
+
+	pipeline := bson.A{
 		bson.D{
 			{"$match",
 				bson.D{
