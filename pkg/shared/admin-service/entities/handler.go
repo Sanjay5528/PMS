@@ -1930,20 +1930,8 @@ func team_specifcaiton(c *fiber.Ctx) error {
 		return shared.BadRequest("Invalid Org Id")
 	}
 
-	scheduledstartdate, _ := time.Parse(time.RFC3339, c.Params("startdate"))
-
-	scheduledenddate, _ := time.Parse(time.RFC3339, c.Params("enddate"))
-
-	start_start_date := time.Date(scheduledstartdate.Year(), scheduledstartdate.Month(), scheduledstartdate.Day(), 0, 0, 0, 0, time.UTC)
-
-	start_end_date := time.Date(scheduledstartdate.Year(), scheduledstartdate.Month(), scheduledstartdate.Day(), 23, 59, 59, 0, time.UTC)
-
-	start_date := time.Date(scheduledenddate.Year(), scheduledenddate.Month(), scheduledenddate.Day(), 0, 0, 0, 0, time.UTC)
-
-	end_date := time.Date(scheduledenddate.Year(), scheduledenddate.Month(), scheduledenddate.Day(), 23, 59, 59, 0, time.UTC)
-
 	pipeline := bson.A{
-		bson.D{{"$match", bson.D{{"approved_by", c.Params("approved_by")}}}},
+		bson.D{{"$match", bson.D{{"approved_by", "E0001"}}}},
 		bson.D{
 			{"$lookup",
 				bson.D{
@@ -2061,16 +2049,16 @@ func team_specifcaiton(c *fiber.Ctx) error {
 							bson.D{
 								{"start",
 									bson.D{
-										{"$gte", start_start_date},
-										{"$lte", start_end_date},
+										{"$gte", time.Date(2023, 12, 8, 0, 0, 0, 0, time.UTC)},
+										{"$lte", time.Date(2023, 12, 8, 23, 59, 59, 0, time.UTC)},
 									},
 								},
 							},
 							bson.D{
 								{"end",
 									bson.D{
-										{"$gte", start_date},
-										{"$lte", end_date},
+										{"$gte", time.Date(2023, 12, 26, 0, 0, 0, 0, time.UTC)},
+										{"$lte", time.Date(2023, 12, 26, 23, 59, 59, 0, time.UTC)},
 									},
 								},
 							},
