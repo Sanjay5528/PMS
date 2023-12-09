@@ -1809,7 +1809,7 @@ func regressionTestcase(c *fiber.Ctx) error {
 		return shared.BadRequest("Invalid Org Id")
 	}
 	query := bson.A{
-		bson.D{{"$match", bson.D{{"project_id", "C001-SAN"}}}},
+		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
 		bson.D{
 			{"$lookup",
 				bson.D{
