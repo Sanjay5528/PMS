@@ -2103,9 +2103,35 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 	start_date := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)
 
 	end_date := time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 0, time.UTC)
+ 
+	formattedDate := start_date.Format("2006-01-02")
+ 
 
-	pipeline := bson.A{
-		bson.D{{"$match", bson.D{{"scheduled_start_date", bson.D{{"$lte", start_date}}}}}},
+	pipeline :=  bson.A{
+		bson.D{
+			{"$match",
+				bson.D{
+					{"$expr",
+						bson.D{
+							{"$lte",
+								bson.A{
+									bson.D{
+										{"$dateToString",
+											bson.D{
+												{"format", "%Y-%m-%d"},
+												{"date", "$scheduled_start_date"},
+												{"timezone", "UTC"},
+											},
+										},
+									},
+									formattedDate,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 		bson.D{
 			{"$lookup",
 				bson.D{
@@ -2173,7 +2199,26 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 											{"$and",
 												bson.A{
 													bson.D{{"status", bson.D{{"$ne", "Completed"}}}},
-													bson.D{{"scheduled_start_date", bson.D{{"$lte", start_date}}}},
+													bson.D{
+														{"$expr",
+															bson.D{
+																{"$lte",
+																	bson.A{
+																		bson.D{
+																			{"$dateToString",
+																				bson.D{
+																					{"format", "%Y-%m-%d"},
+																					{"date", "$scheduled_start_date"},
+																					{"timezone", "UTC"},
+																				},
+																			},
+																		},
+																		formattedDate,
+																	},
+																},
+															},
+														},
+													},
 												},
 											},
 										},
@@ -2185,6 +2230,7 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 				},
 			},
 		},
+		// bson.D{{"$match", bson.D{{"assigned_to", "E0001"}}}},
 	}
 	// bson.D{{"$match", bson.D{{"assigned_to", "E0001"}}}},
 
