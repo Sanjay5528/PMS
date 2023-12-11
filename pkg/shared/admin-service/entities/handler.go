@@ -2486,6 +2486,15 @@ func team_specifcaiton(c *fiber.Ctx) error {
 				},
 			},
 		},
+		bson.D{
+			{"$group",
+				bson.D{
+					{"_id", "$task._id"},
+					{"data", bson.D{{"$first", "$$ROOT"}}},
+				},
+			},
+		},
+		bson.D{{"$replaceRoot", bson.D{{"newRoot", "$data"}}}},
 	}
 	response, err := helper.GetAggregateQueryResult(org.Id, "team_specification", pipeline)
 	if err != nil {
