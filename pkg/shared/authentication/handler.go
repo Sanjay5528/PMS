@@ -39,7 +39,6 @@ func LoginHandler(c *fiber.Ctx) error {
 	if err != nil {
 		fmt.Println("Error:", err.Error())
 	}
-
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return shared.BadRequest("Invalid user ID") // Added return statement
@@ -63,17 +62,19 @@ func LoginHandler(c *fiber.Ctx) error {
 	}
 
 	token := utils.GenerateJWTToken(claims, 24*60) // 24*60
-
-	response := &LoginResponse{
+	// var response LoginResponse
+	response := LoginResponse{
 		Name:     userName.(string),
 		UserRole: user["role"].(string),
 		UserOrg:  org,
 		Token:    token,
 	}
-
+	
 	if user["employee_id"] != nil {
-		response.EmployeeID = user["empolyee_id"]
+		response.EmployeeID = user["employee_id"].(string)
 	}
+	
+
 	return shared.SuccessResponse(c, fiber.Map{
 		"Message":       "Login Successfully",
 		"LoginResponse": response,
