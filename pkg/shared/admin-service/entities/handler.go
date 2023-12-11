@@ -2704,11 +2704,12 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 
 	start_date := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)
 
-	end_date := time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 0, time.UTC)
+	// end_date := time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 0, time.UTC)
 
 	formattedDate := start_date.Format("2006-01-02")
 
-	pipeline := bson.A{
+	pipeline :=  
+	bson.A{
 		bson.D{
 			{"$match",
 				bson.D{
@@ -2743,7 +2744,15 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{{"$addFields", bson.D{{"totalworkedhours", bson.D{{"$sum", "$timesheet.workedhours"}}}}}},
+		bson.D{
+			{"$addFields",
+				bson.D{
+					{"totalworkedhours", bson.D{{"$sum", "$timesheet.workedhours"}}},
+					{"Timeentry_Date", "$timesheet.entry_Date"},
+					{"Project_name", "$project.project_name"},
+				},
+			},
+		},
 		bson.D{
 			{"$unwind",
 				bson.D{
@@ -2770,8 +2779,14 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{{"$addFields", bson.D{{"Timeentry_Date", "$timesheet.entry_Date"}}}},
-		bson.D{{"$addFields", bson.D{{"Project_name", "$project.project_name"}}}},
+		bson.D{
+			{"$addFields",
+				bson.D{
+					{"Timeentry_Date", "$timesheet.entry_Date"},
+					{"Project_name", "$project.project_name"},
+				},
+			},
+		},
 		bson.D{{"$unset", "project"}},
 		bson.D{
 			{"$match",
@@ -2783,10 +2798,22 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 									bson.A{
 										bson.D{{"status", "Completed"}},
 										bson.D{
-											{"Timeentry_Date",
+											{"$expr",
 												bson.D{
-													{"$lte", end_date},
-													{"$gte", start_date},
+													{"$eq",
+														bson.A{
+															bson.D{
+																{"$dateToString",
+																	bson.D{
+																		{"format", "%Y-%m-%d"},
+																		{"date", "$Timeentry_Date"},
+																		{"timezone", "UTC"},
+																	},
+																},
+															},
+															formattedDate,
+														},
+													},
 												},
 											},
 										},
@@ -2797,27 +2824,20 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 								{"$and",
 									bson.A{
 										bson.D{
-											{"$and",
-												bson.A{
-													bson.D{{"status", bson.D{{"$ne", "Completed"}}}},
-													bson.D{
-														{"$expr",
+											{"$expr",
+												bson.D{
+													{"$lte",
+														bson.A{
 															bson.D{
-																{"$lte",
-																	bson.A{
-																		bson.D{
-																			{"$dateToString",
-																				bson.D{
-																					{"format", "%Y-%m-%d"},
-																					{"date", "$scheduled_start_date"},
-																					{"timezone", "UTC"},
-																				},
-																			},
-																		},
-																		formattedDate,
+																{"$dateToString",
+																	bson.D{
+																		{"format", "%Y-%m-%d"},
+																		{"date", "$scheduled_start_date"},
+																		{"timezone", "UTC"},
 																	},
 																},
 															},
+															formattedDate,
 														},
 													},
 												},
@@ -2831,8 +2851,31 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 				},
 			},
 		},
-		// bson.D{{"$match", bson.D{{"assigned_to", "E0001"}}}},
+		bson.D{{"$unset", "Timeentry_Date"}},
+		bson.D{
+			{"$group",
+				bson.D{
+					{"_id", "$_id"},
+					{"timesheet", bson.D{{"$push", "$timesheet"}}},
+					{"created_by", bson.D{{"$first", "$created_by"}}},
+					{"requirement_id", bson.D{{"$first", "$requirement_id"}}},
+					{"status", bson.D{{"$first", "$status"}}},
+					{"task_type", bson.D{{"$first", "$task_type"}}},
+					{"update_by", bson.D{{"$first", "$update_by"}}},
+					{"update_on", bson.D{{"$first", "$update_on"}}},
+					{"task_name", bson.D{{"$first", "$task_name"}}},
+					{"allocated_hours", bson.D{{"$first", "$allocated_hours"}}},
+					{"scheduled_end_date", bson.D{{"$first", "$scheduled_end_date"}}},
+					{"scheduled_start_date", bson.D{{"$first", "$scheduled_start_date"}}},
+					{"assigned_to", bson.D{{"$first", "$assigned_to"}}},
+					{"project_id", bson.D{{"$first", "$project_id"}}},
+					{"totalworkedhours", bson.D{{"$first", "$totalworkedhours"}}},
+					{"Project_name", bson.D{{"$first", "$Project_name"}}},
+				},
+			},
+		},
 	}
+
 	// bson.D{{"$match", bson.D{{"assigned_to", "E0001"}}}},
 
 	if employee_id != "SA" {

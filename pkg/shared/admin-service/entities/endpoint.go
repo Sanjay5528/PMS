@@ -44,7 +44,7 @@ func SetupCRUDRoutes(app *fiber.App) {
 func SetupGroupRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/group", "Data Lookup API")
 	r.Get("/:groupname", helper.GroupDataBasedOnRules)
-
+	
 }
 
 // Data set
@@ -67,7 +67,7 @@ func SetupTesting(app *fiber.App) {
 
 }
 
-// Old pms code endpoint and func
+//  Old pms code endpoint and func
 func SetupLookupRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/lookup", "Data Lookup API")
 	r.Get("/task_requriment/:projectid", TaskRequeriment)
