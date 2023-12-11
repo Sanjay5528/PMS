@@ -2396,6 +2396,37 @@ func team_specifcaiton(c *fiber.Ctx) error {
 			},
 		},
 		bson.D{{"$addFields", bson.D{{"project_name", "$project.project_name"}}}},
+
+		bson.D{{"$match", bson.D{{"project_id", bson.D{{"$exists", true}}}}}},
+		bson.D{
+			{"$addFields",
+				bson.D{
+					{"task",
+						bson.D{
+							{"$filter",
+								bson.D{
+									{"input", "$task"},
+									{"as", "task"},
+									{"cond",
+										bson.D{
+											{"$eq",
+												bson.A{
+													"$$task.project_id",
+													"$project_id",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+
+
+
 		bson.D{
 			{"$unset",
 				bson.A{
