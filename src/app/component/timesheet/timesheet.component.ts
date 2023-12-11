@@ -967,95 +967,119 @@ this.dataService.update("task",update_id,updateValue).subscribe((response:any)=>
 
 // console.log(filteredData);
 
-// this.rowData = filteredData;
-let start_date: any = moment(this.calendarDate).startOf('day').utc();
-let end_date: any = moment(this.calendarDate).endOf('day').utc().add(23,'hour').add(59,'minutes').add(999,'milliseconds');
-let allData :any[]=res.data
+// // this.rowData = filteredData;
 
-let filteredData = allData
-  .filter((record) => {
-    if (!isEmpty(record?.timesheet)  ) {
-      if ( moment(record.timesheet.entry_Date)?.isBetween(start_date, end_date) ){
-        return true
-      }else{
-        return true
-      }
-    } else {
-      return true;  
-    }
-  })
-  .map((element:any) => {
+
+
+
+
+
+
+// let start_date: any = moment(this.calendarDate).startOf('day').utc();
+// let end_date: any = moment(this.calendarDate).endOf('day').utc().add(23,'hour').add(59,'minutes').add(999,'milliseconds');
+// let allData :any[]=res.data
+
+// let filteredData = allData
+//   .filter((record) => {
+//     if (!isEmpty(record?.timesheet)  ) {
+//       if ( moment(record.timesheet.entry_Date)?.isBetween(start_date, end_date) ){
+//         return true
+//       }else{
+//         return true
+//       }
+//     } else {
+//       return true;  
+//     }
+//   })
+//   .map((element:any) => {
+//     element["Not_Completed_task"] = moment(element.scheduled_end_date)?.isBefore(this.calendarDate);
+//     element.project_name = element?.Project_name;
+     
+//     if (!isEmpty(element?.timesheet)) {
+
+//       for (let index = 0; index < element?.timesheet.length; index++) {
+ 
+// let timesheet = element?.timesheet[index];
+// console.log(!moment(timesheet.entry_Date).isBetween(start_date, end_date,'hour'),"hour",timesheet.entry_Date);
+// console.log(moment(timesheet.entry_Date)?.isBetween(start_date, end_date),"normal",timesheet.entry_Date);
+// console.log(!moment(timesheet.entry_Date).isBetween(start_date, end_date,'day'),"day",timesheet.entry_Date);
+// console.log(moment(timesheet.entry_Date)?.isBetween(start_date, end_date,'date'),"date",timesheet.entry_Date);
+//         if(moment(timesheet.entry_Date)?.isBetween(start_date, end_date)){
+//            element.workedhours = timesheet.workedhours;
+//           element.timesheet_id = timesheet._id;
+//           element.entry_date = moment(timesheet.entry_Date).utc();
+//           element.today_totalworkedhours = element.totalworkedhours - timesheet.workedhours;
+        
+         
+//         console.log(element.entry_date);
+//         console.log(start_date);
+//         console.log(end_date);
+        
+//         console.log(!moment(element.entry_date).isBetween(start_date, end_date,'hour'));
+//         console.log(moment(element.entry_date)?.isBetween(start_date, end_date,'hour'));
+//         break ;
+          
+//         } 
+//       }
+    
+//     }
+//     element.remaing_hrs = (element?.allocated_hours || 0) - element?.totalworkedhours;
+//     element.remaing_hrs = isNaN(element.remaing_hrs) ? element.allocated_hours : element.remaing_hrs;
+//     // if(!filteredData.includes(element._id)){
+//       return element;
+//     // }
+//   });
+// console.log(filteredData);
+
+// this.rowData = filteredData;
+
+
+
+
+
+let start_date: any = moment(this.calendarDate).startOf('day').utc();
+let end_date: any = moment(this.calendarDate).endOf('day').utc().add(23, 'hours').add(59, 'minutes').add(999, 'milliseconds');
+
+let allData: any[] = res.data;
+
+let filteredData = allData .map((element: any) => {
     element["Not_Completed_task"] = moment(element.scheduled_end_date)?.isBefore(this.calendarDate);
     element.project_name = element?.Project_name;
-    // if (!isEmpty(element?.timesheet )  ) {
-    //   let timesheet = element.timesheet;
-    //   element.workedhours = timesheet.workedhours;
-    //   element.timesheet_id = timesheet._id;
-    //   element.entry_date = moment(timesheet.entry_Date).utc();
-    //   element.today_totalworkedhours = element.totalworkedhours - timesheet.workedhours;
-    // }
-    // element.remaing_hrs = (element?.allocated_hours || 0) - element?.totalworkedhours;
-    // element.remaing_hrs = isNaN(element.remaing_hrs) ? element.allocated_hours : element.remaing_hrs;
-    
-    // if (! moment(element.timesheet?.entry_Date)?.isBetween(start_date, end_date) && !isEmpty(element?.timesheet) ) {
-    //   console.log("delete", element.timesheet);  
-    //   delete   element.workedhours 
-    //   delete   element.timesheet_id
-    //   delete  element.entry_date 
-    //   delete  element.today_totalworkedhours
-    // delete element.timesheet;
-    // }
+
     if (!isEmpty(element?.timesheet)) {
-
       for (let index = 0; index < element?.timesheet.length; index++) {
-// console.log(moment(element.entry_date)?.isBetween(start_date, end_date,'hour'));
+        let timesheet = element?.timesheet[index];
 
-let timesheet = element?.timesheet[index];
-console.log(!moment(timesheet.entry_Date).isBetween(start_date, end_date,'hour'),"hour",timesheet.entry_Date);
-console.log(moment(timesheet.entry_Date)?.isBetween(start_date, end_date),"normal",timesheet.entry_Date);
-console.log(!moment(timesheet.entry_Date).isBetween(start_date, end_date,'day'),"day",timesheet.entry_Date);
-console.log(moment(timesheet.entry_Date)?.isBetween(start_date, end_date,'date'),"date",timesheet.entry_Date);
-        if(moment(timesheet.entry_Date)?.isBetween(start_date, end_date)){
-          // const elements = element?.timesheet[index];
+        console.log("Is Between (Hour):", moment(timesheet.entry_Date).isBetween(start_date, end_date, 'hour'), timesheet.entry_Date);
+        console.log("Is Between (Normal):", moment(timesheet.entry_Date).isBetween(start_date, end_date), timesheet.entry_Date);
+        console.log("Is Between (Day):", moment(timesheet.entry_Date).isBetween(start_date, end_date, 'day'), timesheet.entry_Date);
+        console.log("Is Between (Date):", moment(timesheet.entry_Date).isBetween(start_date, end_date, 'date'), timesheet.entry_Date);
+
+        if (moment(timesheet.entry_Date).isBetween(start_date, end_date)) {
           element.workedhours = timesheet.workedhours;
           element.timesheet_id = timesheet._id;
           element.entry_date = moment(timesheet.entry_Date).utc();
           element.today_totalworkedhours = element.totalworkedhours - timesheet.workedhours;
-        
-         
-        console.log(element.entry_date);
-        console.log(start_date);
-        console.log(end_date);
-        
-        console.log(!moment(element.entry_date).isBetween(start_date, end_date,'hour'));
-        console.log(moment(element.entry_date)?.isBetween(start_date, end_date,'hour'));
-        break ;
-          
+
+          console.log("Element Entry Date:", element.entry_date);
+          console.log("Start Date:", start_date);
+          console.log("End Date:", end_date);
+
+          console.log("Is Between (Hour):", !moment(element.entry_date).isBetween(start_date, end_date, 'hour'));
+          console.log("Is Between (Normal):", moment(element.entry_date).isBetween(start_date, end_date, 'hour'));
+          break;
         }
-        // if (!moment(element.entry_date)?.isBetween(start_date, end_date,'hour')) {
-        //   console.log("delete", element.timesheet);
-        //   delete element.workedhours;
-        //   delete element.timesheet_id;
-        //   delete element.entry_date;
-        //   delete element.today_totalworkedhours;
-        //   // delete element.timesheet;
-        // }
       }
-    
     }
+
     element.remaing_hrs = (element?.allocated_hours || 0) - element?.totalworkedhours;
     element.remaing_hrs = isNaN(element.remaing_hrs) ? element.allocated_hours : element.remaing_hrs;
-    // if(!filteredData.includes(element._id)){
-      return element;
-    // }
+
+    return element;
   });
+
 console.log(filteredData);
-
 this.rowData = filteredData;
-
-
-
-
 
 
 
