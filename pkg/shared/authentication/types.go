@@ -20,7 +20,7 @@ type LoginResponse struct {
 	UserRole   interface{}        `json:"role"`
 	UserOrg    utils.Organization `json:"org" bson:"org"`
 	Token      string             `json:"token"`
-	EmployeeID string             `json:"employee_id"`
+	EmployeeID interface{}             `json:"employee_id,omitempty"`
 }
 
 // ResetPasswordRequestDto - Dto for reset password Request
