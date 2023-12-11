@@ -2340,7 +2340,7 @@ func team_specifcaiton(c *fiber.Ctx) error {
 	// 	},
 	// }
 
-	pipeline := bson.A{
+	pipeline :=  bson.A{
 		bson.D{{"$match", bson.D{{"approved_by", c.Params("approved_by")}}}},
 		bson.D{
 			{"$lookup",
@@ -2396,7 +2396,24 @@ func team_specifcaiton(c *fiber.Ctx) error {
 			},
 		},
 		bson.D{{"$addFields", bson.D{{"project_name", "$project.project_name"}}}},
-
+		bson.D{
+			{"$unset",
+				bson.A{
+					"employee",
+					"project",
+				},
+			},
+		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "task"},
+					{"localField", "user_id"},
+					{"foreignField", "assigned_to"},
+					{"as", "task"},
+				},
+			},
+		},
 		bson.D{{"$match", bson.D{{"project_id", bson.D{{"$exists", true}}}}}},
 		bson.D{
 			{"$addFields",
@@ -2421,27 +2438,6 @@ func team_specifcaiton(c *fiber.Ctx) error {
 							},
 						},
 					},
-				},
-			},
-		},
-
-
-
-		bson.D{
-			{"$unset",
-				bson.A{
-					"employee",
-					"project",
-				},
-			},
-		},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "task"},
-					{"localField", "user_id"},
-					{"foreignField", "assigned_to"},
-					{"as", "task"},
 				},
 			},
 		},
@@ -2496,14 +2492,12 @@ func team_specifcaiton(c *fiber.Ctx) error {
 						bson.A{
 							bson.D{
 								{"$and",
-									// Task Start & Task End Date will be in range of start and end
 									bson.A{
 										bson.D{{"start", bson.D{{"$gte", start_start_date}}}},
 										bson.D{{"end", bson.D{{"$lte", end_end_date}}}},
 									},
 								},
 							},
-							// It should be Completed on In Between Data
 							bson.D{
 								{"Completed_On",
 									bson.D{
