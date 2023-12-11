@@ -303,20 +303,20 @@ export class TimesheetComponent implements OnInit {
         },
   
       },
-      // {
-      //   headerName: "Entry Date",
-      //   field: "entry_date",
-      //   width: 120,
-      //   maxWidth:120,
-      //   valueFormatter: function (params) { 
-      //     if(params.value){
+      {
+        headerName: "Entry Date",
+        field: "entry_date",
+        width: 120,
+        maxWidth:120,
+        valueFormatter: function (params) { 
+          if(params.value){
   
-      //       return moment(params.value).format('DD/MM/ YYYY')
-      //     }
-      //     return ''
-      //   },
+            return moment(params.value).format('DD/MM/ YYYY')
+          }
+          return ''
+        },
   
-      // },
+      },
       {
         headerName: "Allocated Hours",
         field: "allocated_hours",
@@ -704,15 +704,17 @@ export class TimesheetComponent implements OnInit {
       return
     }
 
-    debugger
     let fieldName = params.colDef.field;
-    // this.valueChanged = params.value;
-    let data: any = {};
-    data['assigned_to'] = this.helperServices.getEmp_id();
-    data['task_id'] = params.data._id;
-    data['ref_id'] = params.data.id;
-    data['entry_Date'] = this.dateform.value.datepicker?._d
-    data[fieldName] = params.value;
+    let data: any = {
+      assigned_to: this.helperServices.getEmp_id(), //? Not need
+      task_id: params.data._id,
+      ref_id: params.data.id,
+      entry_Date: moment(this.dateform.value.datepicker).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+      [fieldName]: params.value,
+      status: params.data.status === "Open" ? "In Progress" : params.data.status
+    };
+
+    params.data.status=  params.data.status == "Open" ? "In Progress" : params.data.status
 
     if (fieldName === "workedhours") {
       // ?Old Values to Sub  Bec  Worked Hours added
@@ -735,6 +737,7 @@ export class TimesheetComponent implements OnInit {
 
 
     }
+    
     if (params?.data?.timesheet_id) {
       this.dataService.update("timesheet", params.data.timesheet_id, data).subscribe((res: any) => {
         let alldata: any = params.data
@@ -747,12 +750,13 @@ export class TimesheetComponent implements OnInit {
           }
           alldata["remaing_hrs"] = (alldata?.allocated_hours || 0) - (alldata?.today_totalworkedhours + params.value)
         }
-        alldata.status == "Open" ? "In Progress" : alldata.status
+        alldata.status=    alldata.status == "Open" ? "In Progress" : alldata.status
         let data: RowDataTransaction = {
           update: [alldata]
         }
         this.gridApi.applyTransaction(data)
         this.updateTask(alldata, res)
+        // this.getData(this.calendarDate)
       });
       return
     }
@@ -761,14 +765,14 @@ export class TimesheetComponent implements OnInit {
       params.data[fieldName] = params.value
       if(params.data && params.data.workedhours && fieldName=='workedhours'){
         // if(fieldName=='workedhours'){
-          params.data.totalworkedhours=params.data.totalworkedhours+ params.value
+          params.data.totalworkedhours=  (isNaN(params.data.totalworkedhours) ?  0 :parseInt( params.data.totalworkedhours))+ params.value
         // }
         params.data.today_totalworkedhours = params.data.totalworkedhours - params.data.workedhours;
   
         params.data.remaing_hrs = (params.data?.allocated_hours || 0) - (params.data?.today_totalworkedhours + params.value);
       }
       params.data.remaing_hrs = isNaN(params.data.remaing_hrs) ? params.data.allocated_hours :parseInt( params.data.remaing_hrs);
-      params.data.status == "Open" ? "In Progress" : params.data.status
+      params.data.status=  params.data.status == "Open" ? "In Progress" : params.data.status
 
       let data: RowDataTransaction = {
         update: [params.data]
@@ -779,6 +783,7 @@ export class TimesheetComponent implements OnInit {
       console.log(dats);
       
       this.updateTask(params.data, res);
+      // this.getData(this.calendarDate)
     });
 
 
@@ -832,7 +837,7 @@ export class TimesheetComponent implements OnInit {
 
   }
 getapprovalData(start_Date:any, end_Date:any){
-this.dataService.getTimesheetforApproval("E0001",start_Date,end_Date).subscribe((response:any)=>{
+this.dataService.getTimesheetforApproval(this.employee_id,start_Date,end_Date).subscribe((response:any)=>{
   console.log(response);
   this.rowData=response.data
 })
@@ -891,64 +896,26 @@ this.dataService.update("task",update_id,updateValue).subscribe((response:any)=>
       }
 //      let allData :any[]=res.data
     
-//       let start_date: any = moment(this.calendarDate).startOf('day');
-// let end_date: any = moment(this.calendarDate).endOf('day').add(23,'hour').add(59,'minutes').add(999,'milliseconds');
+//       let start_date: any = moment(this.calendarDate).startOf('day').add(0,'hour').add(0,'minutes').add(0,'milliseconds').utc();
+// let end_date: any = moment(this.calendarDate).endOf('day').add(23,'hour').add(59,'minutes').add(999,'milliseconds').utc();
 
-// let 
-// this.rowData = filteredData; 
-// let filteredData = allData
-//   .filter((record) => {
-//     if (!isEmpty(record?.timesheet)  ) {
-//       if ( moment(record.timesheet.entry_Date)?.isBetween(start_date, end_date) ){
-//         return true
-//       }else{
-//         return true
-//       }
-//     } else {
-//       return true;  
-//     }
-//   })
+// let filteredData = allData 
 //   .map((element:any) => {
 //     element["Not_Completed_task"] = moment(element.scheduled_end_date)?.isBefore(this.calendarDate);
-//     element.project_name = element?.project_name;
-//     // if (!isEmpty(element?.timesheet )  ) {
-//     //   let timesheet = element.timesheet;
-//     //   element.workedhours = timesheet.workedhours;
-//     //   element.timesheet_id = timesheet._id;
-//     //   element.entry_date = moment(timesheet.entry_Date).utc();
-//     //   element.today_totalworkedhours = element.totalworkedhours - timesheet.workedhours;
-//     // }
-//     // element.remaing_hrs = (element?.allocated_hours || 0) - element?.totalworkedhours;
-//     // element.remaing_hrs = isNaN(element.remaing_hrs) ? element.allocated_hours : element.remaing_hrs;
-    
-//     // if (! moment(element.timesheet?.entry_Date)?.isBetween(start_date, end_date) && !isEmpty(element?.timesheet) ) {
-//     //   console.log("delete", element.timesheet);  
-//     //   delete   element.workedhours 
-//     //   delete   element.timesheet_id
-//     //   delete  element.entry_date 
-//     //   delete  element.today_totalworkedhours
-//     // delete element.timesheet;
-//     // }
+//     element.project_name = element?.Project_name;
 //     if (!isEmpty(element?.timesheet)) {
 
 //       for (let index = 0; index < element?.timesheet.length; index++) {
-// // console.log(moment(element.entry_date)?.isBetween(start_date, end_date,'hour'));
 
 // let timesheet = element?.timesheet[index]; 
+// console.log(moment(timesheet.entry_Date)?.isBetween(start_date, end_date));
+// console.log(timesheet.entry_Date,start_date, end_date);
+
 //         if(moment(timesheet.entry_Date)?.isBetween(start_date, end_date)){
-//           // const elements = element?.timesheet[index];
 //           element.workedhours = timesheet.workedhours;
 //           element.timesheet_id = timesheet._id;
-//           element.entry_date = moment(timesheet.entry_Date).utc();
+//           element.entry_date = moment(timesheet.entry_Date);
 //           element.today_totalworkedhours = element.totalworkedhours - timesheet.workedhours;
-        
-         
-//         console.log(element.entry_date);
-//         console.log(start_date);
-//         console.log(end_date);
-        
-//         console.log(!moment(element.entry_date).isBetween(start_date, end_date,'hour'));
-//         console.log(moment(element.entry_date)?.isBetween(start_date, end_date,'hour'));
 //         break ;
           
 //         }
@@ -970,39 +937,203 @@ this.dataService.update("task",update_id,updateValue).subscribe((response:any)=>
 //     // }
 //   });
 
+// let filteredData= allData.map((element: any) => {
+//   element["Not_Completed_task"] = moment(element.scheduled_end_date)?.isBefore(this.calendarDate);
+//   element.project_name = element?.Project_name;
+
+//   if (!isEmpty(element?.timesheet)) {
+//     for (let index = 0; index < element.timesheet.length; index++) {
+//       let timesheet = element.timesheet[index];
+//       console.log(moment(timesheet.entry_Date)?.isBetween(start_date, end_date));
+//       console.log(timesheet.entry_Date, start_date, end_date,timesheet._id);
+
+//       if (moment(timesheet.entry_Date).utc()?.isBetween(start_date, end_date)) {
+//         element.workedhours = timesheet.workedhours;
+//         element.timesheet_id = timesheet._id;
+//         element.entry_date = moment(timesheet.entry_Date).format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+//         element.today_totalworkedhours = element.totalworkedhours - timesheet.workedhours;
+//         console.log(timesheet);
+        
+//         break;
+//       }
+//     }
+//   }
+
+//   element.remaing_hrs = (element?.allocated_hours || 0) - element?.totalworkedhours;
+//   element.remaing_hrs = isNaN(element.remaing_hrs) ? element.allocated_hours : element.remaing_hrs;
+
+//   return element;
+// });
+
 // console.log(filteredData);
 
 // this.rowData = filteredData;
+let start_date: any = moment(this.calendarDate).startOf('day').utc();
+let end_date: any = moment(this.calendarDate).endOf('day').utc().add(23,'hour').add(59,'minutes').add(999,'milliseconds');
+let allData :any[]=res.data
 
-let rowData :any[]=res.data
-      rowData.forEach((element: any) => {
+let filteredData = allData
+  .filter((record) => {
+    if (!isEmpty(record?.timesheet)  ) {
+      if ( moment(record.timesheet.entry_Date)?.isBetween(start_date, end_date) ){
+        return true
+      }else{
+        return true
+      }
+    } else {
+      return true;  
+    }
+  })
+  .map((element:any) => {
+    element["Not_Completed_task"] = moment(element.scheduled_end_date)?.isBefore(this.calendarDate);
+    element.project_name = element?.Project_name;
+    // if (!isEmpty(element?.timesheet )  ) {
+    //   let timesheet = element.timesheet;
+    //   element.workedhours = timesheet.workedhours;
+    //   element.timesheet_id = timesheet._id;
+    //   element.entry_date = moment(timesheet.entry_Date).utc();
+    //   element.today_totalworkedhours = element.totalworkedhours - timesheet.workedhours;
+    // }
+    // element.remaing_hrs = (element?.allocated_hours || 0) - element?.totalworkedhours;
+    // element.remaing_hrs = isNaN(element.remaing_hrs) ? element.allocated_hours : element.remaing_hrs;
+    
+    // if (! moment(element.timesheet?.entry_Date)?.isBetween(start_date, end_date) && !isEmpty(element?.timesheet) ) {
+    //   console.log("delete", element.timesheet);  
+    //   delete   element.workedhours 
+    //   delete   element.timesheet_id
+    //   delete  element.entry_date 
+    //   delete  element.today_totalworkedhours
+    // delete element.timesheet;
+    // }
+    if (!isEmpty(element?.timesheet)) {
+
+      for (let index = 0; index < element?.timesheet.length; index++) {
+// console.log(moment(element.entry_date)?.isBetween(start_date, end_date,'hour'));
+
+let timesheet = element?.timesheet[index];
+console.log(!moment(timesheet.entry_Date).isBetween(start_date, end_date,'hour'),"hour",timesheet.entry_Date);
+console.log(moment(timesheet.entry_Date)?.isBetween(start_date, end_date),"normal",timesheet.entry_Date);
+console.log(!moment(timesheet.entry_Date).isBetween(start_date, end_date,'day'),"day",timesheet.entry_Date);
+console.log(moment(timesheet.entry_Date)?.isBetween(start_date, end_date,'date'),"date",timesheet.entry_Date);
+        if(moment(timesheet.entry_Date)?.isBetween(start_date, end_date)){
+          // const elements = element?.timesheet[index];
+          element.workedhours = timesheet.workedhours;
+          element.timesheet_id = timesheet._id;
+          element.entry_date = moment(timesheet.entry_Date).utc();
+          element.today_totalworkedhours = element.totalworkedhours - timesheet.workedhours;
         
-        element["Not_Completed_task"] = moment(element.scheduled_end_date).isBefore(this.calendarDate)
-        // console.log(moment(element.scheduled_end_date).isBefore());
+         
+        console.log(element.entry_date);
+        console.log(start_date);
+        console.log(end_date);
         
-        element.project_name = element?.Project_name
-        if (!isEmpty(element?.timesheet)) {
-
-          // element.workedhours = element.timesheet.workedhours
-          // element.timesheet_id = element.timesheet._id
-          // element.entry_date = moment(element.timesheet.entry_Date).utc()
-          // // ? today total wrd hr used for calc 
-          // element.today_totalworkedhours = element.totalworkedhours - element.timesheet.workedhours
-
-          element.workedhours = element?.timesheet.workedhours;
-                    element.timesheet_id = element?.timesheet._id;
-                    // element.entry_date = moment(element?.timesheet.entry_Date).utc();
-                    element.today_totalworkedhours = element.totalworkedhours - element?.timesheet.workedhours;
+        console.log(!moment(element.entry_date).isBetween(start_date, end_date,'hour'));
+        console.log(moment(element.entry_date)?.isBetween(start_date, end_date,'hour'));
+        break ;
+          
         }
-        element.remaing_hrs = (element?.allocated_hours || 0) - element?.totalworkedhours;
-    element.remaing_hrs = isNaN(element.remaing_hrs) ? element.allocated_hours : element.remaing_hrs;
-
-        // if (element.remaing_hrs == "NaN") {
-        //   element.remaing_hrs = element.allocated_hours
+        // if (!moment(element.entry_date)?.isBetween(start_date, end_date,'hour')) {
+        //   console.log("delete", element.timesheet);
+        //   delete element.workedhours;
+        //   delete element.timesheet_id;
+        //   delete element.entry_date;
+        //   delete element.today_totalworkedhours;
+        //   // delete element.timesheet;
         // }
+      }
+    
+    }
+    element.remaing_hrs = (element?.allocated_hours || 0) - element?.totalworkedhours;
+    element.remaing_hrs = isNaN(element.remaing_hrs) ? element.allocated_hours : element.remaing_hrs;
+    // if(!filteredData.includes(element._id)){
+      return element;
+    // }
+  });
+console.log(filteredData);
 
-      });
-      this.rowData = rowData
+this.rowData = filteredData;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ! Normal Object
+// let rowData :any[]=res.data
+//       rowData.forEach((element: any) => {
+        
+//         element["Not_Completed_task"] = moment(element.scheduled_end_date).isBefore(this.calendarDate)
+//         // console.log(moment(element.scheduled_end_date).isBefore());
+        
+//         element.project_name = element?.Project_name
+//         if (!isEmpty(element?.timesheet)) {
+
+//           // element.workedhours = element.timesheet.workedhours
+//           // element.timesheet_id = element.timesheet._id
+//           // element.entry_date = moment(element.timesheet.entry_Date).utc()
+//           // // ? today total wrd hr used for calc 
+//           // element.today_totalworkedhours = element.totalworkedhours - element.timesheet.workedhours
+
+//           element.workedhours = element?.timesheet.workedhours;
+//                     element.timesheet_id = element?.timesheet._id;
+//                     // element.entry_date = moment(element?.timesheet.entry_Date).utc();
+//                     element.today_totalworkedhours = element.totalworkedhours - element?.timesheet.workedhours;
+//         }
+//         element.remaing_hrs = (element?.allocated_hours || 0) - element?.totalworkedhours;
+//     element.remaing_hrs = isNaN(element.remaing_hrs) ? element.allocated_hours : element.remaing_hrs;
+
+//         // if (element.remaing_hrs == "NaN") {
+//         //   element.remaing_hrs = element.allocated_hours
+//         // }
+
+//       });
+//       this.rowData = rowData
 
     }
     )

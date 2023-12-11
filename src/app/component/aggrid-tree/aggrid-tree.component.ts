@@ -26,6 +26,7 @@ import { Location } from '@angular/common';
 import { concat, isEmpty, values } from 'lodash';
 import { MatSidenav } from '@angular/material/sidenav';
 import { environment } from 'src/environments/environment';
+import { BreadcrumbsService } from 'src/app/breadcrums.service';
 
 @Component({
   selector: 'app-aggrid-tree',
@@ -86,8 +87,16 @@ animateRows:true,paginationPageSize:10
   cellClicked:any 
 
   constructor(public httpclient: HttpClient,  
-    public dialogService: DialogService, public route: ActivatedRoute,public _location:Location,   public router: Router,private helperServices:HelperService,
-    public dataService: DataService, public formservice: FormService,public formBuilder: FormBuilder) {
+    public dialogService: DialogService, 
+    public route: ActivatedRoute,
+    public _location:Location,
+    public router: Router,
+    public breadCrums: BreadcrumbsService,
+    private helperServices:HelperService,
+    public dataService: DataService,
+    public formservice: FormService,
+    public formBuilder: FormBuilder) 
+    {
     this.components = {
       buttonRenderer: ButtonComponent
     }
@@ -136,6 +145,14 @@ collection="project"
         collection="project"
         this.addbutton=true;
       }
+    // this.routing(component.route._futureSnapshot._routerState.url, display_Name)
+
+    //  let breadCrums:any =  this.breadCrums.routing(this,this.pageHeading)
+    //  console.log(breadCrums);
+     
+   this.breadCrums.routing(this, this.pageHeading).then((breadCrumbs:any) => {
+    console.log(breadCrumbs);
+  });
       this.loadConfig(this.formName)
       this.dataService.getDataById(collection, this.id).subscribe((res: any) => {
         this.response = res.data[0]
@@ -792,7 +809,6 @@ this.gridOptions.getRowId=function(rowData:any){
         //  }
         valueFormatter: function (params: any) {
           if (params.value) {
-            console.log(params.value);
             let data=params.value
             return moment(data).format("DD-MM-YYYY");
           }
@@ -808,7 +824,6 @@ this.gridOptions.getRowId=function(rowData:any){
         field: "scheduled_end_date",
         valueFormatter: function (params: any) {
           if (params.value) {
-            console.log(params.value);
             let data=params.value
             return moment(data).format("DD-MM-YYYY");
           }
@@ -865,16 +880,12 @@ ValueToCompareRequriementModules:any[]=[]
 OnlyValueRequriementModules:any[]=[]
 
 poupimage(data:any){
-this.imageFile=data;
-console.log(data);
-console.log(this.imageFile);
+this.imageFile=data; 
 
 this.dialogService.openDialog(this.imagepoup)
 }
 sprintCellEditorParams = (params: any) => {
     if(params==true || !isEmpty(this.OnlyValueRequriementSprint)){
-    console.warn("Data Exist")
-    
     return this.OnlyValueRequriementSprint
   }else{
   let filer:any={
@@ -915,7 +926,6 @@ OnlyValueEmployee:any[]=[]
 ValueToCompareEmployee:any[]=[]
 AssignTOCellEditorParams =  (params: any) => {
   if (!isEmpty(this.OnlyValueEmployee)) {
-    console.warn("Data Exist");
     return this.OnlyValueEmployee;
   } else {
    this.dataService.lookupTreeData("team_specification", this.response.project_id).subscribe((res: any) => {
@@ -923,10 +933,7 @@ AssignTOCellEditorParams =  (params: any) => {
         // Handle the case when there is no response data
         // this.dialogService.openSnackBar("There Were No Sprint To be Found","OK");
         return;
-      }
-
-      console.log(res);
-
+      } 
       res.data.response.forEach((each: any) => {
         if (!this.OnlyValueEmployee.includes(each.employe_name)) {
           this.ValueToCompareEmployee.push({ label: each.employe_name, value: each.user_id });
@@ -988,12 +995,8 @@ AssignTOCellEditorParams =  (params: any) => {
 
 moduleCellEditorParams =  (params: any)  => {
   if(!isEmpty(this.OnlyValueRequriementModules)){
-  console.warn("Data Exists")
-  
   return this.OnlyValueRequriementModules
-}else{
-  console.log('data');
-  
+}else{ 
 let filer:any={
   start:0,end:1000,filter:[{
     clause: "AND",
@@ -1032,7 +1035,6 @@ if(params==true){
 
 
   getTreeData() {
-    debugger
 // ! UNDO
 
 if(this.formName=="module"){
@@ -1048,9 +1050,7 @@ if(this.formName=="module"){
   }
 // this.response.project_id
     this.dataService.getDataByFilter("modules", Projectfiler).subscribe((res: any) => {
-      this.listData = []
-      console.log(res);
-
+      this.listData = [] 
       let data:any=res.data[0].response
       for (let idx = 0; idx < data.length; idx++) {
         const row = data[idx];
@@ -1263,11 +1263,9 @@ if(this.formName=="module"){
 // });
 // console.log(parentTreeData);
 // this.listData = parentTreeData;
-const data = res.data.response;
-console.log(data);
-let ParentValue:any []=data.filter((row:any)=>{ return row.parentmodulename == "" || !row.parentmodulename })
-console.log(ParentValue);
-
+const data = res.data.response; 
+if(data !=null){
+  let ParentValue:any []=data.filter((row:any)=>{ return row.parentmodulename == "" || !row.parentmodulename }) 
 let parentTreeData: any[] = [];
 let childIndex: { [key: string]: number } = {};
 let parentIndex: number = 1; // Initialize parentIndex
@@ -1302,6 +1300,8 @@ if(!isEmpty(data)){
     }
   });
   this.listData = parentTreeData;
+}
+
   
 }
 
@@ -1320,94 +1320,84 @@ if(!isEmpty(data)){
     let allvalues:any=[]
     // this.dataService.getDataByFilter("team_specificationList",Projectfiler )
     this.dataService.lookupTreeData("team_specificationList",this.response.project_id ).subscribe((res: any) => {
-      this.listData = []
-      console.log(res);
-      
+      this.listData = [] 
       // for (let idx = 0; idx < res.data.response.length; idx++) {
       //   const row = res.data.response[idx];
-      for (let idx = 0; idx < res.length; idx++) {
-        const row = res[idx];
-        if (row.parentmodulename == "" || !row.parentmodulename) {
-          row.treePath = [row._id];
-        } else {
-          var parentNode = this.listData.find((d) => d._id == row.parentmodulename);
-          if (
-            parentNode &&
-            parentNode.treePath &&
-            !parentNode.treePath.includes(row._id)
-          ) {
-            row.treePath = [...parentNode.treePath];
-            row.treePath.push(row.user_id);
-          }
-        }
-        console.log(row);
-        allvalues.push(res)
-        this.listData.push(row);
+      if(res != null ){
+
+        for (let idx = 0; idx < res.length; idx++) {
+          const row = res[idx];
+          if (row.parentmodulename == "" || !row.parentmodulename) {
+            row.treePath = [row._id];
+          } else {
+            var parentNode = this.listData.find((d) => d._id == row.parentmodulename);
+            if (
+              parentNode &&
+              parentNode.treePath &&
+              !parentNode.treePath.includes(row._id)
+            ) {
+              row.treePath = [...parentNode.treePath];
+              row.treePath.push(row.user_id);
+            }
+          } 
+          allvalues.push(res)
+          this.listData.push(row);
+      }
 
       }
     });
   }else if(this.formName=="test_result"){
 this.dataService.lookupTreeData("regression",this.response._id).subscribe((res:any)=>{
-  let test_Case_Details:any[]=[]
-  res.data.response.forEach((xyz:any)=>{
-    if(!isEmpty(xyz.test_result)){
-
-      test_Case_Details.push(...xyz.test_result)
-    }
-  })
-console.log(test_Case_Details);
-
-let overalldata: any[] = [];
-let virtualDAta:any=res.data.response
-virtualDAta.forEach((vals: any) => {
-  vals.testcase.forEach((data: any) => {
-    let testcase_id=data._id
-    let combinedData = {
-        ...data,
-        ...vals.requirement,
-    };
-    combinedData["requriment_id"] = vals.requirement._id
-    combinedData["test_case_id"] = testcase_id
-    const refFound: any[] = test_Case_Details.filter((d: any) => {return d.testCase_id == combinedData.test_case_id});
-    if(!isEmpty(refFound)){
-      const hasFailures: boolean = refFound.some((d: any) => {return d.result_status === "F"});
-
-      const failList: any = refFound.filter((d: any) => {return d.result_status === "F" });
-
-      const resultStatus = hasFailures ? "Fail" : "Pass";
-      combinedData['bug_list']=failList
-
-    combinedData['test_result_stauts']=resultStatus      
-
-    combinedData['bug_count']=failList.length
-    
-    combinedData['test_cases']=refFound
-    combinedData['test_cases_length']=refFound.length
-
-    }
-
-    overalldata.push(combinedData);
-});
-if (vals?.requirement?.module_id==undefined) {
-  vals.requirement['module_id'] = "No Module Id Present";
-}
-if (vals.testcase.length === 0) {
-  let combinedData = {
-    ...vals.requirement,
-};
-  combinedData["requriment_id"] = vals.requirement._id
-
-    overalldata.push(combinedData);
-}
- 
+  if(res.data.response != null ){
+    let test_Case_Details:any[]=[]
+    res.data.response.forEach((xyz:any)=>{
+      if(!isEmpty(xyz.test_result)){
+  
+        test_Case_Details.push(...xyz.test_result)
+      }
+    }) 
+  let overalldata: any[] = [];
+  let virtualDAta:any=res.data.response
+  virtualDAta.forEach((vals: any) => {
+    vals.testcase.forEach((data: any) => {
+      let testcase_id=data._id
+      let combinedData = {
+          ...data,
+          ...vals.requirement,
+      };
+      combinedData["requriment_id"] = vals.requirement._id
+      combinedData["test_case_id"] = testcase_id
+      const refFound: any[] = test_Case_Details.filter((d: any) => {return d.testCase_id == combinedData.test_case_id});
+      if(!isEmpty(refFound)){
+        const hasFailures: boolean = refFound.some((d: any) => {return d.result_status === "F"});
+        const failList: any = refFound.filter((d: any) => {return d.result_status === "F" });
+        const resultStatus = hasFailures ? "Fail" : "Pass";
+        combinedData['bug_list']=failList
+        combinedData['test_result_stauts']=resultStatus      
+        combinedData['bug_count']=failList.length
+        combinedData['test_cases']=refFound
+        combinedData['test_cases_length']=refFound.length
+      }
+      overalldata.push(combinedData);
   });
-
-this.listData = overalldata;
+  if (vals?.requirement?.module_id==undefined) {
+    vals.requirement['module_id'] = "No Module Id Present";
+  }
+  if (vals.testcase.length === 0) {
+    let combinedData = {
+      ...vals.requirement,
+  };
+    combinedData["requriment_id"] = vals.requirement._id
+  
+      overalldata.push(combinedData);
+  }
+    });
+  this.listData = overalldata;
+  }
 })
   }else if(this.formName=="bug_list"){
     
     this.dataService.lookUpBug(this.response.project_id,'').subscribe((res:any)=>{
-      console.log(res);
       let data:any=res.data.response
       this.listData=data
     })
@@ -1415,7 +1405,6 @@ this.listData = overalldata;
         this.dataService.getDataById("regression",this.parms ).subscribe((res:any)=>{
           
           this.dataService.lookUpBug(this.response.project_id,res.data[0].regression_id).subscribe((res:any)=>{
-            console.log(res);
             let data:any=res.data.response
             this.listData=data
           })
@@ -1430,9 +1419,10 @@ this.listData = overalldata;
           this.dataService
             .lookupTreeData("task_requriment", this.response.project_id)
             .subscribe((res: any) => {
-              console.log(res);
               // this.listData = res.data.response;
-              this.GroupRow(res.data.response);
+              if(res.data.response!=null){
+                this.GroupRow(res.data.response);
+              }
             });
           
         // });
@@ -1465,10 +1455,8 @@ data.forEach((element: any) => {
         // }
         // valueFormatter:function(parms) {
           let datafound :any= isEmpty(this.ValueToCompareEmployee)?this.AssignTOCellEditorParams(true) : this.ValueToCompareEmployee
-          console.log(datafound);
           
       let findValue: any = datafound.find((val: any) => val.value == task.assigned_to);
-  console.warn(findValue);
   
       // If a matching value is found, update task.assigned_to
       if (findValue !== undefined) {
@@ -1490,13 +1478,11 @@ plainRequirements.push(Value);
   }
 });
 
-console.warn(existTasks, 'ChildData');
-console.error(plainRequirements, 'plainRequirements');
+ 
 let parentTreeData: any[] = [];
 
 for (let idx = 0; idx < plainRequirements.length; idx++) {
   const row = plainRequirements[idx];
-  console.log(idx);
 
   if (row.parentmodulename == "" || !row.parentmodulename) {
     // If the element doesn't have a task_id, treat it as a root node
@@ -1505,7 +1491,6 @@ for (let idx = 0; idx < plainRequirements.length; idx++) {
     parentTreeData.push(row);
   } else {
     const parent = parentTreeData.find((d) => d._id === row.parentmodulename);
-    console.log(parent);
 
     if (parent) {
       row.treePath = [...parent.treePath, row.requirement_name];
@@ -1515,7 +1500,6 @@ for (let idx = 0; idx < plainRequirements.length; idx++) {
   }
 }
 
-console.log(parentTreeData);
 
 let taskData: any[] = [];
 existTasks.forEach((element: any) => {
@@ -1539,8 +1523,7 @@ if(this.formName=="Requirement"){
   this.drawer.close() 
   if(clickCell== 'number_of_TestCase_count'||clickCell=="number_of_Task_count"){
     if (event.data[clickCell] > 0) {
-      console.log(event.data);
-      this.cellClicked = clickCell;
+       this.cellClicked = clickCell;
       this.drawer.open();
     }
     
@@ -1553,7 +1536,7 @@ if(this.formName=="Requirement"){
       // this.cellClicked=clickCell
       // this.drawer.open()
       if (event.data[clickCell] > 0) {
-        console.log(event.data);
+     
         this.cellClicked = clickCell;
         this.drawer.open();
       }
@@ -1565,7 +1548,6 @@ if(this.formName=="Requirement"){
       
       // this.drawer.open()
       if (event.data[clickCell] > 0) {
-        console.log(event.data);
         this.cellClicked = clickCell;
         this.drawer.open();
       }
@@ -1601,16 +1583,12 @@ if(this.formName=="Requirement"){
     }
   }
 
-  onSelectionChanged(params: any) {
-    debugger
-    console.log(params);
-    
+  onSelectionChanged(params: any) { 
     this.selectedRows= this.gridApi.getSelectedRows()[0];
 
-    console.log("hiiii",this.selectedRows)
+    console.log("onSelectionChanged",this.selectedRows)
   }
   onCellValueChanged(params: any) {
-    debugger
     console.log(params);
     
     let fieldName = params.colDef.field;
@@ -1620,8 +1598,7 @@ if(this.formName=="Requirement"){
 // ! UNDO
 if(fieldName=="module_id"){
   let findValue:any=this.ValueToCompareRequriementModules.find(val=>val.label==params.value)
-  console.log(findValue);
-  
+   
   data[fieldName] = findValue.value;
 
 }
@@ -1641,9 +1618,7 @@ let findValue:any={}
 update[fieldName] = params.value;
 if(fieldName=="assigned_to"){
   findValue=this.ValueToCompareEmployee.find(val=>val.label==params.value)
-  console.log(findValue);
-  
-  data[fieldName] = findValue.label;
+ data[fieldName] = findValue.label;
   update[fieldName] = findValue.value;
 }
   if (fieldName == "allocated_hours") {
@@ -1672,9 +1647,7 @@ if(fieldName=="depend_task"){
   // ? the biggest date is start date
   update["scheduled_start_date"] =  this.depend_task(params.value,params)
   update["scheduled_end_date"] = moment(update["scheduled_start_date"])
-  console.log(params.data.hasOwnProperty("allocated_hours"),"params.data.hasOwnProperty()");
-  
-  if (params.data.hasOwnProperty("allocated_hours")) {
+   if (params.data.hasOwnProperty("allocated_hours")) {
     // console.log(data);
     // !todo
     let hrsFlag= params.data.allocated_hours>=8? true : false
@@ -1705,9 +1678,7 @@ value["taskeditable"]=true
 if(fieldName=="assigned_to"){
 
   value[fieldName] = findValue.label;
-}
-console.log(value);
-
+} 
   const result = params.api.applyTransaction({ update: [value] });
   console.log(result);
   // params.context.componentParent.TaskIdChange()
@@ -1779,10 +1750,7 @@ console.log(value);
     this.gridApi.sizeColumnsToFit();
   }
 
-  onAddButonClick(ctrl: any) {
-    debugger
-    console.log(this.formName);
-    
+  onAddButonClick(ctrl: any) { 
     this.dataService.loadConfig(this.formName.toLowerCase()).subscribe(async (config: any) => {
       console.log(config);      
       this.formAction='Add' 
@@ -1833,7 +1801,6 @@ if(values._id==undefined|| values._id ==null){
 
 
   resetBtn(data?: any) {
-    debugger
     this.selectedModel = {}
     this.formAction = this.model.id ? 'Edit' : 'Add'
     this.butText = this.model.id ? 'Update' : 'Save';
@@ -1875,15 +1842,11 @@ if(values._id==undefined|| values._id ==null){
       data['assigned_to']=selectedData.employee_id
       data['previous_assigned_to']=taskData.assigned_to
       this.dataService.update("task",taskData._id,data).subscribe((xyz:any)=>{
-        console.log(xyz);
-        this.dialogService.openSnackBar("Task updated successfully","OK")
+         this.dialogService.openSnackBar("Task updated successfully","OK")
         this.reassignemployee[index]=null
       })
   }
-  
-  addOneColumnBelow(params:any){
-
-  }
+   
   goBack(){
     // this.router.navigate(['list/project'])
     this._location.back();
@@ -1899,7 +1862,7 @@ if(values._id==undefined|| values._id ==null){
 // getContextMenuItems(
 //   params: GetContextMenuItemsParams
 // ): (string | MenuItemDef)[] {
-//   debugger
+//
 //   var result: (string | MenuItemDef)[] = [
 //     // 'autoSizeAll',
 //     // 'resetColumns',
@@ -1936,7 +1899,7 @@ if(values._id==undefined|| values._id ==null){
 // }
 
 // SelectedDataOnly(columnKey: string) {
-//   debugger
+//
 //   let value: any[] = []
 //   let total: any[] = this.gridApi.getSelectedRows()
   
@@ -1969,7 +1932,7 @@ if(values._id==undefined|| values._id ==null){
 //   })
 // }
 // AllDAta(columnKey: string) {
-//   debugger
+//
 //   let value: any[] = []
 //   this.gridApi.forEachLeafNode((node: any) => {
 //     console.log(node);

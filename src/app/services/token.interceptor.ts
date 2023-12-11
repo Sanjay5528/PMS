@@ -4,12 +4,13 @@ import { Observable, throwError } from 'rxjs';
 import { HelperService } from './helper.service';
 import { catchError, map } from 'rxjs/operators';
 import { DialogService } from './dialog.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
   //  selectedOrgId: string = 'amsort'
 
-  selectedOrgId: string = sessionStorage.getItem("selectedOrgId") || ''
+  selectedOrgId: string = sessionStorage.getItem("selectedOrgId") || environment.OrgId
 
   constructor(public helperService: HelperService, private dialogService: DialogService) {
     this.helperService.selectedOrgId.subscribe((id:any)=>{
@@ -19,6 +20,7 @@ export class TokenInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    
     if (this.selectedOrgId) {
       request = request.clone({ headers: request.headers.set('OrgId', this.selectedOrgId) });
     }

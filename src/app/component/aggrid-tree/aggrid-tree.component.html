@@ -7,7 +7,7 @@
   <div style="width: 100%;margin-bottom: 5px;" >
 
     <span *ngIf="cellClicked" style="font-size: larger;font-style: italic;margin-left: 20px;">{{selectedRows.CheckIndex}} </span>
-    <mat-icon style="float: right;font-size: large;" mat-dialog-close (click)="this.drawer.toggle()">close</mat-icon>
+    <mat-icon style="float: right;font-size: large;"   (click)="this.drawer.toggle()">close</mat-icon>
   </div>
    <span *ngIf="cellClicked" style="font-size: small;font-style: normal;margin-left: 20px;"> {{cellClicked=='number_of_TestCase_count'? "Test Case":"Task" }} <span style="font-size: small;border-radius: 50%;"> {{ cellClicked=='number_of_TestCase_count'? selectedRows.number_of_TestCase_count:selectedRows.number_of_Task_count}} </span> </span>
  
@@ -55,7 +55,7 @@
            
            <mat-card-content style="margin-left: 30px;">
              <p [innerHTML]="task.description"></p>
-           </mat-card-content>
+           </mat-card-content>  
            <mat-card-actions style="display: flex;justify-content: space-between;">
 <div style="display: flex;align-items: start;justify-items: center;">
  <mat-icon style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{task.employee_name}} 

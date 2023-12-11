@@ -78,74 +78,42 @@ import { FormlyFieldStepper } from "./stepper";
 
 
 export function minLengthValidationMessage(err: any, field: FormlyFieldConfig) {
-  console.log(field);
-
   return `Should NOT be shorter than ${field.props?.minLength} characters`;
 }
 
 export function maxLengthValidationMessage(err: any, field: FormlyFieldConfig) {
-  console.log(field);
-
   return `Should NOT be longer than ${field.props?.maxLength} characters`;
 }
 
 export function minValidationMessage(err: any, field: FormlyFieldConfig) {
-  console.log(field);
-
   return `Should be >= ${field.props?.min}`;
 }
 
 export function maxValidationMessage(err: any, field: FormlyFieldConfig) {
-  console.log(field);
-
   return `Should be <= ${field.props?.max}`;
 }
 
-export function multipleOfValidationMessage(
-  err: any,
-  field: FormlyFieldConfig
-) {
-  console.log(field);
-
+export function multipleOfValidationMessage(err: any,field: FormlyFieldConfig) {
   return `Should be multiple of ${field.props?.step}`;
 }
 
-export function exclusiveMinimumValidationMessage(
-  err: any,
-  field: FormlyFieldConfig
-) {
-  console.log(field);
-
+export function exclusiveMinimumValidationMessage(err: any,field: FormlyFieldConfig) {
   return `Should be > ${field.props?.step}`;
 }
 
-export function exclusiveMaximumValidationMessage(
-  err: any,
-  field: FormlyFieldConfig
-) {
-  console.log(field);
-
+export function exclusiveMaximumValidationMessage(err: any,field: FormlyFieldConfig) {
   return `Should be < ${field.props?.step}`;
 }
 
 export function patternValidationMessage(err: any, field: FormlyFieldConfig) {
-  console.log(field);
-
   return `Invalid Format ${field.props?.label}`;
 }
-export function uniqueItemsValidationMessag(
-  err: any,
-  field: FormlyFieldConfig
-) {
+export function uniqueItemsValidationMessag(err: any,field: FormlyFieldConfig) {
   console.clear()
-  console.log(field);
-
   return `This ${field.props?.label} is already exists in database `;
 }
 
 export function required(err: any, field: FormlyFieldConfig) {
-  console.log(field);
-
   return `This ${field.props?.label} is Required `;
 }
 
