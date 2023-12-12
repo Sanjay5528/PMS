@@ -1,0 +1,18 @@
+/* Apply black background to the card */
+g.card rect.card {
+    fill: black;
+  }
+  
+  /* Apply styles to the label text */
+  g.trimmed-label p {
+    color: rgb(204, 204, 204);
+    font-size: 15px;
+    line-height: 15px;
+  }
+  
+  /* Apply styles to the value text */
+  text.value-text {
+    fill: rgb(204, 204, 204);
+    font-size: 25pt;
+  }
+  

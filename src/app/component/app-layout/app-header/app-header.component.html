@@ -1,0 +1,78 @@
+<div style="height:60px;">
+  <mat-toolbar color="primary" class="toolbar">
+    <mat-toolbar-row *ngIf="navItems">
+      <!-- App logo  -->
+      <!-- <div  class="app-logo">
+      </div> -->
+      <span class="menu-items" style="padding: 8px;" fxLayout="row wrap"  fxLayout.md="row"  fxLayoutWrap>
+        <span *ngFor="let item of navItems">
+          <!-- Handle branch node buttons here -->
+          <span *ngIf="item.children && item.children.length > 0">
+            <button mat-button [matMenuTriggerFor]="menu.childMenu">
+              <mat-icon *ngIf="item.iconName">{{item.iconName}}</mat-icon>
+              {{item.displayName}}
+              <mat-icon>expand_more</mat-icon>
+            </button>
+            <app-menu-item #menu [items]="item.children"></app-menu-item>
+          </span>
+          <!-- Leaf node buttons here -->
+          <span *ngIf="!item.children || item.children.length === 0">
+            <button mat-button color="primary" [routerLink]="item.route">
+              {{item.displayName}}
+            </button>
+          </span>
+        </span>
+      </span>
+      <span>
+      <button  mat-menu-item (click)="homepage($event)">
+        <mat-icon>home</mat-icon>
+      </button>
+    </span>
+     <button mat-icon-button [matMenuTriggerFor]="menu" style="width:50px;" >
+        <mat-icon>menu</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="logout($event)">
+          <mat-icon>logout</mat-icon><span>Logout</span>
+        </button>
+        <!-- <button mat-menu-item (click)="changepassword($event)">
+          <mat-icon>visibility</mat-icon><span>Change password</span>
+        </button> -->
+       
+      </mat-menu>
+    </mat-toolbar-row>
+</mat-toolbar>
+<!-- <mat-sidenav-container fxFlexFill>
+  <mat-sidenav #sidenav>
+    <a (click)="sidenav.toggle()" href="#" mat-button>Close</a>
+    <mat-nav-list>
+      <div *ngFor="let item of navItems"> -->
+        <!-- Handle branch node buttons here -->
+        <!-- <span *ngIf="item.children && item.children.length > 0">
+          <button mat-button [matMenuTriggerFor]="menu.childMenu">
+            {{item.displayName}}
+            <mat-icon>expand_more</mat-icon>
+          </button>
+          <app-menu-item #menu [items]="item.children"></app-menu-item>
+        </span> -->
+        <!-- Leaf node buttons here -->
+        <!-- <span *ngIf="!item.children || item.children.length === 0">
+          <button mat-button color="primary" [routerLink]="item.route">
+            {{item.displayName}}
+          </button>
+        </span>
+      </div>
+    </mat-nav-list>
+  </mat-sidenav> -->
+  <!-- <mat-sidenav-content fxFlexFill>Main content</mat-sidenav-content> -->
+<!-- </mat-sidenav-container> -->
+</div>
+
+
+
+
+<!-- 
+<div class="display-items">
+  <div><mat-icon class="icon">message</mat-icon></div>
+  <div><mat-icon  class="icon">notifications</mat-icon></div>
+</div>  -->

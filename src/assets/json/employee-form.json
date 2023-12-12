@@ -1,0 +1,118 @@
+{
+	"pageHeading": "Task",
+	"formType": "simple",
+	"editMode": "page",
+	"keyField": "_id",
+	"form": {
+	  "collectionName": "task",
+	  "fields": [
+		{
+		  "type": "input",
+		  "key": "task_name",
+		  "props": {
+			"label": "Task Name",
+			"placeholder": "Task Name",
+			"pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+			"required": true
+		  },
+		  "expressions": {
+			"props.readonly": "model.isEdit"
+		  }
+		},
+		{
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "key": "scheduled_start_date",
+			  "type": "date-input",
+			  "className": "flex-6",
+  
+			  "props": {
+				"label": "Scheduled Start Date",
+				"placeholder": "Scheduled Start Date",
+				"required": true
+			  }
+			},
+			{
+			  "key": "scheduled_end_date",
+			  "type": "date-input",
+			  "className": "flex-6",
+  
+			  "parentKey": "scheduled_start_date",
+			  "parentCollectionName": "task",
+			  "props": {
+				"label": "Scheduled End Date",
+				"placeholder": "Scheduled End Date",
+				"required": true
+			  }
+			}
+		  ]
+		},
+		{
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "type": "number",
+			  "key": "allocated_hours",
+			  "className": "flex-6",
+  
+			  "props": {
+				"label": "Allocated Hours",
+				"placeholder": "Allocated Hours",
+				"pattern": "^(?:|[1-9][0-9]*)$",
+				"required": true
+			  }
+			},
+  
+			{
+			  "type": "select-input",
+			  "key": "assigned_to",
+			  "className": "flex-6",
+  
+			  "props": {
+				"label": "Assigned To",
+				"placeholder": "Assigned To",
+				"multifilter": true,
+				"Collections": "project_team",
+				"multifiltertype": "local",
+				"specification": "teammember",
+				"labelField": "employee_nmae",
+				"valueField": "employee_id",
+				"innerArray": "employee_id",
+				"local_name": "project_id",
+				"multifilter_condition": {
+				  "clause": "AND",
+				  "conditions": [
+					{
+					  "column": "project_id",
+					  "operator": "EQUALS",
+					  "type": "string",
+					  "value": ""
+					}
+				  ]
+				},
+				"labelProp": "label",
+				"valueProp": "value",
+				"required": true
+			  },
+			  "expressions": {
+				"hide": "model.isEdit"
+			  }
+			}
+		  ]
+		},
+		{
+		  "type": "html-input",
+		  "key": "description",
+		  "className": "flex-6",
+		  "props": {
+			"label": "Task Description",
+			"required": true
+		  },
+  
+		  "maxlength": 2000
+		}
+	  ]
+	}
+  }
+  

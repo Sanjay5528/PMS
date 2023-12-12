@@ -1,0 +1,330 @@
+{
+	"pageHeading": "Project",
+	"formType": "master-detail",
+	"localSet":true,
+	"mapColumnDiff":true,
+	"mapColumnfield":"client_id",
+	"localSetField":"client_id",
+	"form": {
+		"collectionName": "client",
+		"fields": [
+			{
+				"type": "label-view",
+				"key": "client_id",
+				"props": {
+					"label": "Client Name",
+					"label_width": 100,
+					"value_width": 200,
+					"value_in_next_row": false,
+					"placeholder": "Client Name",
+					"required": true
+				}
+			}, 
+			{
+				"type": "label-view",
+				"key": "status",
+				"props": {
+					"label_width": 100,
+					"value_width": 200,
+					"value_in_next_row": true,
+					"label": "Project Status",
+					"placeholder": "Project Status",
+					"required": true
+				}
+			}
+		],
+		"buttons": {
+			"start": false,
+			"newEntry": false
+		}
+	},
+	"detailForm": {
+        "customfilter":true,
+        "customkey":"client_id",
+		"collectionName": "project",
+		"mapColumn": "client_id",
+		"keyColumn": "_id",
+		  "Change_id": true,
+		"changekeyfield":"project_id",
+		"addkeyfield":"client_id",
+		"isPopupEdit": true,
+		"fields": [
+			{
+				"fieldGroupClassName": "display-flex",
+				"fieldGroup": [
+					{
+			"type": "label-view",
+			"key": "project_id",
+			"className": "flex-6",
+			"props": {
+			  "label": "Project Id",
+			  "label_width": 100,
+			  "value_width": 200,
+			  "value_in_next_row": true
+			},
+			"hideExpression": "!model.isEdit"
+		  },  
+			{
+			"type": "matprefix-input",
+			"parentKey": "client_id",
+						"key": "project_id",
+			"className": "flex-6",
+			"props": {
+			  "label": "Project ID",
+			  "type": "local",
+			  "placeholder": "Project ID",
+			  "required": true,
+			  "maxLength": 10,
+			  "pattern": "^[A-Z0-9]+$"
+			},
+			"hideExpression": "model.isEdit "
+		  },{
+			"type": "label-view",
+			"key": "project_name",
+			"className": "flex-6",
+			"props": {
+			  "label": "Project Name",
+			  "label_width": 100,
+			  "value_width": 200,
+			  "value_in_next_row": true
+			},
+			"hideExpression": "!model.isEdit"
+		  },
+					{
+						"type": "input",
+						"key": "project_name",
+						"className": "flex-6",
+						"props": {
+							"label": "Project Name",
+							"placeholder": "Project Name",
+							"pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+							"required": true
+						},
+						"hideExpression": "model.isEdit"
+  
+					},
+					{
+			"type": "label-view",
+			"key": "project_type",
+			"className": "flex-6",
+			"props": {
+			  "label": "Project Type",
+			  "label_width": 100,
+			  "value_width": 200,
+			  "value_in_next_row": true
+			},
+			"hideExpression": "!model.isEdit"
+		  },
+					{
+						"type": "select",
+						"key": "project_type",
+						"className": "flex-6",
+						"props": {
+							"label": "Project Type",
+							"placeholder": "Project Type",
+							"options": [
+								{
+									"value": "Software Development ",
+									"label": "Software Development "
+								},
+								{
+									"value": "Web Development",
+									"label": "Web Development"
+								},
+								{
+									"value": "Technology Installation",
+									"label": "Technology Installation "
+								},
+								{
+									"value": "Cloud Computing ",
+									"label": "Cloud Computing "
+								},
+								{
+									"value": "Cyber Security ",
+									"label": "Cyber Security"
+								},
+								{
+									"label": "Others",
+									"value": "Others"
+								}
+							],
+							"required": true
+						}
+					}
+				]
+			},
+			
+			{
+				"fieldGroupClassName": "display-flex",
+				"fieldGroup": [
+					{
+						"className": "flex-6",
+						"key": "startdate",
+						"type": "date-input", 
+						"props": {
+						  "label": "Scheduled Start Date",
+						  "placeholder": "Scheduled Start Date",
+						  "type": "date",
+						  "required": true
+						}
+					  },
+					  {
+						"className": "flex-6",
+						"key": "enddate",
+						"type": "date-input",
+						"parentKey": "startdate",
+						"parentCollectionName": "project",
+						"props": {
+						  "label": "Scheduled End Date",
+						  "placeholder": "Scheduled End Date",
+						  "type": "date",
+						  "required": true
+						}
+					  },
+					{
+						"type": "select",
+						"key": "status",
+						"className": "flex-6",
+						"props": {
+							"label": "Project Status",
+							"options": [
+								{
+									"label": "Active",
+									"value": "A"
+								},
+								{
+									"label": "Inactive",
+									"value": "I"
+								}
+							]
+						},
+					
+						"expressions": {
+							"hide": "!model.isEdit"
+						}
+						}
+				]
+			},
+			{
+				"type": "html-input",
+				"key": "projectdetails",
+				"className": "flex-6",
+				"props": {
+					"label": "Project Details"
+				},
+				
+				"maxlength": 500
+			}
+		]
+		 
+	},
+	"detailListConfig": {
+		"sectionHeading": "Project Team",
+		"actions": [
+			{
+				"label": "Edit",
+				"icon": "edit",
+				"formName": "project"
+			},   {
+				"label": "Requirement",
+				"icon": "view_module",
+				"formAction": "components",
+				"route_type":"CustomRoute",
+				"Custom_Route":"project/Requirement",
+				"Custom_Key_filed":"_id"
+				
+			},{
+				"label": "Modules",
+				"icon": "view_module",
+				"formAction": "components",
+				"route_type":"CustomRoute",
+				"Custom_Route":"project/module",
+				"Custom_Key_filed":"_id"
+				
+			},{
+				"label": "Sprint",
+				"icon": "view_module",
+				"formAction": "components",
+				"route_type":"CustomRoute",
+				"Custom_Route":"data/edit/project_sprint",
+				"Custom_Key_filed":"_id"
+				
+			},
+			{
+				"label": "ProjectTeam",
+				"icon": "view_module",
+				"formName": "projectteam",
+				"formAction": "components",
+				"route_type":"CustomRoute",
+				"Custom_Route":"project/projectteam",
+				"Custom_Key_filed":"_id"
+				
+			},{
+				"label": "Test Case",
+				"icon": "view_module",
+				"formAction": "components",
+				"route_type":"CustomRoute",
+				"Custom_Route":"data/edit/regression",
+				"Custom_Key_filed":"_id"
+				
+			},
+			{
+				"label": "Delete",
+				"icon": "delete",
+				"formName": "entities/project",
+                "formAction":"delete"
+			}
+		],
+		"addRoute": "add/project_team_member",
+		"editRoute": "edit/project_team_member",
+		"fields": [
+			{
+				"headerName": "Project Id",
+				"field": "project_id",
+				"sortable": true,
+				"filter": "agTextColumnFilter"
+			},
+			{
+				"headerName": "Project Name",
+				"field": "project_name",
+				"sortable": true,
+				"filter": "agTextColumnFilter"
+			},
+			{
+				"headerName": "Schedule Start Date",
+				"field": "startdate",
+				"sortable": true,
+				"filter": "agDateColumnFilter",
+				"type": "date"
+			},
+			{
+				"headerName": "Schedule End Date",
+				"field": "enddate",
+				"sortable": true,
+				"filter": "agDateColumnFilter",
+				"type": "date"
+			},
+			{
+				"headerName": "Project Status",
+				"field": "status",
+				"sortable": true,
+				"filter": "agTextColumnFilter"
+			},
+			{
+				"type": "rightAligned",
+				"headerName": "Actions",
+				"cellRenderer": "buttonRenderer",
+				"cellRendererParams": {
+					"onClick": "this.onBtnClick1.bind(this)",
+					"label": "Click 1"
+				}
+			}
+		],
+		"filterOptions": [],
+		"defaultFilter": []
+	},
+	"onCancelRoute": "/list/client",
+	"designConfig": {
+		"leftPanelWidth": "320px"
+	}
+  }

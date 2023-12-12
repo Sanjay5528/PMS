@@ -1,0 +1,46 @@
+<div style="height: 60px">
+    <mat-toolbar color="primary" class="toolbar">
+      <mat-toolbar-row>
+        <div>
+          <a>
+            <!-- CHANGE -->
+            <img width="50%" class="img-responsive" src="../../../../assets/images/toolbar.png" />
+          </a>
+        </div>
+        <button mat-button [matMenuTriggerFor]="menu" style="width: 50px; float: right" class="button">
+          <div class="sign-in-container">
+            <div class="sign-in-text">Sign In</div>
+            <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+          </div>
+        </button>
+        <mat-menu #menu="matMenu" (menuClosed)="onMenuClosed()">
+          <div style="padding:15px">
+            <button mat-menu-item (click)="toggleAccountOptions($event)">Client End User?</button>
+            
+            <div *ngIf="showAccountOptions">
+              <hr>
+              <span>Already have an account</span> <br>
+              <a (click)="login()" class="link">Login</a><br>
+              <span>New? Create an Account</span><br>
+              <a (click)="register()" class="link">Create an account</a> 
+            </div>
+            <hr>
+            <button mat-menu-item (click)="toggleAccountOption($event)" >Corporate Customer?</button>
+            <div *ngIf="showAccountOption">
+              <hr>
+              <span>Already have an account</span> <br>
+              <a (click)="login()" class="link">Login</a>
+            </div>
+            <hr>
+            <button mat-menu-item (click)="toggleAccountOptionSaas($event)">SAAS Provider?</button>
+            <div *ngIf="showAccountOptionSaas">
+              <hr>
+              <span>Already have an account</span> <br>
+              <a (click)="login()" class="link">Login</a>
+            </div>
+          </div>
+        </mat-menu>
+      </mat-toolbar-row>
+    </mat-toolbar>
+  </div>
+  

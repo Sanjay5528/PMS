@@ -1,0 +1,106 @@
+<div style="display: flex; padding: 20px; align-items: flex-start">
+     
+ 
+ 
+    <!-- <formly-field-select-autocomplete>
+    </formly-field-select-autocomplete> -->
+
+    <!-- <mat-form-field>
+      <input type="text"
+            matInput
+            #autoCompleteInput
+            [formControl]="FormControl"
+            [formlyAttributes]="field"
+            [matAutocomplete]="auto" />
+            <mat-icon matPrefix>search</mat-icon>
+     <mat-icon matSuffix *ngIf="search.searchText" class="searchIcon" >close</mat-icon>
+     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectionChange(this.field,autoCompleteInput)">
+       <mat-option *ngFor="let op of filteredOptions" [value]="op[this.valueProp]">
+         {{ op[this.labelProp] }}
+       </mat-option>
+     </mat-autocomplete>
+      
+ </mat-form-field> -->
+
+
+
+<!-- autocomplete.component.html -->
+<mat-form-field>
+  <input type="text" placeholder="Search" matInput [formControl]="myControl" [matAutocomplete]="auto" (input)="onInputChange()">
+  <mat-icon matSuffix *ngIf="search.searchText" class="searchIcon" >close</mat-icon>
+
+  <mat-icon matSuffix *ngIf="search.searchText" class="searchIcon" >close</mat-icon>
+
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let option of filteredOptions" [value]="option">
+      {{ option }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+
+<!-- autocomplete.component.html -->
+<!-- <mat-form-field>
+  <input type="text" placeholder="Search" matInput [formControl]="myControl" [matAutocomplete]="auto" (input)="onInputChange()">
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let option of filteredOptions" [value]="option">
+      {{ option }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field> -->
+
+
+
+
+
+    
+  <ng-container *ngIf="isUser">
+ 
+
+    <div style="
+        flex: 1;
+        margin-right: 20px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+      ">
+      <p>Profile Photo</p>
+      <img [src]="imageUrl" alt="Profile Image" class="image--cover" type="file" />
+  
+      <br /><br />
+      <form [formGroup]="checkbox">
+      
+        <mat-checkbox formControlName="delegates">Delegates</mat-checkbox>
+        <mat-checkbox formControlName="speaker">Speaker</mat-checkbox>
+        <mat-checkbox formControlName="specialInvitee">Special Invitee</mat-checkbox>
+        <mat-checkbox formControlName="teamMember">Team Member</mat-checkbox>
+        <mat-checkbox formControlName="buyer">Buyer</mat-checkbox>
+        <mat-checkbox formControlName="seller">Seller</mat-checkbox>
+      </form>
+
+       
+    </div> 
+ 
+    <div style="flex: 1; padding: 20px">
+      <form [formGroup]="form" style="width: 100%">
+        <formly-form [model]="model" [fields]="inputFields" [options]="options" [form]="form"></formly-form>
+        
+        <div style="text-align-last: end; width: 100%">
+          <button style="margin: 5px" mat-button (click)="this.dialogService.closeModal(); this.form.reset()">
+            Cancel
+          </button>
+          <button style="margin: 5px" mat-button (click)="this.form.reset()">
+            Reset
+          </button>
+          <button style="margin: 5px; background: rgb(59, 146, 155)" mat-raised-button color="warn"  (click)="saveForm()">
+            {{ butText }}     
+          </button >
+        </div>
+      </form>
+    </div>
+
+  </ng-container>
+ 
+    
+  </div>
+
+ 

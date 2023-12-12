@@ -1,0 +1,15 @@
+<mat-accordion *ngFor="let values of expanisionpanel ;let index=index">
+    <mat-expansion-panel >
+      <mat-expansion-panel-header >
+        <mat-panel-title>
+          <mat-checkbox [(ngModel)]="arr[index]" (click)="onParentCheckboxChange(values,$event,index)" ></mat-checkbox>   {{values}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-list>
+        <mat-list-item *ngFor="let checkBoxData of childData[values]">
+          <mat-checkbox [(ngModel)]="checkBoxData.checked" (click)="ChildCheckBox(values,$event,index)">{{checkBoxData.label}}</mat-checkbox>
+        </mat-list-item>
+      </mat-list>
+    </mat-expansion-panel>
+  </mat-accordion>
+ 

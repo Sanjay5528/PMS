@@ -1,0 +1,35 @@
+
+<div class="example-sidenav-content" style="margin-top: 40px;">
+    <div style="height: 50px;display: flex;flex-direction: row;">
+    <div style="float: left;margin-left: 50px;" >
+        <mat-icon style="font-size:35px;"  (click)="back()">keyboard_backspace</mat-icon>
+      </div>
+      <div style="justify-content: center;align-items: center;margin-left: 40%;height: 100px;">
+    
+        <span class="head"> Access Control For Specific Organisation </span>
+        <h5 style="font-size:medium;" >
+            Company Name : {{this?.Viewdata?.org_name}}
+          </h5>
+          <!-- <h5 style="font-size:medium;" >
+            {{this?.Viewdata?.org_type}} ( {{this?.Viewdata?._id}} )
+          </h5> -->
+      </div>
+      </div>
+    <div style="display: flex;justify-content: center;width: 98%;align-items: center;margin: 50px 0 10px 10px  ;">
+      
+     <ag-grid-angular #agGrid style="width: 98%; height: calc(100vh - 250px); flex: 1 1 auto;margin-bottom: 30px;" 
+     class="ag-theme-alpine"
+       [defaultColDef]="defaultColDef"
+       [columnDefs]="columnDefs"
+       [rowData]="rowData"
+       [rowSelection]="'single'"
+       [groupDisplayType]="groupDisplayType"
+       [pagination]="true"
+       [paginationPageSize]="14"
+       [context]="context"
+       [components]="components"
+       (selectionChanged)="onSelectionChanged($event)"
+       (gridReady)="onGridReady($event)">
+     </ag-grid-angular> 
+    </div>
+    </div>
