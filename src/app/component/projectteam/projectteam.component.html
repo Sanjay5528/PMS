@@ -1,0 +1,87 @@
+<div>
+    <div style="
+      height: 50px;
+      margin: 30px;
+      text-align: center;
+      display: flex;
+      flex-direction: row;
+    ">
+      <div class="head">
+        <span>
+          <h3><b>Project Team</b></h3>
+      </span>
+          <div style="display: flex; margin-right: 30px">
+            <span>Project Id :<span style="font-weight: bold;">{{response?.project_id}}</span></span>
+          </div>
+          <div style="display: flex; margin-right: 30px">
+            <span>Project Name :<span
+              style="font-weight: bold;">{{response?.project_name}}</span></span>
+          </div>
+          <div style="display: flex; margin-right: 30px">
+            <span>Project Type :<span
+              style="font-weight: bold;">{{response?.project_type}}</span></span>
+          </div>
+          <div style="display: flex; margin-right: 30px">
+            <span>Project Status :<span style="font-weight: bold;">{{response?.status}}</span></span>
+          </div>
+          <div style="display: flex; margin-right: 30px">
+            <span>Client Name :<span style="font-weight: bold;">{{response?.clientname}}</span></span>
+          </div>
+      </div>
+      <div>
+        <button class="icon" matTooltip="Add" mat-mini-fab (click)="onAddButonClick($event)"
+          style="margin-right: 20px; background: #90c0e5;   color: #080201;">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+    <ag-grid-angular style="width: 97%; margin: 0 auto; height: 65vh;margin-top: 135px;" class="ag-theme-alpine"
+     [columnDefs]="columnDefs" [rowData]="listData"  
+      [rowSelection]="'single'" [pagination]="true" [components]="frameworkComponent"   
+      [cacheQuickFilter]="true" [paginationPageSize]="10"  (selectionChanged)="onSelectionChanged($event)"
+      (cellValueChanged)="onCellValueChanged($event)"(gridReady)="onGridReady($event)" 
+      [animateRows]="true" [context]="context" 
+   
+      ></ag-grid-angular>
+</div>
+  
+<ng-template #editViewPopup>
+    <mat-card>
+      <mat-card-header style="flex: 1 1 auto;">
+        <div style="width: 100%">
+          <h2 style="text-align: center;" class="page-title">{{ pageHeading }}</h2>
+        </div>
+        <div style="text-align-last: end" *ngIf="config.editMode == 'page'">
+          <mat-icon mat-dialog-close>close</mat-icon>
+        </div>
+      </mat-card-header>
+      <mat-card-content style="padding-top: 10px">
+        <form [formGroup]="form">
+          <formly-form [model]="selectedModel" [fields]="fields" [form]="form"></formly-form>
+          <!-- <formly-form  [fields]="fields" [form]="form">
+      </formly-form> -->
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <div style="text-align-last: end; width: 100%">
+          <button style="margin: 5px" mat-button mat-dialog-close>
+            Cancel
+          </button>
+          <button style="margin: 5px" mat-button (click)="resetBtn('reset')" *ngIf="this.id" >
+            Reset
+          </button>
+          <button
+          style="margin: 5px; background: rgb(59, 146, 155)" [disabled]="!this.form.valid"
+          (click)="saveForm(config)" [mat-dialog-close]="true"
+          mat-raised-button
+          color="warn"
+         
+        >
+          save
+        </button>
+        
+  
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </ng-template>

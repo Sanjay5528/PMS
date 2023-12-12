@@ -1,0 +1,176 @@
+.sidenav {
+  background-image: linear-gradient(121deg,#013688,#318896);
+  transition: all .5s ease;
+  z-index: 1;
+  top: 0;
+  width: 3rem;
+  height: 100vh;
+  box-shadow: 0.063rem 0 1.25rem 0 #8690a3;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  
+  min-width: 2rem;
+  cursor: pointer;
+  margin: 8px 2px 0px -5px;
+  text-align: center;
+  border-radius: 0.313rem;
+  padding: 12px -9px;
+  font-size: 24px;
+  font-weight: 900;
+  border: none;
+}
+  
+  .logo-container {
+  
+  display: flex;
+  width: 100%;
+padding: 0px 2px 0px 13px;
+  align-items: center;
+  }
+
+  
+  .btn-close{
+    margin-left: auto;
+    cursor: pointer;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: transparent;
+    border: none;
+    
+    
+  
+  }
+
+
+  
+  .image{
+      width: 100px;
+      height: 100px;
+    margin-left: 16px;
+    font-size:24px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+
+  .close-icon{
+    color: white;
+  }
+
+
+  
+  
+
+  
+
+  .sidenav-collapsed{
+    width: 16.5625rem
+  }
+
+
+  .sidenav-nav{
+list-style: none;
+padding: 1px 2px;
+margin: 0;
+display: flex;
+flex-direction: column;
+align-items: center;
+height: calc(100% - 3.65 rem);
+cursor: pointer;
+
+}
+
+
+
+
+
+.sidenav-link-text {
+  margin-left: 4px;
+  color: #fff;
+  line-height: normal;
+  margin-top: 2px;
+}
+
+
+
+.sidenav-nav-link {
+  display: flex;
+  flex-direction: row;
+  align-items: self-start;
+  height: 40px;
+  color: #fff;
+  text-decoration: none;
+  transition: color .3s ease;
+}
+
+.sidenav-nav-item{
+  width: 100%;
+}
+
+
+.menu-items{
+  position: relative;
+  margin: 10px 5px;
+  padding-top: 20px;
+
+}
+
+.logout{
+margin-top: auto;
+padding: 0px 8px;
+}
+
+
+.submenu-item {
+  text-decoration: none;
+  width: 100%;
+  padding-left: 20px;
+  flex-direction: column;
+  display: flex;
+  row-gap: 8px;
+  overflow-y: auto;
+  max-height: 350px;
+  min-height: fit-content;
+  margin-bottom: 10px;
+}
+
+
+.sidenav-link-icon{
+  font-size: 22px;
+  width: 2rem;
+  min-width: 2rem;
+  margin: 2 0.5rem;
+  vertical-align: middle;
+  color: white;
+  text-align: center;
+}
+
+
+.subitems-link-text{
+margin: 1px 1px;
+text-decoration: none;
+display: flex;
+flex-direction: row;
+gap: 5px;
+
+}
+
+.submenu-item::-webkit-scrollbar {
+  width: 6px;
+  height: 100%;
+  border-radius: 30%;
+}
+
+.submenu-item::-webkit-scrollbar-track {
+  background-color: #f1f1f1 !important;
+}
+
+.submenu-item-webkit-scrollbar-thumb {
+  background-color: #cccaca;
+}
+
+

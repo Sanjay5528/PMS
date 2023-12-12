@@ -1,0 +1,296 @@
+{
+	"pageHeading": "Event",
+	"formType": "simple",
+	"editMode": "page",
+	"screenEditMode": "page",
+	"user": true,
+	"keyField": "_id",
+	"form": {
+	  "collectionName": "event",
+	  "fields": [
+		{
+		  "type": "stepper",
+  
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "props": { "label": "Basic Event Details" },
+  
+			  "fieldGroup": [
+				{
+				  "fieldGroupClassName": "display-flex",
+				  "fieldGroup": [
+					{
+					  "type": "input",
+					  "key": "event_name",
+					  "className": "flex-6",
+					  "props": {
+						"label": "Event Name",
+						"placeholder": "Enter the name of your event",
+  
+						"required": true
+					  }
+					},
+  
+					{
+					  "type": "select",
+					  "key": "event_mode",
+					  "className": "flex-2",
+					  "props": {
+						"label": "Event Mode",
+						"placeholder": "Event Mode",
+						"options": [
+						  { "label": "Online", "value": "online" },
+						  { "label": "Offline", "value": "offline" }
+						],
+						"required": true
+					  }
+					}
+				  ]
+				},
+				{
+				  "fieldGroupClassName": "display-flex",
+				  "fieldGroup": [
+					{
+					  "label": "Start Time",
+					  "type": "date-input",
+					  "key": "start_time",
+					  "className": "flex-6",
+					  "props": {
+						"label": "Start Time",
+						"placeholder": "Start Time",
+						"type": "date",
+						"required": true
+					  }
+					} ,
+  
+					{
+					  "label": "End Time",
+					  "type": "date-input",
+					  "key": "end_time",
+					  "className": "flex-6",
+					  "props": {
+						"label": "End Time",
+						"placeholder": "End Time",
+						"type": "date",
+						"required": true
+					  }
+					} 
+				  ]
+				},
+				{
+				  "fieldGroupClassName": "display-flex",
+				  "fieldGroup": [
+					
+					{
+					  "type": "html-input",
+					  "key": "event_description",
+					  "className": "flex-6",
+					  "props": {
+						"label": "Event Description",
+						"disabled": false
+					  }
+					}
+				  ]
+				} 
+			  ]
+			},
+  
+			{
+			  "props": { "label": "Event Image" },
+			  "fieldGroupClassName": "display-flex",
+			  "fieldGroup": [
+				{
+				  "type": "image-input",
+				  "key": "event_logo",
+  
+				  "refId": "id",
+				   
+				  "className": "flex-6",
+				  "details_type": "idimage",
+				  "props": {
+					"refId": "employee_id",
+					"label": "Event Logo",
+					"required": true
+				  }
+				},
+				{
+				  "type": "image-input",
+				  "key": "event_banner",
+  
+				  "refId": "id",
+				  
+				  "details_type": "idimage",
+				  "className": "flex-6",
+				  "props": {
+					"refId": "employee_id",
+					"label": "Event Banner",
+					"required": true
+				  }
+				}
+			  ]
+			},
+  
+			{
+			  "props": {
+				"label": "Contact Details",
+				"addText": "Add",
+				"required": true
+			  },
+			  "key": "contact_details",
+			  "type": "repeat",
+			  "fieldArray": {
+				"fieldGroupClassName": "row",
+				"fieldGroup": [
+				  {
+					"fieldGroupClassName": "display-flex",
+					"fieldGroup": [
+					  {
+						"type": "input",
+						"key": "contact_name",
+						"className": "flex-1",
+						"props": {
+						  "label": "Contact Name",
+						  "placeholder": "Contact Name",
+						  
+						  "required": true
+						}
+					  },
+					  {
+						"type": "input",
+						"key": "contact_email",
+						"className": "flex-1",
+						"props": {
+						  "label": "Email Address",
+						  "placeholder": "Email",
+						  "pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
+						  "required": true
+						}
+					  }
+					]
+				  },
+				  {
+					"fieldGroupClassName": "display-flex",
+					"fieldGroup": [
+					  
+					  {
+						"type": "input",
+						"key": "phone_number",
+						"className": "flex-1",
+						"props": {
+						  "label": "Phone Number",
+						  "placeholder": "Phone Number",
+						  "required": true
+						}
+					  } 
+					]
+				  }
+				]
+			  }
+			},
+			{
+			  "props": { "label": "Speaker Details" },
+			  "fieldGroupClassName": "display-flex",
+  
+			  "fieldGroup": [
+				{
+				  "fieldGroupClassName": "display-flex",
+				  "fieldGroup": [
+					
+  
+					
+				  ]
+				}
+			  ]
+			},
+  
+			{
+			  "props": { "label": "Team Member" },
+  
+			  "fieldGroup": [
+				{
+				  "key": "team_member_id",
+				  "type": "grid",
+				  "className": "ag-theme-balham",
+				  "collectionName": "projectteam",
+  
+				  "props": {
+					"showbutton": true,
+					"height": "200px",
+					"gridOptions": {
+					  "rowHeight": 42,
+					  "columnDefs": [
+						{
+						  "headerName": " Project Name",
+						  "field": "projectname",
+						  "sortable": true,
+						  "filter": "agTextColumnFilter"
+						},
+						{
+						  "headerName": "Project Team Id",
+						  "field": "teamid",
+						  "sortable": true,
+						  "filter": "agTextColumnFilter"
+						},
+						{
+						  "headerName": " Project Team Name",
+						  "field": "teamname",
+						  "sortable": true,
+						  "filter": "agTextColumnFilter"
+						},
+						{
+						  "headerName": "Project Team Description",
+						  "field": "teamdes",
+						  "sortable": true,
+						  "filter": "agTextColumnFilter"
+						},
+  
+						{
+						  "headerName": "Updated On",
+						  "field": "updated_on",
+						  "sortable": true,
+						  "filter": "agDateColumnFilter",
+						  "type": "date"
+						},
+						{
+						  "headerName": "Updated By",
+						  "field": "updated_by",
+						  "sortable": true,
+						  "filter": "agDateColumnFilter"
+						},
+						{
+						  "headerName": "Status",
+						  "field": "status",
+						  "sortable": true,
+						  "filter": "agTextColumnFilter"
+						},
+						{
+						  "type": "rightAligned",
+						  "headerName": "Actions",
+						  "cellRenderer": "buttonRenderer",
+						  "cellRendererParams": {
+							"onClick": "this.onBtnClick1.bind(this)",
+							"label": "Click 1"
+						  }
+						}
+					  ]
+					}
+				  }
+				}
+			  ]
+			}
+		  ]
+		}
+	  ]
+	},
+	"defaultValues": [
+	  {
+		"colName": "status",
+		"type": "string",
+		"value": "Active"
+	  }
+	],
+  
+	"onCancelRoute": "/list/event"
+  }
+  

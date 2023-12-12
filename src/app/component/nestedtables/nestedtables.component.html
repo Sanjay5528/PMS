@@ -1,0 +1,36 @@
+<!-- <div style="width: 98%;margin: 10px;height: 100%;margin-bottom: 10px; overflow-y: scroll;"> -->
+    <!-- <ag-grid-angular
+    #agGrid style="width: 98%; height: 50%; flex: 1 1 auto;margin: 10px;"
+      class="ag-theme-alpine"
+      [columnDefs]="columnDefs"
+      [defaultColDef]="defaultColDef"
+      [masterDetail]="true"
+      [rowSelection]="'single'"
+      [context]="context"
+      [detailCellRendererParams]="detailCellRendererParams"
+      [rowData]="rowData"
+      [components]="components"
+      (selectionChanged)="onSelectionChanged($event)"
+      (gridReady)="onGridReady($event)"  (cellClicked)='onCellClicked($event)'
+        (cellValueChanged)="onCellValueChanged($event)"
+    ></ag-grid-angular>
+    <br> -->
+    <ag-grid-angular
+    style="width: 100%; height: 70%;"
+    class="ag-theme-alpine"
+    [columnDefs]="groupDefs"
+    [defaultColDef]="defaultColDef"
+    [autoGroupColumnDef]="autoGroupColumnDef"
+    [groupDisplayType]="groupDisplayType"
+    [animateRows]="true"
+    [rowData]="listdata"     
+     [rowSelection]="'single'"
+      [components]="components"
+      [context]="context"
+    (gridReady)="RowonGridReady($event)"
+    (selectionChanged)="rowonSelectionChanged($event)" 
+    (cellClicked)='rowonCellClicked($event)'
+    (cellValueChanged)="rowonCellValueChanged($event)"
+  ></ag-grid-angular>
+        <!-- </div> -->
+      

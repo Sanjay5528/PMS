@@ -1,0 +1,98 @@
+<div class="container">
+  <!-- <div style="width: 200px;margin-top: 10px;">
+    <mat-form-field *ngIf="showdefaultFilter == 'yes'">
+      <input
+        matInput
+        type="text"
+        placeholder="Search"
+        (keyup)="applyFilter($event)"
+      />
+    </mat-form-field>
+  </div> -->
+<!-- AutoComplete -->
+<div style="margin-top: 20px; display: flex; margin-left:20px;"  *ngFor="let fo of filterOptions" >
+  <mat-form-field *ngIf="fo.type == 'autocomplete'">
+    <mat-label>{{fo.label}}</mat-label>
+    <input type="text" [(ngModel)]="fo.selectedValue" [name]="fo.columnName" matInput
+      (input)="filteredData(fo.selectedValue)" [matAutocomplete]="auto">
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+      <mat-option *ngFor="let row of filteredOptions" [value]="row[fo.valueProp]">
+        {{row[fo.labelProp]}} -  {{row[fo.valueProp]}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>&nbsp;&nbsp;&nbsp;&nbsp;
+  <span style="margin-top: 25px;">
+    <button mat-raised-button color="secondary" (click)="triggerFilter()">
+      <mat-icon>view_list</mat-icon>
+      Filter
+    </button>
+  </span>
+</div>
+</div>
+
+<!-- <span *ngIf="filterOptions">
+  <span *ngFor="let fo of filterOptions" class="filter-container">
+    <mat-form-field *ngIf="fo.type == 'select'">
+      <mat-label>{{ fo.label }}</mat-label>
+      <mat-select
+        [(ngModel)]="fo.selectedValue"
+        [name]="fo.columnName"
+        [multiple]="fo.multiSelection && fo.multiSelection == true"
+      >
+        <mat-option value="" (onSelectionChange)="toggleSelectAll($event)"
+          >All {{ fo.label }}</mat-option
+        >
+        <mat-option *ngFor="let row of fo.options" [value]="row[fo.valueProp]">
+          {{ row[fo.labelProp] }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field *ngIf="fo.type == 'datepicker'">
+      <mat-label>{{ fo.label }}</mat-label>
+      <input
+        matInput
+        [(ngModel)]="fo.selectedValue"
+        [min]="fo.minDate"
+        [max]="fo.maxDate"
+        [matDatepicker]="picker"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field *ngIf="fo.type == 'text'">
+      <input
+        matInput
+        [(ngModel)]="fo.selectedValue"
+        type="text"
+        placeholder="{{ fo.label }}"
+      />
+    </mat-form-field>
+    <mat-form-field *ngIf="fo.type == 'data'">
+      <input
+        matInput
+        [(ngModel)]="fo.selectedValue"
+        type="text"
+        placeholder="{{ fo.label }}"
+      />
+    </mat-form-field>
+  </span>
+  
+  <span *ngIf="config['showPrintButton']">
+    <button mat-raised-button color="secondary" (click)="generatePdf()">
+      <mat-icon>print</mat-icon>
+      Print
+    </button>
+  </span>
+  <span *ngIf="config['showLaserPrintButton']">
+    <button mat-raised-button color="secondary">
+      <mat-icon>print</mat-icon>
+      Print Laser
+    </button>
+  </span>
+  <span *ngIf="config['showLaserPlainPaperButton']">
+    <button mat-raised-button color="secondary">
+      <mat-icon>print</mat-icon>
+      Print Laser Plain Paper
+    </button>
+  </span>
+</span> -->

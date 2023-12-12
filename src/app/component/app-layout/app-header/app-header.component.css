@@ -1,0 +1,35 @@
+
+.menu-items {
+  flex: 1 1 auto;  
+}
+
+.app-logo {
+  width: 250px;
+  height: 52px;
+  background-image: url("/assets/images/aces-logo.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.toolbar {
+  color: #2c69ff;
+  background-color: #ddd !important;
+}
+
+
+.mat-toolbar-row, .mat-toolbar-single-row {
+  @media screen and (min-width: 500px) and (max-width: 768px) {
+    height: 89px;
+  } 
+  
+}
+
+.homepage {
+  
+  background-color: #2c69ff;
+  color: white;
+  margin-top: 5px;
+  border-radius: 30px;
+  border: none;
+  font-size: medium;
+}

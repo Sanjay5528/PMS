@@ -1,0 +1,535 @@
+<style>
+    .sidebar {
+      height: 100vh;
+      background-color: #90c0e5;
+      color: #fff;
+      transition: all 0.3s;
+    }
+
+    .sidebar .sidebar-header {
+      padding: 20px;
+    }
+
+    .sidebar .sidebar-header h3 {
+      margin-bottom: 0;
+    }
+
+    .sidebar ul.components {
+      padding: 20px;
+    }
+
+    .sidebar ul.components li {
+      margin-bottom: 10px;
+    }
+
+    .sidebar ul.components li button {
+      color: #fff;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      width: 100%;
+      padding: 8px 16px;
+      text-align: left;
+    }
+    /* li {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+/* li:active,
+li:focus {
+  border-color: red;
+} */
+/* li:target {
+  color: red;
+} */
+    .sidebar.active {
+      width: 200px;
+    }
+
+    .sidebar.active .sidebar-header h3 {
+      display: none;
+    }
+
+    .sidebar.active .sidebar-header .burger-icon {
+      transform: rotate(180deg);
+    }
+
+    .content {
+      padding: 20px;
+    }
+  </style>
+
+<body>
+
+  <div class="d-flex  " id="wrapper">
+    
+    <div class="text-white" id="sidebar-wrapper">
+      <div class="sidebar justify-content-sm-start align-items-center mb-1">
+
+        <ul class="list-unstyled components">
+          <li>
+            <button class="btn btn-dark text-white custom-button" type="button" (click)="cl1(false)">Personal information</button>
+          </li>
+          <li>
+            <button class="btn btn-dark text-white custom-button" type="button" (click)="cl2(false)">Summary</button>
+          </li>
+          <li>
+            <button class="btn btn-dark text-white custom-button" type="button"(click)="cl3(false)">Education</button>
+          </li>
+          <li>
+            <button class="btn btn-dark text-white custom-button" type="button" (click)="cl8(false)">Certificates</button>
+          </li>
+          <li>
+            <button class="btn btn-dark text-white custom-button" type="button"(click)="cl4(false)">Professional Experience</button>
+          </li>
+          <li>
+            <button class="btn btn-dark text-white custom-button" type="button"(click)="cl5(false)">Skills</button>
+          </li>
+          <li>
+            <button class="btn btn-dark text-white custom-button" type="button"(click)="cl6(false)">Project Experience</button>
+          </li>
+          <li>
+            <button class="btn btn-dark text-white custom-button" type="button"(click)="cl7(false)">Extra Curricular Activities</button>
+          </li>
+          <li>
+            <button class="btn btn-dark text-white custom-button" type="button" (click)="total()" (click)="generate()">Download Resume</button>
+          </li>
+
+          <!-- <li>
+            <button class="btn btn-dark text-white custom-button" type="button">Collapse</button>
+          </li> -->
+
+        </ul>
+      </div>
+    </div>
+    <div [hidden]="personalInfo" class=" container mx-auto m-5 ">
+      <form >
+        <div class="mb-3">
+            <label for="fullName" class="form-label">Full Name</label>
+            <input type="text" class="form-control" [(ngModel)]="fullname1"   [ngModelOptions]="{ standalone: true }" id="fullName" placeholder="Enter your full name" required>
+        </div>
+        <div class="mb-3">
+            <label for="text" class="form-label">Job Title</label>
+            <input type="text" class="form-control" id="title" [(ngModel)]="title1"  [ngModelOptions]="{ standalone: true }" placeholder="Enter your Job title" required>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" [(ngModel)]="email1"  [ngModelOptions]="{ standalone: true }" placeholder="Enter your email address" required>
+      </div>
+        <div class="mb-3">
+            <label for="phoneNumber" class="form-label">Phone Number</label>
+            <input type="tel" class="form-control" id="phoneNumber"  [(ngModel)]="phoneNumber1"  [ngModelOptions]="{ standalone: true }" placeholder="Enter your phone number" required>
+        </div>
+        <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea class="form-control" id="address" rows="3"[(ngModel)]="Address1"  [ngModelOptions]="{ standalone: true }" placeholder="Enter your address" required></textarea>
+        </div>
+        <!-- <button type="button" class="btn btn-dark me-3"  (click)="resume()">Save</button> -->
+        <button type="button" class="btn btn-dark " (click)="cl2(false)">Next</button>
+
+    </form></div>
+
+
+    <div [hidden]="summary" class="container mx-auto m-5 ">
+
+
+
+
+       <form >
+       <div class="mb-3">
+        <label for="summary" class="form-label">Summary</label>
+        <textarea class="form-control" id="summary" rows="5"[(ngModel)]="Summary1"  [ngModelOptions]="{ standalone: true }" placeholder="Enter a summary" required></textarea>
+    </div>
+    <!-- <button type="button" class="btn btn-dark me-3" (click)="resume()">Save</button> -->
+    <button type="button" class="btn btn-dark "(click)="cl3(false)">Next</button>
+
+
+</form>
+</div>
+<div [hidden]="education" class="container mx-auto m-5 ">
+  <table class="table">
+    <thead>
+        <tr>
+            <th>University/Institution</th>
+            <th>Degree</th>
+            <th>Graduation Date</th>
+            <th>GPA</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of tableRows; let i = index">
+            <td>
+                <div class="mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="universities[i]"  [ngModelOptions]="{ standalone: true }" placeholder="Enter the name of the university or institution" required>
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="degrees[i]"  [ngModelOptions]="{ standalone: true }" placeholder="Enter your degree or program of study" required>
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                    <input type="date" class="form-control" [(ngModel)]="graduationDates[i]"  [ngModelOptions]="{ standalone: true }" required>
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                    <input type="number" class="form-control" [(ngModel)]="gpas[i]" step="0.01"  [ngModelOptions]="{ standalone: true }" placeholder="Enter your GPA" required>
+                </div>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger" (click)="deleteRow(i)">Delete</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<button type="button" class="btn btn-dark me-3" (click)="addRow()">Add Education</button>
+<!-- <button type="button" class="btn btn-dark me-3" (click)="resume()">Save</button> -->
+<button type="button" class="btn btn-dark " (click)="getUserValues()" (click)="cl8(false)">Next</button>
+
+
+
+  <!-- <form>
+    <div class="mb-3">
+        <label for="university" class="form-label">University/Institution</label>
+        <input type="text" class="form-control" id="university" [(ngModel)]="University" placeholder="Enter the name of the university or institution" required>
+    </div>
+    <div class="mb-3">
+        <label for="degree" class="form-label">Degree</label>
+        <input type="text" class="form-control" id="degree" [(ngModel)]="Degree" placeholder="Enter your degree or program of study" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="graduationDate" class="form-label">Graduation Date</label>
+        <input type="date" class="form-control" [(ngModel)]="Graduation" id="graduationDate" required>
+    </div>
+    <div class="mb-3">
+        <label for="gpa" class="form-label">GPA</label>
+        <input type="number" class="form-control" id="gpa" [(ngModel)]="GPA" step="0.01" placeholder="Enter your GPA" required>
+    </div>
+    <button type="button" class="btn btn-dark"(click)="cl8(false)">Next</button>
+</form> -->
+</div>
+<div  [hidden]="certificate" class="container mx-auto m-5 ">
+  <table class="table">
+    <thead>
+        <tr>
+            <th>Certificate Name</th>
+            <th>Authority</th>
+            <th>Date Earned</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of certificateRows; let i = index">
+            <td>
+                <div class="mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="certificateName[i]"  [ngModelOptions]="{ standalone: true }" placeholder="Enter the certificate name" required>
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="authority[i]"  [ngModelOptions]="{ standalone: true }" placeholder="Enter the certificate authority" required>
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                    <input type="date" class="form-control" [(ngModel)]="dateEarned[i]"  [ngModelOptions]="{ standalone: true }" required>
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" [attr.data-bs-target]="'#certificateModal' + i">View/Edit Description</button>
+                    <div class="modal fade" [id]="'certificateModal' + i" tabindex="-1" aria-labelledby="certificateModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="certificateModalLabel">Certificate Description</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <textarea class="form-control" [(ngModel)]="description[i]"  [ngModelOptions]="{ standalone: true }" rows="4" placeholder="Enter a description of the certificate" required></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger" (click)="deleteCertificateRow(i)">Delete</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<button type="button" class="btn btn-dark me-3" (click)="addCertificateRow()">Add Certificate</button>
+<!-- <button type="button" class="btn btn-dark me-3" (click)="resume()">Save</button> -->
+<button type="button" class="btn btn-dark " (click)="getUserValues1()" (click)="cl4(false)">Next</button>
+
+
+</div>
+<div [hidden]="professionalExp" class="container mx-auto m-5 ">
+
+  <table class="table">
+    <thead>
+        <tr>
+            <th>Company</th>
+            <th>Position</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Responsibilities</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of workexperience; let i = index">
+            <td>
+                <div class="mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="company[i]"  [ngModelOptions]="{ standalone: true }" placeholder="Enter the name of the company" required>
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="position[i]"  [ngModelOptions]="{ standalone: true }" placeholder="Enter your position or job title" required>
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                    <input type="date" class="form-control" [(ngModel)]="startDate[i]"  [ngModelOptions]="{ standalone: true }" required>
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                    <input type="date" class="form-control" [(ngModel)]="endDate[i]"  [ngModelOptions]="{ standalone: true }">
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" [attr.data-bs-target]="'#responsibilitiesModal' + i">View/Edit </button>
+
+                    <div class="modal fade" [id]="'responsibilitiesModal' + i" tabindex="-1" aria-labelledby="responsibilitiesModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="responsibilitiesModalLabel">Responsibilities</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <textarea class="form-control" [(ngModel)]="responsibilities[i]"  [ngModelOptions]="{ standalone: true }" rows="4" placeholder="Enter your responsibilities or tasks" required></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger" (click)="deleteWorkExperienceRow(i)">Delete</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+<button type="button" class="btn btn-dark me-3" (click)="addWorkExperienceRow()">Add Work Experience</button>
+<!-- <button type="button" class="btn btn-dark me-3" (click)="resume()">Save</button> -->
+<button type="button" class="btn btn-dark " (click)="getUserValues2()" (click)="cl5(false)">Next</button>
+
+
+
+</div>
+<div [hidden]="skills" class="container mx-auto m-5 ">
+  <table class="table">
+    <thead>
+        <tr>
+            <th>Skill Name</th>
+            <th>Skill Level</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of skillRows; let i = index">
+            <td>
+                <div class="mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="skillName[i]"  [ngModelOptions]="{ standalone: true }" placeholder="Enter the skill name" required>
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                    <select class="form-select" [(ngModel)]="skillLevel[i]"  [ngModelOptions]="{ standalone: true }" required>
+                        <option selected disabled>Select skill level</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
+                </div>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger" (click)="deleteSkillRow(i)">Delete</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<button type="button" class="btn btn-dark me-3" (click)="addSkillRow()">Add Skill</button>
+<!-- <button type="button" class="btn btn-dark  me-3" (click)="resume()">Save</button> -->
+<button type="button" class="btn btn-dark" (click)="getUserValues3()" (click)="cl6(false)">Next</button>
+
+
+</div>
+<div [hidden]="projectExp" class="container mx-auto m-5 ">
+  <table class="table">
+    <thead>
+        <tr>
+            <th>Project Name</th>
+            <th>Role</th>
+            <th>Duration</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of projectRows; let i = index">
+            <td>
+                <div class="mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="projectName[i]"  [ngModelOptions]="{ standalone: true }" placeholder="Enter the project name" required>
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="role[i]"  [ngModelOptions]="{ standalone: true }" placeholder="Enter your role in the project" required>
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="duration[i]"  [ngModelOptions]="{ standalone: true }" placeholder="Enter the project duration" required>
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" [attr.data-bs-target]="'#descriptionModal' + i">View/Edit Description</button>
+                    <div class="modal fade" [id]="'descriptionModal' + i" tabindex="-1" aria-labelledby="descriptionModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="descriptionModalLabel">Project Description</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <textarea class="form-control" [(ngModel)]="description1[i]"  [ngModelOptions]="{ standalone: true }" rows="4" placeholder="Enter a description of the project" required></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger" (click)="deleteProjectRow(i)">Delete</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<button type="button" class="btn btn-dark me-3" (click)="addProjectRow()">Add Project</button>
+<!-- <button type="button" class="btn btn-dark me-3" (click)="resume()">Save</button> -->
+<button type="button" class="btn btn-dark " (click)="getUserValues5()" (click)="getUserValues4()" (click)="cl7(false)">Next</button>
+
+</div>
+<div [hidden]="extraCurricular" class="container mx-auto m-5 ">
+  <table class="table">
+    <thead>
+        <tr>
+            <th>Activity Name</th>
+            <th>Skill Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of skillRows1; let j = index">
+            <td>
+                <div class="mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="Activity[j]" [ngModelOptions]="{ standalone: true }" placeholder="Enter the skill name" required>
+                </div>
+            </td>
+            <td>
+                <div class="mb-3">
+                  <textarea class="form-control" [(ngModel)]="description2[j]" [ngModelOptions]="{ standalone: true }" rows="1" placeholder="Enter a description of the skills" required></textarea>
+                </div>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger" (click)="deleteSkillRow2(j)">Delete</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<button type="button" class="btn btn-dark me-3" (click)="addSkillRow1()">Add Skill</button>
+
+<button type="button" class="btn btn-dark me-3"  (click)="total()" (click)="resume()">Submit</button>
+<button type="button" class="btn btn-dark" (click)="generate()">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+    <path d="M8 11a.5.5 0 0 1-.5-.5V4.707L5.354 6.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 4.707V10.5a.5.5 0 0 1-.5.5z"/>
+    <path d="M4 13h8a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1z"/>
+  </svg>
+  Download
+</button>
+
+
+
+
+  <!-- <form>
+    <div class="contra justify-content-between">
+      <div *ngFor="let hobby of hobbiesArray.controls; last as isLast; index as idx" class="input-row">
+        <mat-form-field>
+          <input matInput placeholder="skills" [formControl]="hobby">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="description" [formControl]="hobby">
+        </mat-form-field>
+        <div class="add">
+        <button mat-icon-button color="primary" *ngIf="isLast" (click)="addInputControl()">
+          <mat-icon>add_circle</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" *ngIf="hobbiesArray.length > 1 && isLast" (click)="removeInputControl(idx)">
+          <mat-icon>remove_circle</mat-icon>
+        </button>
+      </div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-dark">Submit</button>
+</form> -->
+</div>
+<!-- <div class="contra">
+        <div *ngFor="let hobby of hobbiesArray.controls; last as isLast; index as idx" class="input-row">
+            <mat-form-field>
+              <input matInput [formControl]="hobby">
+            </mat-form-field>
+            <button
+            mat-icon-button
+            color="primary"
+            *ngIf="isLast"
+            (click)="addInputControl()"
+          >
+            <mat-icon>add_circle</mat-icon>
+          </button>
+        <button mat-icon-button color="warn" *ngIf="hobbiesArray.length > 1 && isLast" (click)="removeInputControl(idx)">
+          <mat-icon>remove_circle</mat-icon>
+        </button>
+
+      </div>
+
+
+</div> -->
+
+</div>
+
+
+</body>

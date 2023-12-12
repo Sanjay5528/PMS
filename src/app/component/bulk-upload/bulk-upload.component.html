@@ -1,0 +1,50 @@
+
+<h2 style="text-align: center;" class="page-title">Excel Upload for Bulk Post</h2>
+<div class="text"><span>Template Name</span><span>{{template_data?.name}}</span></div>
+<div style="display: flex;">
+  <div>
+    <input
+    #myInput
+      type="file"
+      (change)="onFileChange($event)"
+    />
+  </div>
+  <div>
+    <button mat-raised-button color="warn" (click)="upload()"  class="btn btn-primary" [disabled]="upload_button_disabled" >
+    Upload 
+  </button>
+</div>
+
+<div style="margin-left: 5px;">
+  <button mat-raised-button color="warn" (click)="create_job()"  class="btn btn-primary" [disabled]="create_job_button_disabled">
+Create Job
+</button>
+</div>
+
+
+</div>
+  
+
+
+<div *ngIf="showprogress"  style="margin: 25px;">
+  <mat-progress-bar id="progress-bar" mode="determinate" [value]="percentDone"></mat-progress-bar>
+  <p>{{ percentDone }}%</p>
+</div>
+
+<div style="margin-top: 5px;"  *ngIf="showgrid">
+    <ag-grid-angular
+    #agGrid
+    style="width: 100%; height: calc(100vh - 250px); flex: 1 1 auto"
+    class="ag-theme-alpine"
+    [defaultColDef]="defaultColDef"
+    [columnDefs]="columnDefs"
+    [rowData]="listData"
+    [rowSelection]="'single'"
+    [pagination]="true"
+    [paginationPageSize]="10"
+    (firstDataRendered)="onFirstDataRendered($event)"
+    (gridReady)="onGridReady($event)" 
+    [debounceVerticalScrollbar]="true"
+    [components]="components"
+  ></ag-grid-angular>
+</div>

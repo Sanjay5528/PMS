@@ -1,0 +1,80 @@
+<mat-horizontal-stepper [linear]="isLinear">
+  <formly-form [form]="form" [model]="model" [fields]="fields"></formly-form>
+  <div>
+    <mat-step *ngFor="let step of fields; let index = index; let last = last">
+      <ng-template matStepLabel (click)="valueCheck(step.templateOptions?.label)">
+        {{ step.templateOptions?.label }}
+      </ng-template>
+      <formly-field [field]="step"></formly-field>
+      <div>
+        <button matStepperPrevious mat-button *ngIf="index !== 0" type="button">Back</button>
+        <button matStepperNext mat-raised-button *ngIf="!last" type="button" [disabled]="!isValid(step)">
+          Next
+        </button>
+      </div>
+    </mat-step>
+  </div>
+</mat-horizontal-stepper>
+
+<div>
+
+
+
+
+
+
+ 
+
+  <div>
+<!-- 
+
+  <formly-field-stepper></formly-field-stepper> -->
+  <!-- <div>
+    <formly-form [form]="form" [model]="model" [fields]="fields"></formly-form>
+  </div>
+  
+  <mat-horizontal-stepper>
+    <ng-container *ngFor="let step of form.fields[0].fieldGroup; let index = index; let last = last" (change)="valueCheck(step, index)">
+      <mat-step>
+        <ng-template matStepLabel>{{ step.props.label }}</ng-template>
+        <formly-form [form]="form" [model]="model" [fields]="step.fieldGroup"></formly-form>
+  
+        <div>
+          <button matStepperPrevious mat-button *ngIf="index !== 0" type="button">Back</button>
+          <button matStepperNext mat-raised-button *ngIf="!last" type="button" [disabled]="!isValid(step)">
+            Next
+          </button>
+        </div>
+      </mat-step>
+    </ng-container>
+  </mat-horizontal-stepper>
+
+  </div> -->
+  <!--
+<formly-form>
+  [model]="model"
+  [fields]="fields"
+  [form]="form"
+</formly-form>
+
+
+
+
+</div>
+
+
+
+<mat-form-field>
+  <input type="text"
+         matInput
+         #autoCompleteInput
+         [formControl]="formControl"
+         [formlyAttributes]="fields[0]"  
+         [matAutocomplete]="auto" />
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectionChange(fields[0], autoCompleteInput)">
+    <mat-option *ngFor="let op of filteredOptions" [value]="op[valueProp]">
+      {{ op[labelProp] }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>  -->
+ 

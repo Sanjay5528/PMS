@@ -1,0 +1,54 @@
+
+<div class="example-sidenav-content" style="margin-top: 40px;">
+<div style="height: 50px;display: flex;flex-direction: row;">
+<div style="float: left;margin-left: 50px;" >
+    <mat-icon style="font-size:35px;"  (click)="back()">keyboard_backspace</mat-icon>
+  </div>
+  <div style="justify-content: center;align-items: center;margin-left: 40%;margin-bottom: 20px;">
+
+    <span class="head"> Access Control For Organisation Type</span>
+    
+      <h5 style="font-size:medium;margin-bottom: 20px;" >
+        {{this?.Viewdata?.name}} ( {{this?.Viewdata?._id}} )
+      </h5>
+  </div>
+  </div>
+<div style="display: flex;justify-content: center;width: 98%;align-items: center;margin: 10px;margin-top: 30px;">
+  
+ <ag-grid-angular #agGrid style="width: 98%; height: calc(100vh - 250px); flex: 1 1 auto;margin-bottom: 30px;" 
+ class="ag-theme-alpine"
+   [defaultColDef]="defaultColDef"
+   [columnDefs]="columnDefs"
+   [rowData]="rowData"
+   [rowSelection]="'single'"
+   [groupDisplayType]="groupDisplayType"
+   [pagination]="true"
+   [paginationPageSize]="14"
+   [context]="context"
+   [components]="components"
+   (gridReady)="onGridReady($event)">
+ </ag-grid-angular> 
+</div>
+</div>
+<!--    (selectionChanged)="onSelectionChanged($event)"
+
+<div style="display:flex;justify-content: center;">
+  
+  <h5 class="head" style="font-size: large;">Access Control</h5>
+
+</div>
+<div >
+  <div style="float: left;">
+    <mat-icon style="font-size:35px;" >keyboard_backspace</mat-icon>
+  </div>
+  
+  <div style="display:flex;justify-content: center;">
+    <h5 style="font-size:medium;" >
+      {{this?.Viewdata?.name}} ( {{this?.Viewdata?._id}} )
+    </h5>
+    
+  </div>
+</div>
+ -->
+
+

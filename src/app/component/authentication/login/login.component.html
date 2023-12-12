@@ -1,0 +1,213 @@
+<div class="container">
+  <div class="container1" >
+
+
+    <mat-card class="mat-card" layout-align="center center">
+      <mat-card-content style="width: 100%">
+        <form [formGroup]="frmLogin" class="example-form" fxLayout="column"  autocomplete="off" class="formGroup">
+          <div>
+            <div style="text-align: center;">
+              <a>
+                <!-- IMAGE IN LOGIN SCREEN -->
+                <!-- CHANGE -->
+                <img
+                  width="400px"
+                  height="200px"
+                  class="center"
+                  src="../../../../assets/images/property-removebg-preview.png"
+                />
+              </a>
+            </div>
+            <div  >
+              <mat-form-field style="width: 100%" appearance="outline">
+                <input
+                  matInput
+                  type="text"
+                  class="formControl"
+                  formControlName="id"
+                  placeholder="Id"
+                  required
+                  #userName 
+                />
+    
+                <mat-error
+                  *ngIf="
+                    frmLogin.controls['id'].touched &&
+                    frmLogin.controls['id'].hasError('required')
+                  "
+                  class="help-block text-danger mat-error"
+                >
+                  User Id is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div >
+          
+              <mat-form-field style="width: 100%" appearance="outline">
+                <input
+                  matInput
+                  formControlName="password"
+                  placeholder="Password"
+                  [type]="hide ? 'password' : 'text'"
+                  type="password"
+                  required
+                  #userPassword
+                  class="formControl"
+    
+                /><mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                <mat-error
+                  *ngIf="
+                    frmLogin.controls['password'].touched &&
+                    frmLogin.controls['password'].hasError('required')
+                  "
+                  class="help-block text-danger mat-error"
+                >
+                  Password is required
+                </mat-error>
+              </mat-form-field>
+          
+          </div>
+            <div class="login-button">
+              <button mat-raised-button  (click)="login()">
+                Login
+              </button>
+            </div>
+      </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+<!-- <div  class="container2"> -->
+
+
+<!-- <div class="text">
+<div  class="item bg-image" ></div>
+<div class="item text-font">
+  <div>Get Your Job Post<br> Hire Engineers On-Demand</div>
+  
+</div>
+<div  class="item bg-image"></div>
+</div> -->
+
+<!-- </div> -->
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="container">
+  
+
+    <div class="flex1">
+    <mat-card class="mat-card" fxFlex="70"  style="width: 70%;">
+      <mat-card-content style="width: 100%">
+        <form [formGroup]="frmLogin" class="example-form" fxLayout="column"  autocomplete="off" class="formGroup">
+          <div>
+            <div>
+              <a>
+                <img
+                  width="300"
+                  height="100"
+                  class="center"
+                  src="../../../../assets/images/logo.png"
+                />
+              </a>
+            </div>
+            <div  >
+              <mat-form-field style="width: 100%" appearance="outline">
+                <input
+                  matInput
+                  type="text"
+                  class="formControl"
+                  formControlName="email"
+                  placeholder="Email ID"
+                  required
+                  #userName 
+                />
+    
+                <mat-error
+                  *ngIf="
+                    frmLogin.controls['email'].touched &&
+                    frmLogin.controls['email'].hasError('required')
+                  "
+                  class="help-block text-danger mat-error"
+                >
+                  User Id is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div >
+          
+              <mat-form-field style="width: 100%" appearance="outline">
+                <input
+                  matInput
+                  formControlName="password"
+                  placeholder="Password"
+                  [type]="hide ? 'password' : 'text'"
+                  type="password"
+                  required
+                  #userPassword
+                  class="formControl"
+    
+                /><mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                <mat-error
+                  *ngIf="
+                    frmLogin.controls['password'].touched &&
+                    frmLogin.controls['password'].hasError('required')
+                  "
+                  class="help-block text-danger mat-error"
+                >
+                  Password is required
+                </mat-error>
+              </mat-form-field>
+          
+          </div>
+            <div class="login" style="width: 60px; margin-top: 30px" class="center">
+              <button mat-raised-button style="  background-color: #21A69A;" (click)="login()">
+                Login
+              </button>
+            </div>
+         
+             
+        <div class="text-center sign-up" style="margin-top: 5px;">
+          Don`t have an account ? <a routerLink="/register">Create One</a> 
+        </div>
+      
+        <div style="float:left; width: 46%;"><hr/></div>OR
+        <div style="float:right; width: 47%;"><hr/></div>
+       
+     <div style="margin-left:110px;">SignIn Using</div>
+     <div class="social-icons">
+          <button type="button" class="btn googleBtn" (click)="login()">
+            <i class="fa-brands fa-google" ></i>
+          </button>
+     <button type="button"   class="btn linkedinBtn">
+      <i class="fa-brands fa-linkedin" ></i>
+     </button>
+    <button type="button" class="btn appleBtn">
+      <i class="fa-brands fa-apple"   ></i>
+    </button>
+    </div>
+      </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+    </div>
+    <div class="right-side">
+      <div class="content">
+      Making Complexity Simple with Our Network Solutions
+    </div>
+    </div>
+
+
+    </div> -->

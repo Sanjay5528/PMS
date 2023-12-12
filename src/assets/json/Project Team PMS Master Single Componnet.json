@@ -1,0 +1,217 @@
+{
+	"pageHeading": "Project Team",
+	"formType": "master-detail",
+	"isCustomFuction":true,
+	"addfields":"project_name",
+	"form": {
+		"collectionName": "project",
+		"fields": [
+			{
+				"type": "label-view",
+				"key": "client_name",
+				"props": {
+					"label": "Client Name",
+					"label_width": 100,
+					"value_width": 200,
+					"value_in_next_row": false,
+					"placeholder": "Client Name",
+					"required": true
+				}
+			}, {
+				"type": "label-view",
+				"key": "project_id",
+				"props": {
+					"label": "Project Id",
+					"label_width": 100,
+					"value_width": 200,
+					"value_in_next_row": false,
+					"placeholder": "Project Id",
+					"required": true
+				}
+			}, {
+				"type": "label-view",
+				"key": "project_name",
+				"props": {
+					"label": "Project Name",
+					"label_width": 100,
+					"value_width": 200,
+					"value_in_next_row": false,
+					"placeholder": "Project Name",
+					"required": true
+				}
+			},
+			{
+				"type": "label-view",
+				"key": "status",
+				"props": {
+					"label_width": 100,
+					"value_width": 200,
+					"value_in_next_row": true,
+					"label": "Project Status",
+					"placeholder": "Project Status",
+					"required": true
+				}
+			}
+		],
+		"buttons": {
+			"start": false,
+			"newEntry": false
+		}
+	},
+	"detailForm": {
+        "customfilter":true,
+        "customkey":"project_id",
+		"collectionName": "project_team",
+		"mapColumn": "project_id",
+		"uniqueColumn": "team_id",
+		"keyColumn": "_id",
+		"isPopupEdit": true,
+		"fields": [
+		
+					{
+						"type": "label-view",
+						"key": "team_id",
+						"props": {
+							"label": "Team Id",
+							"label_width": 100,
+							"value_width": 200,
+							"value_in_next_row": false,
+							"placeholder": "Team Id",
+							"required": true
+						},
+                        "hideExpression": "!model.isEdit"
+
+					},
+					{
+						"fieldGroupClassName": "display-flex",
+						"fieldGroup": [	
+                    {
+						"type": "input",
+						"key": "team_id",	"className": "flex-2",
+						"props": {
+							"label": "Team Id",
+							"placeholder": "Team Id",			
+
+							"pattern": "^[a-zA-Z0-9-_]*$",
+							"required": true
+						},
+                        "hideExpression": "model.isEdit"
+					},{
+						"type": "input",
+						"key": "team_name",	"className": "flex-8",
+						"props": {
+							"label": "Team Name",
+							"placeholder": "Team Name",			
+
+							"pattern": "^[a-zA-Z0-9-_]*$",
+							"required": true
+						},
+                        "hideExpression": "model.isEdit"
+					}
+					
+					
+					
+			]},	
+           
+			{
+				"type": "html-input",
+				"key": "description",
+				"className": "flex-2",
+				"props": {
+					"label": "Team Description",
+					"required": true,
+					 
+					"maxlength": 500
+				}
+			},
+		   
+			{
+				"type": "select",
+				"key": "status",
+				"className": "flex-2",
+				"props": {
+					"label": "Team Status",
+					"options": [
+						{
+							"label": "Active",
+							"value": "A"
+						},
+						{
+							"label": "Inactive",
+							"value": "I"
+						}
+						 
+					],
+					"placeholder": "Team Status",
+					"required": true
+				},
+			
+				"expressions": {
+					"hide": "!model.isshow"
+				}
+				}
+		] 
+		 
+	},
+	"detailListConfig": {
+		"sectionHeading": "Project Team",
+		"actions": [
+			{
+				"label": "Edit",
+				"icon": "edit",
+				"formAction": "edit"
+			},
+			{
+				"label": "Delete",
+				"icon": "delete",
+				"formAction": "delete"
+			}
+		],
+		"addRoute": "add/project_team_member",
+		"editRoute": "edit/project_team_member",
+		"fields": [
+			
+			{
+				"headerName": "Team Id",
+				"field": "team_id",
+				"sortable": true,
+				"filter": "agTextColumnFilter"
+			},	{
+				"headerName": "Team Name",
+				"field": "team_name",
+				"sortable": true,
+				"filter": "agTextColumnFilter"
+			},
+			{
+				"headerName": "Project Team Member ",
+				"field": "teammember",
+				"sortable": true,
+                "type":"arraytostring",
+                "value":"employee_id",
+				"filter": "agTextColumnFilter"
+			},
+			{
+				"headerName": "status",
+				"field": "status",
+				"sortable": true,
+				"filter": "agTextColumnFilter"
+			},
+			{
+				"type": "rightAligned",
+				"headerName": "Actions",
+				"cellRenderer": "buttonRenderer",
+				"lockPosition": "right",
+				"cellRendererParams": {
+					"onClick": "this.onBtnClick1.bind(this)",
+					"label": "Click 1"
+				}
+			}
+		],
+		"filterOptions": [],
+		"defaultFilter": []
+	},
+	
+	"designConfig": {
+		"leftPanelWidth": "320px"
+	}
+  }

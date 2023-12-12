@@ -1,0 +1,49 @@
+.table {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.align {
+    width: 240px !important;
+    /* display: flex !important; */
+}
+
+.head {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: xx-large;
+    font-weight: bold;
+    flex: 1 1 auto
+}
+.editor {
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    width: 95%;
+    min-height: 130px;
+    max-width: auto;
+    margin-top: 50px;
+}
+.datepicker{
+    width: 100%;
+    height: 85px;
+    /* margin-top:-200px; */
+}
+.datepicker-field{
+    width: 200px;
+    float: left;
+    margin-right: 25px;
+    
+}
+.sample{
+    float: right;
+    margin-right: 25px;
+    
+}
+.buttonColor1{
+    background-color: #0c4778;
+    color: white;
+    
+    width: 120px;
+    height: 35px !important;
+ 
+}
