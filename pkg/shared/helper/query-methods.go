@@ -371,7 +371,7 @@ func PagiantionPipeline(start, end int) bson.M {
 // ConvertToDataType converts the given value to the specified data type based on the provided DataType.
 func ConvertToDataType(value interface{}, DataType string) interface{} {
 	// Check the data type and perform the corresponding conversion.
-	if DataType == "time.Time" {
+	if DataType == "time.Time" || DataType == "date" {
 		// If the data type is time.Time, attempt to parse the value as a string in RFC3339 format.
 		if valStr, ok := value.(string); ok {
 			t, err := time.Parse(time.RFC3339, valStr)
