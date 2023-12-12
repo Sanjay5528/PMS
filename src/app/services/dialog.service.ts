@@ -37,6 +37,11 @@ public CloseALL(){
   this.dialog.closeAll()
   console.log("All Dialog box was closed")
 }
+public info(message: string, action: string) {
+  this._snackBar.open(message, action, {
+    duration: 2000,
+  });
+}
 
   public openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action, {

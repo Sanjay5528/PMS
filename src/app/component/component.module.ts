@@ -82,6 +82,8 @@ import { CalenderComponent } from './calender/calender.component';
 import { ExpansionComponent } from './checkformaly/expansion/expansion.component';
 import { DropDownAgggrid } from './master-single-detail-form/dropdownAggrid';
 import { NestedtablesComponent } from './nestedtables/nestedtables.component';
+import { NgxGanttModule } from '@worktile/gantt';
+import { GantchartComponent } from './gantchart/gantchart.component';
 
 
 const MY_DATE_FORMATS = {
@@ -129,7 +131,7 @@ const appearance: any = {
      CalenderComponent,
      ProjectteamComponent,
      TimesheetComponent,
-     ExpansionComponent,DropDownAgggrid, NestedtablesComponent
+     ExpansionComponent,DropDownAgggrid, NestedtablesComponent, GantchartComponent
   ],
   imports: [
     NgSelectModule,
@@ -143,6 +145,7 @@ const appearance: any = {
     FormlyMatToggleModule,
     BrowserModule,
     AgGridModule,
+    NgxGanttModule,
     MatProgressBarModule,
     BrowserAnimationsModule,
     CommonModule,

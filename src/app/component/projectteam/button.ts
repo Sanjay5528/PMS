@@ -13,7 +13,7 @@ import { DataService } from "src/app/services/data.service";
 import { DialogService } from "src/app/services/dialog.service";
 import { FormGroup } from "@angular/forms";
 import { FormService } from "src/app/services/form.service";
-import { ProjectteamComponent } from "./projectteam.component";
+// import { ProjectteamComponent } from "./projectteam.component";
 // import { DataService } from "../services/data.service";
 // import { DialogService } from "../services/dialog.service";
 // import { ProductComponent } from "./product.component";
@@ -112,9 +112,9 @@ export class ProjectButtonComponent implements ICellRendererAngularComp {
     public dataService: DataService,
     private dialog: DialogService,
     private router: Router,
-     public grid: ProjectteamComponent,
+    //  public grid: ProjectteamComponent,
     private httpclient: HttpClient,
-     public aggrid: ProjectteamComponent,
+    //  public aggrid: ProjectteamComponent,
     private formservice: FormService
    
 

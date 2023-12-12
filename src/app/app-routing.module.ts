@@ -16,11 +16,11 @@ import { RoleDataAclComponent } from './component/ACL/role-data-acl/role-data-ac
 import { DatasetComponent } from './component/dataset/dataset.component';
 import { NgmodelComponent } from './component/dataset/ngmodel/ngmodel.component';
 import { AggridTreeComponent } from './component/aggrid-tree/aggrid-tree.component';
-import { ProjectteamComponent } from './component/projectteam/projectteam.component';
 import { TimesheetComponent } from './component/timesheet/timesheet.component';
 import { CreatecvComponent } from './component/createcv/createcv.component';
 import { ExpansionComponent } from './component/checkformaly/expansion/expansion.component';
 import { NestedtablesComponent } from './component/nestedtables/nestedtables.component';
+import { GantchartComponent } from './component/gantchart/gantchart.component';
 
 
 
@@ -97,8 +97,8 @@ const routes: Routes = [
     children: [
       {
         path: "",
-        component:DashboardComponent
-        // component: ExpansionComponent
+        // component:DashboardComponent
+        component: GantchartComponent
 
       }
 
@@ -220,16 +220,16 @@ const routes: Routes = [
   //     },
   //   ],
   // },
-  {
-    path: "projectteam/project/:id",
-    component: DefaultLayoutComponent,
-    children: [
-      {
-        path: "",
-        component: ProjectteamComponent,
-      },
-    ],
-  },
+  // {
+  //   path: "projectteam/project/:id",
+  //   component: DefaultLayoutComponent,
+  //   children: [
+  //     {
+  //       path: "",
+  //       component: ProjectteamComponent,
+  //     },
+  //   ],
+  // },
   {
     path: "data",
     canActivate: [AuthGuardService],

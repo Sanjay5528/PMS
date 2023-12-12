@@ -137,6 +137,7 @@
         [defaultColDef]="defaultColDef"
         [rowData]="listData"
         (gridReady)="onGridReadys($event)"
+        [getRowId]='getRowIdschedule'
         [pagination]="true"
         [paginationPageSize]="10"
          (cellValueChanged)="onUnscheduleValueChanged($event)"
@@ -154,7 +155,6 @@
       [rowData]="rowData" 
       [groupAllowUnbalanced]="true"
       [getContextMenuItems]="getContextMenuItems"
-
       [groupDefaultExpanded]="-1"
       (gridReady)="onGridReady($event)"
       [getRowId]="getRowId"  

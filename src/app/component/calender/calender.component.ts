@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FullCalendarComponent } from '@fullcalendar/angular/full-calendar.component';
 import * as moment from 'moment';
 import { MomentInput } from 'moment';
+import { GanttGroup, GanttItem, GanttViewOptions } from '@worktile/gantt';
 
 @Component({
   selector: 'app-calender',
@@ -17,6 +18,7 @@ import { MomentInput } from 'moment';
 })
 export class CalenderComponent implements OnInit {
   @ViewChild('fullCalendar') calendarComponent!: FullCalendarComponent;
+
   listData:EventInput[] = [];
   showRed: boolean = false;
   showGreen: boolean = false;
@@ -54,7 +56,7 @@ export class CalenderComponent implements OnInit {
   date: MomentInput;
   formattedDate: any;
   calendarDate: any;
-  
+
   constructor(private changeDetector: ChangeDetectorRef, private activatedRoute: ActivatedRoute, private elementRef: ElementRef, private dataService: DataService, private router: Router,) {
   }
 
@@ -64,9 +66,7 @@ export class CalenderComponent implements OnInit {
     // let id =JSON.parse(data).profile.employeeid
     // let data: any = localStorage.getItem('auth');
     // let name = JSON.parse(data).profile.employeeid
-    this.activatedRoute.params.subscribe(params => {
-      this.calendarDate = params['date'];
-    });
+ 
     // if (userPermissions === 'SA' || userPermissions === 'team lead') {
      //this.dataService.getData("timesheet").subscribe((res:any)=> {
   
@@ -257,7 +257,6 @@ export class CalenderComponent implements OnInit {
     this.currentEvents.set(events);
     this.changeDetector.detectChanges();
      // workaround for pressionChangedAfterItHasBeenCheckedError
-      
   }
 }
 

@@ -1,15 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
-/* You can add global styles to this file, and also import other style files */
 @import "~@ng-select/ng-select/themes/material.theme.css";
-
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
-/* @import 'bootstrap/scss/bootstrap.scss';   */
 @import "~font-awesome/css/font-awesome.css";
-
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-alpine.css';
 @import url('https://fonts.googleapis.com/css2?family=Smooch&display=swap');
-
 /* load mat-icons without internet */
 @font-face {
   font-family: 'Material Icons';

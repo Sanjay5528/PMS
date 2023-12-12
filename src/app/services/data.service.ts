@@ -91,15 +91,7 @@ export class DataService {
     return this.http.get(this.getWsBaseUrl() +"entities/"+ collectionName + '/' + id);
   }
 
-/**
- * This method Used only for the Get the data in Select input ts 
- * @val is parent module name
- */
-  public getotherModuleName(val:any){
-    
-    // return this.http.get(`http://10.0.0.153:8080/FilterCondition/${val}`)
-    return this.http.get(this.getWsBaseUrl()+`entities/FilterCondition/checking/${val}`)
-  }
+ 
   //deleteDataByModel Chnage it parent detelet 
   //PArent delete Child Delete
   public deleteDataByModel(collectionName: any, id: any) {
@@ -116,6 +108,24 @@ export class DataService {
   }
 
 
+/**
+ * This method USed To Get data Using Filter Condition
+ * @filter
+ * var filterCondition1 =
+ *  [
+ * {
+ *   clause: "AND",
+ *   conditions: [ 
+ *    { column: , operator: "EQUALS", value:  }, 
+ *  ]
+ * }
+ * ]
+ * @clause Type OR ,AND,$nor,$in,$nin 
+ * @conditions It Should Be in Array of Object
+ * @operator Type * "EQUALS","NOTEQUAL", "NOTCONTAINS","STARTSWITH","ENDSWITH","LESSTHAN","GREATERTHAN","LESSTHANOREQUAL","GREATERTHANOREQUAL","INRANGE","BLANK","NOTBLANK","EXISTS","IN"
+ * @column Key name
+ * @value Value For the Key to match
+ */
   public getDataByFilter(collectionName: any,data:any) {
     return this.http.post(this.getWsBaseUrl() +"entities/filter/"+ collectionName,data);
   }
@@ -160,24 +170,6 @@ export class DataService {
     
   }
 
-/**
- * This method USed To Get data Using Filter Condition
- * @filter
- * var filterCondition1 =
- *  [
- * {
- *   clause: "AND",
- *   conditions: [ 
- *    { column: , operator: "EQUALS", value:  }, 
- *  ]
- * }
- * ]
- * @clause Type OR ,AND,$nor,$in,$nin 
- * @conditions It Should Be in Array of Object
- * @operator Type EQUALS,$gte,$lte,NOTEQUAL
- * @column Key name
- * @value Value For the KEy to match
- */
   //! public getDataByFilter(collectionName: any, filter: any,c?: any,limit?: any) {
   //     return this.http.post(this.getWsBaseUrl() + 'search/' + collectionName +`/0/${limit||1000}`,filter);
     
@@ -218,7 +210,7 @@ public lookupTreeData(collection_name:any,project_id:any){
  * @Data Any TYPE of Data
  */
 //! need to change the data before the
-  public update(collectionName: any, id ?: any,data?:any) {   
+  public update(collectionName: any, id  : any,data:any) {   
       return this.http.put(this.getWsBaseUrl() +"entities/"+ `${collectionName}` + `/${id}`, data);
   }
   public acl_update(collectionName: any,data?:any){

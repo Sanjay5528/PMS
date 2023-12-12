@@ -1,0 +1,62 @@
+<!-- <ngx-gantt   [viewOptions]="viewOptions"  [groups]="groups" #gantt [items]="items">
+    <ngx-gantt-table>
+      <ngx-gantt-column  width="300px">
+        <ng-template   let-item="items"> {{ item.title }} </ng-template>
+      </ngx-gantt-column>
+    </ngx-gantt-table>
+  </ngx-gantt> -->
+  
+  
+    <ngx-gantt
+      #gantt
+      [items]="items"
+      [baselineItems]="baselineItems"
+      [viewType]="viewType"
+      [draggable]="true"
+      [linkable]="true"
+      [selectable]="true"
+      [multiple]="true"
+      [viewOptions]="viewOptions"
+      [showToolbar]="isShowToolbarChecked"
+      [toolbarOptions]="toolbarOptions"
+      [loading]="loading"
+      [virtualScrollEnabled]="false"
+      (barClick)="barClick($event)"
+      (viewChange)="viewChange($event)"
+      (lineClick)="lineClick($event)"
+      (dragMoved)="dragMoved($event)"
+      (dragEnded)="dragEnded($event)"
+      (selectedChange)="selectedChange($event)"
+      (linkDragEnded)="linkDragEnded($event)"
+    >
+      <ngx-gantt-table
+        [draggable]="true"
+        [dropEnterPredicate]="dropEnterPredicate"
+        (dragDropped)="onDragDropped($event)"
+        (dragStarted)="onDragStarted($event)"
+        (dragEnded)="onDragEnded($event)"
+      >
+        <ngx-gantt-column name="Id" [class.start-time]="true" [width]="120">
+          <ng-template #cell let-item="item">
+            {{ item.id }}
+          </ng-template>
+        </ngx-gantt-column>
+        <ngx-gantt-column name="标题" width="160px" [showExpandIcon]="true">
+          <ng-template #cell let-item="item"> {{ item.title }} </ng-template>
+        </ngx-gantt-column>
+        <ngx-gantt-column name="开始时间">
+          <ng-template #cell let-item="item">
+            {{ item.start * 1000 | date : 'yyyy-MM-dd' }}
+          </ng-template>
+        </ngx-gantt-column>
+        <ngx-gantt-column name="截止时间">
+          <ng-template #cell let-item="item">
+            {{ item.end * 1000 | date : 'yyyy-MM-dd' }}
+          </ng-template>
+        </ngx-gantt-column>
+      </ngx-gantt-table>
+
+      <ng-template #bar let-item="item">
+        <span style="color: #fff">&nbsp;&nbsp;{{ item.title }} </span>
+      </ng-template>
+    </ngx-gantt>

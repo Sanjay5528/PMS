@@ -138,6 +138,7 @@ export class TimesheetComponent implements OnInit {
     return result;
     
     }
+
    public getRowClass:any =(params: any) => {
      if (  (params.data!== undefined || !isEmpty(params.data) ) && params?.data?.Not_Completed_task == true) {
       console.log("INSIDEs Not_Completed_task");
@@ -150,8 +151,23 @@ export class TimesheetComponent implements OnInit {
    };
  
 
-  public columnDefs: ColDef[] = [ ]
-  public colDefs: any[] = [
+  public columnDefs: ColDef[] = []
+
+  public colDefs: ColDef[] = [
+  {
+    headerName: "#",
+    width: 50,
+    maxWidth: 50,
+    menuTabs:[],
+
+    valueFormatter: function (params:any) {
+      // if(params.value){
+
+        return params.node.rowIndex + 1
+      // }
+      // return ''        
+    },
+  },
     {
       headerName: "Activities",
       field: "activities",
@@ -196,6 +212,7 @@ export class TimesheetComponent implements OnInit {
 
   employee_id: any
   FormName:any
+
   ngOnInit() {
      this.activatedRoute.params.subscribe((params:any)=>{
       console.log(params['component']);
@@ -210,11 +227,12 @@ export class TimesheetComponent implements OnInit {
         this.employee_id = this.helperServices.getEmp_id();
         this.calendarDate = TodayDate.format('YYYY-MM-DDT00:00:00.000+00:00');
         this.getData(this.calendarDate);
-        this.getUnScheduleData();
+          this.getDataUnschedule()
         this.dateform.get("datepicker")?.valueChanges.subscribe((changeDate: any) => {
           console.log(changeDate._d);
           let date = moment(changeDate).format('YYYY-MM-DDT00:00:00.000+00:00');
           this.getData(date)
+          this.getDataUnschedule()
         })
       }else if(params['component']=='approval'){
         let start:any=moment().startOf('month')
@@ -286,9 +304,13 @@ export class TimesheetComponent implements OnInit {
         field: "scheduled_start_date",
         width: 120,
         maxWidth: 120,
+        cellDataType:'text',
         valueFormatter: function (params) {
-          return moment(params.value).format('DD/MM/ YYYY')
-        },
+          if(params.value){
+  
+            return moment(params.value).format('DD/MM/ YYYY')
+          }
+          return ''        },
   
       },
       {
@@ -296,17 +318,33 @@ export class TimesheetComponent implements OnInit {
         field: "scheduled_end_date",
         editable: false,
         sortable: false,
-        width: 120,
+        width: 120,cellDataType:'text',
         maxWidth: 120,
         valueFormatter: function (params) {
-          return moment(params.value).format('DD/MM/ YYYY')
-        },
+          if(params.value){
+  
+            return moment(params.value).format('DD/MM/ YYYY')
+          }
+          return ''        },
   
       },
       {
         headerName: "Entry Date",
         field: "entry_date",
-        width: 120,
+        width: 120,cellDataType:'text',
+        maxWidth:120,
+        valueFormatter: function (params) { 
+          if(params.value){
+  
+            return moment(params.value).format('DD/MM/ YYYY')
+          }
+          return ''
+        },
+  
+      }, {
+        headerName: "Completed Date",
+        field: "task_Completed_On",
+        width: 120,cellDataType:'text',
         maxWidth:120,
         valueFormatter: function (params) { 
           if(params.value){
@@ -343,7 +381,7 @@ export class TimesheetComponent implements OnInit {
         headerName: "Today Worked Hours",
         field: "workedhours",
         editable: function (params) {
-          return params?.data["approval_Status"] !== "Approved" && params?.data["status"] !== "Approved";
+          return params?.data["approval_Status"] !== "Approved" || params?.data["status"] !== "Approved";
         },
         cellDataType: 'number',
         cellEditor: 'agNumberCellEditor',
@@ -375,7 +413,7 @@ export class TimesheetComponent implements OnInit {
         },
         enableRowGroup: true,
         editable: function (params) {
-          return params.data["approval_Status"] !== "Approved" && params?.data["status"] !== "Approved";
+          return params.data["approval_Status"] !== "Approved" || params?.data["status"] !== "Approved";
         }
         // ,valueFormatter: (params: any) => {
         //   console.log(params,"data vvalueformater ");
@@ -393,10 +431,10 @@ export class TimesheetComponent implements OnInit {
       {
   
         field: "approval_Status",
-        cellEditor: "agRichSelectCellEditor",
-        cellEditorParams: {
-          values: ['Approved', 'Rejected', 'Hold'],
-        },
+        // cellEditor: "agRichSelectCellEditor",
+        // cellEditorParams: {
+        //   values: ['Approved', 'Rejected', 'Hold'],
+        // },
   
         editable: function (params: any) {
           console.log(params);
@@ -693,7 +731,7 @@ export class TimesheetComponent implements OnInit {
   onCellValueChanged(params: any) {
     if (params.value == '' || params.value == null) {
       let field: any = params.colDef.field.toUpperCase()
-      this.dialogService.openSnackBar(`${field} Field Should be not be empty`, "CLEAR")
+      this.dialogService.openSnackBar(`${field} Field Should be not be empty`, "OK")
       let data: any = { ...params.data }
       data[params.colDef.field] = params.oldValue
       const result: any = this.gridApi.applyTransaction({
@@ -703,7 +741,22 @@ export class TimesheetComponent implements OnInit {
 
       return
     }
+    
+    if (moment(params.data.Completed_On).isValid() && params.data.status == 'Completed') {
+      
+      let Completed_formet=moment(params.data.Completed_On).format('DD/MM/ YYYY')
+      let field: any = params.colDef.field.toUpperCase()
+      this.dialogService.openSnackBar(` Just Go to This Data ${Completed_formet} And Change The Status To  In Progress You Cannot Change This Field ${field}`, "OK")
+      let data: any = { ...params.data }
+      data[params.colDef.field] = params.oldValue
+      const result: any = this.gridApi.applyTransaction({
+        update: [data]
+      })
+      console.warn(result);
 
+      return
+    }
+    
     let fieldName = params.colDef.field;
     let data: any = {
       assigned_to: this.helperServices.getEmp_id(), //? Not need
@@ -767,6 +820,9 @@ export class TimesheetComponent implements OnInit {
         // if(fieldName=='workedhours'){
           params.data.totalworkedhours=  (isNaN(params.data.totalworkedhours) ?  0 :parseInt( params.data.totalworkedhours))+ params.value
         // }
+
+        params.data.timesheet_id = res.data["insert ID"];
+        params.data.entry_date = this.calendarDate //? Not Need
         params.data.today_totalworkedhours = params.data.totalworkedhours - params.data.workedhours;
   
         params.data.remaing_hrs = (params.data?.allocated_hours || 0) - (params.data?.today_totalworkedhours + params.value);
@@ -1037,9 +1093,9 @@ this.dataService.update("task",update_id,updateValue).subscribe((response:any)=>
 
 
 
-let start_date: any = moment(this.calendarDate).startOf('day').utc();
-let end_date: any = moment(this.calendarDate).endOf('day').utc().add(23, 'hours').add(59, 'minutes').add(999, 'milliseconds');
-
+// let start_date: any = moment(this.calendarDate).startOf('day') 
+// let end_date: any = moment(this.calendarDate).endOf('day').add(23, 'hours').add(59, 'minutes').add(999, 'milliseconds');
+let date= moment(this.calendarDate).format('DD/MM/ YYYY')
 let allData: any[] = res.data;
 
 let filteredData = allData .map((element: any) => {
@@ -1049,24 +1105,16 @@ let filteredData = allData .map((element: any) => {
     if (!isEmpty(element?.timesheet)) {
       for (let index = 0; index < element?.timesheet.length; index++) {
         let timesheet = element?.timesheet[index];
-
-        console.log("Is Between (Hour):", moment(timesheet.entry_Date).isBetween(start_date, end_date, 'hour'), timesheet.entry_Date);
-        console.log("Is Between (Normal):", moment(timesheet.entry_Date).isBetween(start_date, end_date), timesheet.entry_Date);
-        console.log("Is Between (Day):", moment(timesheet.entry_Date).isBetween(start_date, end_date, 'day'), timesheet.entry_Date);
-        console.log("Is Between (Date):", moment(timesheet.entry_Date).isBetween(start_date, end_date, 'date'), timesheet.entry_Date);
-
-        if (moment(timesheet.entry_Date).isBetween(start_date, end_date)) {
+        if(timesheet.status=="Completed"){
+        element.task_Completed_On=  timesheet.entry_Date
+        }
+        let checkDate=moment(timesheet.entry_Date).format('DD/MM/ YYYY') 
+        if (moment(checkDate).isSame(date)) {
           element.workedhours = timesheet.workedhours;
           element.timesheet_id = timesheet._id;
-          element.entry_date = moment(timesheet.entry_Date).utc();
+          element.entry_date = timesheet.entry_Date
           element.today_totalworkedhours = element.totalworkedhours - timesheet.workedhours;
-
-          console.log("Element Entry Date:", element.entry_date);
-          console.log("Start Date:", start_date);
-          console.log("End Date:", end_date);
-
-          console.log("Is Between (Hour):", !moment(element.entry_date).isBetween(start_date, end_date, 'hour'));
-          console.log("Is Between (Normal):", moment(element.entry_date).isBetween(start_date, end_date, 'hour'));
+ 
           break;
         }
       }
@@ -1186,89 +1234,76 @@ this.rowData = filteredData;
   getDataUnschedule() {
     // this.dataService.getData("unschedule").subscribe((res: any) => {
     //   this.listData = res.data;
+    let start_date: any = moment(this.calendarDate).format('YYYY-MM-DDT00:00:00.000+00:00');
+ let end_date: any = moment(this.calendarDate).format('YYYY-MM-DDT23:59:59.999+00:00');
 
-    // });
-    let data: any = localStorage.getItem('auth');
-    let name = JSON.parse(data).profile.assigned_to
-    this.activatedRoute.params.subscribe(params => {
-      let date = params['date'];
-      // ! UNDO
-
-      // this.dataService.getunschedule(name,date).subscribe((res:any)=>{
-      //   this.listData=res.data;
-
-
-      //   })
+    var filterCondition1 ={
+      start:0,end:100,
+ filter: [
+ {
+  clause: "AND",
+  conditions: [
+   { column:"entry_by" ,operator: "EQUALS",value:this.helperServices.getEmp_id(),type: "string"},
+   { column:"entry_Date" ,operator: "GREATERTHANOREQUAL",value:start_date,type: "date"},
+   { column:"entry_Date" ,operator: "LESSTHANOREQUAL",value:end_date,type: "date"},
 
 
-    })
+  ]
+ }
+ ]}
+      this.dataService.getDataByFilter('unschedule',filterCondition1).subscribe((res:any)=>{
+        this.listData=res.data[0].response;
+// console.log(res.data[0].response);
+
+
+        })
+ 
   }
+  public getRowIdschedule: any = (params: any) => `${params.data._id}`;
+
   onUnscheduleValueChanged(params: any) {
     let fieldName = params.colDef.field;
     // this.valueChanged = params.value;
     let data: any = {};
+    params.data[fieldName]=params.value
     if (fieldName == "hours") {
       data[fieldName] = parseInt(params.value);
     } else {
       data[fieldName] = params.value;
     }
 
-    //data[fieldName] = params.value;
-    // let data1: any = localStorage.getItem('auth');
+    data[fieldName] = params.value; 
+    data['entry_Date']= moment(this.calendarDate).add(10, 'hours').add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');``
+     data["entry_by"] = this.helperServices.getEmp_id()
+    if (params.data._id) {
+      this.dataService.update("unschedule",params.data._id,data).subscribe((res: any) => {
+        // this.listData = res.data["insert ID"];
+        this.gridApiUnschedule.applyTransaction({
+          update:[params.data]
+        })
+      })
+    } else {
+      debugger
+      //  const assigned_to = sessionStorage.getItem('assigned_to');
+      //  Object.assign(data, { assigned_to: assigned_to });
 
-    // let name = JSON.parse(data1).profile.assigned_to
-    //     if(this.date = this.dateform.value.datepicker?._d){
-    //       // this.date = this.form.value.datepicker?._d
+      this.dataService.save("unschedule",data).subscribe((res: any) => {
+        // this.listData = res.data;
+        data["_id"]=res.data["insert ID"];
+        params.data["_id"]=res.data["insert ID"];
 
-    // let formatedDate: any = moment(this.formatedDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-    // Object.assign(data, { formatedDate: formatedDate}) 
-    //     }
-    //     else{
+        this.gridApiUnschedule.applyTransaction({
+          update:[params.data]
+        })
+        // this.getDataUnschedule();
 
-    //    let formatedDate: any = moment(this.calendarDate).add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-    //  Object.assign(data, { formatedDate: formatedDate }) 
-    //     }
-    //     Object.assign(data, { assigned_to: name })
-    //         // ! UNDO
-
-    // if (params.data._id) {
-    //   this.dataService.updateUnschedule(data, params.data._id).subscribe((res: any) => {
-    //     this.listData = res.data;
-    //   })
-    // } else {
-    //   debugger
-    //   //  const assigned_to = sessionStorage.getItem('assigned_to');
-    //   //  Object.assign(data, { assigned_to: assigned_to });
-
-    //   this.dataService.AddUnScheduleTimesheet(data).subscribe((res: any) => {
-    //     this.listData = res.data;
-    //     this.getDataUnschedule();
-
-    //   });
-    // }
+      });
+    }
 
   }
 
   /**get the data in  rowdata */
-  getUnScheduleData() {
-    debugger
-    // this.dataService.getdata("unschedule").subscribe((res: any) => {
-    //   this.listData = res.data;
-    //   console.log('ii', this.listData)
-    // })
-    // let data: any = localStorage.getItem('auth');
-    // let name = JSON.parse(data).profile.assigned_to
-    // this.activatedRoute.params.subscribe(params => {
-    //   let date = params['date'];
-    //       // ! UNDO
-
-    //   // this.dataService.getunschedule(name,date).subscribe((res:any)=>{
-    //   //   this.listData=res.data;
-    //   //   console.log('ii', this.listData)
-    //   // })
-    // });
-
-  }
+  
 
 
 } 

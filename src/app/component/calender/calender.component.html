@@ -23,19 +23,13 @@
       
       <full-calendar #fullCalendar *ngIf='calendarVisible()' [options]='calendarOptions()'>
         <ng-template #eventContent let-arg>
-          <!-- <b>{{ arg.timeText }}</b> -->
-          <!-- <div *ngIf="showGreen"> -->
-            <div class="circle-wrapper">
+             <div class="circle-wrapper">
               <div class="circle">{{ arg.event.title }}</div>
             </div>
-          <!-- </div> -->
-          <!-- <div *ngIf="showRed"> -->
-            <!-- <div class="circle-wrapper">
-              <div class="circle2">{{ arg.event.title }}</div>
-            </div> -->
-          <!-- </div> -->
-        </ng-template>
+           </ng-template>
       </full-calendar>
     </div>
   
   </div>
+  <!-- component.html -->
+
