@@ -1,6 +1,9 @@
  
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { MatStepper } from '@angular/material/stepper';
 import { FieldType, FormlyFieldConfig } from '@ngx-formly/core';
+// import * as stepper from '@angular/material/stepper';
+
 
 @Component({
   selector: 'formly-field-stepper',
@@ -8,10 +11,10 @@ import { FieldType, FormlyFieldConfig } from '@ngx-formly/core';
      <mat-horizontal-stepper>  
     
       <div >
-      <mat-step    *ngFor="let step of field.fieldGroup; let index = index; let last = last" (change)="valueCheck(step,index)">
+      <mat-step    *ngFor="let step of field.fieldGroup; let index = index; let last = last" >
 
       <ng-template matStepLabel    >{{ step.props!.label }}</ng-template>
-        <formly-field [field]="step"></formly-field>
+        <formly-field [field]="step" ></formly-field>
 
  
           <button matStepperPrevious mat-button *ngIf="index !== 0"  type="button">Back</button>
@@ -24,20 +27,27 @@ import { FieldType, FormlyFieldConfig } from '@ngx-formly/core';
       </div>
  
     </mat-horizontal-stepper>
+    
   `,
 })
 
-export class FormlyFieldStepper extends FieldType {
-  isLinear = false;
 
+
+export class FormlyFieldStepper extends FieldType {
+  isLinear = false; 
+  // stepper: any; 
+constructor(){
+  super()
+
+}
   isValid(field: FormlyFieldConfig): any {
     if (field.key) {
       return field.formControl?.valid;
     }
     return field.fieldGroup?.every(f => this.isValid(f));
   }
-
-
+  
+ 
   // ngOnInit(): void {
   //  if ( this.field.props?.label =="Speaker Details")  {
 
@@ -52,8 +62,9 @@ export class FormlyFieldStepper extends FieldType {
        
 
   // }
-  
- 
+   
+
+
   valueCheck(label:any,index:any){
     console.log("label",label)
     console.log("index",index);

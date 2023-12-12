@@ -79,7 +79,7 @@ import { FormlyFieldStepper } from "./stepper";
 
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { EventComponent } from "../component/event/event.component";
-import { AutoComplete } from "../component/event/autocomplete-input";
+// import { AutoComplete } from "../component/event/autocomplete-input";
 
 
 export function minLengthValidationMessage(err: any, field: FormlyFieldConfig) {
@@ -350,7 +350,7 @@ const formlyConfig = {
        
       ],
     },
-    { name: 'autocomplete-input', component: AutoComplete },
+    // { name: 'autocomplete-input', component: AutoComplete },
 
     { name: "custompopup-input", component: CustomPopupInput },
     { name: "time-input", component: TimeInput },
@@ -406,7 +406,7 @@ const formlyConfig = {
     CarsoalComponent,
     FormlyFieldInputTextEnterKey,
     EventComponent,
-    AutoComplete,
+    // AutoComplete,
 
   ],
 

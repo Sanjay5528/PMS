@@ -83,6 +83,8 @@ import { ExpansionComponent } from './checkformaly/expansion/expansion.component
 import { DropDownAgggrid } from './master-single-detail-form/dropdownAggrid';
 import { NestedtablesComponent } from './nestedtables/nestedtables.component';
 import { EventstepperComponent } from './eventstepper/eventstepper.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { ProfileComponent } from './event/profile/profile.component';
 // import { FormlyFieldSelectAutocomplete } from '../control/select-autocomplete.type';
  
 
@@ -114,6 +116,7 @@ const appearance: any = {
     
     DynamicFormComponent,
     DynamicFilterComponent,Icon,
+   
     ActionButtonComponent
     ,AccessActionButtonComponent
     ,CellComponent,
@@ -133,7 +136,7 @@ const appearance: any = {
      CalenderComponent,
      ProjectteamComponent,
      TimesheetComponent,
-     ExpansionComponent,DropDownAgggrid, NestedtablesComponent
+     ExpansionComponent,DropDownAgggrid, NestedtablesComponent, ProfileComponent
   ],
   imports: [
     NgSelectModule,
@@ -147,7 +150,7 @@ const appearance: any = {
     FormlyMatToggleModule,
     BrowserModule,
     AgGridModule,
-    
+    MatButtonModule,MatDividerModule, MatIconModule,
     MatProgressBarModule,
     BrowserAnimationsModule,
     CommonModule,

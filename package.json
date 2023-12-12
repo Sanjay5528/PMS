@@ -6,10 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "postinstall": "ngcc"
+    "test": "ng test"
   },
-  
   "private": true,
   "dependencies": {
     "@ag-grid-community/angular": "^29.1.0",
