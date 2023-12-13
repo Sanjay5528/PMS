@@ -2058,7 +2058,7 @@ func team_specifcaiton(c *fiber.Ctx) error {
 	scheduledenddate, _ := time.Parse(time.RFC3339, c.Params("enddate"))
 
 	pipeline := bson.A{
-		bson.D{{"$match", bson.D{{"approved_by", "E0001"}}}},
+		bson.D{{"$match", bson.D{{"approved_by", c.Params("approved_by")}}}},
 		bson.D{
 			{"$lookup",
 				bson.D{
