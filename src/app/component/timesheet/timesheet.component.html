@@ -91,16 +91,7 @@
           [rowSelection]="'multiple'"
           (cellValueChanged)="onCellValueChanged($event)"
         ></ag-grid-angular>
-      </div>
-
-    <!-- <div *ngIf=" this.userPermissions !== 'SA'">
- <div class="table">
-    <ag-grid-angular style="width: 76%; height: 65vh; "class="ag-theme-alpine" [columnDefs]="columnDefs"
-        [defaultColDef]="defaultColDef" [rowData]="rowData" (gridReady)="onGridReady($event)"  [pagination]="true" [paginationPageSize]="10" 
-        (selectionChanged)="onSelectionChanged($event)"  (selectionChanged)="onSelectionChanged1($event)"  [rowSelection]="'multiple'"   
-        (cellValueChanged)="onCellValueChanged($event)"></ag-grid-angular>
-</div>
- </div> -->
+      </div> 
   </mat-tab>
 
   <!-- <div>
@@ -130,17 +121,20 @@
     </div> 
     
     <div class="table">
-            <ag-grid-angular
-      style="width: 99%; height: 65vh"
-          class="ag-theme-alpine"
-           [columnDefs]="colDefs"
+      <ag-grid-angular
+        style="width: 99%; height: 65vh"
+        class="ag-theme-alpine"
+        [columnDefs]="colDefs"
         [defaultColDef]="defaultColDef"
         [rowData]="listData"
-        (gridReady)="onGridReadys($event)"
+        [rowSelection]="'single'"
+        (gridReady)="onGridReadys($event)"   
+        [components]="components" 
         [getRowId]='getRowIdschedule'
-        [pagination]="true"
+      [getContextMenuItems]="getContextMenuSchedule"
+      [pagination]="true"
         [paginationPageSize]="10"
-         (cellValueChanged)="onUnscheduleValueChanged($event)"
+        (cellValueChanged)="onUnscheduleValueChanged($event)"
       ></ag-grid-angular>
     </div> 
   </mat-tab>
@@ -157,7 +151,7 @@
       [getContextMenuItems]="getContextMenuItems"
       [groupDefaultExpanded]="-1"
       (gridReady)="onGridReady($event)"
-      [getRowId]="getRowId"  
+      [getRowId]="getRowIdApproval"  
       [suppressRowClickSelection]="true"
       [groupDisplayType]="'groupRows'"
       [groupRowRendererParams]="groupRowRendererParams"

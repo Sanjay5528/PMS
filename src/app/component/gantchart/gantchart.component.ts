@@ -22,28 +22,28 @@ export class GantchartComponent {
     dateFormat: {
       yearQuarter: `LLL 'of' yyyy`,
       month: 'LLLL',
-      yearMonth: `LLLL yyyy'(week' w ')'`
+      yearMonth: `LLLL yyyy'(LLLL' w ')'`
     }
   };
   views = [
     {
-        name: '日',
+        name: 'Day',
         value: GanttViewType.day
     },
     {
-        name: '周',
+        name: 'Week',
         value: GanttViewType.week
     },
     {
-        name: '月',
+        name: 'Month',
         value: GanttViewType.month
     },
     {
-        name: '季',
+        name: 'Quater',
         value: GanttViewType.quarter
     },
     {
-        name: '年',
+        name: 'Year',
         value: GanttViewType.year
     }
 ];

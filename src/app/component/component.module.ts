@@ -84,6 +84,7 @@ import { DropDownAgggrid } from './master-single-detail-form/dropdownAggrid';
 import { NestedtablesComponent } from './nestedtables/nestedtables.component';
 import { NgxGanttModule } from '@worktile/gantt';
 import { GantchartComponent } from './gantchart/gantchart.component';
+import { TimeSheetActionButtonComponent } from './timesheet/button';
 
 
 const MY_DATE_FORMATS = {
@@ -110,7 +111,7 @@ const appearance: any = {
 
     ProjectButtonComponent,
     ButtonComponent, //! Project button component
-    
+    TimeSheetActionButtonComponent,
     DynamicFormComponent,
     DynamicFilterComponent,Icon,
     ActionButtonComponent

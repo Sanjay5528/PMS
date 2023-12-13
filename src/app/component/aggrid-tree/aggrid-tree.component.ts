@@ -153,7 +153,7 @@ collection="project"
    this.breadCrums.routing(this, this.pageHeading).then((breadCrumbs:any) => {
     console.log(breadCrumbs);
   });
-      this.loadConfig(this.formName)
+      this.loadScreen(this.formName)
       this.dataService.getDataById(collection, this.id).subscribe((res: any) => {
         this.response = res.data[0]
         if(this?.response?.startdate){
@@ -189,7 +189,7 @@ collection="project"
   }
  // public sideBar: SideBarDef | string | string[] | boolean | null = 'columns' ;
 
-loadConfig(formName:any){
+loadScreen(formName:any){
 
   if(formName=="module"){
     this.gridOptions.autoGroupColumnDef={
@@ -578,6 +578,8 @@ this.gridOptions.paginationPageSize=100
 this.gridOptions.pivotMode=false
 this.gridOptions.enableCellExpressions=true 
 this.defaultColDef.enablePivot=true;
+this.defaultColDef.enableRowGroup=true;
+
 this.gridOptions.suppressAggFuncInHeader=true
 this.defaultColDef.sortable=true;
 this.defaultColDef.editable=false;

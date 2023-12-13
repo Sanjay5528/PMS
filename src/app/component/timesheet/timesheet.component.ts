@@ -1,16 +1,14 @@
-import { RowClassRules } from '@ag-grid-community/core';
-import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ColDef, ColumnApi, GetContextMenuItemsParams, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, IGroupCellRendererParams, MenuItemDef, RowDataTransaction } from 'ag-grid-community';
+import { ColDef, GetContextMenuItemsParams, GridApi, GridReadyEvent, IGroupCellRendererParams, MenuItemDef, RowDataTransaction } from 'ag-grid-community';
 import "ag-grid-enterprise";
-import { isEmpty } from 'lodash';
+import { concat, isEmpty } from 'lodash';
 import * as moment from 'moment';
 import { DataService } from 'src/app/services/data.service';
 import { DialogService } from 'src/app/services/dialog.service';
-import { FormService } from 'src/app/services/form.service';
 import { HelperService } from 'src/app/services/helper.service';
+import { TimeSheetActionButtonComponent } from './button';
 @Component({
   selector: 'app-timesheet',
   templateUrl: './timesheet.component.html',
@@ -30,6 +28,7 @@ export class TimesheetComponent implements OnInit {
   listData: any[] = []
   
   public defaultColDef: ColDef = {
+
 
     resizable: true,
   };  
@@ -86,7 +85,7 @@ export class TimesheetComponent implements OnInit {
               console.log(params);
               
               if(params.context.parentComponent.gridApi.getSelectedRows().length!==0){
-                params.context.parentComponent.approval("Approved")
+                params.context.parentComponent.approval("Rejected")
                 }else{
                 window.alert('No data Selected');
                 }
@@ -147,22 +146,78 @@ export class TimesheetComponent implements OnInit {
      if (  (params.data!== undefined || !isEmpty(params.data) ) && params?.data?.approval_Status == "Rejected") {
       return 'rejected';
      }
+     if (  (params.data!== undefined || !isEmpty(params.data) ) && params?.data?.approval_Status == "Approved") {
+      return 'approved';
+     }
+
      return ' '
    };
+   getContextMenuSchedule(
+    params: GetContextMenuItemsParams
+    ): (string | MenuItemDef)[] {
+    var result: (string | MenuItemDef)[] = [
  
+       
+          {
+            name: 'Delete',
+            action: () => {
+          if(params.context.componentParent.gridApi.getSelectedRows().length!==0){
+          params.context.parentComponent.approvalAll("Approved")
+          }else{
+          window.alert('No data Selected');
+          }
+          }
+          }, 
+         
+        'separator',
+
+    'autoSizeAll',
+    'resetColumns',
+    'expandAll',
+  
+    ];
+    
+    return result;
+    
+    }
+   
+    Delete(){
+     const data=  this.gridApiUnschedule.getSelectedRows()[0]
+      if(data.Approval_Status != "Approved"){
+        if (confirm("Do you wish to delete this record?")) {
+          this.dataService.deleteDataById(
+           "unschedule",
+            data._id
+          ).subscribe((res: any) => {
+            this.dialogService.openSnackBar("Data Has been deleted Succfully","OK")
+            const result = this.gridApiUnschedule.applyTransaction( {
+              remove: [data],
+            });
+            console.log(result);
+          return
+
+          });
+        }
+      //   this.dataService.deleteDataById("unschedule",data._id).subscribe((res:any)=>{
+      //     console.log(res);
+      //     this.dialogService.openSnackBar("Data Has been deleted Succfully","OK")
+      // })
+      }
+      this.dialogService.openSnackBar("The Approved Data Can Not able deleted Succfully","OK")
+      
+    }
 
   public columnDefs: ColDef[] = []
 
   public colDefs: ColDef[] = [
   {
     headerName: "#",
-    width: 50,
-    maxWidth: 50,
+    width: 80,
+    maxWidth: 80,
     menuTabs:[],
-
+    checkboxSelection:true,
     valueFormatter: function (params:any) {
       // if(params.value){
-
         return params.node.rowIndex + 1
       // }
       // return ''        
@@ -171,8 +226,9 @@ export class TimesheetComponent implements OnInit {
     {
       headerName: "Activities",
       field: "activities",
-      editable: true,
-      flex: 1,
+      editable: function (params) {
+        return params?.data["Approval_Status"] !== "Approved" ;
+      },      flex: 1,
       cellEditor: "agRichSelectCellEditor",
       cellEditorParams: {
         values: ['Floor Meet', 'Permissions', 'Meeting', 'Client Call', 'Events', "Reading"],
@@ -181,8 +237,9 @@ export class TimesheetComponent implements OnInit {
     {
       headerName: "Hours",
       field: "hours",
-      editable: true,
-      flex: 1,
+      editable: function (params) {
+        return params?.data["Approval_Status"] !== "Approved" ;
+      },      flex: 1,
       cellDataType: 'number',
       cellEditor: 'agNumberCellEditor',
       cellEditorParams: {
@@ -194,19 +251,41 @@ export class TimesheetComponent implements OnInit {
     {
       headerName: "Remarks",
       field: "remarks",
-      editable: true,
-      flex: 1,
+      editable: function (params) {
+        return params?.data["Approval_Status"] !== "Approved" ;
+       },      flex: 1,
       cellEditor: 'agLargeTextCellEditor',
       cellEditorPopup: true,
       cellEditorParams: {
         rows: 10,
         cols: 50
       }
-    }
+    },  {
+      headerName: "Approval Status",
+      field: "Approval_Status",
+     editable:false,
+    },
+    //  {
+  
+    //   field: 'Action',
+    //   maxWidth:85,sortable:false,filter: false,
+    //  menuTabs: [],
+    //  lockPosition: 'right',
+    //  lockPinned: true,
+    //   pinned:'right',
+    //   cellRenderer: 'buttonRenderer'
+  
+    // }
   ]
-
+  
+  components:any
   constructor(private dataService: DataService, private helperServices: HelperService, private activatedRoute: ActivatedRoute, private route: Router, private dialogService: DialogService, private fb: FormBuilder) {
     this.route.routeReuseStrategy.shouldReuseRoute = () => false;
+    
+      this.components = {
+        buttonRenderer: TimeSheetActionButtonComponent
+      }
+       
   }
 
 
@@ -229,7 +308,7 @@ export class TimesheetComponent implements OnInit {
         this.getData(this.calendarDate);
           this.getDataUnschedule()
         this.dateform.get("datepicker")?.valueChanges.subscribe((changeDate: any) => {
-          console.log(changeDate._d);
+          // console.log(changeDate._d);
           let date = moment(changeDate).format('YYYY-MM-DDT00:00:00.000+00:00');
           this.getData(date)
           this.getDataUnschedule()
@@ -247,15 +326,11 @@ export class TimesheetComponent implements OnInit {
           this.getapprovalData(start,end)
 
           this.dateform.get("start")?.valueChanges.subscribe((startDate: any) => {
-            console.log(startDate._d);
             let start_date = moment(startDate).format('YYYY-MM-DDT00:00:00.000+00:00');
-            
           let end_date=this.dateform.value.end.format('YYYY-MM-DDT00:00:00.000+00:00') || moment().format('YYYY-MM-DDT00:00:00.000+00:00')
-
             this.getapprovalData(start_date,end_date)
           })
           this.dateform.get("end")?.valueChanges.subscribe((endDate: any) => {
-            console.log(endDate._d);
             let end_date = moment(endDate).format('YYYY-MM-DDT00:00:00.000+00:00');
             let start_date=this.dateform.value.start.format('YYYY-MM-DDT00:00:00.000+00:00') || moment().format('YYYY-MM-DDT00:00:00.000+00:00').toString()
 
@@ -328,33 +403,34 @@ export class TimesheetComponent implements OnInit {
           return ''        },
   
       },
-      {
-        headerName: "Entry Date",
-        field: "entry_date",
-        width: 120,cellDataType:'text',
-        maxWidth:120,
-        valueFormatter: function (params) { 
-          if(params.value){
+      // {
+      //   headerName: "Entry Date",
+      //   field: "entry_date",
+      //   width: 120,cellDataType:'text',
+      //   maxWidth:120,
+      //   valueFormatter: function (params) { 
+      //     if(params.value){
   
-            return moment(params.value).format('DD/MM/ YYYY')
-          }
-          return ''
-        },
+      //       return moment(params.value).format('DD/MM/ YYYY')
+      //     }
+      //     return ''
+      //   },
   
-      }, {
-        headerName: "Completed Date",
-        field: "task_Completed_On",
-        width: 120,cellDataType:'text',
-        maxWidth:120,
-        valueFormatter: function (params) { 
-          if(params.value){
+      // }, 
+      // {
+      //   headerName: "Completed Date",
+      //   field: "task_Completed_On",
+      //   width: 120,cellDataType:'text',
+      //   maxWidth:120,
+      //   valueFormatter: function (params) { 
+      //     if(params.value){
   
-            return moment(params.value).format('DD/MM/ YYYY')
-          }
-          return ''
-        },
+      //       return moment(params.value).format('DD/MM/ YYYY')
+      //     }
+      //     return ''
+      //   },
   
-      },
+      // },
       {
         headerName: "Allocated Hours",
         field: "allocated_hours",
@@ -381,7 +457,8 @@ export class TimesheetComponent implements OnInit {
         headerName: "Today Worked Hours",
         field: "workedhours",
         editable: function (params) {
-          return params?.data["approval_Status"] !== "Approved" || params?.data["status"] !== "Approved";
+          return params?.data["approval_Status"] !== "Approved" ;
+          // || params?.data["status"] !== "Approved"
         },
         cellDataType: 'number',
         cellEditor: 'agNumberCellEditor',
@@ -394,10 +471,10 @@ export class TimesheetComponent implements OnInit {
         //   precision: 1,
         // } 
         cellEditorParams:(params:any)=> {
-         console.log(params);
          let data :any={}
          data.min= 1
          data.max=params.data.remaing_hrs
+        //  data.max=params.data.remaing_hrs!=0? params.data.remaing_hrs : 1 
          data.precision= 1
          return data
         } 
@@ -413,7 +490,8 @@ export class TimesheetComponent implements OnInit {
         },
         enableRowGroup: true,
         editable: function (params) {
-          return params.data["approval_Status"] !== "Approved" || params?.data["status"] !== "Approved";
+          return params.data["approval_Status"] !== "Approved" ;
+          // || params?.data["status"] !== "Approved"
         }
         // ,valueFormatter: (params: any) => {
         //   console.log(params,"data vvalueformater ");
@@ -436,13 +514,7 @@ export class TimesheetComponent implements OnInit {
         //   values: ['Approved', 'Rejected', 'Hold'],
         // },
   
-        editable: function (params: any) {
-          console.log(params);
-  
-  
-          return false
-  
-        }
+    editable:false,
         // ,
         // cellStyle: (params) => {
         //   if (params?.data["approval_Status"] === "Approved") {
@@ -577,17 +649,19 @@ export class TimesheetComponent implements OnInit {
         field: "task.status",
         resizable:true,        
         filter: 'agSetColumnFilter',
-
-        cellEditor: "task.status", 
          editable:false 
+      },   {
+        headerName: "TimeSheet Remarks",
+        field: "timesheet_remark",
+        resizable:true,        
+        wrapText:true
       }, 
       {
         headerName: "Approval Status",
   
-        field: "task.Approval_Status",      
+        field: "Approval_Status",      
           filter: 'agSetColumnFilter',
           "maxWidth":190,
-
           "lockPosition": "right",
           "lockPinned": true,
            "pinned":"right",
@@ -596,7 +670,9 @@ export class TimesheetComponent implements OnInit {
         cellEditorParams: {
           values: ['Approved', 'Rejected', 'Hold'],
         },
-        editable:true
+        editable:function (params:any){
+          return params.data.Approval_Status != "Approved" 
+        }
       },
       {
         headerName: "Remarks",
@@ -666,7 +742,7 @@ export class TimesheetComponent implements OnInit {
   OnValuesChanged(params: any) { 
     if (params.value == '' || params.value == null) {
       let field: any = params.colDef.field.toUpperCase()
-      this.dialogService.openSnackBar(`${field} Field Should be not be empty`, "CLEAR")
+      this.dialogService.openSnackBar(`${field} Field Should be not be empty`, "OK")
       let data: any = { ...params.data }
       data[params.colDef.field] = params.oldValue
       const result: any = this.gridApi.applyTransaction({
@@ -677,6 +753,20 @@ export class TimesheetComponent implements OnInit {
       return
     }
     let fieldName = params.colDef.field;
+    let data:any={}
+    data[fieldName] = params.value
+    data["approved_by"] = this.helperServices.getEmp_id()
+
+    // if( params.data && params.data.task_type!=="unschedule"){
+
+    // }
+    // let id =params.data.task._id
+    let id = params.data.primaryKey
+    let updateCollectionName=params.data.task_type
+    this.dataService.update(updateCollectionName,id,data).subscribe((res:any)=>{
+      console.log(res);
+      
+    })
   }
 
 
@@ -725,6 +815,8 @@ export class TimesheetComponent implements OnInit {
   //   }
 
   public getRowId: any = (params: any) => `${params.data._id}`;
+  // public getRowIdApproval: any = (params: any) => `${params.data.task._id}`;
+  public getRowIdApproval: any = (params: any) => `${params.data.primaryKey}`;
 
 
   /**get supplier by view in the data */
@@ -742,8 +834,10 @@ export class TimesheetComponent implements OnInit {
       return
     }
     
-    if (moment(params.data.Completed_On).isValid() && params.data.status == 'Completed') {
-      
+    if (params.data && (params.data.Completed_On !== undefined || params.data.Completed_On !== null)) {
+    let Completed_On:any=moment(params?.data?.Completed_On).format('DD/MM/ YYYY')
+    let currentDate:any=moment(this.calendarDate).format('DD/MM/ YYYY')
+    if ( moment(params.data.Completed_On).isValid()  && ! (  moment(Completed_On).isSame(currentDate) || Completed_On == currentDate )) {
       let Completed_formet=moment(params.data.Completed_On).format('DD/MM/ YYYY')
       let field: any = params.colDef.field.toUpperCase()
       this.dialogService.openSnackBar(` Just Go to This Data ${Completed_formet} And Change The Status To  In Progress You Cannot Change This Field ${field}`, "OK")
@@ -753,10 +847,9 @@ export class TimesheetComponent implements OnInit {
         update: [data]
       })
       console.warn(result);
-
       return
     }
-    
+    }
     let fieldName = params.colDef.field;
     let data: any = {
       assigned_to: this.helperServices.getEmp_id(), //? Not need
@@ -764,10 +857,9 @@ export class TimesheetComponent implements OnInit {
       ref_id: params.data.id,
       entry_Date: moment(this.dateform.value.datepicker).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
       [fieldName]: params.value,
-      status: params.data.status === "Open" ? "In Progress" : params.data.status
+      status : (params.data.status === "Open" ||params.data.status === "Completed") ? "In Progress" : params.data.status
     };
-
-    params.data.status=  params.data.status == "Open" ? "In Progress" : params.data.status
+     params.data.status=(params.data.status === "Open" ||params.data.status === "Completed") ? "In Progress" : params.data.status
 
     if (fieldName === "workedhours") {
       // ?Old Values to Sub  Bec  Worked Hours added
@@ -804,6 +896,7 @@ export class TimesheetComponent implements OnInit {
           alldata["remaing_hrs"] = (alldata?.allocated_hours || 0) - (alldata?.today_totalworkedhours + params.value)
         }
         alldata.status=    alldata.status == "Open" ? "In Progress" : alldata.status
+
         let data: RowDataTransaction = {
           update: [alldata]
         }
@@ -893,27 +986,97 @@ export class TimesheetComponent implements OnInit {
 
   }
 getapprovalData(start_Date:any, end_Date:any){
-this.dataService.getTimesheetforApproval(this.employee_id,start_Date,end_Date).subscribe((response:any)=>{
+// this.dataService.getTimesheetforApproval(this.employee_id,start_Date,end_Date).subscribe((response:any)=>{
+this.dataService.getTimesheetforApproval("E0001",start_Date,end_Date).subscribe((response:any)=>{
+
   console.log(response);
-  this.rowData=response.data
+  // let rowData:any[]=[]
+  this.rowData=[]
+// this.rowData=
+let unscheduleData:any=[]
+response.data.forEach((element:any)=> {
+  console.log(element.unschedule);
+  element.primaryKey=element.task._id
+  element.task_type="task"
+  element.Approval_Status=element.task.Approval_Status
+
+  if(!isEmpty(element.unschedule)){
+    element.unschedule.forEach((unschedule:any)=>{
+    //  let datafound:any= unscheduleData.some((res:any)=>{res._id==unschedule._id})
+    let datafound: any = unscheduleData.some((res: any) => res._id === unschedule._id);
+console.log(datafound);
+
+      if(datafound==false){
+        unschedule.User_name=element.User_name
+        unschedule.project_name="UnSchedule"
+        unschedule.task_type="unschedule"
+        unschedule.primaryKey=unschedule._id
+        unschedule.task={}
+        unschedule.task.task_name=unschedule.activities 
+        unschedule.totalworkedhours=unschedule.hours
+        unschedule.Completed_On=unschedule.entry_Date
+        unschedule.timesheet_remark=unschedule.remarks
+        unschedule.Approval_Status= unschedule.Approval_Status || ''
+        delete unschedule.remarks
+        unscheduleData.push(unschedule)
+      }
+    })
+  }
+});
+this.rowData=concat(unscheduleData,response.data)
+//   let start_date: any = moment(start_Date).format('YYYY-MM-DDT00:00:00.000+00:00');
+//   let end_date: any = moment(end_Date).format('YYYY-MM-DDT23:59:59.999+00:00');
+
+//   var filterCondition1 ={
+//     start:0,end:100,
+// filter: [
+// {
+// clause: "AND",
+// conditions: [
+//  { column:"entry_by" ,operator: "EQUALS",value:this.helperServices.getEmp_id(),type: "string"},
+//  { column:"entry_Date" ,operator: "GREATERTHANOREQUAL",value:start_date,type: "date"},
+//  { column:"entry_Date" ,operator: "LESSTHANOREQUAL",value:end_date,type: "date"},
+
+
+// ]
+// }
+// ]}
+    // this.dataService.getDataByFilter('unschedule',filterCondition1).subscribe((res:any)=>{
+    //   res.data[0].response.forEach((element:any)=> {
+    //     element.project_name="UnSchedule"
+    //     element.task.type="unschedule"
+    //   });
+      // rowData=;
+// console.log(res.data[0].response);
+
+
+      // })
 })
 }
 
 approvalAll(Type:any){
   this.gridApi.forEachLeafNode((res:any)=>{
-let update_id=res.task._id
+// let update_id=res.task._id
     let updateValue:any={}
+    console.log(res.data);
+    
     updateValue["Approval_Status"]= Type
-
-    this.dataService.update("task",update_id,updateValue).subscribe((response:any)=>{
-      console.log(response );
-      let loopvalue:any =res
-      loopvalue["task.Approval_Status"]= Type
-      this.gridApi.applyTransaction({
-        update:[loopvalue]
-      })
+    console.log(res.data.Approval_Status != "Approved",res.data.task_type);
+    
+if(res.data.Approval_Status != "Approved"){
+  let update_id = res.data.primaryKey
+  let updateCollectionName=res.data.task_type
+  this.dataService.update(updateCollectionName,update_id,updateValue).subscribe((response:any)=>{
+    console.log(response );
+    // let loopvalue:any =res.data
+    res.data["Approval_Status"]= Type
+    this.gridApi.applyTransaction({
+      update:[res.data]
     })
   })
+}
+
+})
   }
   
 approval(Type:any){
@@ -922,15 +1085,20 @@ let allData:any = this.gridApi.getSelectedRows()
     updateValue["Approval_Status"]= Type
 
 allData.forEach((element:any) => {
-let update_id=element.task._id
-this.dataService.update("task",update_id,updateValue).subscribe((response:any)=>{
-  console.log(response );
-  let loopvalue:any =element
-  loopvalue["task.Approval_Status"]= Type
-  this.gridApi.applyTransaction({
-    update:[loopvalue]
+// let update_id=element.task._id
+if(element.Approval_Status != "Approved"){
+  let update_id = element.primaryKey
+  let updateCollectionName=element.task_type
+  this.dataService.update(updateCollectionName,update_id,updateValue).subscribe((response:any)=>{
+    // console.log(response );
+    // let loopvalue:any ={...element}
+    element["Approval_Status"]= Type
+    this.gridApi.applyTransaction({
+      update:[element]
+    })
+  
   })
-})
+}
 });
 }
   getData(date?: any) {
@@ -1231,11 +1399,9 @@ this.rowData = filteredData;
 
   }
 
-  getDataUnschedule() {
-    // this.dataService.getData("unschedule").subscribe((res: any) => {
-    //   this.listData = res.data;
+  getDataUnschedule() { 
     let start_date: any = moment(this.calendarDate).format('YYYY-MM-DDT00:00:00.000+00:00');
- let end_date: any = moment(this.calendarDate).format('YYYY-MM-DDT23:59:59.999+00:00');
+    let end_date: any = moment(this.calendarDate).format('YYYY-MM-DDT23:59:59.999+00:00');
 
     var filterCondition1 ={
       start:0,end:100,

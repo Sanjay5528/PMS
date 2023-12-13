@@ -41,15 +41,15 @@
             {{ item.id }}
           </ng-template>
         </ngx-gantt-column>
-        <ngx-gantt-column name="标题" width="160px" [showExpandIcon]="true">
+        <ngx-gantt-column name="title" width="160px" [showExpandIcon]="true">
           <ng-template #cell let-item="item"> {{ item.title }} </ng-template>
         </ngx-gantt-column>
-        <ngx-gantt-column name="开始时间">
+        <ngx-gantt-column name="start">
           <ng-template #cell let-item="item">
             {{ item.start * 1000 | date : 'yyyy-MM-dd' }}
           </ng-template>
         </ngx-gantt-column>
-        <ngx-gantt-column name="截止时间">
+        <ngx-gantt-column name="end">
           <ng-template #cell let-item="item">
             {{ item.end * 1000 | date : 'yyyy-MM-dd' }}
           </ng-template>

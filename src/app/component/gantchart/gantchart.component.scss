@@ -1,44 +1,87 @@
-@use '../../../../node_modules/@worktile/gantt/styles/index.scss';
-
-// @use '@worktile/gantt/styles/variables.scss' with (
-//   // basic
-//   $gantt-color: #333,
-//   $gantt-header-height: 44px,
-//   $gantt-border-color: #eee,
-//   $gantt-bg-color: #fff,
-//   $gantt-side-shadow: 12px 0 16px -10px rgba(0, 0, 0, 0.15),
-//   $gantt-container-background-color: #fafafa,
-//   $gantt-item-height: 44px,
-//   $gantt-group-background-color: rgba($color: #f3f3f3, $alpha: 0.5),
-//   $gantt-group-height: 44px,
-//   $gantt-table-td-padding: 0 15px,
-
-//   // calendar
-//   $gantt-date-primary-color: #888,
-//   $gantt-date-primary-font-size: 14px,
-//   $gantt-date-primary-border: #ddd,
-//   $gantt-date-secondary-color: #333,
-//   $gantt-date-secondary-font-size: 14px,
-//   $gantt-date-secondary-weekend-color: #aaa,
-//   $gantt-date-week-backdrop-bg: rgba($color: #f3f3f3, $alpha: 0.5),
-//   $gantt-date-today-color: #ff9f73,
-//   $gantt-date-today-text-color: #fff,
-
-//   // bar
-//   $gantt-bar-bg: #fff,
-//   $gantt-bar-layer-bg: #fff,
-//   $gantt-bar-handle-color: #cacaca,
-//   $gantt-bar-handle-height: 12px,
-//   $gantt-bar-background-color: #6698ff,
-
-//   // drag
-//   $gantt-item-drag-mask-color: #6698ff,
-//   $gantt-link-dragging-line-color: #6698ff,
-
-//   // link
-//   $gantt-link-line-color: #6698ff,
-
-//   // table
-//   $gantt-table-header-drag-line-width: 3px,
-//   $gantt-table-header-drag-line-color: #6698ff
-// );
+@use '@worktile/gantt/styles/variables.scss' ;
+ 
+.gantt-demo {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #eee;
+    padding: 20px;
+  
+    .gantt-demo-header {
+      height: 50px;
+      background: #fff;
+      padding: 0px 20px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+  
+      .header-section {
+        margin-right: 20px;
+  
+        &-title {
+          font-weight: bold;
+        }
+      }
+    }
+  
+    .gantt-demo-content {
+      flex: 1;
+      height: 1px;
+    }
+  }
+  
+  .gantt-example-content {
+    margin-left: 300px;
+    .gantt-example-component {
+      display: block;
+      margin: 20px;
+      border: 1px solid #eee;
+      height: calc(100vh - 95px);
+      overflow: auto;
+  
+      .thy-layout-header {
+        .layout-header-title {
+          display: none;
+        }
+      }
+      .header-with-baseline {
+        .layout-header-content {
+          display: flex;
+          align-items: center;
+          .baseline-switch {
+            display: flex;
+          }
+        }
+      }
+      ngx-gantt-root {
+        border: 1px solid #eee;
+        .table-footer {
+          display: flex;
+          .gantt-table-column {
+            overflow: hidden;
+            border-right: 1px solid #eee;
+            box-sizing: border-box;
+            padding: 0 15px;
+            line-height: 44px;
+  
+            &:last-child {
+              border-right: none;
+            }
+          }
+        }
+        .footer-container {
+          display: flex;
+          position: relative;
+          height: 100%;
+          .footer-item {
+            border-right: 1px solid #eee;
+            line-height: 44px;
+            &:last-child {
+              border-right: none;
+            }
+          }
+        }
+      }
+    }
+  }
+  

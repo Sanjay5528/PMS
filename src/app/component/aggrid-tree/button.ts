@@ -642,6 +642,7 @@ console.log(this.form.valid);
      this.form.markAllAsTouched();   
     return
     }
+
     let values: any = this.form.value;
     if(formName=='Requirement'){
     if (val == "modulesViewPopup"&&(this.model_heading=="Sub Requirement - Add" )) {
@@ -756,10 +757,7 @@ console.log(this.form.valid);
 
       //     this.dialogService.closeModal();
       //   }
-      //   if(updateBug==true){
-          
-      //     this.InsertBug(values,data)
-      //   }
+        
 
       //   this.form.reset();
       // });
@@ -900,6 +898,10 @@ this.dataService.save("bug",data).subscribe((res:any)=>{
 
   this.dataService.save("bug_Histoy",data).subscribe((res:any)=>{
     console.log(res);
+
+  // this.dataService.update("task",,data).subscribe((res:any)=>{
+  //   console.log(res);
+  // })
     this.ParentComponent.ngOnInit()
   })
 
