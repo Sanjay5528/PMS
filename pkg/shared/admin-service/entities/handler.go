@@ -2669,11 +2669,15 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 						{"project_id", bson.D{{"$first", "$project_id"}}},
 						{"totalworkedhours", bson.D{{"$first", "$totalworkedhours"}}},
 						{"Project_name", bson.D{{"$first", "$Project_name"}}},
+						{"remarks", bson.D{{"$first", "$remarks"}}},
+						{"approval_Status", bson.D{{"$first", "$Approval_Status"}}},
 					},
 				},
 			},
 		}
 
+		// {"remarks", bson.D{{"$first", "$remarks"}}},
+		// {"approval_Status", bson.D{{"$first", "$Approval_Status"}}},
 	// bson.D{{"$match", bson.D{{"assigned_to", "E0001"}}}},
 
 	if employee_id != "SA" {
