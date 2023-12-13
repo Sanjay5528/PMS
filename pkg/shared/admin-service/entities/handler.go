@@ -2057,291 +2057,8 @@ func team_specifcaiton(c *fiber.Ctx) error {
 
 	scheduledenddate, _ := time.Parse(time.RFC3339, c.Params("enddate"))
 
-	start_start_date := time.Date(scheduledstartdate.Year(), scheduledstartdate.Month(), scheduledstartdate.Day(), 0, 0, 0, 0, time.UTC)
-
-	// start_end_date := time.Date(scheduledstartdate.Year(), scheduledstartdate.Month(), scheduledstartdate.Day(), 23, 59, 59, 0, time.UTC)
-
-	// end_start_date := time.Date(scheduledenddate.Year(), scheduledenddate.Month(), scheduledenddate.Day(), 0, 0, 0, 0, time.UTC)
-
-	end_end_date := time.Date(scheduledenddate.Year(), scheduledenddate.Month(), scheduledenddate.Day(), 23, 59, 59, 0, time.UTC)
-	// pipeline := bson.A{
-	// 	// bson.D{{"$match", bson.D{{"approved_by", c.Params("approved_by")}}}},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "employee"},
-	// 				{"localField", "user_id"},
-	// 				{"foreignField", "employee_id"},
-	// 				{"as", "employee"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$unwind",
-	// 			bson.D{
-	// 				{"path", "$employee"},
-	// 				{"preserveNullAndEmptyArrays", true},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "project"},
-	// 				{"localField", "project_id"},
-	// 				{"foreignField", "project_id"},
-	// 				{"as", "project"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$unwind",
-	// 			bson.D{
-	// 				{"path", "$project"},
-	// 				{"preserveNullAndEmptyArrays", true},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$addFields",
-	// 			bson.D{
-	// 				{"User_name",
-	// 					bson.D{
-	// 						{"$concat",
-	// 							bson.A{
-	// 								"$employee.first_name",
-	// 								" ",
-	// 								"$employee.last_name",
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$addFields", bson.D{{"project_name", "$project.project_name"}}}},
-	// 	bson.D{
-	// 		{"$unset",
-	// 			bson.A{
-	// 				"employee",
-	// 				"project",
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "task"},
-	// 				{"localField", "user_id"},
-	// 				{"foreignField", "assigned_to"},
-	// 				{"as", "task"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$unwind",
-	// 			bson.D{
-	// 				{"path", "$task"},
-	// 				{"preserveNullAndEmptyArrays", true},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "timesheet"},
-	// 				{"localField", "task._id"},
-	// 				{"foreignField", "task_id"},
-	// 				{"as", "timesheet"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$addFields", bson.D{{"totalworkedhours", bson.D{{"$sum", "$timesheet.workedhours"}}}}}},
-	// 	bson.D{
-	// 		{"$unwind",
-	// 			bson.D{
-	// 				{"path", "$timesheet"},
-	// 				{"preserveNullAndEmptyArrays", true},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$match",
-	// 			bson.D{
-	// 				{"task.status", "Completed"},
-	// 				{"timesheet.status", "Completed"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$addFields", bson.D{{"end", "$task.scheduled_end_date"}}}},
-	// 	bson.D{{"$addFields", bson.D{{"start", "$task.scheduled_start_date"}}}},
-	// 	bson.D{
-	// 		{"$match",
-	// 			bson.D{
-	// 				{"$and",
-	// 					bson.A{
-	// 						bson.D{
-	// 							{"start",
-	// 								bson.D{
-	// 									{"$gte", start_start_date},
-	// {"$lte", start_end_date},
-	// 								},
-	// 							},
-	// 						},
-	// 						bson.D{
-	// 							{"end",
-	// 								bson.D{
-	// 									// {"$gte", end_start_date},
-	// 									{"$lte", end_end_date},
-	// 								},
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// }
-	// pipeline := bson.A{
-	// 	bson.D{{"$match", bson.D{{"approved_by", c.Params("approved_by")}}}},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "employee"},
-	// 				{"localField", "user_id"},
-	// 				{"foreignField", "employee_id"},
-	// 				{"as", "employee"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$unwind",
-	// 			bson.D{
-	// 				{"path", "$employee"},
-	// 				{"preserveNullAndEmptyArrays", true},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "project"},
-	// 				{"localField", "project_id"},
-	// 				{"foreignField", "project_id"},
-	// 				{"as", "project"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$unwind",
-	// 			bson.D{
-	// 				{"path", "$project"},
-	// 				{"preserveNullAndEmptyArrays", true},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$addFields",
-	// 			bson.D{
-	// 				{"User_name",
-	// 					bson.D{
-	// 						{"$concat",
-	// 							bson.A{
-	// 								"$employee.first_name",
-	// 								" ",
-	// 								"$employee.last_name",
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$addFields", bson.D{{"project_name", "$project.project_name"}}}},
-	// 	bson.D{
-	// 		{"$unset",
-	// 			bson.A{
-	// 				"employee",
-	// 				"project",
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "task"},
-	// 				{"localField", "user_id"},
-	// 				{"foreignField", "assigned_to"},
-	// 				{"as", "task"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$unwind",
-	// 			bson.D{
-	// 				{"path", "$task"},
-	// 				{"preserveNullAndEmptyArrays", true},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "timesheet"},
-	// 				{"localField", "task._id"},
-	// 				{"foreignField", "task_id"},
-	// 				{"as", "timesheet"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$addFields", bson.D{{"totalworkedhours", bson.D{{"$sum", "$timesheet.workedhours"}}}}}},
-	// 	bson.D{
-	// 		{"$unwind",
-	// 			bson.D{
-	// 				{"path", "$timesheet"},
-	// 				{"preserveNullAndEmptyArrays", true},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$match",
-	// 			bson.D{
-	// 				{"task.status", "Completed"},
-	// 				{"timesheet.status", "Completed"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$addFields",
-	// 			bson.D{
-	// 				{"end", "$task.scheduled_end_date"},
-	// 				{"start", "$task.scheduled_start_date"},
-	// 				{"Completed_On", "$timesheet.entry_Date"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$match",
-	// 			bson.D{
-	// 				{"$and",
-	// 					bson.A{
-	// 						bson.D{{"start", bson.D{
-	// 							{"$gte", start_start_date},
-	// 							{"$lte", end_end_date},
-	// 						}}},
-	// 						bson.D{{"end", bson.D{
-	// 							{"$gte", start_start_date},
-	// 							{"$lte", end_end_date},
-	// 						}}},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// }
-
-	pipeline :=  bson.A{
-		bson.D{{"$match", bson.D{{"approved_by", c.Params("approved_by")}}}},
+	pipeline := bson.A{
+		bson.D{{"$match", bson.D{{"approved_by", "E0001"}}}},
 		bson.D{
 			{"$lookup",
 				bson.D{
@@ -2493,16 +2210,86 @@ func team_specifcaiton(c *fiber.Ctx) error {
 							bson.D{
 								{"$and",
 									bson.A{
-										bson.D{{"start", bson.D{{"$gte", start_start_date}}}},
-										bson.D{{"end", bson.D{{"$lte", end_end_date}}}},
+										bson.D{
+											{"$expr",
+												bson.D{
+													{"$gte",
+														bson.A{
+															bson.D{
+																{"$dateToString",
+																	bson.D{
+																		{"format", "%Y-%m-%d"},
+																		{"date", "$start"},
+																		{"timezone", "UTC"},
+																	},
+																},
+															},
+															scheduledstartdate,
+														},
+													},
+												},
+											},
+										},
+										bson.D{
+											{"$expr",
+												bson.D{
+													{"$lte",
+														bson.A{
+															bson.D{
+																{"$dateToString",
+																	bson.D{
+																		{"format", "%Y-%m-%d"},
+																		{"date", "$end"},
+																		{"timezone", "UTC"},
+																	},
+																},
+															},
+															scheduledenddate,
+														},
+													},
+												},
+											},
+										},
 									},
 								},
 							},
 							bson.D{
-								{"Completed_On",
+								{"$expr",
 									bson.D{
-										{"$gte", start_start_date},
-										{"$lte", end_end_date},
+										{"$gte",
+											bson.A{
+												bson.D{
+													{"$dateToString",
+														bson.D{
+															{"format", "%Y-%m-%d"},
+															{"date", "$Completed_On"},
+															{"timezone", "UTC"},
+														},
+													},
+												},
+												scheduledstartdate,
+											},
+										},
+									},
+								},
+							},
+							bson.D{
+								{"$expr",
+									bson.D{
+										{"$lte",
+											bson.A{
+												bson.D{
+													{"$dateToString",
+														bson.D{
+															{"format", "%Y-%m-%d"},
+															{"date", "$Completed_On"},
+															{"timezone", "UTC"},
+														},
+													},
+												},
+												scheduledenddate,
+											},
+										},
 									},
 								},
 							},
@@ -2520,7 +2307,18 @@ func team_specifcaiton(c *fiber.Ctx) error {
 			},
 		},
 		bson.D{{"$replaceRoot", bson.D{{"newRoot", "$data"}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "unschedule"},
+					{"localField", "user_id"},
+					{"foreignField", "entry_by"},
+					{"as", "unschedule"},
+				},
+			},
+		},
 	}
+
 	response, err := helper.GetAggregateQueryResult(org.Id, "team_specification", pipeline)
 	if err != nil {
 		return shared.BadRequest(err.Error())
@@ -2708,110 +2506,111 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 
 	formattedDate := start_date.Format("2006-01-02")
 
-	pipeline :=  
-	bson.A{
-		bson.D{
-			{"$match",
-				bson.D{
-					{"$expr",
-						bson.D{
-							{"$lte",
-								bson.A{
-									bson.D{
-										{"$dateToString",
+	pipeline :=
+		bson.A{
+			bson.D{
+				{"$match",
+					bson.D{
+						{"$expr",
+							bson.D{
+								{"$lte",
+									bson.A{
+										bson.D{
+											{"$dateToString",
+												bson.D{
+													{"format", "%Y-%m-%d"},
+													{"date", "$scheduled_start_date"},
+													{"timezone", "UTC"},
+												},
+											},
+										},
+										formattedDate,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			bson.D{
+				{"$lookup",
+					bson.D{
+						{"from", "timesheet"},
+						{"localField", "_id"},
+						{"foreignField", "task_id"},
+						{"as", "timesheet"},
+					},
+				},
+			},
+			bson.D{
+				{"$addFields",
+					bson.D{
+						{"totalworkedhours", bson.D{{"$sum", "$timesheet.workedhours"}}},
+						{"Timeentry_Date", "$timesheet.entry_Date"},
+						{"Project_name", "$project.project_name"},
+					},
+				},
+			},
+			bson.D{
+				{"$unwind",
+					bson.D{
+						{"path", "$timesheet"},
+						{"preserveNullAndEmptyArrays", true},
+					},
+				},
+			},
+			bson.D{
+				{"$lookup",
+					bson.D{
+						{"from", "project"},
+						{"localField", "project_id"},
+						{"foreignField", "project_id"},
+						{"as", "project"},
+					},
+				},
+			},
+			bson.D{
+				{"$unwind",
+					bson.D{
+						{"path", "$project"},
+						{"preserveNullAndEmptyArrays", true},
+					},
+				},
+			},
+			bson.D{
+				{"$addFields",
+					bson.D{
+						{"Timeentry_Date", "$timesheet.entry_Date"},
+						{"Project_name", "$project.project_name"},
+					},
+				},
+			},
+			bson.D{{"$unset", "project"}},
+			bson.D{
+				{"$match",
+					bson.D{
+						{"$or",
+							bson.A{
+								bson.D{
+									{"$and",
+										bson.A{
+											bson.D{{"status", "Completed"}},
 											bson.D{
-												{"format", "%Y-%m-%d"},
-												{"date", "$scheduled_start_date"},
-												{"timezone", "UTC"},
-											},
-										},
-									},
-									formattedDate,
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "timesheet"},
-					{"localField", "_id"},
-					{"foreignField", "task_id"},
-					{"as", "timesheet"},
-				},
-			},
-		},
-		bson.D{
-			{"$addFields",
-				bson.D{
-					{"totalworkedhours", bson.D{{"$sum", "$timesheet.workedhours"}}},
-					{"Timeentry_Date", "$timesheet.entry_Date"},
-					{"Project_name", "$project.project_name"},
-				},
-			},
-		},
-		bson.D{
-			{"$unwind",
-				bson.D{
-					{"path", "$timesheet"},
-					{"preserveNullAndEmptyArrays", true},
-				},
-			},
-		},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "project"},
-					{"localField", "project_id"},
-					{"foreignField", "project_id"},
-					{"as", "project"},
-				},
-			},
-		},
-		bson.D{
-			{"$unwind",
-				bson.D{
-					{"path", "$project"},
-					{"preserveNullAndEmptyArrays", true},
-				},
-			},
-		},
-		bson.D{
-			{"$addFields",
-				bson.D{
-					{"Timeentry_Date", "$timesheet.entry_Date"},
-					{"Project_name", "$project.project_name"},
-				},
-			},
-		},
-		bson.D{{"$unset", "project"}},
-		bson.D{
-			{"$match",
-				bson.D{
-					{"$or",
-						bson.A{
-							bson.D{
-								{"$and",
-									bson.A{
-										bson.D{{"status", "Completed"}},
-										bson.D{
-											{"$expr",
-												bson.D{
-													{"$eq",
-														bson.A{
-															bson.D{
-																{"$dateToString",
-																	bson.D{
-																		{"format", "%Y-%m-%d"},
-																		{"date", "$Timeentry_Date"},
-																		{"timezone", "UTC"},
+												{"$expr",
+													bson.D{
+														{"$eq",
+															bson.A{
+																bson.D{
+																	{"$dateToString",
+																		bson.D{
+																			{"format", "%Y-%m-%d"},
+																			{"date", "$Timeentry_Date"},
+																			{"timezone", "UTC"},
+																		},
 																	},
 																},
+																formattedDate,
 															},
-															formattedDate,
 														},
 													},
 												},
@@ -2819,25 +2618,25 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 										},
 									},
 								},
-							},
-							bson.D{
-								{"$and",
-									bson.A{
-										bson.D{
-											{"$expr",
-												bson.D{
-													{"$lte",
-														bson.A{
-															bson.D{
-																{"$dateToString",
-																	bson.D{
-																		{"format", "%Y-%m-%d"},
-																		{"date", "$scheduled_start_date"},
-																		{"timezone", "UTC"},
+								bson.D{
+									{"$and",
+										bson.A{
+											bson.D{
+												{"$expr",
+													bson.D{
+														{"$lte",
+															bson.A{
+																bson.D{
+																	{"$dateToString",
+																		bson.D{
+																			{"format", "%Y-%m-%d"},
+																			{"date", "$scheduled_start_date"},
+																			{"timezone", "UTC"},
+																		},
 																	},
 																},
+																formattedDate,
 															},
-															formattedDate,
 														},
 													},
 												},
@@ -2850,31 +2649,30 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 					},
 				},
 			},
-		},
-		bson.D{{"$unset", "Timeentry_Date"}},
-		bson.D{
-			{"$group",
-				bson.D{
-					{"_id", "$_id"},
-					{"timesheet", bson.D{{"$push", "$timesheet"}}},
-					{"created_by", bson.D{{"$first", "$created_by"}}},
-					{"requirement_id", bson.D{{"$first", "$requirement_id"}}},
-					{"status", bson.D{{"$first", "$status"}}},
-					{"task_type", bson.D{{"$first", "$task_type"}}},
-					{"update_by", bson.D{{"$first", "$update_by"}}},
-					{"update_on", bson.D{{"$first", "$update_on"}}},
-					{"task_name", bson.D{{"$first", "$task_name"}}},
-					{"allocated_hours", bson.D{{"$first", "$allocated_hours"}}},
-					{"scheduled_end_date", bson.D{{"$first", "$scheduled_end_date"}}},
-					{"scheduled_start_date", bson.D{{"$first", "$scheduled_start_date"}}},
-					{"assigned_to", bson.D{{"$first", "$assigned_to"}}},
-					{"project_id", bson.D{{"$first", "$project_id"}}},
-					{"totalworkedhours", bson.D{{"$first", "$totalworkedhours"}}},
-					{"Project_name", bson.D{{"$first", "$Project_name"}}},
+			bson.D{{"$unset", "Timeentry_Date"}},
+			bson.D{
+				{"$group",
+					bson.D{
+						{"_id", "$_id"},
+						{"timesheet", bson.D{{"$push", "$timesheet"}}},
+						{"created_by", bson.D{{"$first", "$created_by"}}},
+						{"requirement_id", bson.D{{"$first", "$requirement_id"}}},
+						{"status", bson.D{{"$first", "$status"}}},
+						{"task_type", bson.D{{"$first", "$task_type"}}},
+						{"update_by", bson.D{{"$first", "$update_by"}}},
+						{"update_on", bson.D{{"$first", "$update_on"}}},
+						{"task_name", bson.D{{"$first", "$task_name"}}},
+						{"allocated_hours", bson.D{{"$first", "$allocated_hours"}}},
+						{"scheduled_end_date", bson.D{{"$first", "$scheduled_end_date"}}},
+						{"scheduled_start_date", bson.D{{"$first", "$scheduled_start_date"}}},
+						{"assigned_to", bson.D{{"$first", "$assigned_to"}}},
+						{"project_id", bson.D{{"$first", "$project_id"}}},
+						{"totalworkedhours", bson.D{{"$first", "$totalworkedhours"}}},
+						{"Project_name", bson.D{{"$first", "$Project_name"}}},
+					},
 				},
 			},
-		},
-	}
+		}
 
 	// bson.D{{"$match", bson.D{{"assigned_to", "E0001"}}}},
 
