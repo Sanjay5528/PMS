@@ -1,0 +1,33 @@
+[{
+	
+	"_id": "S001",
+	"name": "CCTV and access control engineers",
+	"status": "",
+	"created_on": {
+	  "$date": "2023-07-03T04:52:34.968Z"
+	}
+  },{
+	
+	"_id": "S002",
+	"name": "IT technician(end user computing)",
+	"status": "",
+	"created_on": {
+	  "$date": "2023-07-03T04:53:18.637Z"
+	}
+  },{
+	
+	"_id": "S003",
+	"name": "UPS Engineer",
+	"createdon": {
+	  "$date": "2023-07-31T11:58:36.844Z"
+	},
+	"status": ""
+  },{
+	
+	"_id": "S004",
+	"name": "Devops engineer",
+	"createdon": {
+	  "$date": "2023-08-11T10:56:06.530Z"
+	},
+	"status": ""
+  }]

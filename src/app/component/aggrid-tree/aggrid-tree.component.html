@@ -1,15 +1,17 @@
 <!-- ! an do requriement here 1st task -->
 <mat-drawer-container style="height: 100%;" >
   <!-- 'over' | 'push' | 'side'; -->
-  <mat-drawer #drawer mode='side' position="end" class="example-sidenav" >
+  <mat-drawer #drawer mode='over' position="end" class="example-sidenav" >
     <!--?  Requirement -->
 <div *ngIf="formName=='Requirement'">
   <div style="width: 100%;margin-bottom: 5px;" >
 
-    <span *ngIf="cellClicked" style="font-size: larger;font-style: italic;margin-left: 20px;">{{selectedRows.CheckIndex}} </span>
+    <span *ngIf="cellClicked" >{{selectedRows.CheckIndex}} </span>
     <mat-icon style="float: right;font-size: large;"   (click)="this.drawer.toggle()">close</mat-icon>
   </div>
-   <span *ngIf="cellClicked" style="font-size: small;font-style: normal;margin-left: 20px;"> {{cellClicked=='number_of_TestCase_count'? "Test Case":"Task" }} <span style="font-size: small;border-radius: 50%;"> {{ cellClicked=='number_of_TestCase_count'? selectedRows.number_of_TestCase_count:selectedRows.number_of_Task_count}} </span> </span>
+   <span *ngIf="cellClicked" style="font-size: small;font-style: normal;margin-left: 20px;">
+     {{cellClicked=='number_of_TestCase_count'? "Test Case":"Task" }} <span style="font-size: small;border-radius: 50%;"> 
+      {{ cellClicked=='number_of_TestCase_count'? selectedRows.number_of_TestCase_count:selectedRows.number_of_Task_count}} </span> </span>
  
    <div *ngIf="cellClicked=='number_of_TestCase_count'" style="margin-left: 25px;">
    
@@ -39,7 +41,7 @@
  
 
    <div *ngIf="cellClicked=='number_of_Task_count'" style="margin-left: 25px;">
-     <div  class="keep-scrolling">
+     <div>
    
        <div *ngFor="let task of this.selectedRows?.taskresult;let index=index;" class="mat-card-container" style="margin-bottom: 5px;">
          <mat-card class="mat-card" >
@@ -106,14 +108,25 @@
             </div>
             
              <p [innerHTML]="testCase.actual_result"></p>
-             <div  fxLayout="row" fxFlex="100%">
+             <!-- <div  fxLayout="row" fxFlex="100%">
               <div *ngFor="let image of testCase?.result_proof;let testCaseIndex=index">
-                <!-- <img *ngIf="image?.storage_name && testCaseIndex==0" (click)="poupimage(testCase?.result_proof)" [src]="imageurl + image?.storage_name" [alt]="image.file_name" height="100px" width="200px">
-                <img *ngIf="image?.storage_name && testCaseIndex==1" (click)="poupimage(testCase?.result_proof)" [src]="imageurl + image?.storage_name" [alt]="image.file_name" height="100px" width="200px"> -->
                 <img *ngIf="image?.storage_name " style="margin-left: 10px" (click)="poupimage(testCase?.result_proof)" [src]="imageurl + image?.storage_name" [alt]="image.file_name" height="100px" width="200px">
 
                </div>
-             </div>
+             </div> -->
+
+   <div fxLayout="row wrap" fxFlex="100%"  >
+    <div *ngFor="let image of testCase?.result_proof" fxLayout="row" style="padding:10px 10px 10px 10px;">
+      <img
+        *ngIf="image?.storage_name"
+        (click)="poupimage(testCase?.result_proof)"
+        [src]="imageurl + image?.storage_name"
+        [alt]="image.file_name"
+        height="100px"
+        width="200px"
+      />
+    </div>
+  </div>
            </mat-card-content>
          </mat-card>
        </div>
@@ -123,7 +136,7 @@
    <div *ngIf="cellClicked=='bug_count'" style="margin-left: 25px;">
      <div  class="keep-scrolling">
    
-       <div *ngFor="let buglist of this.selectedRows?.bug_list " class="mat-card-container" style="margin-bottom: 5px;">
+       <div *ngFor="let buglist of this.selectedRows?.bug_list" class="mat-card-container" style="margin-bottom: 5px;">
          <mat-card class="mat-card">
           <mat-card-header>
             <mat-card-title style="margin-top: 5px;">
@@ -138,13 +151,25 @@
             <mat-icon *ngIf="buglist?.doneBy" style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{buglist?.employee_name}} 
 
             <p [innerHTML]="buglist.actual_result"></p>
-            <div fxLayout="row" fxFlex="100%">
+            <!-- <div fxLayout="row" fxFlex="100%">
               <div   *ngFor="let image of buglist?.result_proof;let bugIndex=index">
-                <!-- <img *ngIf="image?.storage_name"  (click)="poupimage(buglist?.result_proof)"  [src]="imageurl + image?.storage_name" [alt]="image.file_name" height="100px" width="200px"> -->
                 <img *ngIf="image?.storage_name " style="margin-left: 10px" (click)="poupimage(buglist?.result_proof)" [src]="imageurl + image?.storage_name" [alt]="image.file_name" height="100px" width="200px">
-                <!-- <img *ngIf="image?.storage_name && bugIndex==1" style="margin-left: 10px;opacity: 0.5;" (click)="poupimage(buglist?.result_proof)" [src]="imageurl + image?.storage_name" [alt]="image.file_name" height="100px" width="200px"> -->
+              </div>
+            </div> -->
+
+            <div fxLayout="row wrap" fxFlex="100%"  >
+              <div *ngFor="let image of buglist?.result_proof" fxLayout="row" style="padding:10px 10px 10px 10px;">
+                <img
+                  *ngIf="image?.storage_name"
+                  (click)="poupimage(buglist?.result_proof)"
+                  [src]="imageurl + image?.storage_name"
+                  [alt]="image.file_name"
+                  height="100px"
+                  width="200px"
+                />
               </div>
             </div>
+            
              </mat-card-content>
         </mat-card>
        </div>
@@ -163,17 +188,37 @@
     <mat-card class="mat-card">
       <mat-card-header>
         <mat-card-title style="margin-top: 5px;">
+          <!-- <div style="display: flex; align-items: center;">
+            <h3>Single selection</h3>
+            <mat-button-toggle-group   color="primary">
+              <mat-button-toggle value="green" [ngStyle]="{'background-color': selectedRows?.testcase?.test_case_scenario === 'P' ? 'green' : 'red', }">Show Stoper</mat-button-toggle>
+              <mat-button-toggle value="red"   [ngStyle]="{'background-color': selectedRows?.testcase?.test_case_scenario === 'P' ? 'green' : 'red', }">High</mat-button-toggle>
+              <mat-button-toggle value="green" [ngStyle]="{'background-color': selectedRows?.testcase?.test_case_scenario === 'P' ? 'green' : 'red', }">Medium</mat-button-toggle>
+              <mat-button-toggle value="blue"  [ngStyle]="{'background-color': selectedRows?.testcase?.test_case_scenario === 'P' ? 'green' : 'red', }">Low</mat-button-toggle>
+            </mat-button-toggle-group>
+            
+             
+          </div> -->
           <span style="font-style: italic;font-size: large;width: 100%;">Bug Details</span>
           <br>
           <span style="font-size: medium;font-weight: bold;margin-left: 10px;" >Issue ID</span>        
           <span style="font-size: medium;font-weight: 400;margin-left: 10px;">{{ selectedRows?.test_case_id }}</span>
+          <span [ngStyle]="{'background-color': selectedRows?.testcase?.test_case_scenario === 'P' ? 'green' : 'red', 'width': '10px', 'height': '10px', 'border-radius': '50%', 'display': 'inline-block', 'margin-right': '5px','margin-left':'5px'}"></span>
           <br>
           <span style="font-size: medium;font-weight: bold;margin-left: 10px;" >Issue Name</span>        
           <span style="font-size: medium;font-weight: 400;margin-left: 10px;" >  {{ selectedRows?.testcase?.test_case_name }}</span>        
-           
-          <span [ngStyle]="{'background-color': selectedRows?.testcase?.test_case_scenario === 'P' ? 'green' : 'red', 'width': '10px', 'height': '10px', 'border-radius': '50%', 'display': 'inline-block', 'margin-right': '5px','margin-left':'5px'}"></span>
-          <span style="font-size: small;font-family: cursive;margin-left: 20px;color: grey;"> ( {{  datefunction(selectedRows?.test_result?.testcase_date)}} )</span>
-<br>
+          <br>
+<!-- <span style="font-size: medium;font-weight: bold;margin-left: 10px;" ><mat-icon>date_range</mat-icon></span>          -->
+<!-- <mat-icon style=" font-size: 20px;margin-top: 3px;">date_range</mat-icon> 
+
+<span style="font-size: medium;font-family: cursive;margin-left: 5px;color: grey;">( {{  datefunction(selectedRows?.test_result?.testcase_date)}} ) </span> -->
+<div style="display: flex; align-items: center;margin-left: 9px;">
+  <mat-icon style="font-size: 20px; margin-top: 3px;">date_range</mat-icon>
+  <span style="font-size: medium; font-family: cursive; margin-left: 5px; color: grey;">
+    ({{ datefunction(selectedRows?.test_result?.testcase_date) }})
+  </span>
+</div>
+
 <!-- * Test result Date -->
         </mat-card-title>
 
@@ -191,35 +236,30 @@
   <span style="font-size: small;font-weight: bold;">
     Error Type 
   </span>  
-    {{selectedRows?.test_result?.error_type}}
+  <span style="font-size: small;">
+    {{selectedRows?.test_result?.error_type.toUpperCase().replace('_', ' ')}}
+  </span>
   </span>
   <span> 
-    <span style="font-size: small;font-weight: bold;">      Error Priority    </span> 
-     {{selectedRows?.test_result?.error_priority}} 
+    <span style="font-size: small;font-weight: bold;">      Error Severity    </span> 
+     <!-- {{selectedRows?.test_result?.error_priority.toUpperCase().replaceAll("_",' ')}}  -->
+     <span style="font-size: small;">
+      {{selectedRows?.test_result?.error_priority.toUpperCase().replace('_', ' ')}}
+    </span>
   </span>
-  
-
-<!-- </div> -->
        <div style="display: block;">
-        
-        
     <p style="font-size: small;font-weight: bold;">
-
       Test Data     </p>
         <span [innerHTML]="selectedRows?.testcase?.test_data"> </span>
         </div>
     <div style="display: block;">
-      
     <p style="font-size: small;font-weight: bold;">
-
       Expected Result 
     </p>
     <span [innerHTML]="selectedRows?.testcase?.expected_result"> </span>
   </div>
   <div style="display: block;">
-    
     <p style="font-size: small;font-weight: bold;">
-
       Actual Result 
     </p>
   <span [innerHTML]="selectedRows?.test_result?.actual_result"> </span>
@@ -231,40 +271,85 @@
     Test result Proof
   </p>
   <br>
-  <div  fxLayout="row" fxFlex="100%" >
-    <div *ngFor="let image of selectedRows?.test_result?.result_proof;let testCaseIndex=index">
+
+  <!-- <div  fxLayout="row" fxFlex="100%" style="flex-wrap: wrap;" >
+    <div *ngFor="let image of selectedRows?.test_result?.result_proof;">
       <img *ngIf="image?.storage_name " style="margin-left: 10px"
-       (click)="poupimage(selectedRows.testcase?.result_proof)" [src]="imageurl + image?.storage_name" [alt]="image.file_name" height="100px" width="200px">
+       (click)="poupimage(selectedRows?.test_result?.result_proof)" [src]="imageurl + image?.storage_name" [alt]="image.file_name" height="100px" width="200px">
 
      </div>
-   </div>
- 
-<!-- </div> -->
+   </div> -->
+
+   <div fxLayout="row wrap" fxFlex="100%"  >
+    <div *ngFor="let image of selectedRows?.test_result?.result_proof" fxLayout="row" style="padding:2px 2px 2px 2px;">
+      <img
+        *ngIf="image?.storage_name"
+        (click)="poupimage(selectedRows?.test_result?.result_proof)"
+        [src]="imageurl + image?.storage_name"
+        [alt]="image.file_name"
+        height="100px"
+        width="200px"
+      />
+    </div>
+  </div>
+  
+   <!-- <div style="display: flex;align-items: start;justify-items: center;">
+     {{selectedRows?.taskemploye_name}} 
+    </div> -->
+    <span  *ngIf="selectedRows?.taskemploye_name" style="float: right;font-style: italic;">Task Done By
+      <!-- <mat-icon style=" font-size: 20px;margin-top: 3px;">person</mat-icon> -->
+      {{selectedRows?.taskemploye_name}} </span>
+   <div  fxLayout="row" fxFlex="100%"  fxLayoutAlign="start center">
+     <label for="is_bug"> Issue Acceptance Status</label>
+    <mat-radio-group id="is_bug" [(ngModel)]="is_bug">
+      <mat-radio-button [value]='true' (click)="formlyformdata(true)" >Yes</mat-radio-button>
+      <mat-radio-button [value]="false" (click)="formlyformdata(false)" >No</mat-radio-button>
+    </mat-radio-group>  
+</div>
        </mat-card-content>
     </mat-card>
     <!--? Task List  -->
       <mat-card class="mat-card" >
             <mat-card-header>
               <mat-card-title style="margin-top: 5px;">
-                <span style="font-style: italic;font-size: large;width: 100%;">Task Details</span>
+                <!-- <span style="font-style: italic;font-size: large;width: 100%;">Task Details</span>
           <br>
-                <span style="font-size: medium;font-weight: 400;margin-left: 10px;">{{selectedRows?.task?.task_name }}</span> 
+                <span style="font-size: medium;font-weight: 400;margin-left: 10px;">{{selectedRows?.task?.task_name }}</span>  -->
+                
               </mat-card-title>
  
  
             </mat-card-header>
-              <span style="font-size: small;font-family: cursive;margin-left: 20px;color: grey;">  {{  datefunction(selectedRows?.task?.scheduled_start_date)}} to {{  datefunction(selectedRows?.task?.scheduled_end_date)}}  <span style="font-size: small;margin-left: 10px;font-weight: bold;">  ( {{selectedRows?.task?.allocated_hours}}  <span style="font-size: xx-small;font-weight: bold;">Hr</span> )  </span>  </span>
-            
-            <mat-card-content style="margin-left: 30px;">
-              <p [innerHTML]="selectedRows?.task?.description"></p>
+              <!-- <span style="font-size: small;font-family: cursive;margin-left: 20px;color: grey;">  {{  datefunction(selectedRows?.task?.scheduled_start_date)}} to {{  datefunction(selectedRows?.task?.scheduled_end_date)}}  <span style="font-size: small;margin-left: 10px;font-weight: bold;">  ( {{selectedRows?.task?.allocated_hours}}  <span style="font-size: xx-small;font-weight: bold;">Hr</span> )  </span>  </span> -->
+            <mat-card-content style="margin-left: 30px;" *ngIf="is_bug == true|| is_bug==false">
+              <!-- <p [innerHTML]="selectedRows?.task?.description"></p> -->
+              <!-- <mat-form-field *ngIf="reassignemployee[0]" style="width: 50%;max-width: 50%;">
+                <mat-label>Reassign To</mat-label>
+                <mat-select>
+                 <mat-option selected="true" [disabled]="true" >Select Any Employee Below</mat-option>
+               
+                    <mat-option  *ngFor="let data of reassignemployee[0]" (click)="reassigntask(selectedRows?.task?.assigned_to,data,0)" [value]="data?.employee_id">{{data?.first_name}} {{data?.last_name}}</mat-option>
+                </mat-select>
+               </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Choose a Start Date</mat-label>
+                <input matInput [matDatepicker]="picker">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Choose a End Date</mat-label>
+                <input matInput [matDatepicker]="picker">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field> -->
+              <formly-form [model]="selectedModel" [fields]="fields" [form]="form"></formly-form>
+
             </mat-card-content>
             <mat-card-actions style="display: flex;justify-content: space-between;">
- <div style="display: flex;align-items: start;justify-items: center;">
-  <mat-icon style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{selectedRows?.taskemploye_name}} 
-  <mat-icon style="font-size: 20px;margin-left: 10px;margin-top: 3px;"*ngIf="!reassignemployee[0]" (click)="reassigndata(selectedRows?.task?.assigned_to,0)">compare_arrows</mat-icon>
-  <mat-icon  style="font-size: 20px;margin-left: 10px;margin-top: 3px;" (click)="reassignemployee[0]=null" *ngIf="reassignemployee[0]" >undo</mat-icon>
- </div>
- <mat-form-field *ngIf="reassignemployee[0]" style="width: 50%;max-width: 50%;">
+
+ <!-- <mat-form-field *ngIf="reassignemployee[0]" style="width: 50%;max-width: 50%;">
   <mat-label>Reassign To</mat-label>
   <mat-select>
    <mat-option selected="true" [disabled]="true" >Select Any Employee Below</mat-option>
@@ -272,7 +357,13 @@
       <mat-option  *ngFor="let data of reassignemployee[0]" (click)="reassigntask(selectedRows?.task?.assigned_to,data,0)" [value]="data?.employee_id">{{data?.first_name}} {{data?.last_name}}</mat-option>
   </mat-select>
  </mat-form-field>
- 
+  --><div style="text-align-last: end; width: 100%">
+    <!-- <button style="margin: 5px" mat-button (click)="cancel()"  *ngIf="config.onCancelRoute">Cancel</button> -->
+    <button style="margin: 5px" mat-button (click)="resetBtn('reset')" >Reset</button>
+    <!-- <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button color="warn" (click)="saveChild($event)"> -->
+      <!-- {{ butText }}
+    </button> -->
+  </div>
               </mat-card-actions>
           </mat-card>
     <!-- <div style="margin-left: 15px;">
@@ -431,7 +522,7 @@
   </div>
 </ng-template>
 
-<ng-template #imagepoup class="example-sidenav" mode="over" style="height: auto;width: 50%;" let-data >
+<ng-template #imagepoup class="example-sidenav" mode="over" style="height: auto;width: 50%;">
   <div style="text-align-last: end">
     <mat-icon [matDialogClose]="true">close</mat-icon>
   </div>

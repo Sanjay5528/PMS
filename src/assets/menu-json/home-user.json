@@ -1,0 +1,35 @@
+[{
+    "displayName": "My Profile",
+    "iconName": "../../../../assets/images/System user.svg",
+    "route": "/home-user/my-profile"
+},
+	
+	{
+        "displayName": "Jobs",
+        "iconName": "../../../../assets/images/briefcase_icon .svg",
+        "children": [
+    {
+        "displayName": "Job List",
+        "iconName": "../../../../assets/images/briefcase_icon .svg",
+        "route": "/list/home-user-jobs"
+    },
+    {
+        "displayName": "Post a Job",
+        "iconName": "../../../../assets/images/Post job.svg",
+        "route": "/home-user/add/job-post"
+    }
+]
+},
+{
+    "displayName": "Wallet",
+    "iconName": "../../../../assets/images/wallet.svg",
+    "route": "/home-user/wallet"
+},
+{
+    "displayName": "Transaction History",
+    "iconName": "../../../../assets/images/transaction.svg",
+    "route": "/list/home-user-wallet"
+}
+	
+	
+]

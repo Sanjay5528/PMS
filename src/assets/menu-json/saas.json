@@ -1,0 +1,151 @@
+[
+    
+    {
+        "displayName": "Jobs",
+        "iconName": "../../../../assets/images/briefcase_icon .svg",
+        "children": [
+    {
+        "displayName": "Prioritized Jobs",
+        "iconName": "../../../../assets/images/Manual allocation jobs.svg",
+        "route": "/list/joblist-saas"
+    },
+    {
+        "displayName": "Escalation Jobs",
+        "iconName": "../../../../assets/images/Manual allocation jobs.svg",
+        "route": "/list/escalation-jobs"
+    },
+    {
+        "displayName": "Corporate Customer Jobs",
+        "iconName": "../../../../assets/images/Corporate customer jobs.svg",
+        "route": "/list/corporate-customer"
+    },
+    {
+        "displayName": "Public User Jobs",
+        "iconName": "../../../../assets/images/Public user jobs.svg",
+        "route": "/list/end-user"
+    }
+]
+},
+{
+    "displayName": "Ticket",
+    "iconName": "./../../../assets/images/Ticket.svg",
+    "route": "/list/ticket-saas"
+},
+{
+    "displayName": "Engineer",
+    "iconName": "../../../../assets/images/engineer.svg",
+    "children": [
+        {
+            "displayName": "Engineer List",
+            "iconName": "./../../../assets/images/Engineer list.svg",
+            "route": "/list/engineer"
+        },
+        {
+            "displayName": "Engineer Approval Request",
+            "iconName": "./../../../assets/images/Engineer approval request.svg",
+            "route": "/list/engineers-approval"
+            
+        },
+        {
+            "displayName": "Group",
+            "iconName": "../../../../assets/images/Groupss.svg",
+            "route": "/list/groups_network"
+        }
+    ]
+},
+    {
+        "displayName": "Master Data",
+        "iconName": "../../../../assets/images/Master data.svg",
+        "children": [
+            {
+                "displayName": "SaaS Provider",
+                "iconName": "../../../../assets/images/Saas.svg",
+                "route": "/list/saas"
+            },
+            {
+                "displayName": "Corporate Customer",
+                "iconName": "../../../../assets/images/Corporate customer.svg",
+                "route": "/list/corporate"
+            },
+            {
+                "displayName": "System User",
+                "iconName": "./../../../assets/images/System user.svg",
+                "route": "/list/system_user"
+            }
+        ]
+    },
+    {
+        "displayName": "Lookup Data",
+        "iconName": "../../../../assets/images/Lookup data.svg",
+        "children": [
+            {
+                "displayName": "Country",
+                "iconName": "../../../../assets/images/Country.svg",
+                "route": "/list/country"
+            },
+            {
+                "displayName": "State",
+                "iconName": "../../../../assets/images/State.svg",
+                "route": "/list/state"
+            },{
+                "displayName": "City",
+                "iconName": "../../../../assets/images/Country.svg",
+                "route": "/list/city"
+            },
+            {
+                "displayName": "Email Template",
+                "iconName": "../../../../assets/images/Email template.svg",
+                "route": "/list/email_template"
+            },
+            {
+                "displayName": "Language",
+                "iconName": "../../../../assets/images/Language.svg",
+                "route": "/list/language"
+            },
+            {
+                "displayName": "Safety Wears",
+                "iconName": "../../../../assets/images/Safety wears.svg",
+                "route": "/list/dress_code"
+            },
+            {
+                "displayName": "Role",
+                "iconName": "./../../../assets/images/Role.svg",
+                "route": "/list/role"
+            },
+            {
+                "displayName": "Skill",
+                "iconName": "../../../../assets/images/Skills.svg",
+                "route": "/list/skills"
+            },
+            {
+                "displayName": "Tool",
+                "iconName": "../../../../assets/images/Tools.svg",
+                "route": "/list/tools"
+            },
+            {
+                "displayName": "Task",
+                "iconName": "../../../../assets/images/Task.svg",
+                "route": "/list/tasks"
+            },
+            
+            {
+                "displayName": "Service",
+                "iconName": "../../../../assets/images/Services.svg",
+                "route": "/list/services"
+            },
+            {
+                "displayName": "Service and Skill",
+                "iconName": "../../../../assets/images/Skills and services.svg",
+                "route": "/list/services_skills"
+            }
+            
+        ]
+    },
+    {
+        "displayName": "Payment Dispatch",
+        "iconName": "./../../../assets/images/Ticket.svg",
+        "route": "/list/payment-dispatch"
+    }
+    
+    
+]

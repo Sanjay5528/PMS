@@ -1,0 +1,69 @@
+[
+
+	{
+		"displayName": "Jobs",
+		"iconName": "work",
+		"children": [
+			{
+				"displayName": "Job List",
+				"iconName": "work",
+				"route": "/list/joblist"
+			},
+			{
+				"displayName": "Post a Job",
+				"iconName": "assignment_ind",
+				"route": "/corporate-customer/add/job-post"
+			},
+			{
+				"displayName": "Bulk Post",
+				"iconName": "subtitles",
+				"route": "/list/template"
+			}
+		]
+	},
+	{
+		"displayName": "Project",
+		"iconName": "work",
+		"children": [
+			{
+				"displayName": "Project List",
+				"iconName": "work",
+				"route": "/list/project"
+			}
+		]
+		
+	},
+    {
+		"displayName": "Master Data",
+		"iconName": "group",
+		"children": [
+			{
+				"displayName": "Role",
+				"iconName": "perm_identity",
+				"route": "/list/role"
+			},	{
+				"displayName": "System User",
+				"iconName": "perm_identity",
+				"route": "/list/system_user"
+			}
+		]},
+		
+    {
+		"displayName": "Calls & Messages",
+		"iconName": "chat",
+		"route": "/corporate-customer/"
+	},
+	{
+		"displayName": "Reports",
+		"iconName": "chat",
+		"route": "/corporate-customer/reports"
+	},
+	{
+		"displayName": "Settings",
+		"iconName": "chat",
+		"route": "/corporate-customer/settings"
+	}
+	
+	
+	
+]

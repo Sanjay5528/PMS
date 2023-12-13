@@ -1,0 +1,61 @@
+[
+
+    {
+        "displayName": "Jobs",
+        "iconName": "../../../../assets/images/briefcase_icon .svg",
+        "children": [
+            {
+                "displayName": "Job List",
+                "iconName": "../../../../assets/images/briefcase_icon .svg",
+                "route": "/list/joblist"
+            },
+            {
+                "displayName": "Post a Job",
+                "iconName": "../../../../assets/images/Post job.svg",
+                "route": "/corporate-customer/add/job-post"
+            },
+            
+            {
+                "displayName": "Bulk Post",
+                "iconName": "../../../../assets/images/Bulk post.svg",
+                "route": "/list/template"
+            }
+        ]
+    },
+    {
+        "displayName": "Project",
+        "iconName": "../../../../assets/images/briefcase_icon .svg",
+        "children": [
+            {
+                "displayName": "Project List",
+                "iconName": "../../../../assets/images/briefcase_icon .svg",
+                "route": "/list/project"
+            }   
+        ]
+        
+    },
+    {
+        "displayName": "Tickets",
+        "iconName": "../../../../assets/images/Ticket.svg",
+        "route": "/list/ticket-customer"
+    },
+        
+    {
+        "displayName": "Calls & Messages",
+        "iconName": "../../../../assets/images/Chats & calls.svg",
+        "route": "/corporate-customer/"
+    },
+    {
+        "displayName": "Reports",
+        "iconName": "../../../../assets/images/Reports.svg",
+        "route": "/corporate-customer/reports"
+    },
+    {
+        "displayName": "Settings",
+        "iconName": "../../../../assets/images/Settings.svg",
+        "route": "/corporate-customer/settings"
+    }
+    
+    
+    
+]

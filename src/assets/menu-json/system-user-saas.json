@@ -1,0 +1,124 @@
+[
+    
+    {
+        "displayName": "Jobs",
+        "iconName": "../../../../assets/images/briefcase_icon .svg",
+        "children": [
+    {
+        "displayName": "Manual Allocation Jobs",
+        "iconName": "../../../../assets/images/briefcase_icon .svg",
+        "route": "/list/joblist-saas"
+    },
+    {
+        "displayName": "Corporate Customer Jobs",
+        "iconName": "../../../../assets/images/briefcase_icon .svg",
+        "route": "/list/corporate-customer"
+    },
+    {
+        "displayName": "Public User Jobs",
+        "iconName": "../../../../assets/images/briefcase_icon .svg",
+        "route": "/list/end-user"
+    }
+]
+},
+{
+    "displayName": "Engineers",
+    "iconName": "../../../../assets/images/Groupss.svg",
+    "children": [
+        {
+            "displayName": "Engineers List",
+            "iconName": "../../../../assets/images/System user.svg",
+            "route": "/list/engineer"
+        },
+        {
+            "displayName": "Engineers Approval Request",
+            "iconName": "../../../../assets/images/System user.svg",
+            "route": "/list/engineers-approval"
+            
+        },
+        {
+            "displayName": "Group",
+            "iconName": "../../../../assets/images/Saas add account.svg",
+            "route": "/list/groups_network"
+        }
+    ]
+},
+    {
+        "displayName": "Master Data",
+        "iconName": "../../../../assets/images/Groupss.svg",
+        "children": [
+            
+            {
+                "displayName": "Corporate Customer",
+                "iconName": "../../../../assets/images/Saas add account.svg",
+                "route": "/list/corporate"
+            },
+            {
+                "displayName": "Skill",
+                "iconName": "../../../../assets/images/Skills.svg",
+                "route": "/list/skills"
+            },
+            {
+                "displayName": "Tool",
+                "iconName": "../../../../assets/images/Tools.svg",
+                "route": "/list/tools"
+            },
+            {
+                "displayName": "Task",
+                "iconName": "../../../../assets/images/Task.svg",
+                "route": "/list/tasks"
+            },
+            
+            {
+                "displayName": "Service",
+                "iconName": "../../../../assets/images/Skills and services.svg",
+                "route": "/list/services"
+            },
+            {
+                "displayName": "Services and Skills",
+                "iconName": "../../../../assets/images/Skills and services.svg",
+                "route": "/list/services_skills"
+            }
+            
+            
+
+        ]
+    },
+    {
+        "displayName": "Lookup Data",
+        "iconName": "../../../../assets/images/Groupss.svg",
+        "children": [
+           {
+            "displayName": "Country",
+            "iconName": "../../../../assets/images/Country.svg",
+            "route": "/list/country"
+        },
+        {
+            "displayName": "State",
+            "iconName": "../../../../assets/images/State.svg",
+            "route": "/list/state"
+        },{
+            "displayName": "City",
+            "iconName": "../../../../assets/images/Country.svg",
+            "route": "/list/city"
+        },
+        {
+            "displayName": "Email Template",
+            "iconName": "../../../../assets/images/Email template.svg",
+            "route": "/list/email_template"
+        },
+        {
+            "displayName": "Language",
+            "iconName": "../../../../assets/images/Language.svg",
+            "route": "/list/language"
+        },
+        {
+            "displayName": "Safety Wears",
+            "iconName": "../../../../assets/images/Safety wears.svg",
+            "route": "/list/dress_code"
+        }
+        ]
+    }
+    
+    
+]

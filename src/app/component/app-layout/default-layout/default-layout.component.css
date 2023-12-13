@@ -1,23 +1,23 @@
-.body{
-    width: calc(100%- 5rem);
+ 
+.body {
     height: 100vh;
-    margin-left: 4rem;
+    margin-left: 7rem;
     z-index: 0;
     position: relative;
     top: 0;
     transition: all .5s ease;
     background: white;
     padding: 1rem;
-}
-
-
-.body-trimmed{
-    width: calc(100%- 5rem);
-    margin-left: 16.5625rem;
-
-}
-
-.body-md-screen{
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .body-trimmed {
+    margin-left: 20rem;
+  }
+  
+  
+  .body-md-screen {
     width: 86%;
     margin-left: 14rem;
-}
+  }

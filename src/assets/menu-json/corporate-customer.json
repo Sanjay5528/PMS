@@ -1,0 +1,85 @@
+[
+
+    {
+        "displayName": "Jobs",
+        "iconName": "../../../../assets/images/briefcase_icon .svg",
+        "children": [
+            {
+                "displayName": "Job List",
+                "iconName": "../../../../assets/images/Group.svg",
+                "route": "/list/joblist"
+            },
+            {
+                "displayName": "Post a Job",
+                "iconName": "../../../../assets/images/Post job.svg",
+                "route": "/corporate-customer/add/job-post"
+            },
+            
+            {
+                "displayName": "Bulk Post",
+                "iconName": "../../../../assets/images/Bulk post.svg",
+                "route": "/list/template"
+            }
+        ]
+    },
+    {
+        "displayName": "Project",
+        "iconName": "../../../../assets/images/Project.svg",
+        "children": [
+            {
+                "displayName": "Project List",
+                "iconName": "../../../../assets/images/Project list.svg",
+                "route": "/list/project"
+            },
+            {
+                "displayName": "Create Project",
+                "iconName": "../../../assets/images/Create project.svg",
+                "route": "/corporate-customer/add/project"
+            }
+        ]
+        
+    },
+    {
+        "displayName": "Ticket",
+        "iconName": "../../../../assets/images/Ticket.svg",
+        "route": "/list/ticket-customer"
+    },
+    {
+        "displayName": "Master Data",
+        "iconName": "../../../../assets/images/Master data.svg",
+        "children": [
+            {
+                "displayName": "Role",
+                "iconName": "./../../../assets/images/Role.svg",
+                "route": "/list/role"
+            },  {
+                "displayName": "System User",
+                "iconName": "../../../../assets/images/System user.svg",
+                "route": "/list/system_user"
+            }
+        ]},
+    
+    {
+        "displayName": "Engineers",
+        "iconName": "../../../../assets/images/engineer.svg",
+        "route": "/list/engineers_approval_request"
+    },  
+    {
+        "displayName": "Calls & Messages",
+        "iconName": "../../../../assets/images/Chats & calls.svg",
+        "route": "/corporate-dashboard/"
+    },
+    {
+        "displayName": "Reports",
+        "iconName": "../../../../assets/images/report_analytics.svg",
+        "route": "/corporate-customer/reports"
+    },
+    {
+        "displayName": "Settings",
+        "iconName": "../../../../assets/images/Settings.svg",
+        "route": "/corporate-customer/settings"
+    }
+    
+    
+    
+]

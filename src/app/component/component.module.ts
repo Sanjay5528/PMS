@@ -85,6 +85,7 @@ import { NestedtablesComponent } from './nestedtables/nestedtables.component';
 import { NgxGanttModule } from '@worktile/gantt';
 import { GantchartComponent } from './gantchart/gantchart.component';
 import { TimeSheetActionButtonComponent } from './timesheet/button';
+import { MatRadioModule } from '@angular/material/radio';
 
 
 const MY_DATE_FORMATS = {
@@ -147,6 +148,7 @@ const appearance: any = {
     BrowserModule,
     AgGridModule,
     NgxGanttModule,
+    MatRadioModule,
     MatProgressBarModule,
     BrowserAnimationsModule,
     CommonModule,

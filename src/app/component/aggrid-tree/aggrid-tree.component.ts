@@ -150,9 +150,9 @@ collection="project"
     //  let breadCrums:any =  this.breadCrums.routing(this,this.pageHeading)
     //  console.log(breadCrums);
      
-   this.breadCrums.routing(this, this.pageHeading).then((breadCrumbs:any) => {
-    console.log(breadCrumbs);
-  });
+  //  this.breadCrums.routing(this, this.pageHeading).then((breadCrumbs:any) => {
+  //   console.log(breadCrumbs);
+  // });
       this.loadScreen(this.formName)
       this.dataService.getDataById(collection, this.id).subscribe((res: any) => {
         this.response = res.data[0]
@@ -188,6 +188,31 @@ collection="project"
     });
   }
  // public sideBar: SideBarDef | string | string[] | boolean | null = 'columns' ;
+ formlyformdata(data:any){
+  console.log('work');
+  if(data==true){
+
+    this.dataService.loadConfig("task").subscribe((res:any)=>{
+      console.log(res);
+      // let config:any=res
+   this.config=res;
+      this.fields=res.form.fields;
+    })
+  }else if(data==false){
+    this.fields.push({
+      "type": "html-input",
+      "key": "not_bug_justification",
+      "className": "flex-8",
+      "props": {
+        "label": "Why It Not a Bug Justification",
+        required:true
+         }  
+    })
+  }
+ }
+ 
+
+
 
 loadScreen(formName:any){
 
@@ -572,7 +597,33 @@ this.gridOptions.paginationPageSize=100
     )
   }else if(this.formName=="bug_list"||this.formName=="regression"){
     this.pageHeading="Bug List"
-this.gridOptions.sideBar=true
+this.gridOptions.sideBar= {
+  toolPanels: [
+      {
+          id: 'columns',
+          labelDefault: 'Columns',
+          labelKey: 'columns',
+          iconKey: 'columns',
+          toolPanel: 'agColumnsToolPanel',
+          minWidth: 225,
+          maxWidth: 225,
+          width: 225
+      },
+      {
+          id: 'filters',
+          labelDefault: 'Filters',
+          labelKey: 'filters',
+          iconKey: 'filter',
+          toolPanel: 'agFiltersToolPanel',
+          minWidth: 180,
+          maxWidth: 400,
+          width: 250
+      }
+  ],
+  position: 'right',
+   
+  // defaultToolPanel: 'filters',
+};
 this.gridOptions.pagination=true
 this.gridOptions.paginationPageSize=100
 this.gridOptions.pivotMode=false
@@ -585,6 +636,7 @@ this.defaultColDef.sortable=true;
 this.defaultColDef.editable=false;
 this.defaultColDef.enableValue=true;
 this.defaultColDef.pivot=true;
+// this.gridOptions.tool=true;
 // this.gridOptions.columnTypes= {
 //   valueColumn: {
 //     editable: true,
@@ -883,8 +935,9 @@ OnlyValueRequriementModules:any[]=[]
 
 poupimage(data:any){
 this.imageFile=data; 
+console.log(data);
 
-this.dialogService.openDialog(this.imagepoup)
+this.dialogService.openDialog(this.imagepoup,null,null,null)
 }
 sprintCellEditorParams = (params: any) => {
     if(params==true || !isEmpty(this.OnlyValueRequriementSprint)){
@@ -1402,6 +1455,8 @@ this.dataService.lookupTreeData("regression",this.response._id).subscribe((res:a
     this.dataService.lookUpBug(this.response.project_id,'').subscribe((res:any)=>{
       let data:any=res.data.response
       this.listData=data
+      this.gridApi.setSideBarVisible(true);
+
     })
    }else if(this.formName=="regression"){
         this.dataService.getDataById("regression",this.parms ).subscribe((res:any)=>{
@@ -1543,16 +1598,18 @@ if(this.formName=="Requirement"){
         this.drawer.open();
       }
       
-    }}
+    }
+  }
     else if(this.formName=="bug_list"){
       // console.log(event.data);
       // this.cellClicked=clickCell
-      
+      document.documentElement.style.setProperty('--width', '75%');
+
       // this.drawer.open()
-      if (event.data[clickCell] > 0) {
+      // if (event.data[clickCell] > 0) {
         this.cellClicked = clickCell;
         this.drawer.open();
-      }
+      // }
       
     }
     else {
@@ -1750,6 +1807,7 @@ if(fieldName=="assigned_to"){
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
     this.gridApi.sizeColumnsToFit();
+    if(this.formName=="bug_list"){this.gridApi.setSideBarVisible(true)}
   }
 
   onAddButonClick(ctrl: any) { 
@@ -1762,15 +1820,11 @@ if(fieldName=="assigned_to"){
       this.collectionName = config.form.collectionName
       this.formAction = 'Add';
       this.butText = 'Save';   //buttons based on the id
-
-    this.dialogService.openDialog(this.editViewPopup, null, null, {});
-      
-     
-
-
+      this.dialogService.openDialog(this.editViewPopup, null, null, {});
     })
   
   } 
+  
   saveChild() { 
     if (!this.form.valid) {
     const invalidLabels:any = this.helperServices.getDataValidatoion(this.form.controls);
@@ -1799,9 +1853,10 @@ if(values._id==undefined|| values._id ==null){
   this.ngOnInit()
   }
   
+  
 
 
-
+  is_bug:any
   resetBtn(data?: any) {
     this.selectedModel = {}
     this.formAction = this.model.id ? 'Edit' : 'Add'
@@ -1817,9 +1872,8 @@ if(values._id==undefined|| values._id ==null){
     }else{
       return dates
     }
-  }
-
-  reassigndata(employeeID:any,index:any){
+  } 
+  reassigndata(employeeID?:any,index?:any){
    this.reassignemployee[index]=[]
     let filer:any={
       start:0,end:1000,filter:[{
