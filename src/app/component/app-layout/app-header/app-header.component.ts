@@ -8,6 +8,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { MatSidenav } from '@angular/material/sidenav';
 import { DataService } from 'src/app/services/data.service';
 import { DialogService } from 'src/app/services/dialog.service';
+import { FormControl } from '@angular/forms';
 //import { ChangePasswordComponent } from '../../authentication/change-password/change-password.component';
 
 @Component({
@@ -19,8 +20,10 @@ export class AppHeaderComponent {
   @ViewChild('childMenu') public childMenu: any;
   @Input('company_logo') company_logo: any
   navItems!: NavItem[]
+  project_menu:any=false
   logo = environment.logoUrl
   CustomerList:any
+  // FormControl:FormControl = new FormControl('')
   role:any
   constructor(
     private router: Router,
@@ -34,7 +37,7 @@ export class AppHeaderComponent {
   ngOnInit() { 
     // this.screenId="COORDR_menu";
     this.screenId="devops";
-
+this.project_menu = sessionStorage.getItem("project_menu") 
     // rewrite the code
       // this.httpClient.get("assets/menu-json/" +"menu" + ".json").subscribe((data: any) => {
       //   console.log(data);
@@ -259,27 +262,10 @@ export class AppHeaderComponent {
          this.navItems = config
         
       });
-      // this.dataservice.getData("user").subscribe((res:any)=>{
-      //   this.CustomerList = res?.data.filter((a:any)=>{
-      //     if(a.companyname){
-      //       return a
-      //     }
-      //   }) 
-      //   console.log(this.CustomerList )
-      // })
   }
 
   
 
-
-    //patch the selected data to the field
-    selectionChange(ctrl: any, inputObj: any,value:any) {
-      const url = this.router.serializeUrl(
-        this.router.createUrlTree([`/corporate-admin-dashboard/${value._id}`])
-      );
-      window.open(url, '_blank  ');
-
-  }
 
 
 
@@ -294,24 +280,15 @@ export class AppHeaderComponent {
     //   window.location=res?.logout_url
     // })
   }
-
-
-// Switch account as Corporate Customer by SAAS
-setSelectedCusId(event:any){
-  
-this.dataservice.getDataById("entities/user",event._id).subscribe((res:any)=>{
-  this.role=sessionStorage.getItem("role")
- this.company_logo=sessionStorage.getItem("company_logo")
- this.router.navigate(['/data/corporate-admin-dashboard']);
-})
-
-
-  }
-
    
   homepage(event: any) {
     this.router.navigate(['/home']);
   }
+
+  projectmenu(event:any){
+    sessionStorage.setItem("project_menu",this.project_menu) 
+  }
+
   navigate(item:any){
     this.router.navigate([item.route]);
 

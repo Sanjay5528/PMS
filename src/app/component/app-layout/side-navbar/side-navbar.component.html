@@ -1,20 +1,43 @@
 <div class="sidenav" [ngClass]="collapsed ?'sidenav-collapsed':'sidenav-expanded'">
+  <div  (click)="dashboard()" *ngIf="collapsed">
+      <mat-form-field style="margin-left: 14px;width: 90%;margin-top: 14px;">
+       <mat-label>Select Project</mat-label>
+      <mat-select formControlName="formControl" required>
+        <mat-option *ngFor="let data of this.project_Data"  [value]="data._id">{{data.project_name}}</mat-option>
+      </mat-select>
+      <!-- @if (animalControl.hasError('required')) {
+        <mat-error>Please choose an animal</mat-error>
+      } -->
+    </mat-form-field>
+  </div>
+
+  
+  
   <div class="logo-container">
     <!-- <button class="logo" (click)="togglecollapse()"><mat-icon>menu</mat-icon></button> -->
     <div class="image" (click)="dashboard()" *ngIf="collapsed">
         <img *ngIf="this.logo_image"  style="object-fit:contain;   width: 100%;padding: 15px 20px 15px 20px;height: 150px;"   src={{this.logo_image}} />
     </div>
+
     <mat-icon [ngClass]="collapsed ?'expand_icon_collapsed':'expand_icon_non_collapsed'"
       (click)="togglecollapse()">chevron_right</mat-icon>
   </div>
+
+  
   <div (click)="togglecollapse(collapsed)" [ngClass]="collapsed ?'menu-items':'menu-items-noncollapsed'">
     <ul *ngFor="let data of navItems" class="sidenav-nav">
       <li class="sidenav-nav-item">
-        <a *ngIf="!data.children" href="" class="sidenav-nav-link" [routerLink]="[data.route]">
+        <a *ngIf="!data.children"  class="sidenav-nav-link"
+        (click)="routeToDestination(data.route)"
+        >
+        <!-- [routerLink]="[data.route]" -->
+
           <!-- <mat-icon class="sidenav-link" style="margin-top: 3px; font-size: 22px;">{{ data.iconName }}</mat-icon> -->
-          <svg  class="sidenav-link" width="22" height="22" style="margin: 3px 5px 5px 0px; gap: 5px; font-size: 22px;"  >
+
+          <!-- <svg  class="sidenav-link" width="22" height="22" style="margin: 3px 5px 5px 0px; gap: 5px; font-size: 22px;"  >
             <image class="imgsvg" x="0" y="0" class="imgsvg" width="100%" height="100%" [attr.xlink:href]="data.iconName" />
-          </svg>
+          </svg> -->
+          
           <span  class="sidenav-link">{{ data.displayName }}</span>
         </a>
       </li>
@@ -22,9 +45,9 @@
         <a class="sidenav-nav-link" >
           <!-- <mat-icon class="sidenav-link" style="margin-top: 3px; gap: 5px; font-size: 22px;">{{ data.iconName
             }}</mat-icon> -->
-            <svg class="sidenav-link" width="22" height="22" style="margin: 3px 5px 5px 0px; gap: 5px; font-size: 22px;"  >
+            <!-- <svg class="sidenav-link" width="22" height="22" style="margin: 3px 5px 5px 0px; gap: 5px; font-size: 22px;"  >
               <image x="0" y="0" class="imgsvg" width="100%" height="100%" [attr.xlink:href]="data.iconName" />
-            </svg>         
+            </svg>          -->
           <span  class="sidenav-link">{{ data.displayName }}  </span>
           <mat-icon  *ngIf="collapsed" style="margin-left: auto; margin-top: 3px; gap: 5px;">
             {{
@@ -36,15 +59,18 @@
         </a>
       </li>
       <li *ngIf="subsectionExpanded[data.displayName] && data.children && collapsed == true" class="submenu-item">
-        <a class="sidenav-nav-link" mat-list-item [routerLink]="[subsection.route]"
+        <!-- [routerLink]="[subsection.route]" -->
+        <a class="sidenav-nav-link" mat-list-item 
+        (click)="routeToDestination(subsection.route)"
           *ngFor="let subsection of data.children">
           <div style="display: flex;flex-direction: row;">
             <!-- <mat-icon class="sidenav-link" style="margin-top: 3px;gap: 5px;font-size: 22px;">{{ subsection.iconName
               }}</mat-icon> -->
               <!-- <img class="sidenav-link" style=" margin-top: 3px; gap: 5px; font-size: 22px;height: 8%; width: 8%;" [src]="subsection.iconName" alt=""> -->
-              <svg class="sidenav-link" width="22" height="22" style="margin: 3px 5px 5px 0px; gap: 5px; font-size: 22px;">
+
+              <!-- <svg class="sidenav-link" width="22" height="22" style="margin: 3px 5px 5px 0px; gap: 5px; font-size: 22px;">
                 <image class="imgsvg" x="0" y="0" width="100%" height="100%" [attr.xlink:href]="subsection.iconName" alt=""/>
-              </svg>              
+              </svg>               -->
               <span class="sidenav-link" style="margin-top: 3px;gap:5px;">{{
               subsection.displayName
               }}</span>
@@ -53,4 +79,20 @@
       </li>
     </ul>
   </div>
+
+  <!-- <div [ngClass]="collapsed ?'menu-signout':'menu-signout-noncollapsed'" class="logout">
+    <a href="" class="sidenav-nav-link" (click)="logout()">
+      <mat-icon class="sidenav-link">exit_to_app</mat-icon>
+      <span class="sidenav-link">Sign Out</span>
+    </a>
+  </div> -->
 </div>
+
+<!-- <div [ngClass]="collapsed ?'menu-signout':'menu-signout-noncollapsed'" class="logout">
+  <a href="" class="sidenav-nav-link" (click)="logout()">
+    <svg class="sidenav-link" width="22" height="22" style="margin: 3px 5px 5px 0px; gap: 5px; font-size: 22px;">
+      <image class="imgsvg" x="0" y="0" width="100%" height="100%" xlink:href="assets/images/Sign out.svg#icon-name" alt=""/>
+    </svg>  
+    <span class="sidenav-link">Sign Out</span>
+  </a>
+</div> -->

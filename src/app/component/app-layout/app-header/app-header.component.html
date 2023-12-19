@@ -28,6 +28,13 @@
         <mat-icon>home</mat-icon>
       </button>
     </span>
+    <span>
+        <!-- Project Menu <mat-slide-toggle  [FormControl]="FormControl" (click)="projectmenu($event)"></mat-slide-toggle> -->
+
+        Project Menu <mat-slide-toggle  [checked]="project_menu" (click)="project_menu=(!project_menu);projectmenu($event)"></mat-slide-toggle>
+    </span>
+
+
      <button mat-icon-button [matMenuTriggerFor]="menu" style="width:50px;" >
         <mat-icon>menu</mat-icon>
       </button>
@@ -41,38 +48,5 @@
        
       </mat-menu>
     </mat-toolbar-row>
-</mat-toolbar>
-<!-- <mat-sidenav-container fxFlexFill>
-  <mat-sidenav #sidenav>
-    <a (click)="sidenav.toggle()" href="#" mat-button>Close</a>
-    <mat-nav-list>
-      <div *ngFor="let item of navItems"> -->
-        <!-- Handle branch node buttons here -->
-        <!-- <span *ngIf="item.children && item.children.length > 0">
-          <button mat-button [matMenuTriggerFor]="menu.childMenu">
-            {{item.displayName}}
-            <mat-icon>expand_more</mat-icon>
-          </button>
-          <app-menu-item #menu [items]="item.children"></app-menu-item>
-        </span> -->
-        <!-- Leaf node buttons here -->
-        <!-- <span *ngIf="!item.children || item.children.length === 0">
-          <button mat-button color="primary" [routerLink]="item.route">
-            {{item.displayName}}
-          </button>
-        </span>
-      </div>
-    </mat-nav-list>
-  </mat-sidenav> -->
-  <!-- <mat-sidenav-content fxFlexFill>Main content</mat-sidenav-content> -->
-<!-- </mat-sidenav-container> -->
+</mat-toolbar> 
 </div>
-
-
-
-
-<!-- 
-<div class="display-items">
-  <div><mat-icon class="icon">message</mat-icon></div>
-  <div><mat-icon  class="icon">notifications</mat-icon></div>
-</div>  -->

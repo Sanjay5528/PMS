@@ -17,33 +17,39 @@ export class DefaultLayoutComponent {
  theme:any
    
     isSideNavCollapsed = false
-    constructor(  ){
+    constructor(private jwtService: JwtHelperService, private route: ActivatedRoute,  private router: Router,private dataservice:DataService ){
       
+      //switch account from  SAAS to Corporate Customer 
+      this.route.queryParams.subscribe((qparams:any)=>{
+        console.log('param',qparams)  
+        
+        let token = qparams["code"] 
+        console.log('token',token) 
+       
+    
+      })
     }
 
  
    onToggleSidenav(data:SideNavToggle){
-     debugger
      this.screenwidth=data.screenwidth
      this.collapsed=data.collapsed
- 
      let styleclass=""
      if(this.collapsed && this.screenwidth > 768){
- styleclass='body-trimmed'
+         styleclass='body-trimmed'
      } else if(this.collapsed && this.screenwidth <=768 && this.screenwidth>0){
- styleclass='body-md-screen'
+        styleclass='body-md-screen'
      }
      return styleclass
    }
  
  
    class(){
-    
      let styleclass=""
      if(this.collapsed && this.screenwidth > 768){
- styleclass='body-trimmed'
+       styleclass='body-trimmed'
      } else if(this.collapsed && this.screenwidth <=768 && this.screenwidth>0){
- styleclass='body-md-screen'
+       styleclass='body-md-screen'
      }
      return styleclass
    }

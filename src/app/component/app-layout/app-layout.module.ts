@@ -22,6 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SideNavbarComponent } from './side-navbar/side-navbar.component';
+import { MatSlideToggleModule, _MatSlideToggleRequiredValidatorModule } from '@angular/material/slide-toggle';
 
 
 
@@ -47,6 +48,8 @@ import { SideNavbarComponent } from './side-navbar/side-navbar.component';
     NgSelectModule,
     HttpClientModule,
     MatInputModule,
+    MatSlideToggleModule,
+    _MatSlideToggleRequiredValidatorModule,
     MatSidenavModule,
     MatListModule,
     FlexLayoutModule,
