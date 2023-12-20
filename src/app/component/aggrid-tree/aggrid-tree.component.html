@@ -322,61 +322,20 @@
             </mat-card-header>
               <!-- <span style="font-size: small;font-family: cursive;margin-left: 20px;color: grey;">  {{  datefunction(selectedRows?.task?.scheduled_start_date)}} to {{  datefunction(selectedRows?.task?.scheduled_end_date)}}  <span style="font-size: small;margin-left: 10px;font-weight: bold;">  ( {{selectedRows?.task?.allocated_hours}}  <span style="font-size: xx-small;font-weight: bold;">Hr</span> )  </span>  </span> -->
             <mat-card-content style="margin-left: 30px;" *ngIf="is_bug == true|| is_bug==false">
-              <!-- <p [innerHTML]="selectedRows?.task?.description"></p> -->
-              <!-- <mat-form-field *ngIf="reassignemployee[0]" style="width: 50%;max-width: 50%;">
-                <mat-label>Reassign To</mat-label>
-                <mat-select>
-                 <mat-option selected="true" [disabled]="true" >Select Any Employee Below</mat-option>
-               
-                    <mat-option  *ngFor="let data of reassignemployee[0]" (click)="reassigntask(selectedRows?.task?.assigned_to,data,0)" [value]="data?.employee_id">{{data?.first_name}} {{data?.last_name}}</mat-option>
-                </mat-select>
-               </mat-form-field>
-
-              <mat-form-field>
-                <mat-label>Choose a Start Date</mat-label>
-                <input matInput [matDatepicker]="picker">
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-              </mat-form-field>
-              <mat-form-field>
-                <mat-label>Choose a End Date</mat-label>
-                <input matInput [matDatepicker]="picker">
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-              </mat-form-field> -->
               <formly-form [model]="selectedModel" [fields]="fields" [form]="form"></formly-form>
-
             </mat-card-content>
             <mat-card-actions style="display: flex;justify-content: space-between;">
-
- <!-- <mat-form-field *ngIf="reassignemployee[0]" style="width: 50%;max-width: 50%;">
-  <mat-label>Reassign To</mat-label>
-  <mat-select>
-   <mat-option selected="true" [disabled]="true" >Select Any Employee Below</mat-option>
- 
-      <mat-option  *ngFor="let data of reassignemployee[0]" (click)="reassigntask(selectedRows?.task?.assigned_to,data,0)" [value]="data?.employee_id">{{data?.first_name}} {{data?.last_name}}</mat-option>
-  </mat-select>
- </mat-form-field>
-  --><div style="text-align-last: end; width: 100%">
-    <!-- <button style="margin: 5px" mat-button (click)="cancel()"  *ngIf="config.onCancelRoute">Cancel</button> -->
+  <div style="text-align-last: end; width: 100%">
     <button style="margin: 5px" mat-button (click)="resetBtn('reset')" >Reset</button>
-    <!-- <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button color="warn" (click)="saveChild($event)"> -->
-      <!-- {{ butText }}
-    </button> -->
+    <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button color="warn" (click)="savebugTask()">
+      Save
+    </button>
   </div>
               </mat-card-actions>
-          </mat-card>
-    <!-- <div style="margin-left: 15px;">
-          <span style="font-size: large;font-weight: bold;">{{ selectedRows.testcase.test_case_name }}</span>                <span [ngStyle]="{'background-color': selectedRows.testcase?.test_case_scenario === 'P' ? 'green' : 'red', 'width': '10px', 'height': '10px', 'border-radius': '50%', 'display': 'inline-block', 'margin-right': '5px','margin-left':'5px'}"></span>          
-        
-      
-    
-    </div> -->
+          </mat-card> 
    <div>
-      
-
-   </div>
-     </div>
+  </div>
+</div>
  
 </div>
   </mat-drawer>
@@ -385,7 +344,7 @@
   
       <div fxLayout="row" fxLayoutAlign="center center" fxFlex="100%" style="width:100%;">
         <div fxLayout="column" fxFlex="5%" class="back">
-          <mat-icon style="font-size:35px;margin-top: 30px;" (click)="goBack()">keyboard_backspace</mat-icon>
+          <mat-icon style="font-size:35px;margin-top: 30px;margin-left: 10px;" (click)="goBack()">keyboard_backspace</mat-icon>
         </div>
         <div fxLayout="column" fxFlex="95%" fxLayoutAlign="center center" style="margin-top: 10px;">
           <h2 class="page-title">{{pageHeading}}</h2>
@@ -529,6 +488,6 @@
   <div class="page">
     <div fxLayout="row" fxLayoutAlign="center center" >
             <app-carsoal [data]="imageFile"></app-carsoal>
-    </div>
+    </div> 
   </div>
 </ng-template>

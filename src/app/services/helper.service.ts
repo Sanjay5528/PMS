@@ -1,7 +1,7 @@
 import { Injectable, OnInit } from '@angular/core';
 
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { DatePipe, PlatformLocation } from '@angular/common';
 
 import { environment } from 'src/environments/environment';
@@ -32,8 +32,10 @@ export class HelperService implements OnInit {
   public isLoggedIn(): boolean {
     // check for token expiry, will fail for no token or invalid token
     const token = sessionStorage.getItem('token');
+    console.log("isTokenExpired",);
+    
     try {
-      return token && true || false;
+      return token && !this.jwtService.isTokenExpired(token) && true || false;
     } catch (e) {
       return false;
     }
@@ -185,6 +187,7 @@ export class HelperService implements OnInit {
       return arrayTemp;
     }
   }
+
   public getToken() {
     return sessionStorage.getItem('token') 
   }
@@ -199,10 +202,12 @@ export class HelperService implements OnInit {
   getSelectedOrgId() {
     return sessionStorage.getItem("selectedOrgId")
   }
+
   getSubDomainName() {
     var hostName = this.loc.hostname.replace("www.", "").split(".")
     // return environment?.OrgId  //hostName[0]
   }
+
   getRole() {
     let value:any= sessionStorage.getItem('auth')
     let parsedValue:any=JSON.parse(value)
@@ -216,6 +221,7 @@ export class HelperService implements OnInit {
     let parsedValue:any=JSON.parse(value)
     return parsedValue.data.LoginResponse.employee_id
   }
+
   getDataValidatoion(controls: any, invalidLabels: string = ''): any{
     //   for (const key in controls) {
     //       if (controls.hasOwnProperty(key)) {
@@ -258,5 +264,16 @@ export class HelperService implements OnInit {
   return value;
   
   }
+  private project: BehaviorSubject<any> = new BehaviorSubject<any>(false);
 
+  getProjectmenu(data: any) {
+    this.project.next(data);
+  }
+
+  // You can subscribe to this observable to get updates
+  getProjectObservable(): Observable<any> {
+    // console.log(this.project.asObservable());
+    
+    return this.project.asObservable();
+  }
 }

@@ -245,6 +245,7 @@ if(this.model.isEdit){
  }
 
  onSelectFile(event: any) {
+    this.imageUrl=''
  this.file = event.target.files[0]
 console.log(this.file);
 
@@ -288,8 +289,7 @@ let ref=this.field.props.refId
  if(this.field.bind_key){
  if(this.model[this.field.bind_key]==undefined){
  return this.dialogService.openSnackBar(`${this.field.bind_key.toUpperCase().replace('_', ' ')} Is Missing`,"OK")
- }
- debugger
+ } 
  formData.append('file',this.file);
  formData.append(this.field.refId,this.model[this.field.bind_key]);
 //  formData.append("details_type",this.field.details_type);

@@ -23,6 +23,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SideNavbarComponent } from './side-navbar/side-navbar.component';
 import { MatSlideToggleModule, _MatSlideToggleRequiredValidatorModule } from '@angular/material/slide-toggle';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -38,6 +39,7 @@ import { MatSlideToggleModule, _MatSlideToggleRequiredValidatorModule } from '@a
   imports: [
     BrowserModule,
     RouterModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     CommonModule,
     MatMenuModule,

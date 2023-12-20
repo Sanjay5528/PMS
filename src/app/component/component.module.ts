@@ -86,6 +86,7 @@ import { NgxGanttModule } from '@worktile/gantt';
 import { GantchartComponent } from './gantchart/gantchart.component';
 import { TimeSheetActionButtonComponent } from './timesheet/button';
 import { MatRadioModule } from '@angular/material/radio';
+import { CardComponent } from './card/card.component';
 
 
 const MY_DATE_FORMATS = {
@@ -133,7 +134,7 @@ const appearance: any = {
      CalenderComponent,
      ProjectteamComponent,
      TimesheetComponent,
-     ExpansionComponent,DropDownAgggrid, NestedtablesComponent, GantchartComponent
+     ExpansionComponent,DropDownAgggrid, NestedtablesComponent, GantchartComponent, CardComponent
   ],
   imports: [
     NgSelectModule,

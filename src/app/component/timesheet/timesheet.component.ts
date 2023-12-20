@@ -986,8 +986,8 @@ export class TimesheetComponent implements OnInit {
 
   }
 getapprovalData(start_Date:any, end_Date:any){
-// this.dataService.getTimesheetforApproval(this.employee_id,start_Date,end_Date).subscribe((response:any)=>{
-this.dataService.getTimesheetforApproval("E0001",start_Date,end_Date).subscribe((response:any)=>{
+this.dataService.getTimesheetforApproval(this.employee_id,start_Date,end_Date).subscribe((response:any)=>{
+// this.dataService.getTimesheetforApproval("E0001",start_Date,end_Date).subscribe((response:any)=>{
 
   console.log(response);
   // let rowData:any[]=[]

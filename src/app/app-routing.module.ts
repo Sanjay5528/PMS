@@ -97,8 +97,8 @@ const routes: Routes = [
     children: [
       {
         path: "",
-        // component:DashboardComponent
-        component: GantchartComponent
+        component:DashboardComponent
+        // component: GantchartComponent
 
       }
 
@@ -158,7 +158,8 @@ const routes: Routes = [
         component: DatatableComponent,
       }
     ],
-  },{
+  },
+  {
     path:'data_set',
     canActivate: [AuthGuardService], 
     component: DefaultLayoutComponent,
@@ -175,7 +176,8 @@ const routes: Routes = [
         component:DatasetComponent
       }
     ]
-  }, {
+  },
+   {
     path: "project",
     component: DefaultLayoutComponent,
     children: [
@@ -199,6 +201,7 @@ const routes: Routes = [
       },
     ],
   }, 
+  
   // {
   //   path: "approval",
   //   component: DefaultLayoutComponent,

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import {
   ColDef,
   ColGroupDef,
@@ -62,7 +62,7 @@ public  columnDefs: (ColDef | ColGroupDef)[] = []
   butText = 'Save'
   addbutton:boolean=false
   reassignemployee:any[]=[]
-
+//! this.cfg.detectChanges() Undo
 
   public autoGroupColumnDef: ColDef = {};
 
@@ -80,10 +80,6 @@ public gridOptions: GridOptions = {
 
 animateRows:true,paginationPageSize:10
 }
-  /** treepath  for ag grid */
-  public getTreePath: GetDataPath = (data: any) => {
-    return data.treePath;
-  };
   cellClicked:any 
 
   constructor(public httpclient: HttpClient,  
@@ -95,111 +91,131 @@ animateRows:true,paginationPageSize:10
     private helperServices:HelperService,
     public dataService: DataService,
     public formservice: FormService,
+    public cfg:ChangeDetectorRef,
     public formBuilder: FormBuilder) 
     {
     this.components = {
       buttonRenderer: ButtonComponent
     }
     this.context = { componentParent: this };
-    
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   } 
 parms:any
   ngOnInit() {
     this.route.params.subscribe(params => {
-this.addbutton=false;
-console.log(params);
-this.id = params['id'];
-this.parms=params['id']
-
-      this.formName=params['component']
-let collection:any
-      if(this.formName == "module"){
-this.pageHeading= "Module"
-collection="project"
-      }else if(this.formName=="Requirement"){
-        this.pageHeading= "Requirement"
-        collection="project"
-
-      }else if(this.formName=="projectteam"){
-        this.pageHeading= "Team Member"
-        collection="project"
-
-      }else if(this.formName=="test_result"){
-        this.pageHeading="Test Result"
-
-        collection="regression"
-        this.addbutton=true;
-      }else if(this.formName=="bug_list"){
-        this.pageHeading="Bug List"
-
-        collection="project"
-        this.addbutton=true;
-      } else if(this.formName=="regression"){
-        this.pageHeading="Bug List"
-
-        collection="project"
-        this.addbutton=true;
-        this.id=sessionStorage.getItem("project_id")
-      } else if(this.formName=="team_member"){
-        this.pageHeading="Task Assign"
-        collection="project"
-        this.addbutton=true;
-      }
-    // this.routing(component.route._futureSnapshot._routerState.url, display_Name)
-
-    //  let breadCrums:any =  this.breadCrums.routing(this,this.pageHeading)
-    //  console.log(breadCrums);
-     
-  //  this.breadCrums.routing(this, this.pageHeading).then((breadCrumbs:any) => {
-  //   console.log(breadCrumbs);
-  // });
-      this.loadScreen(this.formName)
-      this.dataService.getDataById(collection, this.id).subscribe((res: any) => {
-        this.response = res.data[0]
-        if(this?.response?.startdate){
-          this.response.startdate=moment(this.response?.startdate).format('D/M/ YYYY')
-        }
-        if(this?.response?.enddate){
-          this.response.enddate=moment(this.response?.enddate).format("D/M/ YYYY")
-        }
-        if(this.formName=="Requirement"){
-          this.sprintCellEditorParams('')
-          this.moduleCellEditorParams('')
-          this.ValueToCompareRequriementSprint == undefined || isEmpty(this.ValueToCompareRequriementSprint) ? this.sprintCellEditorParams(true) : this.ValueToCompareRequriementSprint;            
-
-          this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
-        }
-        if(this.formName=="team_member"){
-          // this.sprintCellEditorParams('')
-          this.ValueToCompareEmployee == undefined || isEmpty(this.ValueToCompareEmployee) ? this.AssignTOCellEditorParams(true) : this.ValueToCompareEmployee;            
-
-          // this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
-        }
-        sessionStorage.setItem("project_id", this.response.project_id)
-        
-        // if(this.formName=="projectteam"){
-        //   this.getList()
-        // }else{
-          this.getTreeData()
-        // }
+      this.addbutton=false;
+      console.log(params);
+      this.id = params['id'];
+      this.parms=params['id']
+      // this.cfg.detectChanges()
+            this.formName=params['component']
+      let collection:any
+            if(this.formName == "module"){
+      this.pageHeading= "Module"
+      collection="project"
+            }else if(this.formName=="Requirement"){
+              this.pageHeading= "Requirement"
+              collection="project"
       
-       
-      })
-    });
+            }else if(this.formName=="projectteam"){
+              this.pageHeading= "Team Member"
+              collection="project"
+      
+            }else if(this.formName=="test_result"){
+              this.pageHeading="Test Result"
+      
+              collection="regression"
+              this.addbutton=true;
+            }else if(this.formName=="bug_list"){
+              this.pageHeading="Bug List"
+      
+              collection="project"
+              this.addbutton=true;
+            } else if(this.formName=="regression"){
+              this.pageHeading="Bug List"
+      
+              collection="project"
+              this.addbutton=true;
+              this.id=sessionStorage.getItem("project_id")
+            } else if(this.formName=="team_member"){
+              this.pageHeading="Task Assign"
+              collection="project"
+              this.addbutton=true;
+            }
+          // this.routing(component.route._futureSnapshot._routerState.url, display_Name)
+      
+          //  let breadCrums:any =  this.breadCrums.routing(this,this.pageHeading)
+          //  console.log(breadCrums);
+           
+        //  this.breadCrums.routing(this, this.pageHeading).then((breadCrumbs:any) => {
+        //   console.log(breadCrumbs);
+        // });
+            this.columnDefs=[];
+            this.listData=[];
+              // this.cfg.detectChanges()
+              if(this?.gridApi != null || this?.gridApi != undefined){
+                this.gridApi.refreshClientSideRowModel()
+              }
+            this.loadScreen(this.formName)
+            this.dataService.getDataById(collection, this.id).subscribe((res: any) => {
+              this.response = res?.data[0]
+              if(this?.response?.startdate){
+                this.response.startdate=moment(this.response?.startdate).format('D/M/ YYYY')
+              }
+              if(this?.response?.enddate){
+                this.response.enddate=moment(this.response?.enddate).format("D/M/ YYYY")
+              }
+              if(this.formName=="Requirement"){
+                this.sprintCellEditorParams('')
+                this.moduleCellEditorParams('')
+                this.ValueToCompareRequriementSprint == undefined || isEmpty(this.ValueToCompareRequriementSprint) ? this.sprintCellEditorParams(true) : this.ValueToCompareRequriementSprint;            
+      
+                this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
+              }
+              if(this.formName=="team_member"){
+                // this.sprintCellEditorParams('')
+                this.ValueToCompareEmployee == undefined || isEmpty(this.ValueToCompareEmployee) ? this.AssignTOCellEditorParams(true) : this.ValueToCompareEmployee;            
+      
+                // this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
+              }
+              sessionStorage.setItem("project_id", this.response.project_id)
+      
+              // if(this.formName=="projectteam"){
+              //   this.getList()
+              // }else{
+                
+                this.getTreeData()
+              // }
+            
+             
+            })
+            //  // this.cfg.detectChanges()
+      
+          });
   }
  // public sideBar: SideBarDef | string | string[] | boolean | null = 'columns' ;
  formlyformdata(data:any){
   console.log('work');
+  this.fields=[]
+  this.config=''
   if(data==true){
-
     this.dataService.loadConfig("task").subscribe((res:any)=>{
       console.log(res);
       // let config:any=res
    this.config=res;
       this.fields=res.form.fields;
+
+  this.selectedModel={
+    "project_id": this.selectedRows.task.project_id,
+    "requirement_id": this.selectedRows.task.requirement_id, 
+      "task_name": this.selectedRows.task.task_name,
+    "task_type": this.selectedRows.task.task_type,
+   }
+
     })
+
   }else if(data==false){
-    this.fields.push({
+    this.fields=[{
       "type": "html-input",
       "key": "not_bug_justification",
       "className": "flex-8",
@@ -207,14 +223,13 @@ collection="project"
         "label": "Why It Not a Bug Justification",
         required:true
          }  
-    })
+    }]
+    this.selectedModel={}
   }
- }
- 
-
-
+ } 
 
 loadScreen(formName:any){
+this.columnDefs=[]
 
   if(formName=="module"){
     this.gridOptions.autoGroupColumnDef={
@@ -294,6 +309,8 @@ this.gridOptions.paginationPageSize=100
 
   }
   )
+// this.cfg.detectChanges()
+
   }else if(formName=="Requirement"){
  
 
@@ -407,6 +424,8 @@ this.gridOptions.paginationPageSize=100
     }
     
     )
+// this.cfg.detectChanges()
+
   }else if(formName=="projectteam"){
     // this.gridChange=true;
 
@@ -495,6 +514,8 @@ this.gridOptions.groupDefaultExpanded=-1
 	// 			"filter": "agTextColumnFilter"
 	// 		}
       )
+// this.cfg.detectChanges()
+
   }else if(this.formName=="test_result"){
     this.gridOptions.groupDefaultExpanded=-1
 this.gridOptions.groupAllowUnbalanced=true;
@@ -595,6 +616,8 @@ this.gridOptions.paginationPageSize=100
     }
     
     )
+// this.cfg.detectChanges()
+
   }else if(this.formName=="bug_list"||this.formName=="regression"){
     this.pageHeading="Bug List"
 this.gridOptions.sideBar= {
@@ -774,6 +797,8 @@ this.defaultColDef.menuTabs=['generalMenuTab','filterMenuTab','columnsMenuTab'];
     // }
     
     )
+// this.cfg.detectChanges()
+
   }else if(this.formName=="team_member"){
     // this.pageHeading="Team Member"
     const Assigned:any=this.AssignTOCellEditorParams
@@ -922,10 +947,11 @@ this.gridOptions.getRowId=function(rowData:any){
   
     
     )
+// this.cfg.detectChanges()
+
   }
-
-
 }
+
 imageFile:any[]=[]
 ValueToCompareRequriementSprint:any[]=[] 
 OnlyValueRequriementSprint:any[]=[]
@@ -939,6 +965,7 @@ console.log(data);
 
 this.dialogService.openDialog(this.imagepoup,null,null,null)
 }
+
 sprintCellEditorParams = (params: any) => {
     if(params==true || !isEmpty(this.OnlyValueRequriementSprint)){
     return this.OnlyValueRequriementSprint
@@ -979,6 +1006,7 @@ sprintCellEditorParams = (params: any) => {
 
 OnlyValueEmployee:any[]=[]  
 ValueToCompareEmployee:any[]=[]
+
 AssignTOCellEditorParams =  (params: any) => {
   if (!isEmpty(this.OnlyValueEmployee)) {
     return this.OnlyValueEmployee;
@@ -1091,7 +1119,6 @@ if(params==true){
 
   getTreeData() {
 // ! UNDO
-
 if(this.formName=="module"){
   let Projectfiler:any={
     start:0,end:1000,filter:[{
@@ -1123,6 +1150,8 @@ if(this.formName=="module"){
           }
         }
         this.listData.push(row);
+// this.cfg.detectChanges()
+
         // this.getmodules()
       }
     });
@@ -1354,6 +1383,8 @@ if(!isEmpty(data)){
       parentIndex++;
     }
   });
+// this.cfg.detectChanges()
+
   this.listData = parentTreeData;
 }
 
@@ -1395,13 +1426,15 @@ if(!isEmpty(data)){
               row.treePath.push(row.user_id);
             }
           } 
-          allvalues.push(res)
+          allvalues.push(res);
+          
           this.listData.push(row);
       }
 
       }
     });
-  }else if(this.formName=="test_result"){
+    console.log(allvalues);
+   }else if(this.formName=="test_result"){
 this.dataService.lookupTreeData("regression",this.response._id).subscribe((res:any)=>{
   if(res.data.response != null ){
     let test_Case_Details:any[]=[]
@@ -1447,6 +1480,8 @@ this.dataService.lookupTreeData("regression",this.response._id).subscribe((res:a
       overalldata.push(combinedData);
   }
     });
+// this.cfg.detectChanges()
+
   this.listData = overalldata;
   }
 })
@@ -1454,7 +1489,8 @@ this.dataService.lookupTreeData("regression",this.response._id).subscribe((res:a
     
     this.dataService.lookUpBug(this.response.project_id,'').subscribe((res:any)=>{
       let data:any=res.data.response
-      this.listData=data
+// this.cfg.detectChanges()
+this.listData=data
       this.gridApi.setSideBarVisible(true);
 
     })
@@ -1463,12 +1499,12 @@ this.dataService.lookupTreeData("regression",this.response._id).subscribe((res:a
           
           this.dataService.lookUpBug(this.response.project_id,res.data[0].regression_id).subscribe((res:any)=>{
             let data:any=res.data.response
+// this.cfg.detectChanges()
+
             this.listData=data
           })
         })
-      }
-      
-      else if(this.formName=="team_member"){
+      }     else if(this.formName=="team_member"){
         // this.dataService
         // .getDataById("project", "6554bb7e052126c9587741a5")
         // .subscribe((data: any) => {
@@ -1484,7 +1520,7 @@ this.dataService.lookupTreeData("regression",this.response._id).subscribe((res:a
           
         // });
     }
-
+  
 }
 taskdount:any=1
 
@@ -1568,12 +1604,14 @@ existTasks.forEach((element: any) => {
     taskData.push(element);
   }
 });
+// this.cfg.detectChanges()
 this.listData = concat(parentTreeData,taskData);
 
 }
 
   onCellClicked(event: any){
 let clickCell:any=event.column.getColId()
+document.documentElement.style.setProperty('--width', '80%');
 
 
 if(this.formName=="Requirement"){
@@ -1603,7 +1641,8 @@ if(this.formName=="Requirement"){
     else if(this.formName=="bug_list"){
       // console.log(event.data);
       // this.cellClicked=clickCell
-      document.documentElement.style.setProperty('--width', '75%');
+
+      // document.documentElement.style.setProperty('--width', '8%');
 
       // this.drawer.open()
       // if (event.data[clickCell] > 0) {
@@ -1647,6 +1686,7 @@ if(this.formName=="Requirement"){
 
     console.log("onSelectionChanged",this.selectedRows)
   }
+
   onCellValueChanged(params: any) {
     console.log(params);
     
@@ -1824,7 +1864,35 @@ if(fieldName=="assigned_to"){
     })
   
   } 
-  
+
+  savebugTask(){
+    if (!this.form.valid) {
+      const invalidLabels:any = this.helperServices.getDataValidatoion(this.form.controls);
+        this.dialogService.openSnackBar("Error in " + invalidLabels, "OK");
+       this.form.markAllAsTouched();
+        return ;  
+      }
+      if(this.is_bug==true){
+        let values:any=this.form.value
+        values.status= "Open"
+        values.Bug_ID=this.selectedRows._id
+        values._id=`SEQ|${values.project_id}`
+        this.dataService.save(this.config.form.collectionName,values).subscribe((data:any)=>{
+          console.log(data);
+          this.form.reset()
+        })
+      } else if(this.is_bug==false){
+        let id =this.selectedRows._id
+        let values:any=this.form.value
+      
+        this.dataService.update('bug',id,values).subscribe((data:any)=>{
+          console.log(data);
+          this.form.reset()
+        })
+      }
+    // this.ngOnInit()
+  }
+
   saveChild() { 
     if (!this.form.valid) {
     const invalidLabels:any = this.helperServices.getDataValidatoion(this.form.controls);
@@ -1873,6 +1941,7 @@ if(values._id==undefined|| values._id ==null){
       return dates
     }
   } 
+
   reassigndata(employeeID?:any,index?:any){
    this.reassignemployee[index]=[]
     let filer:any={

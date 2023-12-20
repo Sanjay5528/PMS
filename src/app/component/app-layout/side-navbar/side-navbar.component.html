@@ -1,21 +1,18 @@
 <div class="sidenav" [ngClass]="collapsed ?'sidenav-collapsed':'sidenav-expanded'">
-  <div  (click)="dashboard()" *ngIf="collapsed">
-      <mat-form-field style="margin-left: 14px;width: 90%;margin-top: 14px;">
-       <mat-label>Select Project</mat-label>
-      <mat-select formControlName="formControl" required>
-        <mat-option *ngFor="let data of this.project_Data"  [value]="data._id">{{data.project_name}}</mat-option>
-      </mat-select>
-      <!-- @if (animalControl.hasError('required')) {
-        <mat-error>Please choose an animal</mat-error>
-      } -->
-    </mat-form-field>
-  </div>
+  <!-- <div   *ngIf="collapsed">
+  <mat-form-field style="margin-left: 14px;width: 90%;margin-top: 14px;">
+   <mat-label>Select Project</mat-label>
+  <mat-select [formControl]="selectProject" required>
+    <mat-option *ngFor="let data of this.project_Data"  [value]="data">{{data.name}}</mat-option>
+  </mat-select> 
+</mat-form-field>
+  </div> -->
 
   
   
   <div class="logo-container">
     <!-- <button class="logo" (click)="togglecollapse()"><mat-icon>menu</mat-icon></button> -->
-    <div class="image" (click)="dashboard()" *ngIf="collapsed">
+    <div class="image"   *ngIf="collapsed">
         <img *ngIf="this.logo_image"  style="object-fit:contain;   width: 100%;padding: 15px 20px 15px 20px;height: 150px;"   src={{this.logo_image}} />
     </div>
 

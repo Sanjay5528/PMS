@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { DataService } from 'src/app/services/data.service';
+import { HelperService } from 'src/app/services/helper.service';
 interface SideNavToggle{
   screenwidth:number
   collapsed:boolean
@@ -14,22 +15,20 @@ interface SideNavToggle{
 export class DefaultLayoutComponent {
   @Input() collapsed=false
   @Input() screenwidth=0
- theme:any
-   
+   sidenavedshow:boolean=false
     isSideNavCollapsed = false
-    constructor(private jwtService: JwtHelperService, private route: ActivatedRoute,  private router: Router,private dataservice:DataService ){
-      
-      //switch account from  SAAS to Corporate Customer 
-      this.route.queryParams.subscribe((qparams:any)=>{
-        console.log('param',qparams)  
-        
-        let token = qparams["code"] 
-        console.log('token',token) 
-       
-    
-      })
-    }
 
+    constructor(private jwtService: JwtHelperService, private route: ActivatedRoute,  private router: Router,private dataservice:DataService ,private helperService:HelperService){
+      this.helperService.getProjectObservable().subscribe(
+        (result: any) => {
+          // console.warn(result);
+          this.sidenavedshow=result
+        },(err:any) =>{
+          console.log(err);
+  
+        }
+      ) 
+    } 
  
    onToggleSidenav(data:SideNavToggle){
      this.screenwidth=data.screenwidth
@@ -46,11 +45,14 @@ export class DefaultLayoutComponent {
  
    class(){
      let styleclass=""
-     if(this.collapsed && this.screenwidth > 768){
+     if(this.collapsed && this.screenwidth > 768 ){
        styleclass='body-trimmed'
-     } else if(this.collapsed && this.screenwidth <=768 && this.screenwidth>0){
+     } else if(this.collapsed && this.screenwidth <=768 && this.screenwidth>0  ){
        styleclass='body-md-screen'
-     }
+     } 
+  if(this.sidenavedshow==false)   {
+    styleclass='default'
+  }
      return styleclass
    }
 }

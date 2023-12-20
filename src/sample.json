@@ -1,100 +1,60 @@
-{
-    "pageHeading": "Team Members",
-    "formType": "simple",
-    "editMode": "popup",
-    "form": {
-        "collectionName": "team_specification",
-        "fields": [
+[
+	
+	{
+		"displayName": "Master",
+		"iconName": "perm_identity",
+		"children": [
+			{
+				"displayName": "Client",
+				"iconName": "assignment_ind",
+				"route": "/list/client"
+			},
+			{
+				"displayName": "Project",
+				"iconName": "assignment_ind",
+				"route": "/list/project"
+			}
+		]
+	},{
+		"displayName": "Look Up Data",
+		"iconName": "perm_identity",
+		"children": [
+			
+			{
+				"displayName": "Employee",
+				"iconName": "assignment_ind",
+				"route": "/list/employee"
+			},{
+				"displayName": "Designation",
+				"iconName": "assignment_ind",
+				"route": "/list/designation"
+			},{
+				"displayName": "Project Role",
+				"iconName": "assignment_ind",
+				"route": "/list/project_role"
+			},
             {
-                "fieldGroupClassName": "display-flex",
-                "fieldGroup": [
-                    {
-                        "type": "select-input",
-                        "key": "user_id",
-                        "className": "flex-6",
-                        "props": {
-                            "label": "User Name",
-                            "placeholder": "User Name","labeltype":"name",
-                            "labelPropTemplate": " {{first_name}}",
-                            "multifilter": true,
-                            "optionsDataSource": {
-                                "collectionName": "employee"
-                            },
-                            "labelProp": "first_name",
-                            "valueProp": "employee_id",
-                            "required": true
-                        }
-                    },
-                    {
-                        "type": "select-input",
-                        "key": "role_id",
-                        "className": "flex-6",
-                        "props": {
-                            "label": "Role Name",
-                            "placeholder": "Role Name",
-                            "labelPropTemplate": " {{name}}",
-                            "multifilter": true,
-                            "optionsDataSource": {
-                                "collectionName": "project_role"
-                            },
-                            "labelProp": "name",
-                            "valueProp": "_id",
-                            "required": true
-                        }
-                    } , {
-                        "type": "select-input",
-                        "key": "approved_by",
-                        "className": "flex-6",
-						"parentKey":"user_id",  "parentCollectionName": "employee",
-                        "props": {
-							"Properties":{
-								"formVAlueChange":true
-							},
-                            "label": "Approved By Whom ?",
-                            "placeholder": "Approved By Whom ?",                        
-							"multifilter_condition": {
-								"clause": "AND",
-								"conditions": [
-								  {
-									"column": "employee_id",
-									"operator": "NOTEQUAL",
-									"type": "string",
-									"value": ""
-								  }
-								]
-							  }, "labeltype":"name",
-                            "labelProp": "first_name",
-                            "valueProp": "employee_id"
-                        } 
-                    }
-                ]
-            },
-            {
-                "fieldGroupClassName": "display-flex",
-                "fieldGroup": [
-                    {
-                        "key": "scheduled_start_date",
-                        "type": "date-input",
-                        "className": "flex-6",
-                        "props": {
-                            "label": "Scheduled Start Date",
-                            "placeholder": "Scheduled Start Date"
-                        }
-                    },
-                    {
-                        "key": "scheduled_end_date",
-                        "type": "date-input",
-                        "className": "flex-6",
-                        "parentKey": "scheduled_start_date",
-                        "parentCollectionName": "task",
-                        "props": {
-                            "label": "Scheduled End Date",
-                            "placeholder": "Scheduled End Date"
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    "onCancelRoute": "/list/teammembers"
-}
+				"displayName": "Team Specification",
+				"iconName": "assignment_ind",
+				"route": "/list/team_specification"
+			}
+ 
+ 
+		]
+	},
+	{
+		"displayName": "Personal",
+		"iconName": "assignment_ind",
+		"children": [
+			{
+				"displayName": "Time Sheet",
+				"iconName": "assignment_ind",
+				"route": "profile/timesheet" 
+			},{
+				"displayName": "Time Sheet Approval",
+				"iconName": "assignment_ind",
+				"route": "profile/approval" 
+			}
+		]
+	}
+]

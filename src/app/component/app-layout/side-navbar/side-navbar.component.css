@@ -1,5 +1,5 @@
 .sidenav {
-  background-image: linear-gradient(121deg,#013688,#318896);
+  background-image: linear-gradient(121deg,#91a4c0,#a7cdd2);
   /* background-color: var(--sidenav-color); */
   z-index: 1;
   top: 0;
@@ -139,8 +139,7 @@
   flex-direction: row;
   align-items: self-start;
   /* height: 40px; */
-  color: var(--menu-font);
-  text-decoration: none;
+   text-decoration: none;
   transition: color .3s ease;
   /* row-gap: 8px; */
   margin-top: 2px;

@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { HelperService } from './helper.service';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, timeout } from 'rxjs/operators';
 import { DialogService } from './dialog.service';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -12,7 +13,7 @@ export class TokenInterceptor implements HttpInterceptor {
 
   selectedOrgId: string = sessionStorage.getItem("selectedOrgId") || environment.OrgId
 
-  constructor(public helperService: HelperService, private dialogService: DialogService) {
+  constructor(public helperService: HelperService, private dialogService: DialogService,public router:Router) {
     this.helperService.selectedOrgId.subscribe((id:any)=>{
       this.selectedOrgId = id
       // this.selectedOrgId = 'amsort'
@@ -52,6 +53,10 @@ export class TokenInterceptor implements HttpInterceptor {
               } else {
                 this.dialogService.openSnackBar('Unauthorized', 'OK');
               }
+              setTimeout(() => {
+                this.router.navigate(['/login']);
+              }, 2000);
+            
               return throwError(error);
             case 500:
               if (error.error || error.error.message) {

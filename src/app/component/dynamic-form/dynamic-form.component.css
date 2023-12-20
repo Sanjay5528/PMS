@@ -16,7 +16,8 @@ margin-right: 15px !important;
   display: flex;
   flex-direction: column;
   overflow:auto;
-  flex: 1;
+  /* flex: 1; */
+  margin-top: 20px;
 }
 
 ::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled)  {

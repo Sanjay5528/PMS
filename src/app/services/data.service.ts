@@ -202,6 +202,12 @@ public lookupTreeData(collection_name:any,project_id:any){
     return this.http.put(this.getWsBaseUrl()+"activation-api/generate-pwd/"+id,data)
   }
  
+
+  public sidenav(employee_id:any){
+    return this.http.get(this.getWsBaseUrl()+"lookup/project_sidenav/"+employee_id)
+  }
+
+
 /**
  * This method Upset Method IT check If Data is Present it Updata Or Else in Create A new data
  * This Can used For Both Save and Update
@@ -729,3 +735,4 @@ async makeFiltersConditions(Input_object: any): Promise<any> {
 }
 
 }
+

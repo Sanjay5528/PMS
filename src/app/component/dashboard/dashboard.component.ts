@@ -38,15 +38,15 @@ export class DashboardComponent {
   // editViewPopup!: TemplateRef<any>;
   // pageHeading: any;
   // id: any;
-  // view: any = [1865, 200];
-  // colorScheme = {
-  // domain: ["#F79554", "#F34526", "#57DE21", "#76B3FE"],
-  // name: "myScheme",
-  // selectable: false,
-  // group: ScaleType.Ordinal,
-  // };
-  // cardColor: string = "black";
-  // cardData:any[] = []
+  view: any = [1865, 200];
+  colorScheme = {
+  domain: ["#F79554", "#F34526", "#57DE21", "#76B3FE"],
+  name: "myScheme",
+  selectable: false,
+  group: ScaleType.Ordinal,
+  };
+  cardColor: string = "black";
+  cardData:any[] = []
   // // columnDefs: (ColDef | ColGroupDef)[] = [
   // //   {
   // //     headerName: "Facilty Name",
@@ -125,88 +125,108 @@ export class DashboardComponent {
   //   },
   // } as IDetailCellRendererParams<any>;
 
-  // constructor(
-  //   private httpclient: HttpClient,
-  //   private dialogService: DialogService,
-  //   private route: ActivatedRoute,
-  //   private dataService: DataService,
-  //   private formservice: FormService,
-  //   public dashboardService: DashboardService,
-  //   private jwtService: JwtHelperService,
-  //   private router: Router
-  // ) {
-  //   this.components = {
-  //     // buttonRenderer: ButtonComponent
-  //   };
-  // }
+  constructor(
+    private httpclient: HttpClient,
+    private dialogService: DialogService,
+    private route: ActivatedRoute,
+    private dataService: DataService,
+    private formservice: FormService,
+    public dashboardService: DashboardService,
+    private jwtService: JwtHelperService,
+    private router: Router
+  ) {
+    // this.components = {
+    //   // buttonRenderer: ButtonComponent
+    // };
+  }
 
-  // ngOnInit() {
+  ngOnInit() {
     
-  //   this.route.params.subscribe((params) => {
-  //     this.id = params["id"];
-  //   });
-  //   //! row group
-  //   // this.dataService.getData("device").subscribe((data:any)=>{
-  //   //   console.log(data);
-  //   //   let dataas:any=data.data
-  //   // this.dataService.getData('facility').subscribe((data1:any)=>{
-  //   //   console.log(data1);
-  //   //   let facility=data1.data
-  //   //   this.rowData=[...dataas,...facility]
-  //   // })  
-  //   // })
+    // this.route.params.subscribe((params) => {
+    //   this.id = params["id"];
+    // });
+    //! row group
+    // this.dataService.getData("device").subscribe((data:any)=>{
+    //   console.log(data);
+    //   let dataas:any=data.data
+    // this.dataService.getData('facility').subscribe((data1:any)=>{
+    //   console.log(data1);
+    //   let facility=data1.data
+    //   this.rowData=[...dataas,...facility]
+    // })  
+    // })
     
-  //   // let orgid:any=this.dataService.getdetails().
-  //   let org_id:any = this.dataService.getdetails().profile.org_id
-  //   this.dataService.lookup(org_id).subscribe((xyz:any)=>{
-  //     if(xyz.data!=null)
-  //     {
-  //       let totalDevicesCount:any=0
+    // let orgid:any=this.dataService.getdetails().
+    // let org_id:any = this.dataService.getdetails().profile.org_id
+    // this.dataService.lookup('').subscribe((xyz:any)=>{
+    //   if(xyz.data!=null)
+    //   {
+    //     let totalDevicesCount:any=0
 
-  //       for (let dataIndex = 0; dataIndex < xyz.data.length; dataIndex++) {
-  //       const element = xyz.data[dataIndex].device;
-  //       totalDevicesCount=totalDevicesCount+element.length
-  //     }
-  //     this.cardData=[
-  //       {
-  //       id: "Facility",
-  //       name: "Facility",
-  //       value: xyz.data.length,
-  //       },
-  //       {
-  //       id: "Devices",
-  //       name: "Devices",
-  //       value: totalDevicesCount,
-  //       },
-  //       {
-  //       id: "Employee Health",
-  //       name: "Employee Health",
-  //       value: "4",
-  //       }
-  //       ];
-  //     this.rowData=xyz.data
-  //     //! this.getTreeData(xyz.data) // treedata
-  //   }else{
-  //     this.cardData=[
-  //       {
-  //       id: "Facility",
-  //       name: "Facility",
-  //       value: 0,
-  //       },
-  //       {
-  //       id: "Devices",
-  //       name: "Devices",
-  //       value: 0,
-  //       },
-  //       {
-  //       id: "Employee Health",
-  //       name: "Employee Health",
-  //       value: 0,
-  //       }
-  //       ];
-  //   }
-  //   })
-  // }
+    //     for (let dataIndex = 0; dataIndex < xyz.data.length; dataIndex++) {
+    //     const element = xyz.data[dataIndex].device;
+    //     totalDevicesCount=totalDevicesCount+element.length
+    //   }
+    //   this.cardData=[
+    //     {
+    //     id: "Requeriement",
+    //     name: "Requeriement",
+    //     value: xyz.data.length,
+    //     },
+    //     {
+    //     id: "Test Case Postive",
+    //     name: "Test Case",
+    //     value: totalDevicesCount,
+    //     },
+    //     {
+    //     id: "Test Result",
+    //     name: "Test Result",
+    //     value: "4",
+    //     },
+    //     {
+    //     id: "Test Case",
+    //     name: "Test Case",
+    //     value: totalDevicesCount,
+    //     },
+    //     {
+    //     id: "Test Result",
+    //     name: "Test Result",
+    //     value: "4",
+    //     },
+    //     {
+    //     id: "Test Case",
+    //     name: "Test Case",
+    //     value: totalDevicesCount,
+    //     },
+    //     {
+    //     id: "Test Result",
+    //     name: "Test Result",
+    //     value: "4",
+    //     }
+    //     ];
+    //   // this.rowData=xyz.data
+    //   //! this.getTreeData(xyz.data) // treedata
+    // }else{
+    //   this.cardData=[
+    //     {
+    //     id: "Facility",
+    //     name: "Facility",
+    //     value: 0,
+    //     },
+    //     {
+    //     id: "Devices",
+    //     name: "Devices",
+    //     value: 0,
+    //     },
+    //     {
+    //     id: "Employee Health",
+    //     name: "Employee Health",
+    //     value: 0,
+    //     }
+    //     ];
+    // }
+    // })
+  }
 
   // // public autoGroupColumnDef: ColDef = {
   // //   headerName: "Facility Name",
@@ -258,22 +278,22 @@ export class DashboardComponent {
     
   // // }
  
-  // onSelectionChanged(params: any) {
+  onSelectionChanged(params: any) {
 
-  //   if(params.name=="Facility"){
-  //     let data:any=this.dataService.getdetails().profile.org_id
+    if(params.name=="Facility"){
+      let data:any=this.dataService.getdetails().profile.org_id
 
-  //     this.router.navigate([`data/edit/facility/`+data]);
+      this.router.navigate([`data/edit/facility/`+data]);
 
-  //   }else if(params.name=="Devices"){
-  //     this.router.navigate([`list/device`]);
+    }else if(params.name=="Devices"){
+      this.router.navigate([`list/device`]);
 
-  //   }else{
-  //     // this.router.navigate([`data/edit/facility/SA`]);
+    }else{
+      // this.router.navigate([`data/edit/facility/SA`]);
 
-  //   }
+    }
     
-  // }
+  }
 
   // /**gridReady for ag grid */
   // onGridReady(params: GridReadyEvent) {

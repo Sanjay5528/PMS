@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, OnDestroy, ChangeDetectorRef, AfterViewInit, Injectable, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy, ChangeDetectorRef, AfterViewInit, Injectable, Input, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
 import { NavItem } from '../nav-items';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
@@ -8,7 +8,8 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { MatSidenav } from '@angular/material/sidenav';
 import { DataService } from 'src/app/services/data.service';
 import { DialogService } from 'src/app/services/dialog.service';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
+import { HelperService } from 'src/app/services/helper.service';
 //import { ChangePasswordComponent } from '../../authentication/change-password/change-password.component';
 
 @Component({
@@ -23,21 +24,58 @@ export class AppHeaderComponent {
   project_menu:any=false
   logo = environment.logoUrl
   CustomerList:any
-  // FormControl:FormControl = new FormControl('')
+  selectProject:FormControl = new FormControl (null, Validators.required);
+@Output() project = new EventEmitter; 
   role:any
   constructor(
     private router: Router,
     private route:ActivatedRoute,
     private httpClient: HttpClient,
     private dataservice:DataService,
+    private helperService:HelperService,
     public dialogService: DialogService,
   ) { }
   screenId:any
-
+  project_Data:any=[]
   ngOnInit() { 
     // this.screenId="COORDR_menu";
     this.screenId="devops";
-this.project_menu = sessionStorage.getItem("project_menu") 
+    // this.helperService.getProjectObservable().subscribe(
+    //   (result: any) => {
+    //     // console.warn(result);
+    //     // this.project_menu =result
+    //     this.selectProject.setValue(result)
+        
+    //   },(err:any) =>{
+    //     console.log(err);
+
+    //   }
+    // )
+        let emp_id:any=this.helperService.getEmp_id()
+    this.dataservice.sidenav(emp_id).subscribe((res:any)=>{
+      // this.dataservice.sidenav("E0001").subscribe((res:any)=>{
+  
+          if(res.data != null){
+            this.project_Data=res.data
+            this.helperService.getProjectObservable().subscribe((res:any)=>{
+              this.selectProject.setValue(res._id)
+           })
+           
+          }
+        })
+  
+
+      //   this.selectProject?.valueChanges.subscribe((change: any) => {
+      //     if(change != null || change != undefined){
+      //      console.log(change);
+      //      this.project_menu=true;
+      //      this.projectmenu(change)
+      //      // let changes:any= change?._id ? change?._id : change
+      //     //  sessionStorage.setItem("selectedProjectID", JSON.stringify(change))
+      //     //  this.logo_image = environment.ImageBaseUrl+change?.logo;
+      //    }
+      //  })
+ 
     // rewrite the code
       // this.httpClient.get("assets/menu-json/" +"menu" + ".json").subscribe((data: any) => {
       //   console.log(data);
@@ -285,12 +323,45 @@ this.project_menu = sessionStorage.getItem("project_menu")
     this.router.navigate(['/home']);
   }
 
-  projectmenu(event:any){
-    sessionStorage.setItem("project_menu",this.project_menu) 
+  projectmenu(data:any){
+    // if(this.project_menu==false){
+    //   sessionStorage.removeItem("selectedProjectID")
+    // }
+  //   this.route.params.forEach((params) => {
+  //  console.log(params);
+   
+  //   });
+    // this.project.emit(data)
+    
+    // sessionStorage.getItem("selectedProjectID")
+
+    // sessionStorage.setItem("selectedProjectID",data) 
+    this.helperService.getProjectmenu(data)
+    this.routechange(data)
+
+  }
+
+  routechange(projectDetails:any){
+    let data:any=this.route.snapshot
+    console.log(this.route);
+    let valueSplit=data._routerState.url.split("/")
+    valueSplit= valueSplit.splice(1,)
+    console.log(valueSplit);
+    if (projectDetails._id != valueSplit[(valueSplit.length)-1]){
+      valueSplit=valueSplit.splice(0,(valueSplit.length)-1)
+      valueSplit.push(projectDetails._id)
+    let route =valueSplit.join("/")
+    console.log("before",data._routerState.url);
+    console.log("after",route);
+
+    
+      this.router.navigateByUrl(route)
+    }
+    
   }
 
   navigate(item:any){
     this.router.navigate([item.route]);
-
   }
+
 }
