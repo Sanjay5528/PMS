@@ -2695,3 +2695,93 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 	// fmt.Println(response)
 	return shared.SuccessResponse(c, response)
 }
+func sidenav(c *fiber.Ctx) error {
+
+	org, exists := helper.GetOrg(c)
+	if !exists {
+		return shared.BadRequest("Invalid Org Id")
+	}
+
+	pipeline := bson.A{
+		bson.D{{"$match", bson.D{{"user_id", c.Params("employeeID")}}}},
+		// bson.D{
+		// 	{"$match",
+		// 		bson.D{
+		// 			{"$expr",
+		// 				bson.D{
+		// 					{"$lt",
+		// 						bson.A{
+		// 							bson.D{
+		// 								{"$dateToString",
+		// 									bson.D{
+		// 										{"format", "%Y-%m-%d"},
+		// 										{"date", "$start"},
+		// 										{"timezone", "UTC"},
+		// 									},
+		// 								},
+		// 							},
+		// 							"$scheduled_end_date",
+		// 						},
+		// 					},
+		// 				},
+		// 			},
+		// 		},
+		// 	},
+		// },
+		bson.D{{"$group", bson.D{{"_id", "$project_id"}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "project"},
+					{"localField", "_id"},
+					{"foreignField", "project_id"},
+					{"as", "project"},
+				},
+			},
+		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$project"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "client"},
+					{"localField", "project.client_id"},
+					{"foreignField", "client_id"},
+					{"as", "client"},
+				},
+			},
+		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$client"},
+					{"preserveNullAndEmptyArrays", true},
+				},
+			},
+		},
+		bson.D{
+			{"$project",
+				bson.D{
+					{"_id", "$project._id"},
+					{"name", "$project.project_name"},
+					{"client_name", "$client.client_name"},
+					{"logo", "$client.logo.storage_name"},
+				},
+			},
+		},
+	}
+
+	response, err := helper.GetAggregateQueryResult(org.Id, "team_specification", pipeline)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	// fmt.Println(response)
+	return shared.SuccessResponse(c, response)
+
+}
