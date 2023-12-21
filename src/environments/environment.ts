@@ -5,8 +5,8 @@ export const environment = {
   logoUrl: 'assets/images/logo.png',
   snackBarDuration: 5000,
   OrgId: 'pms',
-  cacheBlockSize:14,
-  paginationPageSize:10, 
+  cacheBlockSize:20,
+  paginationPageSize:20, 
   rowModelType:"serverSide",
   ImageBaseUrl:"https://pms-api.sgp1.digitaloceanspaces.com/"
 };

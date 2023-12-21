@@ -347,7 +347,11 @@ export class AppHeaderComponent {
     let valueSplit=data._routerState.url.split("/")
     valueSplit= valueSplit.splice(1,)
     console.log(valueSplit);
-    if (projectDetails._id != valueSplit[(valueSplit.length)-1]){
+    let valueSplitlength = valueSplit[(valueSplit.length)-1].length
+    let projectlength =projectDetails._id.length
+    console.log(projectlength,valueSplitlength);
+    
+    if ( projectDetails._id != valueSplit[(valueSplit.length)-1] && (valueSplitlength == projectlength) ){
       valueSplit=valueSplit.splice(0,(valueSplit.length)-1)
       valueSplit.push(projectDetails._id)
     let route =valueSplit.join("/")

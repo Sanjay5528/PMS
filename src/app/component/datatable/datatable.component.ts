@@ -21,6 +21,8 @@ import {
   GridReadyEvent,
   IDatasource,
   IGetRowsParams,
+  IServerSideDatasource,
+  IServerSideGetRowsParams,
   KeyCreatorParams,
   MenuItemDef,
   ProcessGroupHeaderForExportParams,
@@ -346,8 +348,8 @@ export class DatatableComponent implements OnInit {
   getList(filterQuery?: any, sort?: any) {
     //! DEfenie this for GridAPi Should not be undefined
     if (this.gridApi !== undefined) {
-      const datasource = {
-        getRows: async (params: any) => {
+      const datasource:IServerSideDatasource = {
+        getRows: async (params: IServerSideGetRowsParams) => {
           let obj: any = {
             start: params.request.startRow,
             end: params.request.endRow,
@@ -355,8 +357,7 @@ export class DatatableComponent implements OnInit {
             sort: params.request.sortModel,
           };
 
-          this.DataService.makeFiltersConditions(obj).then(
-            (filtercondition: any) => {
+          this.DataService.makeFiltersConditions(obj).then((filtercondition: any) => {
               let filter = filtercondition.filter;
               filtercondition.filter = [];
               if (this.filterQuery !== undefined && filterQuery !== undefined) {
@@ -380,38 +381,35 @@ export class DatatableComponent implements OnInit {
                 filtercondition.sort = sort;
               }
              this.allFilter=filtercondition
-              this.DataService.getDataByFilter(
-                this.collectionName ,
-                filtercondition
-              ).subscribe(async (xyz: any) => {
+              this.DataService.getDataByFilter(this.collectionName ,filtercondition).subscribe(async (xyz: any) => {
                 console.log(xyz);
-                
                 this.gridApi.sizeColumnsToFit();
                 if (await xyz) {
-
                   if (xyz?.data[0]?.pagination[0]?.totalDocs !== undefined) {
                     this.gridApi.hideOverlay()
-
                     this.listData = xyz.data[0].response;
-                    params.successCallback(
-                      xyz.data[0].response,
-                      xyz.data[0].pagination[0].totalDocs
+                    let data:any={
+                      rowData:xyz.data[0].response ,
+                      rowCount:xyz.data[0].pagination[0].totalDocs
+                    }
+                    params.success(
+                      data
                     );
                   } else {
                     this.gridApi.showNoRowsOverlay();
-
-                    params.successCallback(
-                    [],0)
-                    // params.failCallback();
-                    // let data:any =[{flag:true}]
-                    // params.successCallback(data,1)
-                  }
+                    params.success(
+                      {
+                        rowData:[],
+                        rowCount:0
+                      })
+                   }
                 } else {
-                  // params.failCallback();
                   this.gridApi.showNoRowsOverlay();
-
-                  params.successCallback(
-                    [],0)
+                  params.success(
+                    {
+                      rowData:[],
+                      rowCount:0
+                    })
                 }
               });
             }

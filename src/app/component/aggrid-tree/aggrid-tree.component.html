@@ -80,7 +80,7 @@
      </div>    
    </div>
 </div>
-<div *ngIf="formName=='test_result'">
+<div *ngIf="formName=='test_result' && cellClicked">
   <div style="width: 100%;margin-bottom: 5px;" >
 
     <span *ngIf="cellClicked" style="font-size: larger;font-style: italic;margin-left: 20px;">{{selectedRows.requirement_name.toUpperCase()}} </span>
@@ -177,7 +177,7 @@
    </div>
 </div>
  
-<div *ngIf="formName=='bug_list' && cellClicked">
+<div *ngIf="(formName=='bug_list' || formName =='regression') && cellClicked">
   <div style="width: 100%;margin-bottom: 5px;" *ngIf="cellClicked">
 
     <span  style="font-size: larger;font-style: italic;margin-left: 20px;" *ngIf="selectedRows?.requirement?.requirement_name">{{selectedRows.requirement.requirement_name.toUpperCase()}} </span>
@@ -420,10 +420,11 @@
         [defaultColDef]="defaultColDef"
         [columnDefs]="columnDefs" 
         [rowData]="listData"
-        [gridOptions]='gridOptions'
+        [gridOptions]='gridOptions' 
         [context]="context"
         [rowSelection]="'single'"
         [components]="components" 
+        [autoGroupColumnDef]="autoGroupColumnDef"
         [animateRows]="true"
         [singleClickEdit]="true"
         (cellClicked)='onCellClicked($event)'

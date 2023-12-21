@@ -15,7 +15,7 @@
     </div>
   </div>
 </div>
-<div  class="datepicker" *ngIf="this.FormName=='approval'" >
+<div  class="datepicker" *ngIf="this.FormName=='approval'" style="margin-left: 10px;">
   <mat-form-field   style="width: 271px;" >
     <!-- <mat-label>Enter a date range</mat-label> -->
     <mat-date-range-input [formGroup]="dateform" [rangePicker]="picker">
@@ -26,7 +26,7 @@
     <mat-date-range-picker #picker></mat-date-range-picker>
   </mat-form-field>
 </div>
-<div class="datepicker" *ngIf="this.FormName=='timesheet'">
+<div class="datepicker" *ngIf="this.FormName=='timesheet'" style="margin-left: 10px;">
   <form [formGroup]="dateform">
     <mat-form-field class="datepicker-field" appearance="outline">
       <input

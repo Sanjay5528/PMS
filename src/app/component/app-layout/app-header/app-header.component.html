@@ -32,7 +32,7 @@
         <!-- Project Menu <mat-slide-toggle  [FormControl]="FormControl" (click)="projectmenu($event)"></mat-slide-toggle> -->
         <!-- <div   *ngIf="collapsed"> -->
           <!-- <form [formGroup]="form"> -->
-            <mat-form-field style="margin-left: 14px;width: 90%;margin-top: 14px;">
+            <mat-form-field style="margin-left: 14px;width: 90%;margin-top: 21px;" appearance="fill">
             <mat-select [formControl]="selectProject" >
               <mat-option *ngFor="let data of this.project_Data" (click)="projectmenu(data)"  [value]="data._id">{{data.name}}</mat-option>
             </mat-select>

@@ -326,6 +326,7 @@ return
 
   onSelect(event: any) {
     this.selectedRow = event.api.getSelectedRows()[0]
+    console.log("selectedRow",this.selectedRow);
     
     // this.detailModel={}
     // this.detailFields[this.detailDefaultFocusIndex].focus = true
@@ -350,7 +351,7 @@ return
     if(this.selectedRow?._id != undefined ||this?.isDetailEditMode==true){
       this.selectedRow.isEdit=true
     this.isDetailEditMode = true
-
+      this.butText="Update"
     }
     if (item.formAction == "listpopup") {
       if(item.add===true) {

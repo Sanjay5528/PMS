@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, Input, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import {
+  CellClassParams,
   ColDef,
   ColGroupDef,
   ColumnApi,
@@ -98,15 +99,19 @@ animateRows:true,paginationPageSize:10
       buttonRenderer: ButtonComponent
     }
     this.context = { componentParent: this };
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    // this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   } 
 parms:any
   ngOnInit() {
+    // if(this?.gridApi != null || this?.gridApi != undefined){
+    //   this.gridApi.destroy()
+    // }
     this.route.params.subscribe(params => {
       this.addbutton=false;
       console.log(params);
       this.id = params['id'];
       this.parms=params['id']
+      
       // this.cfg.detectChanges()
             this.formName=params['component']
       let collection:any
@@ -153,9 +158,7 @@ parms:any
             this.columnDefs=[];
             this.listData=[];
               // this.cfg.detectChanges()
-              if(this?.gridApi != null || this?.gridApi != undefined){
-                this.gridApi.refreshClientSideRowModel()
-              }
+            
             this.loadScreen(this.formName)
             this.dataService.getDataById(collection, this.id).subscribe((res: any) => {
               this.response = res?.data[0]
@@ -193,8 +196,8 @@ parms:any
       
           });
   }
- // public sideBar: SideBarDef | string | string[] | boolean | null = 'columns' ;
- formlyformdata(data:any){
+ 
+  formlyformdata(data:any){
   console.log('work');
   this.fields=[]
   this.config=''
@@ -240,7 +243,14 @@ this.columnDefs=[]
     resizable: true,
     filter: false 
   }
-
+  this.autoGroupColumnDef={
+    headerName: "Parent Modules",
+    minWidth: 200,
+    cellRendererParams: { suppressCount: true },
+    sortable: false,
+resizable: true,
+filter: false 
+}
 this.gridOptions.pagination=true
 this.gridOptions.paginationPageSize=100
   this.gridOptions.treeData=true
@@ -330,6 +340,15 @@ this.gridOptions.paginationPageSize=100
       sortable: false,
       resizable: true,
       filter: false
+}
+this.autoGroupColumnDef={
+  headerName: "Parent Requriement",
+  field:"CheckIndex",
+  minWidth: 200,
+  cellRendererParams: { suppressCount: true },
+  sortable: false,
+  resizable: true,
+  filter: false
 }
     const Sprintvalue:any=this.sprintCellEditorParams
     const modelvalue:any=this.moduleCellEditorParams
@@ -442,6 +461,15 @@ this.gridOptions.groupDefaultExpanded=-1
       resizable: true,
       filter: false
 }
+this.autoGroupColumnDef={
+  headerName: "Team Specification Name",
+  field:"name",
+  // minWidth: 200,
+  cellRendererParams: { suppressCount: true },
+  sortable: false,
+  resizable: true,
+  filter: false
+}
     this.columnDefs.push(	
 				
 		{ 
@@ -529,6 +557,15 @@ this.gridOptions.paginationPageSize=100
       sortable: false,
       resizable: true,
       filter: false
+}
+this.autoGroupColumnDef={
+  headerName: "Requirement Name",
+  field:"requirement_name",
+  maxWidth: 280,
+  cellRendererParams: { suppressCount: true },
+  sortable: false,
+  resizable: true,
+  filter: false
 }
     this.columnDefs.push(  
       {
@@ -620,6 +657,7 @@ this.gridOptions.paginationPageSize=100
 
   }else if(this.formName=="bug_list"||this.formName=="regression"){
     this.pageHeading="Bug List"
+    this.autoGroupColumnDef={}
 this.gridOptions.sideBar= {
   toolPanels: [
       {
@@ -673,8 +711,8 @@ this.defaultColDef.pivot=true;
 //     cellRenderer: 'agAnimateShowChangeCellRenderer',
 //     cellClass: 'number-cell',
 //   },
-// };
-
+// };  [tooltipInteraction]="true"
+ this.gridOptions.tooltipInteraction=true
 this.defaultColDef.menuTabs=['generalMenuTab','filterMenuTab','columnsMenuTab'];
 // this.defaultColDef.menuTabs.push('')
     this.columnDefs.push(  
@@ -695,7 +733,6 @@ this.defaultColDef.menuTabs=['generalMenuTab','filterMenuTab','columnsMenuTab'];
         // showRowGroup:false,
         // hide:true,
         enableValue: true,
-
         filter: 'agTextColumnFilter',
       },
   //  {
@@ -710,7 +747,6 @@ this.defaultColDef.menuTabs=['generalMenuTab','filterMenuTab','columnsMenuTab'];
       headerName: 'Test Case Name',
       field: 'testcase.test_case_name',
       width: 40,        enableValue: true,
-
       editable: false,
       filter: 'agTextColumnFilter',
     }, 
@@ -731,22 +767,43 @@ this.defaultColDef.menuTabs=['generalMenuTab','filterMenuTab','columnsMenuTab'];
       filter: 'agTextColumnFilter',
       valueFormatter:function(parse:any){
         if(parse?.value){
-          return parse.value.toUpperCase().replaceAll("_",' ')
+          return  parse.value.toUpperCase().replaceAll("_",' ')
         }
       },
       enableRowGroup:true,
     },
     {
-      headerName: 'Issue Priority',
+      headerName: 'Issue Priority', 
+      // headerName: 'Issue Severity',
       field: 'test_result.error_priority',
-      width: 40,        enableValue: true,
-
+      width: 40,     
+      maxWidth:150,
+        tooltipField: 'test_result.error_priority',
+        enableValue: true,
       editable: false,
       valueFormatter:function(parse:any){
         if(parse?.value){
-        return parse.value.toUpperCase().replaceAll("_",' ')
-      }
-              },
+          let data:any =' '
+          return data
+        // return parse.value.toUpperCase().replaceAll("_",' ')
+      } 
+    },cellStyle :(params: CellClassParams) =>{ 
+      let style: string;
+
+if (params.value === "high") {
+  style = '#FF5733';
+} else if (params.value === "low") {
+  style = '#EFECCA';
+} else if (params.value === "medium") {
+  style = '#A7DBD8';
+} else if (params.value === "show stoper") {
+  style = '#900C3F';
+} else {
+  style = ''; 
+}
+
+    return {'background-color': style}
+  },
       enableRowGroup:true,
       filter: 'agTextColumnFilter',
     }, {
@@ -815,6 +872,17 @@ this.gridOptions.paginationPageSize=100
       filter: false,
       // refData:
 }
+this.autoGroupColumnDef={
+  headerName: "Requriement Name",
+  field:"requirement_name",
+  minWidth: 200,
+  cellRendererParams: { suppressCount: true },
+  sortable: false,
+  resizable: true,
+  filter: false,
+ 
+}
+
 // this.gridOptions.groupDisplayType='groupRows'
 this.gridOptions.rowSelection='single'
 this.gridOptions.groupSuppressBlankHeader=true;
@@ -949,6 +1017,16 @@ this.gridOptions.getRowId=function(rowData:any){
     )
 // this.cfg.detectChanges()
 
+  }
+
+  if(this?.gridApi != null || this?.gridApi != undefined){
+    // this.gridApi.setRowData()
+    // this.gridOptions.autoGroupColumnDef
+    this.gridApi.setGridOption('columnDefs',this.columnDefs );
+    // let autoGroupColumnDef = this.gridOptions.autoGroupColumnDef
+    // this.gridApi.setGridOption('autoGroupColumnDef',[autoGroupColumnDef]);
+    // this.gridApi.setColumnDefs(this.columnDefs)
+    this.gridApi.refreshClientSideRowModel()
   }
 }
 
@@ -1520,7 +1598,14 @@ this.listData=data
           
         // });
     }
-  
+
+   
+  if(this?.gridApi != null || this?.gridApi != undefined){
+    this.gridApi.updateGridOptions({rowData:this.listData})
+    // this.gridApi.setColumnDefs(this.columnDefs)
+    this.gridApi.refreshClientSideRowModel()
+  }
+
 }
 taskdount:any=1
 
@@ -1607,6 +1692,11 @@ existTasks.forEach((element: any) => {
 // this.cfg.detectChanges()
 this.listData = concat(parentTreeData,taskData);
 
+if(this?.gridApi != null || this?.gridApi != undefined){
+  this.gridApi.updateGridOptions({rowData:this.listData})
+  this.gridApi.refreshClientSideRowModel()
+}
+
 }
 
   onCellClicked(event: any){
@@ -1638,7 +1728,7 @@ if(this.formName=="Requirement"){
       
     }
   }
-    else if(this.formName=="bug_list"){
+    else if(this.formName=="bug_list"||this.formName=="regression"){
       // console.log(event.data);
       // this.cellClicked=clickCell
 

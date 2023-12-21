@@ -119,6 +119,10 @@ import { v4 as uuidv4 } from "uuid";
         <button  mat-menu-item *ngIf="params?.data?.test_case_name"  (click)="onclicktestResulr('testresult', params)">
           <mat-icon>task</mat-icon>
           <span>Add Test Result</span>
+        </button> 
+        <button mat-menu-item (click)="onclicktestResulr('delete', params)">
+          <mat-icon>delete</mat-icon>
+          <span>Delete Test Case</span>
         </button>
       </mat-menu>
     </div>
@@ -519,6 +523,22 @@ parentRouteName:any
       this.fields = frmConfig.form.fields;
       this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
     });
+  } else if (formAction == "delete") {
+    if (confirm("Do you wish to delete this record?")) {
+      // !Look Up delete
+      this.dataService
+        .deleteDataById("testcase", data.test_case_id)
+        .subscribe((res: any) => {
+          console.log(res);
+          this.dialogService.openSnackBar(res.message, "OK");
+          const transaction: any = {
+            remove: [data],
+          };
+          const result = params.api.applyTransaction(transaction);
+          console.log(transaction, result);
+        // });
+        });
+    }
   } 
   
  }
@@ -745,8 +765,8 @@ console.log(this.form.valid);
         values.doneBy=this.helperServices.getEmp_id()
         // values._id = "SEQ|Test_Result|"+values.project_id ;
         values._id = "SEQ|"+values.project_id ;
-
-        values.regression_id = this.ParentComponent.response.regression_id    ;
+        // values.regression_id=
+        values.regression_id = this.ParentComponent.response._id    ;
         if(values.result_status=='F'){
           updateBug=true;
         }

@@ -383,7 +383,7 @@ export class TimesheetComponent implements OnInit {
         valueFormatter: function (params) {
           if(params.value){
   
-            return moment(params.value).format('DD/MM/ YYYY')
+            return moment(params.value).format('DD/MM/YYYY')
           }
           return ''        },
   
@@ -398,39 +398,39 @@ export class TimesheetComponent implements OnInit {
         valueFormatter: function (params) {
           if(params.value){
   
-            return moment(params.value).format('DD/MM/ YYYY')
+            return moment(params.value).format('DD/MM/YYYY')
           }
           return ''        },
   
       },
-      // {
-      //   headerName: "Entry Date",
-      //   field: "entry_date",
-      //   width: 120,cellDataType:'text',
-      //   maxWidth:120,
-      //   valueFormatter: function (params) { 
-      //     if(params.value){
+      {
+        headerName: "Entry Date",
+        field: "entry_date",
+        width: 120,cellDataType:'text',
+        maxWidth:120,
+        valueFormatter: function (params) { 
+          if(params.value){
   
-      //       return moment(params.value).format('DD/MM/ YYYY')
-      //     }
-      //     return ''
-      //   },
+            return moment(params.value).format('DD/MM/YYYY')
+          }
+          return ''
+        },
   
-      // }, 
-      // {
-      //   headerName: "Completed Date",
-      //   field: "task_Completed_On",
-      //   width: 120,cellDataType:'text',
-      //   maxWidth:120,
-      //   valueFormatter: function (params) { 
-      //     if(params.value){
+      }, 
+      {
+        headerName: "Completed Date",
+        field: "task_Completed_On",
+        width: 120,cellDataType:'text',
+        maxWidth:120,
+        valueFormatter: function (params) { 
+          if(params.value){
   
-      //       return moment(params.value).format('DD/MM/ YYYY')
-      //     }
-      //     return ''
-      //   },
+            return moment(params.value).format('DD/MM/YYYY')
+          }
+          return ''
+        },
   
-      // },
+      },
       {
         headerName: "Allocated Hours",
         field: "allocated_hours",
@@ -834,7 +834,7 @@ export class TimesheetComponent implements OnInit {
       return
     }
     
-    if (params.data && (params.data.Completed_On !== undefined || params.data.Completed_On !== null)) {
+    if (params.data && (params.data.Completed_On !== undefined && params.data.Completed_On !== null)) {
     let Completed_On:any=moment(params?.data?.Completed_On).format('DD/MM/ YYYY')
     let currentDate:any=moment(this.calendarDate).format('DD/MM/ YYYY')
     if ( moment(params.data.Completed_On).isValid()  && ! (  moment(Completed_On).isSame(currentDate) || Completed_On == currentDate )) {
@@ -1263,7 +1263,7 @@ if(element.Approval_Status != "Approved"){
 
 // let start_date: any = moment(this.calendarDate).startOf('day') 
 // let end_date: any = moment(this.calendarDate).endOf('day').add(23, 'hours').add(59, 'minutes').add(999, 'milliseconds');
-let date= moment(this.calendarDate).format('DD/MM/ YYYY')
+let date= moment(this.calendarDate).format('DD/MM/YYYY')
 let allData: any[] = res.data;
 
 let filteredData = allData .map((element: any) => {
@@ -1276,8 +1276,8 @@ let filteredData = allData .map((element: any) => {
         if(timesheet.status=="Completed"){
         element.task_Completed_On=  timesheet.entry_Date
         }
-        let checkDate=moment(timesheet.entry_Date).format('DD/MM/ YYYY') 
-        if (moment(checkDate).isSame(date)) {
+        let checkDate=moment(timesheet.entry_Date).format('DD/MM/YYYY') 
+        if (moment(checkDate).isSame(date) || checkDate== date) {
           element.workedhours = timesheet.workedhours;
           element.timesheet_id = timesheet._id;
           element.entry_date = timesheet.entry_Date

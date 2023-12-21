@@ -50,9 +50,11 @@ export class DefaultLayoutComponent {
      } else if(this.collapsed && this.screenwidth <=768 && this.screenwidth>0  ){
        styleclass='body-md-screen'
      } 
-  if(this.sidenavedshow==false)   {
-    styleclass='default'
-  }
+  
+     if(this.sidenavedshow==false){
+        styleclass='default'
+      }
+
      return styleclass
    }
 }
