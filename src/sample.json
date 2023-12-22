@@ -1,203 +1,62 @@
-{
-    "pageHeading": "Test Result Name",
-    "formType": "simple",
-    "keyField": "_id",
-    "form": {
-      "collectionName": "test_result",
-      "fields": [
-      
-        {
-          "fieldGroupClassName": "display-flex",
-          "fieldGroup": [
-            {
-              "type": "label-view",
-              "key": "test_case_name",
-              "className": "flex-6",
-              "props": {
-                "label": "Test Case Name",
-                "label_width": 100,
-                "value_width": 200,
-                "value_in_next_row": false
-              }
-            },
-            {
-              "type": "label-view",
-              "key": "test_case_scenario",
-              "className": "flex-6",
-              "props": {
-                "label": "Test Case Scenario",
-                "label_width": 100,
-                "value_width": 200,
-                "value_in_next_row": false
-              }
-            },
-        {
-          "key": "testcase_date",
-          "type": "date-input",
-          "props": {
-            "label": "Tested Date",
-            "placeholder": "Tested Date",
-            "required": true
-          }
-        }
-        ]},
-        {
-          "fieldGroupClassName": "display-flex",
-          "fieldGroup": [
-            {
-              "type": "html-input",
-              "key": "test_data",
-              "className": "flex-6",
-              "props": {
-                "label": "Test Data",
-                "disabled": true
-              }
-            },
-            {
-              "type": "html-input",
-              "key": "expected_result",
-              "className": "flex-6",
-              "props": {
-                "label": "Expected Result",
-                "disabled": true
-              }
-            }
-          ]
-        },
-        {
-          "fieldGroupClassName": "display-flex",
-          "fieldGroup": [
-           
-            {
-              "key": "result_status",
-              "type": "radio",
-              "className": "flex-6",
-              "props": {
-                "label": "Test Result",
-                "required": true,
-                "options": [
-                  {
-                    "label": "Pass",
-                    "value": "P"
-                  },
-                  {
-                    "label": "Fail",
-                    "value": "F"
-                  }
-                ]
-              }
-            }, {
-              "type": "select",
-              "key": "error_type",           
-               "className": "flex-6",
-              "props": {
-                        "label": "Error Type",
-                "options": [
-                  {
-                      "label": "Logical Error",
-                      "value": "logical_error"
-                  },
-                  {
-                      "label": "Cosmatic Error",
-                      "value": "cosmatic_error"
-                  }
-              ],
-              "placeholder": "Error Type"
-              },
-              "expressions": {
-                "props.required": "model.result_status=='F'"
-              }
-            },
-            {
-              "type": "select",
-              "key": "error_priority",           
-               "className": "flex-6",
-              "props": {
-                        "label": "Severity",
-                "options": [
-                  {
-                      "label": "High",
-                      "value": "high"
-                  },
-                  {
-                      "label": "Medium",
-                      "value": "medium"
-                  },
-                  {
-                      "label": "Low",
-                      "value": "low"
-                  }, {
-                    "label": "Show Stoper",
-                    "value": "show stoper"
-                }
-              ],
-              "placeholder": "Severity"
-              },
-              "expressions": {
-                "props.required": "model.result_status=='F'",
-                "model.error_priority":"model.error_type=='show stoper' ? 'high' : ' '"
-              }
-            }
-          ]
-        },
-    
-            {
-              "type": "muti-image",
-              "key": "result_proof",           
-               "className": "flex-4",
-             "bind_key": "test_case_id",
-             "role":"test_case",
-              "props": {
-                  "refId": "test_case_id",
-                  "label": "Result Proof"
-              },
-              "expressions": {
-                "props.required": "model.result_status=='F'"
-              }
-            
-            },
-            {
-              "type": "html-input",
-              "key": "actual_result",
-              "className": "flex-8",
-              "props": {
-                "label": "Actual Result"
-                 },
-                 "expressions": {
-                   "props.required": "model.result_status=='F'"
-                 }
-            }
-          
-        ,
-        {
-          "key": "status",
-          "type": "select",
-          "defaultValue": "A",
-          "templateOptions": {
-            "label": "Status",
-            "options": [
-              {
-                "label": "Active",
-                "value": "A"
-              },
-              {
-                "label": "Disable",
-                "value": "D"
-              }
-            ],
-            "required": true
-          },
-          "hideExpression": "!model.isEdit"
-        }
-      ],
-      "defaultValues": [
-        {
-          "colName": "status",
-          "value": "A",
-          "type": "string"
-        }
-      ]
-    },
-    "onCancelRoute": "/list/test_result"
+[
+  {
+    "displayName": "Requirement Management",
+    "children": [
+      {
+        "displayName": "Requirement",
+        "iconName": "../../../../assets/images/requriement.svg",
+        "route": "project/Requirement/"
+      }
+    ]
+  },
+  {
+    "displayName": "Project Management",
+    "children": [
+      {
+        "displayName": "Modules",
+        "iconName": "../../../../assets/images/requriement.svg",
+        "route": "project/module/"
+      },
+      {
+        "displayName": "Team",
+        "iconName": "../../../../assets/images/requriement.svg",
+        "route": "project/projectteam/"
+      },
+      {
+        "displayName": "Task",
+        "iconName": "../../../../assets/images/requriement.svg",
+        "route": "project/team_member/"
+      }
+    ]
+  },
+  {
+    "displayName": "Release Management",
+    "children": [
+      {
+        "displayName": "Release",
+        "iconName": "../../../../assets/images/requriement.svg",
+        "route": "data/edit/release/"
+      },
+      {
+        "displayName": "Sprint",
+        "iconName": "../../../../assets/images/requriement.svg",
+        "route": "data/edit/project_sprint/"
+      }
+    ]
+  },
+  {
+    "displayName": "QA",
+    "children": [
+      {
+        "displayName": "Test Case",
+        "iconName": "../../../../assets/images/requriement.svg",
+        "route": "data/edit/regression/"
+      },
+      {
+        "displayName": "Bug List",
+        "iconName": "../../../../assets/images/requriement.svg",
+        "route": "project/bug_list/"
+      }
+    ]
   }
-  
+]
