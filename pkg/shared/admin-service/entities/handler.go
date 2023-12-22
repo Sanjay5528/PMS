@@ -1954,8 +1954,8 @@ func regressionTestcase(c *fiber.Ctx) error {
 		bson.D{
 			{"$group",
 				bson.D{
-					{"_id", "$sprint_id"},
-					{"id", bson.D{{"$first", "$_id"}}},
+					{"_id", "$_id"},
+					// {"id", bson.D{{"$first", "$_id"}}},
 					{"ResultPassCount",
 						bson.D{
 							{"$sum",
@@ -2013,7 +2013,7 @@ func regressionTestcase(c *fiber.Ctx) error {
 		bson.D{
 			{"$project",
 				bson.D{
-					{"_id", "$id"},
+					{"_id", 1},
 					{"regression_id", 1},
 					{"description", 1},
 					{"project_id", 1},
