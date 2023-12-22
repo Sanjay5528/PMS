@@ -249,7 +249,6 @@ export class ButtonComponent implements ICellRendererAngularComp {
   { }
 parentRouteName:any
   agInit(params: any): void {
-    debugger;
     this.gridData = params.data;
     this.form.reset();
     this.params = params;
@@ -614,7 +613,6 @@ parentRouteName:any
     values['requirement_id']=params.data._id
     values['project_id']=params.data.project_id
     values["_id"]=`SEQ|${params.data.project_id}`
-    debugger
     this.dataService.save("task",values).subscribe((res:any)=>{
       // console.log();
       values["_id"]=res.data["insert ID"]

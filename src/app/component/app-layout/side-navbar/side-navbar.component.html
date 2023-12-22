@@ -56,7 +56,7 @@
         </a>
       </li>
       <li *ngIf="subsectionExpanded[data.displayName] && data.children && collapsed == true" class="submenu-item">
-        <!-- [routerLink]="[subsection.route]" -->
+        <!--         [routerLink]="subsection.route + selectProject._id"-->
         <a class="sidenav-nav-link" mat-list-item 
         (click)="routeToDestination(subsection.route)"
           *ngFor="let subsection of data.children">

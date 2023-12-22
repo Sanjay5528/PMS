@@ -97,8 +97,8 @@ const routes: Routes = [
     children: [
       {
         path: "",
-        component:DashboardComponent
-        // component: GantchartComponent
+        // component:DashboardComponent
+        component: GantchartComponent
 
       }
 

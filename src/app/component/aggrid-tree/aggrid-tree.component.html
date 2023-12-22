@@ -83,10 +83,10 @@
 <div *ngIf="formName=='test_result' && cellClicked">
   <div style="width: 100%;margin-bottom: 5px;" >
 
-    <span *ngIf="cellClicked" style="font-size: larger;font-style: italic;margin-left: 20px;">{{selectedRows.requirement_name.toUpperCase()}} </span>
+    <span *ngIf="cellClicked && selectedRows?.requirement_name " style="font-size: larger;font-style: italic;margin-left: 20px;">{{selectedRows.requirement_name.toUpperCase()}} </span>
     <mat-icon style="float: right;font-size: large;"  (click)="this.drawer.close()">close</mat-icon>
   </div>
-   <span *ngIf="cellClicked" style="font-size: small;font-style: normal;margin-left: 20px;"> {{cellClicked=='test_cases_length'? "Test Case":"Bug List" }} <span style="font-size: small;border-radius: 50%;"> {{ cellClicked=='test_cases_length'? selectedRows.test_cases_length : selectedRows.bug_count}} </span> </span>
+   <span *ngIf="cellClicked" style="font-size: small;font-style: normal;margin-left: 20px;"> {{cellClicked=='test_cases_length'? "Test Case":"Bug List" }} <span style="font-size: small;border-radius: 50%;"> {{ cellClicked=='test_cases_length'? selectedRows?.test_cases_length : selectedRows?.bug_count}} </span> </span>
  
    <div *ngIf="cellClicked=='test_cases_length'" style="margin-left: 25px;">
    
@@ -410,6 +410,8 @@
          [pagination]="true"  [autoGroupColumnDef]="autoGroupColumnDef"
          [animateRows]="true" [paginationPageSize]="10"
          [groupDefaultExpanded]="groupDefaultExpanded" 
+        [autoGroupColumnDef]="autoGroupColumnDef"
+         [suppressChangeDetection]=""  
       
       -->
         <!--   -->
@@ -421,12 +423,10 @@
         [columnDefs]="columnDefs" 
         [rowData]="listData"
         [gridOptions]='gridOptions' 
-        [context]="context"
-        [rowSelection]="'single'"
+        [context]="context"[paginationPageSizeSelector]='false'
         [components]="components" 
-        [autoGroupColumnDef]="autoGroupColumnDef"
+        [rowSelection]="'single'"
         [animateRows]="true"
-        [singleClickEdit]="true"
         (cellClicked)='onCellClicked($event)'
         (selectionChanged)="onSelectionChanged($event)"
         (cellValueChanged)="onCellValueChanged($event)"

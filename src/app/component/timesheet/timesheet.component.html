@@ -82,7 +82,7 @@
           [getRowId]="getRowId"   
           [getRowClass]="getRowClass"
           [groupDisplayType]="'groupRows'"
-          [singleClickEdit]="true"
+          [singleClickEdit]="true"[paginationPageSizeSelector]='false'
           [pagination]="true"
           [paginateChildRows]="true"
           [paginationAutoPageSize]="true"
@@ -129,7 +129,7 @@
         [rowData]="listData"
         [rowSelection]="'single'"
         (gridReady)="onGridReadys($event)"   
-        [components]="components" 
+        [components]="components" [paginationPageSizeSelector]='false'
         [getRowId]='getRowIdschedule'
       [getContextMenuItems]="getContextMenuSchedule"
       [pagination]="true"
@@ -152,7 +152,7 @@
       [groupDefaultExpanded]="-1"
       (gridReady)="onGridReady($event)"
       [getRowId]="getRowIdApproval"  
-      [suppressRowClickSelection]="true"
+      [suppressRowClickSelection]="true"[paginationPageSizeSelector]='false'
       [groupDisplayType]="'groupRows'"
       [groupRowRendererParams]="groupRowRendererParams"
       [groupSelectsChildren]="true"

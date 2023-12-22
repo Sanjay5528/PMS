@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, Input, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import {
   CellClassParams,
   ColDef,
@@ -32,7 +32,7 @@ import { BreadcrumbsService } from 'src/app/breadcrums.service';
 @Component({
   selector: 'app-aggrid-tree',
   templateUrl: './aggrid-tree.component.html',
-  styleUrls: ['./aggrid-tree.component.css']
+  styleUrls: ['./aggrid-tree.component.css'],
 })
 export class AggridTreeComponent {
   form = new FormGroup({});
@@ -65,7 +65,7 @@ public  columnDefs: (ColDef | ColGroupDef)[] = []
   reassignemployee:any[]=[]
 //! this.cfg.detectChanges() Undo
 
-  public autoGroupColumnDef: ColDef = {};
+  // public autoGroupColumnDef: ColDef = {};
 
   public defaultColDef: ColDef = {
     flex: 1,
@@ -106,10 +106,22 @@ parms:any
     // if(this?.gridApi != null || this?.gridApi != undefined){
     //   this.gridApi.destroy()
     // }
+      console.warn("Component Loaded" , "Agtree");
+      
+  if(this?.gridApi != null || this?.gridApi != undefined){
+   const data =this.gridApi.updateGridOptions({columnDefs:[]})
+   console.log("Delte the old Column def",data);
+   
+  //  const result:any= this.gridApi.applyTransaction({remove:[this.listData]})
+  //  console.log("Delete the Old Record",result);
+   
+    // this.gridApi.setColumnDefs(this.columnDefs)
+   this.gridApi.setSideBarVisible(false);
+    // this.gridApi.refreshClientSideRowModel('group')
+  }
     this.route.params.subscribe(params => {
       this.addbutton=false;
-      console.log(params);
-      this.id = params['id'];
+        this.id = params['id'];
       this.parms=params['id']
       
       // this.cfg.detectChanges()
@@ -199,6 +211,7 @@ parms:any
  
   formlyformdata(data:any){
   console.log('work');
+  this.form = new FormGroup ({})
   this.fields=[]
   this.config=''
   if(data==true){
@@ -243,40 +256,26 @@ this.columnDefs=[]
     resizable: true,
     filter: false 
   }
-  this.autoGroupColumnDef={
-    headerName: "Parent Modules",
-    minWidth: 200,
-    cellRendererParams: { suppressCount: true },
-    sortable: false,
-resizable: true,
-filter: false 
-}
+
+//   this.autoGroupColumnDef={
+//     headerName: "Parent Modules",
+//     minWidth: 200,
+//     cellRendererParams: { suppressCount: true },
+//     sortable: false,
+// resizable: true,
+// filter: false 
+// }
 this.gridOptions.pagination=true
 this.gridOptions.paginationPageSize=100
-  this.gridOptions.treeData=true
-  this.gridOptions.groupDefaultExpanded=-1
-  this.columnDefs.push(  
-  //   {
-  //   headerName: 'Parent Module Name',
-  //   field: 'parentmodulename',
-  //   width: 40,
-  //   filter: 'agTextColumnFilter',
-  //   editable: true,
-  //   hide: true
-  // },
-  // {
-  //   headerName: 'Requirement Name',
-  //   field: 'requirement_id', //! TO Change into requirement_name
-  //   width: 40,
-  //   filter: 'agTextColumnFilter',
-  // },
-  // {
-  //   headerName: 'Task Name',
-  //   field: 'task_name',
-  //   width: 40,
-  //   editable: true,
-  //   filter: 'agTextColumnFilter',hide:true
-  // },
+this.gridOptions.getRowId=function (params:any) { return params.data._id }
+this.gridOptions.treeData=true
+this.gridOptions.getDataPath=(data: any) => { return data.treePath };
+this.gridOptions.groupDefaultExpanded=-1
+
+
+  this.columnDefs=
+  // this.columnDefs.push(  
+ [ 
   {
     headerName: 'Start Date',
     field: 'startdate',
@@ -318,20 +317,23 @@ this.gridOptions.paginationPageSize=100
     cellRenderer: 'buttonRenderer'
 
   }
-  )
-// this.cfg.detectChanges()
+]
+this.gridOptions.columnDefs=this.columnDefs
+  // )
+   if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+  this.gridApi.updateGridOptions(this.gridOptions)
+  this.gridApi.setSideBarVisible(false);
 
+}
   }else if(formName=="Requirement"){
  
 
-this.gridOptions.treeData=true
+    this.gridOptions.treeData=true
+    this.gridOptions.getDataPath=(data: any) => { return data.treePath };
+
 this.gridOptions.groupDefaultExpanded=-1
-  this.gridOptions.getRowId=function(params:any){
-    return params.data._id
-  }
-  this.gridOptions.excludeChildrenWhenTreeDataFiltering=true;
-this.gridOptions.pagination=true
-this.gridOptions.paginationPageSize=100
+  this.gridOptions.getRowId=function (params:any) { return params.data._id }
+  this.gridOptions.excludeChildrenWhenTreeDataFiltering=true; 
     this.gridOptions.autoGroupColumnDef={
       headerName: "Parent Requriement",
       field:"CheckIndex",
@@ -341,18 +343,21 @@ this.gridOptions.paginationPageSize=100
       resizable: true,
       filter: false
 }
-this.autoGroupColumnDef={
-  headerName: "Parent Requriement",
-  field:"CheckIndex",
-  minWidth: 200,
-  cellRendererParams: { suppressCount: true },
-  sortable: false,
-  resizable: true,
-  filter: false
-}
+// this.autoGroupColumnDef={
+//   headerName: "Parent Requriement",
+//   field:"CheckIndex",
+//   minWidth: 200,
+//   cellRendererParams: { suppressCount: true },
+//   sortable: false,
+//   resizable: true,
+//   filter: false
+// }
     const Sprintvalue:any=this.sprintCellEditorParams
     const modelvalue:any=this.moduleCellEditorParams
-    this.columnDefs.push(  
+   
+    this.columnDefs=
+    // .push(  
+      [
     //   {
     //   headerName: 'Parent Requirement ID',
     //   field: 'parentmodulename',
@@ -361,12 +366,13 @@ this.autoGroupColumnDef={
     //   editable: true,
     //   hide: true
     // },  
-    //  {
-    //   headerName: 'Requirement Name',
-    //   field: 'requirement_name',
-    //   width: 40,
-    //   filter: 'agTextColumnFilter',
-    // },
+     {
+      headerName: 'Requirement Name',
+      field:"CheckIndex",
+      width: 40,
+      filter: 'agTextColumnFilter',
+      initialHide:true
+    },
     {
       headerName: 'Sprint Id',
       field: 'sprint_id',
@@ -400,36 +406,6 @@ this.autoGroupColumnDef={
       editable: false,
       filter: 'agNumberColumnFilter',
     },
- 
-    // {
-    //   headerName: 'Start Date',
-    //   field: 'startdate',
-    //   width: 40,
-    //   editable: true,
-    //   filter: 'agTextColumnFilter',
-    //   cellEditor: 'datetime-input',
-    //   // cellRenderer: (data: { modified: any }) => {
-    //   //   return moment(data.modified).format("M/d/yyyy, h:mm ");
-    //   // },
-    //   valueFormatter: function (params) {
-    //     return moment(params.value).format('D/M/ YYYY');
-    //   },
-    // },
-    
-    // {
-    //   headerName: 'End Date',
-    //   field: 'enddate',
-    //   width: 40,
-    //   editable: true,
-    //   filter: 'agTextColumnFilter',
-    //   cellEditor: 'datetime-input',
-    //   // cellRenderer: (data: { modified: any }) => {
-    //   //   return moment(data.modified).format("M/d/yyyy, h:mm ");
-    //   // },
-    //   valueFormatter: function (params) {
-    //     return moment(params.value).format('D/M/ YYYY');
-    //   },
-    // },
     {
   
       field: 'Action',
@@ -441,19 +417,21 @@ this.autoGroupColumnDef={
       cellRenderer: 'buttonRenderer'
   
     }
-    
-    )
-// this.cfg.detectChanges()
-
+  ] 
+  this.gridOptions.columnDefs=this.columnDefs
+  if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+    this.gridApi.updateGridOptions(this.gridOptions)
+    this.gridApi.setSideBarVisible(false);
+  }
   }else if(formName=="projectteam"){
-    // this.gridChange=true;
-
 this.gridOptions.treeData=true
+this.gridOptions.getDataPath=(data: any) => { return data.treePath };
+this.gridOptions.getRowId=function (params:any) { return params.data._id }
 this.gridOptions.pagination=true
 this.gridOptions.paginationPageSize=100
 this.gridOptions.groupDefaultExpanded=-1
     this.gridOptions.autoGroupColumnDef={
-      headerName: "Team Specification Name",
+      headerName: "Team  Name",
       field:"name",
       // minWidth: 200,
       cellRendererParams: { suppressCount: true },
@@ -461,16 +439,17 @@ this.gridOptions.groupDefaultExpanded=-1
       resizable: true,
       filter: false
 }
-this.autoGroupColumnDef={
-  headerName: "Team Specification Name",
-  field:"name",
-  // minWidth: 200,
-  cellRendererParams: { suppressCount: true },
-  sortable: false,
-  resizable: true,
-  filter: false
-}
-    this.columnDefs.push(	
+// this.autoGroupColumnDef={
+//   headerName: "Team Specification Name",
+//   field:"name",
+//   // minWidth: 200,
+//   cellRendererParams: { suppressCount: true },
+//   sortable: false,
+//   resizable: true,
+//   filter: false
+// }
+    this.columnDefs=[
+    // .push(	
 				
 		{ 
 			"headerName": "Employee Name", "field": "employe_name" 
@@ -541,38 +520,47 @@ this.autoGroupColumnDef={
 	// 			"sortable": true,
 	// 			"filter": "agTextColumnFilter"
 	// 		}
-      )
+      // )
+]
 // this.cfg.detectChanges()
+this.gridOptions.columnDefs=this.columnDefs
+if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+  this.gridApi.updateGridOptions(this.gridOptions)
+  this.gridApi.setSideBarVisible(false);
+}
 
   }else if(this.formName=="test_result"){
     this.gridOptions.groupDefaultExpanded=-1
 this.gridOptions.groupAllowUnbalanced=true;
-this.gridOptions.pagination=true
+this.gridOptions.pagination=true;
+this.gridOptions.getRowId=function (params:any) { return params.data.unique }
+
 this.gridOptions.paginationPageSize=100
     this.gridOptions.autoGroupColumnDef={
       headerName: "Requirement Name",
       field:"requirement_name",
-      maxWidth: 280,
       cellRendererParams: { suppressCount: true },
       sortable: false,
       resizable: true,
       filter: false
 }
-this.autoGroupColumnDef={
-  headerName: "Requirement Name",
-  field:"requirement_name",
-  maxWidth: 280,
-  cellRendererParams: { suppressCount: true },
-  sortable: false,
-  resizable: true,
-  filter: false
-}
-    this.columnDefs.push(  
+this.gridOptions.treeData=false;
+// this.autoGroupColumnDef={
+//   headerName: "Requirement Name",
+//   field:"requirement_name",
+//   maxWidth: 280,
+//   cellRendererParams: { suppressCount: true },
+//   sortable: false,
+//   resizable: true,
+//   filter: false
+// }
+    this.columnDefs=[
+    // .push(  
       {
         headerName: 'Module id',
         field: 'module_id',
         width: 40,
-        rowGroup:true,
+        enableRowGroup:true,
         showRowGroup:false,
         hide:true,
         filter: 'agTextColumnFilter',
@@ -583,12 +571,15 @@ this.autoGroupColumnDef={
     //     width: 40,rowGroup:true,showRowGroup:false,
     //     filter: 'agTextColumnFilter',
     //   }, 
-    //   {
-    //   headerName: 'Requirement Name',
-    //   field: 'requirement_name',
-    //   width: 40,
-    //   filter: 'agTextColumnFilter',
-    // },
+      {
+      headerName: 'Requirement Name',
+      field: 'requirement_name',
+      width: 40,       
+      showRowGroup:false,
+      resizable:true, 
+      enableRowGroup:true,
+      filter: 'agTextColumnFilter',
+    },
    {
       headerName: 'Test Case Name',
       field: 'test_case_name',
@@ -651,13 +642,18 @@ this.autoGroupColumnDef={
       cellRenderer: 'buttonRenderer'
   
     }
-    
-    )
+  ]
+    // )
 // this.cfg.detectChanges()
-
+this.gridOptions.columnDefs=this.columnDefs
+if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+  this.gridApi.updateGridOptions(this.gridOptions)
+  this.gridApi.setSideBarVisible(false);
+}
   }else if(this.formName=="bug_list"||this.formName=="regression"){
     this.pageHeading="Bug List"
-    this.autoGroupColumnDef={}
+    this.gridOptions.treeData=false
+    // this.autoGroupColumnDef={}
 this.gridOptions.sideBar= {
   toolPanels: [
       {
@@ -691,6 +687,7 @@ this.gridOptions.pivotMode=false
 this.gridOptions.enableCellExpressions=true 
 this.defaultColDef.enablePivot=true;
 this.defaultColDef.enableRowGroup=true;
+this.gridOptions.getRowId=function (params:any) { return params.data._id }
 
 this.gridOptions.suppressAggFuncInHeader=true
 this.defaultColDef.sortable=true;
@@ -715,7 +712,8 @@ this.defaultColDef.pivot=true;
  this.gridOptions.tooltipInteraction=true
 this.defaultColDef.menuTabs=['generalMenuTab','filterMenuTab','columnsMenuTab'];
 // this.defaultColDef.menuTabs.push('')
-    this.columnDefs.push(  
+    this.columnDefs=[
+    // .push(  
       // {
       //   headerName: 'Total',
       //   type: 'totalColumn',
@@ -852,16 +850,23 @@ if (params.value === "high") {
     //   cellRenderer: 'buttonRenderer'
   
     // }
-    
-    )
+  ]
+    // )
 // this.cfg.detectChanges()
-
+this.gridOptions.columnDefs=this.columnDefs
+if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+  this.gridApi.updateGridOptions(this.gridOptions)
+}
   }else if(this.formName=="team_member"){
     // this.pageHeading="Team Member"
     const Assigned:any=this.AssignTOCellEditorParams
-this.gridOptions.treeData=true
+this.gridOptions.getRowId=function (params:any) { return params.data._id }
+
+    this.gridOptions.treeData=true
+    this.gridOptions.getDataPath=(data: any) => { return data.treePath };
+
 this.gridOptions.pagination=true
-this.gridOptions.paginationPageSize=100
+this.gridOptions.paginationPageSize=50
     this.gridOptions.autoGroupColumnDef={
       headerName: "Requriement Name",
       field:"requirement_name",
@@ -872,25 +877,22 @@ this.gridOptions.paginationPageSize=100
       filter: false,
       // refData:
 }
-this.autoGroupColumnDef={
-  headerName: "Requriement Name",
-  field:"requirement_name",
-  minWidth: 200,
-  cellRendererParams: { suppressCount: true },
-  sortable: false,
-  resizable: true,
-  filter: false,
- 
-}
+// this.autoGroupColumnDef={
+//   headerName: "Requriement Name",
+//   field:"requirement_name",
+//   minWidth: 200,
+//   cellRendererParams: { suppressCount: true },
+//   sortable: false,
+//   resizable: true,
+//   filter: false,
+// }
 
-// this.gridOptions.groupDisplayType='groupRows'
 this.gridOptions.rowSelection='single'
 this.gridOptions.groupSuppressBlankHeader=true;
 this.gridOptions.groupDefaultExpanded=-1
-this.gridOptions.getRowId=function(rowData:any){
-  return rowData.data['_id']
-}
-    this.columnDefs.push(  
+this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
+    this.columnDefs =[
+    // .push(  
     
       {
         headerName: "Task Id",
@@ -1013,21 +1015,16 @@ this.gridOptions.getRowId=function(rowData:any){
     
       }
   
-    
-    )
+    ]
+    // )
 // this.cfg.detectChanges()
-
+this.gridOptions.columnDefs=this.columnDefs
+if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+  this.gridApi.updateGridOptions(this.gridOptions)
+  this.gridApi.setSideBarVisible(false);
+}
   }
-
-  if(this?.gridApi != null || this?.gridApi != undefined){
-    // this.gridApi.setRowData()
-    // this.gridOptions.autoGroupColumnDef
-    this.gridApi.setGridOption('columnDefs',this.columnDefs );
-    // let autoGroupColumnDef = this.gridOptions.autoGroupColumnDef
-    // this.gridApi.setGridOption('autoGroupColumnDef',[autoGroupColumnDef]);
-    // this.gridApi.setColumnDefs(this.columnDefs)
-    this.gridApi.refreshClientSideRowModel()
-  }
+ 
 }
 
 imageFile:any[]=[]
@@ -1059,28 +1056,15 @@ sprintCellEditorParams = (params: any) => {
   }
   this.dataService.getDataByFilter("sprint",filer).subscribe((res:any) =>{
       if(isEmpty(res.data[0].response)){
-        // this.dialogService.openSnackBar("There Were No Sprint To be Found","OK")
         return
       }
     res.data[0].response.forEach((each:any)=>{
-    // this.ValueToCompareRequriementSprint.push({label:each.name,value:each.id})
     this.OnlyValueRequriementSprint.push(each._id)
   })  
 })
     return this.OnlyValueRequriementSprint
 }};
 
-
-// Changethetask(taskData:any,selectedData:any,index:any){
-//   let data:any={}
-//   data['assigned_to']=selectedData.employee_id
-//   data['previous_assigned_to']=taskData.assigned_to
-//   this.dataService.update("task",taskData._id,data).subscribe((xyz:any)=>{
-//     console.log(xyz);
-//     this.dialogService.openSnackBar("Task updated successfully","OK")
-//     this.reassignemployee[index]=null
-//   })
-// }
 
 OnlyValueEmployee:any[]=[]  
 ValueToCompareEmployee:any[]=[]
@@ -1091,8 +1075,6 @@ AssignTOCellEditorParams =  (params: any) => {
   } else {
    this.dataService.lookupTreeData("team_specification", this.response.project_id).subscribe((res: any) => {
       if (isEmpty(res.data.response)) {
-        // Handle the case when there is no response data
-        // this.dialogService.openSnackBar("There Were No Sprint To be Found","OK");
         return;
       } 
       res.data.response.forEach((each: any) => {
@@ -1104,56 +1086,12 @@ AssignTOCellEditorParams =  (params: any) => {
       return this.OnlyValueEmployee
     });
     if (params == true) {
-    //   if(isEmpty(this.ValueToCompareEmployee)){
-    //     this.ValueToCompareEmployee=this.AssignTOCellEditorParams('');
-
-    //   }else{
-
         return this.ValueToCompareEmployee ;
       }
-    // }
-
-    // If params is true, return ValueToCompareEmployee, otherwise return OnlyValueEmployee
     return this.OnlyValueEmployee;
   }
 };
-
-// AssignTOCellEditorParams = (params: any): Promise<any[]> => {
-//   if (!isEmpty(this.OnlyValueEmployee)) {
-//     console.warn("Data Exist");
-//     return Promise.resolve(this.OnlyValueEmployee);
-//   } else {
-//     return new Promise((resolve, reject) => {
-//       this.dataService.lookupTreeData("team_specification", this.response.project_id)
-//         .subscribe((res: any) => {
-//           if (isEmpty(res.data.response)) {
-//             // Handle the case when there is no response data
-//             // this.dialogService.openSnackBar("There Were No Sprint To be Found","OK");
-//             reject("No response data");
-//             return;
-//           }
-
-//           console.log(res);
-
-//           res.data.response.forEach((each: any) => {
-//             if (!this.OnlyValueEmployee.includes(each.employe_name)) {
-//               this.ValueToCompareEmployee.push({ label: each.employe_name, value: each.user_id });
-//               this.OnlyValueEmployee.push(each.employe_name);
-//             }
-//           });
-
-//           // If params is true, resolve with ValueToCompareEmployee, otherwise continue recursion
-//           if (params == true) {
-//             resolve(this.ValueToCompareEmployee);
-//           } else {
-//             // Continue recursion (you might want to add a base case to prevent infinite recursion)
-//             this.AssignTOCellEditorParams(params).then(resolve).catch(reject);
-//           }
-//         });
-//     });
-//   }
-// };
-
+ 
 moduleCellEditorParams =  (params: any)  => {
   if(!isEmpty(this.OnlyValueRequriementModules)){
   return this.OnlyValueRequriementModules
@@ -1197,7 +1135,73 @@ if(params==true){
 
   getTreeData() {
 // ! UNDO
+if (this.gridApi) { this.gridApi.updateGridOptions({rowData:[]}) }
+
 if(this.formName=="module"){
+this.fetchModuleData()
+  }else if(this.formName=="Requirement"){
+     this.fetchRequirementData()
+  }else if(this.formName=="projectteam"){
+  this.fetchProjectTeamData()
+   }else if(this.formName=="test_result"){
+    this.fetchTestResultData()
+  }else if(this.formName=="bug_list"){
+    
+    this.dataService.lookUpBug(this.response.project_id,'').subscribe((res:any)=>{
+// this.cfg.detectChanges()
+this.listData=res.data.response
+// this.gridApi.applyTransaction({add:[this.listData]})
+this.gridApi.updateGridOptions({rowData:this.listData})
+      // this.gridApi.setSideBarVisible(true);
+      // this.updateGrid()
+
+      // if(this.formName=="bug_list"){this.gridApi.setSideBarVisible(true)}
+
+    })
+   }else if(this.formName=="regression"){
+        this.dataService.getDataById("regression",this.parms ).subscribe((res:any)=>{
+          
+          this.dataService.lookUpBug(this.response.project_id,res.data[0].regression_id).subscribe((res:any)=>{
+            let data:any=res.data.response
+// this.cfg.detectChanges()
+
+            this.listData=data
+            // this.updateGrid()
+            // this.gridApi.applyTransaction({add:[this.listData]})
+            this.gridApi.updateGridOptions({rowData:this.listData})
+          })
+        })
+      }     else if(this.formName=="team_member"){
+        // this.dataService
+        // .getDataById("project", "6554bb7e052126c9587741a5")
+        // .subscribe((data: any) => {
+        //   console.log(data);
+          this.dataService
+            .lookupTreeData("task_requriment", this.response.project_id)
+            .subscribe((res: any) => {
+              // this.listData = res.data.response;
+              if(res.data.response!=null){
+                this.GroupRow(res.data.response);
+              }
+            });
+          
+        // });
+    }
+   
+  // if(this?.gridApi != null || this?.gridApi != undefined){
+  //   this.gridApi.updateGridOptions({rowData:this.listData})
+  //   // this.gridApi.setColumnDefs(this.columnDefs)
+  //  this.gridApi.setSideBarVisible(false);
+  //   this.gridApi.refreshClientSideRowModel('group')
+  //   // this.gridApi.refreshClientSideRowModel()
+  // }
+  // if(this.formName=="bug_list"){this.gridApi.setSideBarVisible(true)}
+
+
+}
+// taskdount:any=1
+
+ fetchModuleData() {
   let Projectfiler:any={
     start:0,end:1000,filter:[{
       
@@ -1229,385 +1233,195 @@ if(this.formName=="module"){
         }
         this.listData.push(row);
 // this.cfg.detectChanges()
+console.log(this.listData);
 
         // this.getmodules()
       }
-    });
-  }else if(this.formName=="Requirement"){
-      this.dataService.lookupTreeData("requriment",this.response.project_id).subscribe((res:any) =>{
-//         let data:any[]= []     
-//         this.listData = []
-        
-//         for (let idx = 0; idx < res.data.response.length; idx++) {
-//           const row = res.data.response[idx];
-//             if(row && row?.module_id){
-// // Check if Data is Empty (it call function and return)
-//               let datafound = this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;          
-//               let findValue:any=datafound.find((val:any)=>val.value==row.module_id)
-//               row.module_id = findValue?.label;
-//             }
-//             if (row.parentmodulename == "" || !row.parentmodulename) {
-//               row.treePath = [row.requirement_name];
-//             } else {
-//               const parentNode = data.find((d) => d.requirement_name == row.parentmodulename);
-//               if (parentNode && parentNode.treePath && !parentNode.treePath.includes(row.requirement_name)) {
-//                               row.treePath = [...parentNode.treePath];
-//                 row.treePath.push(row.requirement_name);
-//               }
-//                         }
-//           data.push(row);
-//         }
-                
-        // let parentTreeData: any[] = [];
-        // let childIndex: { [key: string]: number } = {};
-        // let childArr: any[] = [];
-
-        // data.forEach((res: any) => {
-        //   const arrLength = res.treePath ? res.treePath.length : 0;
-        //   if (arrLength === 1) {
-        //         res.index = parentTreeData.length + 1;
-        //         res.parentIndex=res.index
-        //         res.index=res.index + " "+res.requirement_name
-        //         childIndex = {};
-        //         parentTreeData.push(res);
-        //   } else if (arrLength > 1) {
-        //       const parentKey = res.treePath.slice(0, -1).join('.');
-        //       const parentRequirementName = res.treePath[arrLength - 2];
-        //       const parent = data.find((d) => d.requirement_name === parentRequirementName);        
-        //           if (parent) {
-        //             if (!childIndex[parentKey]) {
-        //               childIndex[parentKey] = 1;
-        //             }
-        //               console.log(parent.index,'parent.index');
-        //               let CheckIndex = parent.parentIndex + '.' + childIndex[parentKey]++;
-        //               const childIndexable = childArr.find((d) => {        
-        //                 d.parentIndex == CheckIndex
-        //               });
-        //               res.parentIndex=parseFloat(CheckIndex)
-        //               if(childIndexable===undefined){
-        //                     res.index=CheckIndex +" "+ res.requirement_name
-        //                    }else{
-        //                     let index=childIndex[parentKey]++ +1
-        //                     res.index = parent.parentIndex + '.' + index;
-        //                   }
-        //             childArr.push(res);
-        //           }
-        //   }
-        // });
-// childArr.forEach((value:any)=>{
-  // const data = res.data.response;
-  // let parentTreeData: any[] = [];
-  // let childIndex: { [key: string]: number } = {};
-  // let childArr: any[] = [];
-  
-  // for (let idx = 0; idx < data.length; idx++) {
-  //   const row = data[idx];
-  
-  //   if (row && row.module_id) {
-  //     let datafound = this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;
-  //     let findValue: any = datafound.find((val: any) => val.value == row.module_id);
-  //     row.module_id = findValue?.label;
-  //   }
-  
-  //   if (row.parentmodulename == "" || !row.parentmodulename) {
-  //     row.treePath = [row.requirement_name];
-  //     row.index = idx + 1 + " " + row.requirement_name;
-  //     row.parentIndex = idx + 1;
-  //     parentTreeData.push(row);
-  //   } else {
-  //     const parent = data.find((d:any) => d.requirement_name === row.parentmodulename);
-  //     if (parent) {
-  //       if (!childIndex[row.parentmodulename]) {
-  //         childIndex[row.parentmodulename] = 1;
-  //       }
-  //       console.log(childIndex[row.parentmodulename]++);
-        
-  //       row.treePath = [...parent.treePath, row.requirement_name];
-  //       row.parentIndex = parent.parentIndex;
-  //       let CheckIndex = row.parentIndex + '.' + childIndex[row.parentmodulename]++;
-  //       row.index = CheckIndex + " " + row.requirement_name;
-  //       childArr.push(row);
-  //     }
-  //   }
-  // }
-  
-  // const finalData = parentTreeData.concat(childArr);
-  
-  // // Log the final data for debugging or further analysis.
-  // console.log(finalData);
-  
-  //       // })
-  //       this.listData = [...parentTreeData, ...childArr];
-  //       console.log(this.listData);
-        
-  // const data = res.data.response;
-  // let parentTreeData: any[] = [];
-  // let childIndex: { [key: string]: number } = {};
-  // let parentindex:any
-  // data.forEach((row: any, idx: number) => {
-  //   if (row && row.module_id) {
-  //     // Check if Data is Empty (it calls a function and returns)
-  //     let datafound = this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;
-  //     let findValue: any = datafound.find((val: any) => val.value == row.module_id);
-  //     row.module_id = findValue?.label;
-  //   }
-  
-  //   if (row.parentmodulename == "" || !row.parentmodulename) {
-  //     row.treePath = [row.requirement_name];
-  //     // row.parentindex=
-  //     row.index = (idx + 1).toString();
-  //     row.parentIndex = null; // Use null for top-level elements
-  //     parentTreeData.push(row);
-  //   } else {
-  //     const parent = data.find((d:any) => d.requirement_name === row.parentmodulename);
-  //     if (parent) {
-  //       childIndex[row.parentmodulename] = (childIndex[row.parentmodulename] || 0) + 1;
-  //       row.treePath = [...parent.treePath, row.requirement_name];
-  //       row.parentIndex = parent.index;
-  //       row.index = `${row.parentIndex}.${childIndex[row.parentmodulename]}`;
-  //       parentTreeData.push(row);
-  //     }
-  //   }
-  // });
-  
-  // // Log the final data for debugging or further analysis.
-  // console.log(parentTreeData);
-  
-  // // Set the final data to your listData variable
-  // this.listData = parentTreeData;
-//   const data = res.data.response;
-//   console.log(data);
-  
-// let parentTreeData: any[] = [];
-// let childIndex: { [key: string]: number } = {};
-// let parentIndex: number = 1; // Initialize parentIndex
-
-// data.forEach((row: any, idx: number) => {
-//   if (row && row.module_id) {
-//     // Check if Data is Empty (it calls a function and returns)
-//     let datafound = this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;
-//     let findValue: any = datafound.find((val: any) => val.value == row.module_id);
-//     row.module_id = findValue?.label;
-//   }
-
-//   if (row.parentmodulename == "" || !row.parentmodulename) {
-//     row.treePath = [row.requirement_name];
-//     row.index = parentIndex.toString();
-//     row.parentIndex = null;
-//     row.CheckIndex=row.index+' ' +row.requirement_name
-
-//     parentTreeData.push(row);
-//   } else {
-//     const parent = data.find((d:any) => d.requirement_name === row.parentmodulename);
-//     console.log(parent);
-    
-//     if (parent) {
-//       childIndex[row.parentmodulename] = (childIndex[row.parentmodulename] || 0) + 1;
-//       console.log(parent.treePath);
-//       if (
-//         parent &&
-//         parent.treePath &&
-//         !parent.treePath.includes(row.requirement_name)
-//       ) {
-
-//         row.treePath = [...parent?.treePath, row.requirement_name];
-//       }
-//       row.parentIndex = parent.index;
-//       row.index = `${row.parentIndex}.${childIndex[row.parentmodulename]}`;
-//       row.CheckIndex=row.index+' ' +row.requirement_name
-//       parentTreeData.push(row);
-//     }
-//   }
-
-//   if (!row.parentmodulename) {
-//     parentIndex++;
-//   }
-// });
-// console.log(parentTreeData);
-// this.listData = parentTreeData;
-const data = res.data.response; 
-if(data !=null){
-  let ParentValue:any []=data.filter((row:any)=>{ return row.parentmodulename == "" || !row.parentmodulename }) 
-let parentTreeData: any[] = [];
-let childIndex: { [key: string]: number } = {};
-let parentIndex: number = 1; // Initialize parentIndex
-if(!isEmpty(data)){
-  data.forEach((row: any, idx: number) => {
-    if (row && row.module_id) {
-      let datafound = this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;
-      let findValue: any = datafound.find((val: any) => val.value == row.module_id);
-      row.module_id = findValue?.label;
-    }
-  
-    if (row.parentmodulename == "" || !row.parentmodulename) {
-      row.treePath = [row.requirement_name];
-      row.index = parentIndex.toString();
-      row.CheckIndex=row.index+' ' +row.requirement_name
-      row.parentIndex = null; // Use null for top-level elements
-      parentTreeData.push(row);
-    } else {
-      const parent = parentTreeData.find((d) => d._id === row.parentmodulename);
-      if (parent) {
-        childIndex[row.parentmodulename] = (childIndex[row.parentmodulename] || 0) + 1;
-        row.treePath = [...parent.treePath, row.requirement_name];
-        row.parentIndex = parent.index;
-        row.index = `${row.parentIndex}.${childIndex[row.parentmodulename]}`;
-        row.CheckIndex=row.index+' ' +row.requirement_name
-        parentTreeData.push(row);
+      if (this.gridApi) {
+        // this.gridApi.applyTransaction({add:[this.listData]})
+        this.gridApi.updateGridOptions({rowData:this.listData})
       }
-    }
-  
-    if (!row.parentmodulename) {
-      parentIndex++;
-    }
-  });
-// this.cfg.detectChanges()
-
-  this.listData = parentTreeData;
+    });
+    // this.updateGrid();
+    
 }
 
-  
-}
-
-      })
-  }else if(this.formName=="projectteam"){
-     let Projectfiler:any={
-      start:0,end:1000,filter:[{
-        
-          clause: "AND",
-          conditions: [
-            {column: "project_id",operator: "EQUALS",type: "string",value:this.response.project_id },
-          ],
-        
-      }]
-    }
-    let allvalues:any=[]
-    // this.dataService.getDataByFilter("team_specificationList",Projectfiler )
-    this.dataService.lookupTreeData("team_specificationList",this.response.project_id ).subscribe((res: any) => {
-      this.listData = [] 
-      // for (let idx = 0; idx < res.data.response.length; idx++) {
-      //   const row = res.data.response[idx];
-      if(res != null ){
-
-        for (let idx = 0; idx < res.length; idx++) {
-          const row = res[idx];
-          if (row.parentmodulename == "" || !row.parentmodulename) {
-            row.treePath = [row._id];
-          } else {
-            var parentNode = this.listData.find((d) => d._id == row.parentmodulename);
-            if (
-              parentNode &&
-              parentNode.treePath &&
-              !parentNode.treePath.includes(row._id)
-            ) {
-              row.treePath = [...parentNode.treePath];
-              row.treePath.push(row.user_id);
-            }
-          } 
-          allvalues.push(res);
-          
-          this.listData.push(row);
-      }
-
-      }
-    });
-    console.log(allvalues);
-   }else if(this.formName=="test_result"){
-this.dataService.lookupTreeData("regression",this.response._id).subscribe((res:any)=>{
-  if(res.data.response != null ){
-    let test_Case_Details:any[]=[]
-    res.data.response.forEach((xyz:any)=>{
-      if(!isEmpty(xyz.test_result)){
-  
-        test_Case_Details.push(...xyz.test_result)
-      }
-    }) 
-  let overalldata: any[] = [];
-  let virtualDAta:any=res.data.response
-  virtualDAta.forEach((vals: any) => {
-    vals.testcase.forEach((data: any) => {
-      let testcase_id=data._id
-      let combinedData = {
-          ...data,
-          ...vals.requirement,
-      };
-      combinedData["requriment_id"] = vals.requirement._id
-      combinedData["test_case_id"] = testcase_id
-      const refFound: any[] = test_Case_Details.filter((d: any) => {return d.testCase_id == combinedData.test_case_id});
-      if(!isEmpty(refFound)){
-        const hasFailures: boolean = refFound.some((d: any) => {return d.result_status === "F"});
-        const failList: any = refFound.filter((d: any) => {return d.result_status === "F" });
-        const resultStatus = hasFailures ? "Fail" : "Pass";
-        combinedData['bug_list']=failList
-        combinedData['test_result_stauts']=resultStatus      
-        combinedData['bug_count']=failList.length
-        combinedData['test_cases']=refFound
-        combinedData['test_cases_length']=refFound.length
-      }
-      overalldata.push(combinedData);
-  });
-  if (vals?.requirement?.module_id==undefined) {
-    vals.requirement['module_id'] = "No Module Id Present";
-  }
-  if (vals.testcase.length === 0) {
-    let combinedData = {
-      ...vals.requirement,
-  };
-    combinedData["requriment_id"] = vals.requirement._id
-  
-      overalldata.push(combinedData);
-  }
-    });
-// this.cfg.detectChanges()
-
-  this.listData = overalldata;
-  }
-})
-  }else if(this.formName=="bug_list"){
+ fetchRequirementData() {
+  this.dataService.lookupTreeData("requriment",this.response.project_id).subscribe((res:any) =>{
+    const data = res.data.response; 
+    if(data !=null){
+      // let ParentValue:any []=data.filter((row:any)=>{ return row.parentmodulename == "" || !row.parentmodulename }) 
+    let parentTreeData: any[] = [];
+    let childIndex: { [key: string]: number } = {};
+    let parentIndex: number = 1; // Initialize parentIndex
+    if(!isEmpty(data)){
+      data.forEach((row: any) => {
+        if (row && row.module_id) {
+          let datafound = this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;
+          let findValue: any = datafound.find((val: any) => val.value == row.module_id);
+          row.module_id = findValue?.label;
+        }
+      
+        if (row.parentmodulename == "" || !row.parentmodulename) {
+          row.treePath = [row.requirement_name];
+          row.index = parentIndex.toString();
+          row.CheckIndex=row.index+' ' +row.requirement_name
+          row.parentIndex = null; // Use null for top-level elements
+          parentTreeData.push(row);
+        } else {
+          const parent = parentTreeData.find((d) => d._id === row.parentmodulename);
+          if (parent) {
+            childIndex[row.parentmodulename] = (childIndex[row.parentmodulename] || 0) + 1;
+            row.treePath = [...parent.treePath, row.requirement_name];
+            row.parentIndex = parent.index;
+            row.index = `${row.parentIndex}.${childIndex[row.parentmodulename]}`;
+            row.CheckIndex=row.index+' ' +row.requirement_name
+            parentTreeData.push(row);
+          }
+        }
+      
+        if (!row.parentmodulename) {
+          parentIndex++;
+        }
+      });
+    // this.cfg.detectChanges()
     
-    this.dataService.lookUpBug(this.response.project_id,'').subscribe((res:any)=>{
-      let data:any=res.data.response
-// this.cfg.detectChanges()
-this.listData=data
-      this.gridApi.setSideBarVisible(true);
-
-    })
-   }else if(this.formName=="regression"){
-        this.dataService.getDataById("regression",this.parms ).subscribe((res:any)=>{
-          
-          this.dataService.lookUpBug(this.response.project_id,res.data[0].regression_id).subscribe((res:any)=>{
-            let data:any=res.data.response
-// this.cfg.detectChanges()
-
-            this.listData=data
+      this.listData = parentTreeData;
+      // this.updateGrid()
+      if (this.gridApi) {
+        // this.gridApi.applyTransaction({add:[this.listData]})
+        this.gridApi.updateGridOptions({rowData:this.listData})
+      }
+    }
+    
+      
+    }
+    
           })
-        })
-      }     else if(this.formName=="team_member"){
-        // this.dataService
-        // .getDataById("project", "6554bb7e052126c9587741a5")
-        // .subscribe((data: any) => {
-        //   console.log(data);
-          this.dataService
-            .lookupTreeData("task_requriment", this.response.project_id)
-            .subscribe((res: any) => {
-              // this.listData = res.data.response;
-              if(res.data.response!=null){
-                this.GroupRow(res.data.response);
-              }
-            });
-          
-        // });
-    }
+}
 
-   
-  if(this?.gridApi != null || this?.gridApi != undefined){
-    this.gridApi.updateGridOptions({rowData:this.listData})
-    // this.gridApi.setColumnDefs(this.columnDefs)
-    this.gridApi.refreshClientSideRowModel()
+ fetchProjectTeamData() {
+  let Projectfiler:any={
+    start:0,end:1000,filter:[{
+      
+        clause: "AND",
+        conditions: [
+          {column: "project_id",operator: "EQUALS",type: "string",value:this.response.project_id },
+        ],
+      
+    }]
   }
+  // let allvalues:any=[]
+  // this.dataService.getDataByFilter("team_specificationList",Projectfiler )
+  this.dataService.lookupTreeData("team_specificationList",this.response.project_id ).subscribe((res: any) => {
+    this.listData = [] 
+    // for (let idx = 0; idx < res.data.response.length; idx++) {
+    //   const row = res.data.response[idx];
+    if(res != null ){
+
+      for (let idx = 0; idx < res.length; idx++) {
+        const row = res[idx];
+        if (row.parentmodulename == "" || !row.parentmodulename) {
+          row.treePath = [row._id];
+        } else {
+          var parentNode = this.listData.find((d) => d._id == row.parentmodulename);
+          if (
+            parentNode &&
+            parentNode.treePath &&
+            !parentNode.treePath.includes(row._id)
+          ) {
+            row.treePath = [...parentNode.treePath];
+            row.treePath.push(row.user_id);
+          }
+        } 
+        // allvalues.push(res);
+        
+        this.listData.push(row);
+    }
+// this.updateGrid()
+if (this.gridApi) {
+  // this.gridApi.applyTransaction({add:[this.listData]})
+  this.gridApi.updateGridOptions({rowData:this.listData})
 
 }
-taskdount:any=1
+
+    }
+  });
+  // console.log(allvalues);
+}
+
+ fetchTestResultData() {
+  this.dataService.lookupTreeData("regression",this.response._id).subscribe((res:any)=>{
+    if(res.data.response != null ){
+      let test_Case_Details:any[]=[]
+      res.data.response.forEach((xyz:any)=>{
+        if(!isEmpty(xyz.test_result)){
+    
+          test_Case_Details.push(...xyz.test_result)
+        }
+      }) 
+    let overalldata: any[] = [];
+    let virtualDAta:any=res.data.response
+    virtualDAta.forEach((vals: any) => {
+      vals.testcase.forEach((data: any) => {
+        let testcase_id=data._id
+        let combinedData = {
+            ...data,
+            ...vals.requirement,
+        };
+        combinedData["requriment_id"] = vals.requirement._id
+        combinedData["test_case_id"] = testcase_id
+        const refFound: any[] = test_Case_Details.filter((d: any) => {return d.testCase_id == combinedData.test_case_id});
+        if(!isEmpty(refFound)){
+          const hasFailures: boolean = refFound.some((d: any) => {return d.result_status === "F"});
+          const failList: any = refFound.filter((d: any) => {return d.result_status === "F" });
+          const resultStatus = hasFailures ? "Fail" : "Pass";
+          combinedData['bug_list']=failList
+          combinedData['test_result_stauts']=resultStatus      
+          combinedData['bug_count']=failList.length
+          combinedData['test_cases']=refFound
+          combinedData['test_cases_length']=refFound.length
+        }
+        combinedData.unique=uuidv4()
+        overalldata.push(combinedData);
+    });
+    if (vals?.requirement?.module_id==undefined) {
+      vals.requirement['module_id'] = "No Module Id Present";
+    }
+    if (vals.testcase.length === 0) {
+      let combinedData = {
+        ...vals.requirement,
+    };
+      combinedData["requriment_id"] = vals.requirement._id
+      combinedData.unique=uuidv4()
+        overalldata.push(combinedData);
+    }
+      });
+  // this.cfg.detectChanges()
+  
+    this.listData = overalldata;
+    // this.updateGrid()
+    if (this.gridApi) {
+      // this.gridApi.applyTransaction({add:[this.listData]})
+      this.gridApi.updateGridOptions({rowData:this.listData})
+    }
+    }
+  })
+}
+ 
+// updateGrid() {
+//   if (this.gridApi) {
+//     // this.gridApi.applyTransaction({remove:[this.listData]})
+//     // this.gridApi.updateGridOptions({ rowData: this.listData });
+//     // this.gridApi.applyTransaction({add:[this.listData]})
+//     this.gridApi.updateGridOptions({rowData:this.listData})
+//     this.gridApi.setSideBarVisible(false);
+//     this.gridApi.refreshClientSideRowModel('group');
+//   if (this.formName === "bug_list") {
+//     this.gridApi.setSideBarVisible(true);
+//   }
+// }
+// }
 
 GroupRow(data: any) {
 this.listData = [];
@@ -1691,11 +1505,12 @@ existTasks.forEach((element: any) => {
 });
 // this.cfg.detectChanges()
 this.listData = concat(parentTreeData,taskData);
-
-if(this?.gridApi != null || this?.gridApi != undefined){
+if (this.gridApi) {
+  // this.gridApi.applyTransaction({add:[this.listData]})
   this.gridApi.updateGridOptions({rowData:this.listData})
-  this.gridApi.refreshClientSideRowModel()
-}
+}   
+// this.updateGrid()
+
 
 }
 
@@ -1707,7 +1522,7 @@ document.documentElement.style.setProperty('--width', '80%');
 if(this.formName=="Requirement"){
   this.drawer.close() 
   if(clickCell== 'number_of_TestCase_count'||clickCell=="number_of_Task_count"){
-    if (event.data[clickCell] > 0) {
+    if ( event && event.data[clickCell] > 0) {
        this.cellClicked = clickCell;
       this.drawer.open();
     }
@@ -1716,11 +1531,10 @@ if(this.formName=="Requirement"){
     }
   }else if(this.formName=="test_result"){
     this.drawer.close()
+    
     if(clickCell== 'test_cases_length'||clickCell=="bug_count"){
-      // console.log(event.data);
-      // this.cellClicked=clickCell
-      // this.drawer.open()
-      if (event.data[clickCell] > 0) {
+      
+      if ( event && event?.data[clickCell] > 0) {
      
         this.cellClicked = clickCell;
         this.drawer.open();
@@ -1775,22 +1589,22 @@ if(this.formName=="Requirement"){
     this.selectedRows= this.gridApi.getSelectedRows()[0];
 
     console.log("onSelectionChanged",this.selectedRows)
+    // this.gridApi.deselectAll()
   }
 
+
   onCellValueChanged(params: any) {
-    console.log(params);
-    
-    let fieldName = params.colDef.field;
+     let fieldName = params.colDef.field;
     // this.valueChanged = params.value;
     let data: any = {};
     data[fieldName] = params.value;
 // ! UNDO
-if(fieldName=="module_id"){
-  let findValue:any=this.ValueToCompareRequriementModules.find(val=>val.label==params.value)
-   
-  data[fieldName] = findValue.value;
+    if(fieldName=="module_id"){
+      let findValue:any=this.ValueToCompareRequriementModules.find(val=>val.label==params.value)
+      
+      data[fieldName] = findValue.value;
 
-}
+    }
 if(this.formName=="Requirement"){
 
   this.dataService.update("requirement",params.data._id,data ).subscribe((res: any) => {
@@ -1798,8 +1612,10 @@ if(this.formName=="Requirement"){
     console.log(res);
     
   });
+return
 
 }
+
  if(this.formName=="team_member"){
 let update:any={}
 let value:any=[]
@@ -1810,13 +1626,11 @@ if(fieldName=="assigned_to"){
  data[fieldName] = findValue.label;
   update[fieldName] = findValue.value;
 }
-  if (fieldName == "allocated_hours") {
-  console.log(data);
-  // !todo
+  if (fieldName == "allocated_hours") { 
   let hrsFlag= params.value>=8? true : false
   
-  let hrsconvertedDay=hrsFlag==true? Math.ceil(params.value/8) : 1
-  console.log(hrsconvertedDay);
+  let hrsconvertedDay=hrsFlag==true? Math.ceil(params.value/8) : 1 
+
   if(params.data.hasOwnProperty("scheduled_start_date")){
 
     update["scheduled_start_date"] = moment(params.data["scheduled_start_date"]);
@@ -1875,7 +1689,9 @@ if(fieldName=="assigned_to"){
 })
 }
 
+
   }
+
 
   depend_task(id: string,params:any) {
     // Split the input string into an array
@@ -1933,11 +1749,17 @@ if(fieldName=="assigned_to"){
     return bigdate
   }
   
+
+  gridaldreadyloaded:boolean=false
+
+
   /**gridReady for ag grid */
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
     this.gridApi.sizeColumnsToFit();
     if(this.formName=="bug_list"){this.gridApi.setSideBarVisible(true)}
+    console.warn("Grid Loaded");
+    this.gridaldreadyloaded=true
   }
 
   onAddButonClick(ctrl: any) { 
@@ -1966,10 +1788,17 @@ if(fieldName=="assigned_to"){
         let values:any=this.form.value
         values.status= "Open"
         values.Bug_ID=this.selectedRows._id
-        values._id=`SEQ|${values.project_id}`
+        values.project_id=this.selectedRows.task.project_id
+        values._id=`SEQ|${this.selectedRows.task.project_id}`
         this.dataService.save(this.config.form.collectionName,values).subscribe((data:any)=>{
-          console.log(data);
-          this.form.reset()
+          // console.log(data.data["insert ID"]);
+          let id =this.selectedRows._id
+          let reftask_id:any={reftask_id:data.data["insert ID"]}
+        
+          this.dataService.update('bug',id,reftask_id).subscribe((res:any)=>{
+            console.log(res);
+            this.form.reset()
+          })  
         })
       } else if(this.is_bug==false){
         let id =this.selectedRows._id
@@ -2015,6 +1844,7 @@ if(values._id==undefined|| values._id ==null){
 
 
   is_bug:any
+
   resetBtn(data?: any) {
     this.selectedModel = {}
     this.formAction = this.model.id ? 'Edit' : 'Add'
@@ -2065,6 +1895,13 @@ if(values._id==undefined|| values._id ==null){
   goBack(){
     // this.router.navigate(['list/project'])
     this._location.back();
+  }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    console.warn("Component Destory");
+    
   }
 }
 

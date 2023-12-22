@@ -119,14 +119,14 @@ dropEnterPredicate = (event: GanttTableDragEnterPredicateContext) => {
 constructor( private thyNotify: DialogService) {}
 
 ngOnInit(): void {
-    // init items children
-    this.items.forEach((item, index) => {
-        if (index % 5 === 0) {
-            item.children = randomItems(random(1, 5), item);
-        }
-    });
+    // // init items children
+    // this.items.forEach((item, index) => {
+    //     if (index % 5 === 0) {
+    //         item.children = randomItems(random(1, 5), item);
+    //     }
+    // });
 
-    console.log(this.items);
+    // console.log(this.items);
 }
 
 ngAfterViewInit() {

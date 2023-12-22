@@ -51,6 +51,18 @@ export class AppHeaderComponent {
 
     //   }
     // )
+    
+    // this.router.events.subscribe(() => {
+    //   const currentUrl = this.router.url;
+    //   console.log(currentUrl);
+      
+    //   // if (currentUrl.includes('saas-dashboard/engineer') && currentUrl.includes('/profile')) {
+    //   //   // this.isContentVisible = true; 
+    //   // } else {
+    //   //   // this.isContentVisible = false; 
+    //   // }
+    // });
+
         let emp_id:any=this.helperService.getEmp_id()
     this.dataservice.sidenav(emp_id).subscribe((res:any)=>{
       // this.dataservice.sidenav("E0001").subscribe((res:any)=>{

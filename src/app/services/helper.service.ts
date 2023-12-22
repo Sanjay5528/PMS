@@ -273,7 +273,6 @@ export class HelperService implements OnInit {
   // You can subscribe to this observable to get updates
   getProjectObservable(): Observable<any> {
     // console.log(this.project.asObservable());
-    
     return this.project.asObservable();
   }
 }

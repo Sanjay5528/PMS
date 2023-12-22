@@ -78,8 +78,8 @@
       [rowSelection]="'single'"
       [pagination]="true"
       [getRowId]="getRowId"
-      [paginationPageSize]="15"
-      (gridReady)="onGridReady($event)"
+      [paginationPageSize]="20"
+      (gridReady)="onGridReady($event)"[paginationPageSizeSelector]='false'
       [components]="components"
       [context]="context"
       (selectionChanged)="onSelect($event)"

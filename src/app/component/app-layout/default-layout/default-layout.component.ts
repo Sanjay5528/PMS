@@ -21,11 +21,9 @@ export class DefaultLayoutComponent {
     constructor(private jwtService: JwtHelperService, private route: ActivatedRoute,  private router: Router,private dataservice:DataService ,private helperService:HelperService){
       this.helperService.getProjectObservable().subscribe(
         (result: any) => {
-          // console.warn(result);
           this.sidenavedshow=result
         },(err:any) =>{
           console.log(err);
-  
         }
       ) 
     } 
