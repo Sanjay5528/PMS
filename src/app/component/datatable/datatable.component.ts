@@ -427,6 +427,9 @@ export class DatatableComponent implements OnInit {
   onSelectionChanged(event: any) {
 
     this.selectedModel = event.api.getSelectedRows()[0];
+    console.log("Datatable","Selected",this.selectedModel);
+    console.log(this.config);
+    
     if (this.config.onSelect == true) {
       this.router.navigate([this.config.route]);
     } else if (this.config.screenEditMode == "popup") {
@@ -439,6 +442,30 @@ export class DatatableComponent implements OnInit {
         this.selectedModel
       );
       
+    } else if (this.config.screenEditMode == "projectdashboard") {
+      
+      let filer:any={
+        start:0,end:1000,filter:[{
+          
+            clause: "AND",
+            conditions: [
+              {column: "client_id",operator: "EQUALS",type: "string",value: this.selectedModel.client_id},
+            ],
+          
+        }]
+      }
+       this.DataService.getDataByFilter('client',filer).subscribe((res:any)=>{
+        console.log(res);
+        let data={
+          logo:res.data[0].response[0].logo.storage_name,
+          client_name:res.data[0].response[0].client_name,
+name: this.selectedModel.project_name,
+_id: this.selectedModel._id
+        }
+        this.helperService.getProjectmenu(data)
+        console.log("final Data",data);
+        
+       })
     } else {
       return;
     }

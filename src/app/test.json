@@ -1,14 +1,17 @@
 {
-	"pageHeading": "Sprint",
+	"pageHeading": "Release",
 	"formType": "master-detail",
 	"localSet":true,
 	"mapColumnDiff":true,
 	"mapColumnfield":"project_id",
+    "diffApi":true,
+    "endPoint":"RealseSpirntList",
+    "idToSend":"project_id",
+
 	"localSetField":"project_id",
 	"form": {
 		"collectionName": "project",
 		"fields": [
-		
 			{
 				"type": "label-view",
 				"key": "project_name",
@@ -42,13 +45,9 @@
 	"detailForm": {
         "customfilter":true,
         "customkey":"project_id",
-		"collectionName": "sprint",
+		"collectionName": "release",
 		"mapColumn": "project_id",
 		"keyColumn": "_id",
-		"Change_id":true,
-		"changekeyfield":"_id",
-		"addkeyfield":"release_id",
-
 		"isPopupEdit": true,
 		"fields": [
 			{
@@ -56,111 +55,41 @@
 				"fieldGroup": [
                     {
                         "type": "label-view",
-                        "key": "release_id",
-                        "className": "flex-6",
+                        "key": "_id","className": "flex-6",
                         "props": {
-                          "label": "Release Name",
-                          "label_width": 100,
-                          "value_width": 200,
-                          "value_in_next_row": false,
-                          "placeholder": "Release Name"
-                        },
-                        "hideExpression": "!model.isEdit"
-                      },  {
-					"type": "label-view",
-					"key": "_id",
-					"className": "flex-6",
-					"props": {
-					  "label": "Sprint Id",
-					  "label_width": 100,
-					  "value_width": 200,
-					  "value_in_next_row": false,
-					  "placeholder": "Sprint Id"
-					},
-					"hideExpression": "!model.isEdit"
-				  },
-				  {
-					"type": "label-view",
+                            "label": "Release Id",
+                            "label_width": 100,
+                            "value_width": 200,
+                            "value_in_next_row": false,
+                            "placeholder": "Release Id"
+                        },"hideExpression": "!model.isEdit"
+                    }, 
+                    {
+                        "type": "label-view",
+                        "key": "name","className": "flex-6",
+                        "props": {
+                            "label_width": 100,
+                            "value_width": 200,
+                            "value_in_next_row": true,
+                            "label": "Release Name",
+                            "placeholder": "Release Name"
+                        },"hideExpression": "!model.isEdit"
+                    },
+				{
+					"type": "input",
 					"key": "name",
-					"className": "flex-6",
-					"props": {
-					  "label_width": 100,
-					  "value_width": 200,
-					  "value_in_next_row": true,
-					  "label": "Sprint Name",
-					  "placeholder": "Sprint Name"
-					},
-					"hideExpression": "!model.isEdit"
-				  },
-				  {
-					"type": "select-input",
-					"key": "release_id",
-					"className": "flex-6",
+					"className": "flex-8",
 					"props": {
 						"label": "Release Name",
 						"placeholder": "Release Name",
-						"multifilter": true,
-						"Collections": "release",
-						"multifiltertype": "local",
-						"local_name": "project_id",
-						"multifilter_condition": {
-						  "clause": "AND",
-						  "conditions": [
-							{
-							  "column": "project_id",
-							  "operator": "EQUALS",
-							  "type": "string",
-							  "value": ""
-							}
-						  ]
-						},
-						"labelProp": "name",
-						"valueProp": "_id"
-						},
-					"hideExpression": "model.isEdit"
-				},
-				  {
-					"type": "matprefix-input",
-					"parentKey": "release_id",
-					"key": "_id",
-					"className": "flex-6",
-					"props": {
-					  "label": "Sprint Id",
-					  "type": "Linked",
-					  "placeholder": "Sprint Id",
-					  "required": true,
-					  "pattern":"^[0-9]+$",
-					   "searchableField": true,"valueType":"Dynamic", 
-					  "searchCollectionName":"sprint",
-					 "multifilter_condition": {
-						 "clause": "AND",
-						 "conditions": [
-						   {
-							 "column": "_id",
-							 "operator": "EQUALS",
-							 "type": "string",
-							 "value": ""
-						   }
-						 ]
-					   },
-					  "maxLength": 20
-					},
-					"hideExpression": "model.isEdit || !model.release_id"
-				  },
-				  {
-					"type": "input",
-					"key": "name",
-					"className": "flex-8", 
-					"props": {
-					  "label": "Sprint Name",
-					  "placeholder": "Sprint Name",
-					  "pattern": "^[a-zA-Z0-9-_]*$",
-					  "required": true
+						"pattern": "^[a-zA-Z0-9-_]*$",
+						"required": true
 					},
 					"hideExpression": "model.isEdit"
-				  }
+				}
+				
 				]
-			  },
+			},
 			{
 				"fieldGroupClassName": "display-flex",
 			"fieldGroup": [
@@ -186,7 +115,33 @@
 						"type": "date",
 						"required": true
 						}
-					}
+					},
+					{
+						"type": "select",
+						"key": "status",
+						"className": "flex-6",
+						"props": {
+							"label": "Status",
+							"options": [
+								{
+									"label": "Active",
+									"value": "A"
+								},
+								{
+									"label": "Inactive",
+									"value": "I"
+								}
+								
+								
+							],
+							"placeholder": "Status",
+							"required": true
+						},
+					
+						"expressions": {
+							"hide": "!model.isEdit"
+						}
+						}
 				]
 			},
 			{
@@ -194,46 +149,41 @@
 				"key": "description",
 				"className": "flex-6",
 				"props": {
-					"label": "Sprint Description"
+					"label": "Release Description"
 				},
 				
 				"maxlength": 500
-			},{
-				"type": "select",
-				"key": "status",
-				"className": "flex-6",
-				"props": {
-					"label": "Sprint Status",
-					"options": [
-						{
-							"label": "Active",
-							"value": "A"
-						},
-						{
-							"label": "Inactive",
-							"value": "I"
-						}
-					]
-				},
-			
-				"expressions": {
-					"hide": "!model.isEdit"
-				}
-				}
-		],
-		"defaultValues": [
-			{
-				"colName": "status",
-				"value": "A",
-				"type": "string"
 			}
-		]
+		],
+        "defaultValues": [
+            {
+              "colName": "status",
+              "type": "string",
+              "value": "A"
+            },
+            {
+                "colName": "_id",
+                "type": "prefix",
+                "source": "project_id"
+              }
+            ]
 		 
 	},
 	"detailListConfig": {
 		"sectionHeading": "Project Team",
 		"actions": [
-			{
+			
+      {
+				"label": "Add Sprint",
+				"icon": "add",
+				"formName": "release_sprint",
+				"formAction":"listpopup",
+                "type":"local",
+                "add":true,
+                "local_label":"release_id",
+
+                "field":"_id"
+			},{
 				"label": "Edit",
 				"icon": "edit",
 				"formName": "project"
@@ -257,48 +207,51 @@
                 "field": "name",
                 "filter": "agTextColumnFilter",
                 "sortable": true
+            },            {
+                "headerName": "Sprint",
+                "field": "sprint_ids",			  
+                "filter":false,
+                "set":"arraytostring",
+                "valueType":"plainArray"
+              
             },
-            {
-                "headerName": "Release Version",
-                "field": "release_id",
-                "filter": "agTextColumnFilter",
-                "sortable": true
-            },
-            {
-                "headerName": "Start Data",
-                "field": "start_date",
-				"sortable": true,
-				"filter": "agDateColumnFilter",
-				"type": "date"
-            },
-            {
-                "headerName": "End Data",
-                "field": "end_date",
-				"sortable": true,
-				"filter": "agDateColumnFilter",
-				"type": "date"
-            },
-			{
-                "headerName": "Status",
-                "field": "status",   "maxWidth":100,
-                "filter": "agTextColumnFilter",
-                "sortable": true
-            }, 
-        {
-            "type": "rightAligned",
-            "headerName": "Actions",
-            "menuTabs": [],    "maxWidth":85,
 
-            "lockPosition": "right",
-            "lockPinned": true,
-             "pinned":"right",
-            "cellRenderer": "buttonRenderer",
-            "cellRendererParams": {
-                "onClick": "this.onBtnClick1.bind(this)",
-                "label": "Click 1"
+            {
+              "headerName": "Start Date",
+              "field": "start_date",
+              "width": 40,
+              "sortable": true,
+              "filter": "agDateColumnFilter",
+              "type":"date"
             },
-            "filter":false,"sortable":false
-        }
+            {
+              "headerName": "End Date",
+              "field": "end_date",
+              "width": 40,
+              "editable": true,
+              "filter": "agDateColumnFilter",
+              "type":"date"
+            },  {
+                    "headerName": "Status",
+                    "field": "status",   "maxWidth":100,
+                    "filter": "agTextColumnFilter",
+                    "sortable": true
+                }, 
+			{
+				"type": "rightAligned",
+				"headerName": "Actions",
+                "menuTabs": [],    "maxWidth":85,
+
+                "lockPosition": "right",
+                "lockPinned": true,
+                 "pinned":"right",
+				"cellRenderer": "buttonRenderer",
+				"cellRendererParams": {
+					"onClick": "this.onBtnClick1.bind(this)",
+					"label": "Click 1"
+				},
+				"filter":false,"sortable":false
+			}
 		],
 		"filterOptions": [],
 		"defaultFilter": []

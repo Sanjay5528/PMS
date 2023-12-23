@@ -1186,7 +1186,47 @@ this.gridApi.updateGridOptions({rowData:this.listData})
             });
           
         // });
-    }
+    }  else if(this.formName=="sprint"){
+      // this.dataService
+      // .getDataById("project", "6554bb7e052126c9587741a5")
+      // .subscribe((data: any) => {
+      //   console.log(data);
+      let Projectfiler:any={
+        start:0,end:1000,filter:[{
+          
+            clause: "AND",
+            conditions: [
+              {column: "project_id",operator: "EQUALS",type: "string",value: this.response.project_id},
+            ],
+          
+        }]
+      }
+        this.dataService
+          .getDataByFilter("sprint", Projectfiler)
+          .subscribe((res: any) => {
+            // this.listData = res.data.response;
+            // if(res.data.response!=null){
+            //   this.GroupRow(res.data.response);
+            // }
+          });
+        
+      // });
+  }  else if(this.formName=="release"){
+    // this.dataService
+    // .getDataById("project", "6554bb7e052126c9587741a5")
+    // .subscribe((data: any) => {
+    //   console.log(data);
+      this.dataService
+        .lookupTreeData("task_requriment", this.response.project_id)
+        .subscribe((res: any) => {
+          // this.listData = res.data.response;
+          // if(res.data.response!=null){
+          //   this.GroupRow(res.data.response);
+          // }
+        });
+      
+    // });
+}
    
   // if(this?.gridApi != null || this?.gridApi != undefined){
   //   this.gridApi.updateGridOptions({rowData:this.listData})

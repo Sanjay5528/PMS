@@ -117,6 +117,7 @@ export class FormService {
     }
     return null;
   }
+
   resetDetailModel(ctrl: any) {
 
     let form = ctrl.config.detailForm
@@ -436,6 +437,7 @@ if (!ctrl.isDetailEditMode && findIndex > -1) {
             return
 
         };
+        e.type='text'
       }  
       if (e.width) {
         e["width"] = e.width;

@@ -179,8 +179,13 @@ const routes: Routes = [
   },
    {
     path: "project",
+    // path: "client/:cid",
     component: DefaultLayoutComponent,
     children: [
+      {
+        path:"Project/:pid/:Action",
+        component:AggridTreeComponent
+      },
       {
         path: ":component/:id",
         component: AggridTreeComponent,
