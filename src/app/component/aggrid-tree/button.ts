@@ -253,7 +253,7 @@ parentRouteName:any
     this.form.reset();
     this.params = params;
     this.route.params.subscribe(params => {
-     this.parentRouteName=params['component']
+     this.parentRouteName=params['Action']
     });
   }
 

@@ -101,13 +101,14 @@ export class MasterSingleDetailFormComponent {
 
   @ViewChild('popupEdit', { static: true }) popupEdit!: TemplateRef<any>;
   @ViewChild('otherpopupEdit', { static: true }) otherpopupEdit!: TemplateRef<any>;
-
+  leftsideShow:boolean=true
   ngOnInit() {
+    this.helperService.getProjectObservable().subscribe(res=>{
+      this.leftsideShow=!res
+    })
     this.route.params.subscribe(params => {
       this.formName = params['form']
-      this.id = params['id']
-      console.log(params);
-      
+      this.id = params['id'] 
       this.formService.LoadMasterInitData(this)
 
     })

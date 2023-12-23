@@ -15,7 +15,7 @@
 
   <div fxLayout="row" *ngIf="!isDataError" class="form-container">
       <!-- Left Panel-->
-      <div [ngStyle]="{'width': config.designConfig ? config.designConfig.leftPanelWidth : '20%' }" fxLayout="column">
+      <div [ngStyle]="{'width': config.designConfig ? config.designConfig.leftPanelWidth : '20%' }" fxLayout="column" *ngIf="leftsideShow">
         <!-- Master/Parent Form -->
         <div>
           <form [formGroup]="form" *ngIf="formName">

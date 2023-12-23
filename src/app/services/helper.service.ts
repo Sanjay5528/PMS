@@ -264,15 +264,24 @@ export class HelperService implements OnInit {
   return value;
   
   }
+
   private project: BehaviorSubject<any> = new BehaviorSubject<any>(false);
 
   getProjectmenu(data: any) {
     this.project.next(data);
   }
-
-  // You can subscribe to this observable to get updates
   getProjectObservable(): Observable<any> {
-    // console.log(this.project.asObservable());
-    return this.project.asObservable();
+     return this.project.asObservable();
+  }
+
+
+
+  private routing: BehaviorSubject<any> = new BehaviorSubject<any>(false);
+
+  getrouting(data: any) {
+    this.routing.next(data);
+  }
+  getroutingObservable(): Observable<any> {
+     return this.routing.asObservable();
   }
 }

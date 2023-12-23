@@ -1,121 +1,77 @@
-{
-	"pageHeading": "Requirement",
-	"formType": "simple",
-	"editMode": "popup",
-	"keyField": "_id",
-	"form": {
-	"collectionName": "requirement",
-	"fields": [
-	
-				
-				{
-					"type": "input",
-					"key": "requirement_name",				
-					"className": "flex-2",
-					"props": {
-					"label": "Requirement Name",
-					"placeholder": "Requirement Name",
-					"pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
-					"required": true
-					}
-				},
-		
+[
+	{
+	  "displayName": "Requirement Management",
+	  "children": [
 		{
-		"type": "html-input",
-		"key": "requirement_description",
-		"className": "flex-6",
-		"props": {
-			"label": "Requirement Description"
+		  "displayName": "Requirement",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "project/Requirement/"
+		}
+	  ]
+	},
+	{
+	  "displayName": "Project Management",
+	  "children": [
+		{
+		  "displayName": "Modules",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "project/module/",
+		  "first": "project/",
+		  "last":"/module"
 		},
-		
-		"maxlength": 2000
+		{
+		  "displayName": "Team",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "project/projectteam/",
+		  "first": "project/",
+		  "last":"/projectteam"
+		},
+		{
+		  "displayName": "Task",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "project/team_member/",
+		  "first": "project/",
+		  "last":"/team_member"
+		}
+	  ]
 	},
 	{
-		"fieldGroupClassName": "display-flex",
-		"fieldGroup": [
-	{
-		"type": "select-input",
-		"key": "sprint_id",
-		"className": "flex-6",
-		"props": {
-			"label": "Sprint Id",
-			"placeholder": "Sprint Id",
-			"multifilter": true,
-			"Collections": "sprint",
-			"multifiltertype": "local",
-			"local_name": "project_id",
-			"multifilter_condition": {
-			  "clause": "AND",
-			  "conditions": [
-				{
-				  "column": "project_id",
-				  "operator": "EQUALS",
-				  "type": "string",
-				  "value": ""
-				}
-			  ]
-			},
-			"labelProp": "_id",
-			"valueProp": "_id"
+	  "displayName": "Release Management",
+	  "children": [
+		{
+		  "displayName": "Release",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "data/edit/release/",
+		  "first": "project/",
+		  "last":"/release"
+		},
+		{
+		  "displayName": "Sprint",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "data/edit/project_sprint/",
+		  "first": "project/",
+		  "last":"/project_sprint"
 		}
+	  ]
 	},
 	{
-		"type": "select-input",
-		"key": "module_id",
-		"className": "flex-6",
-		"props": {
-			"label": "Module Name",
-			"placeholder": "Module Name",
-			"multifilter": true,
-			"Collections": "modules",
-			"multifiltertype": "local",
-			"local_name": "project_id",
-			"multifilter_condition": {
-			  "clause": "AND",
-			  "conditions": [
-				{
-				  "column": "project_id",
-				  "operator": "EQUALS",
-				  "type": "string",
-				  "value": ""
-				}
-			  ]
-			},
-			"labelProp": "modulename",
-			"valueProp": "moduleid"
+	  "displayName": "QA",
+	  "children": [
+		{
+		  "displayName": "Test Case",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "data/edit/regression/",
+		  "first": "project/",
+		  "last":"/regression"
+		},
+		{
+		  "displayName": "Bug List",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "project/bug_list/",
+		  "first": "project/",
+		  "last":"/bug_list"
 		}
+	  ]
 	}
-]
-},
-			{
-				"key": "status",
-				"type": "select",
-				"defaultValue": "A",
-				"templateOptions": {
-					"label": "Status",
-					"options": [
-						{
-							"label": "Active",
-							"value": "A"
-						},
-						{
-							"label": "Disable",
-							"value": "D"
-						}
-					],
-					"required": true
-				},
-				"hideExpression": "!model.isEdit"
-			}
-	
-	],
-		"defaultValues": [
-			{
-				"colName": "status",
-				"value": "A",
-				"type": "string"
-			}
-		]
-	},
-	"onCancelRoute": "list/requirement"
-}
+  ]
+  

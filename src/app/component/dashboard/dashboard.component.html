@@ -10,20 +10,23 @@
       </ngx-charts-number-card> 
     </div>-->
 
-    <div >
-              <!-- <app-card
-              [count]=""
-              [text]=""
-              [icon]=""
-              [iconColor]=""
-              [type]="'parent'"
-              [altText]=""
-              [height]=""
-              [width]=""
-              [backgroundColor]="' '"
-              >
-              </app-card> -->
-    </div>
+<!-- fxLayoutAlign="space-evenly"  -->
+    <div fxLayout="row" fxLayoutGap="20px" >
+      <div  *ngFor="let i of data"  fxLayout="column">
+          <app-card
+              [count]="10"
+              [text]="'das'"
+              [icon]="'add'"
+              [iconColor]="'blue'"
+              [altText]="'ddd'"
+              [height]="200"
+              [width]="200"
+              [backgroundColor]="'black'"
+          >
+          </app-card>
+      </div>
+  </div>
+  
 <!--       
 
     <div>

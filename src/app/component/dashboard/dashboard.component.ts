@@ -40,13 +40,13 @@ export class DashboardComponent {
   // id: any;
   view: any = [1865, 200];
   colorScheme = {
-  domain: ["#F79554", "#F34526", "#57DE21", "#76B3FE"],
-  name: "myScheme",
-  selectable: false,
-  group: ScaleType.Ordinal,
+    domain: ["#F79554", "#F34526", "#57DE21", "#76B3FE"],
+    name: "myScheme",
+    selectable: false,
+    group: ScaleType.Ordinal,
   };
   cardColor: string = "black";
-  cardData:any[] = []
+  cardData: any[] = []
   // // columnDefs: (ColDef | ColGroupDef)[] = [
   // //   {
   // //     headerName: "Facilty Name",
@@ -134,14 +134,18 @@ export class DashboardComponent {
     public dashboardService: DashboardService,
     private jwtService: JwtHelperService,
     private router: Router
-  ) {
-    // this.components = {
-    //   // buttonRenderer: ButtonComponent
-    // };
-  }
+  ) {}
 
+  data: any[] = []
   ngOnInit() {
-    
+    this.data = [
+      { count: '8', text: "Task Count", icon: 'fingerprint', type:'icon',iconColor: '', altText: 'altText', height: '300', width: '300', backgroundColor: '' }, 
+      { count: '5', text: "Test Case Count", icon: 'donut_small', iconColor: '', altText: 'altText', height: '300', width: '300', backgroundColor: '' }, 
+      { count: '55', text: "Bug List", icon: 'bug_report', iconColor: 'black', altText: 'altText', height: '300', width: '300', backgroundColor: '' }, 
+      { count: '44', text: "Requriement Count", icon: 'assignment', iconColor: '', altText: 'altText', height: '300', width: '300', backgroundColor: '' }, 
+      { count: '44', text: "Task Count", icon: 'note_add', iconColor: '', altText: 'altText', height: '300', width: '300', backgroundColor: '' },
+      // { count: '', text: "", icon: '', iconColor: '', altText: 'altText', height: '', width: '', backgroundColor: '' },
+    ]
     // this.route.params.subscribe((params) => {
     //   this.id = params["id"];
     // });
@@ -151,11 +155,11 @@ export class DashboardComponent {
     //   let dataas:any=data.data
     // this.dataService.getData('facility').subscribe((data1:any)=>{
     //   console.log(data1);
-    //   let facility=data1.data
+    //   let facility=data1.datay
     //   this.rowData=[...dataas,...facility]
     // })  
     // })
-    
+
     // let orgid:any=this.dataService.getdetails().
     // let org_id:any = this.dataService.getdetails().profile.org_id
     // this.dataService.lookup('').subscribe((xyz:any)=>{
@@ -241,23 +245,23 @@ export class DashboardComponent {
   //   filter: true,
   // };
 
-  
+
   // //! ** treepath  for ag grid */
   // // public getTreePath: GetDataPath = (data: any) => {
   // //   console.log(data);
-    
+
   // //   return data.treePath;
   // // };
- 
+
   // // getTreeData(res: any) {
   // //   this.listData = [];
   // //   let array = res;
   // //   for (let index = 0; index < array.length; index++) {
   // //     let val: any[] = [array[index]._id];
-      
+
   // //     let facility: any[] = array[index]._id;
   // //     this.listData.push(val);
-      
+
   // //     let device: any = array[index].device;
 
   // //     if (Array.isArray(device)) {
@@ -275,24 +279,24 @@ export class DashboardComponent {
   // //     }
   // //   }
   // //   console.log(this.listData);
-    
+
   // // }
- 
+
   onSelectionChanged(params: any) {
 
-    if(params.name=="Facility"){
-      let data:any=this.dataService.getdetails().profile.org_id
+    if (params.name == "Facility") {
+      let data: any = this.dataService.getdetails().profile.org_id
 
-      this.router.navigate([`data/edit/facility/`+data]);
+      this.router.navigate([`data/edit/facility/` + data]);
 
-    }else if(params.name=="Devices"){
+    } else if (params.name == "Devices") {
       this.router.navigate([`list/device`]);
 
-    }else{
+    } else {
       // this.router.navigate([`data/edit/facility/SA`]);
 
     }
-    
+
   }
 
   // /**gridReady for ag grid */
@@ -302,8 +306,8 @@ export class DashboardComponent {
   //   this.gridApi.sizeColumnsToFit();
   // }
 
- 
-  
+
+
   // // onAddButonClick(ctrl: any) {
   // //   ;
   // //   this.dialogService.openDialog(this.editViewPopup, "50%", null, {});

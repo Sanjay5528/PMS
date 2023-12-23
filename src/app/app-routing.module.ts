@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, provideRouter, withDebugTracing, withRouterConfig } from '@angular/router';
 import { DefaultLayoutComponent } from './component/app-layout/default-layout/default-layout.component';
 import { DynamicFormComponent } from './component/dynamic-form/dynamic-form.component';
 import { DatatableComponent } from './component/datatable/datatable.component';
@@ -97,8 +97,8 @@ const routes: Routes = [
     children: [
       {
         path: "",
-        // component:DashboardComponent
-        component: GantchartComponent
+        component:DashboardComponent
+        // component: GantchartComponent
 
       }
 
@@ -182,12 +182,12 @@ const routes: Routes = [
     // path: "client/:cid",
     component: DefaultLayoutComponent,
     children: [
+      // {
+      //   path:"Project/:pid/:Action",
+      //   component:AggridTreeComponent
+      // },
       {
-        path:"Project/:pid/:Action",
-        component:AggridTreeComponent
-      },
-      {
-        path: ":component/:id",
+        path: ":Action/:id",
         component: AggridTreeComponent,
       },
       // {
@@ -195,7 +195,17 @@ const routes: Routes = [
       //   component: AggridTreeComponent,
       // }
     ],
-  }, 
+  },
+  {
+    path: "client/:cid",
+   component: DefaultLayoutComponent,
+   children: [
+     {
+       path:"Project/:id/:Action",
+       component:AggridTreeComponent
+     }, 
+   ],
+ }, 
   {
     path: "profile",
     component: DefaultLayoutComponent,
@@ -262,6 +272,10 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
+  // providers:[ provideRouter(routes,
+  //   withDebugTracing(),
+  //   withRouterConfig({paramsInheritanceStrategy: 'always'}))
+  // ],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

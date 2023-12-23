@@ -10,6 +10,7 @@ import { DataService } from 'src/app/services/data.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { FormControl, Validators } from '@angular/forms';
 import { HelperService } from 'src/app/services/helper.service';
+import { Location } from '@angular/common';
 //import { ChangePasswordComponent } from '../../authentication/change-password/change-password.component';
 
 @Component({
@@ -30,7 +31,7 @@ export class AppHeaderComponent {
   constructor(
     private router: Router,
     private route:ActivatedRoute,
-    private httpClient: HttpClient,
+    private _location:Location,
     private dataservice:DataService,
     private helperService:HelperService,
     public dialogService: DialogService,
@@ -38,8 +39,8 @@ export class AppHeaderComponent {
   screenId:any
   project_Data:any=[]
   ngOnInit() { 
-    // this.screenId="COORDR_menu";
-    this.screenId="devops";
+    this.screenId="COORDR_menu";
+    // this.screenId="devops";
     // this.helperService.getProjectObservable().subscribe(
     //   (result: any) => {
     //     // console.warn(result);
@@ -371,8 +372,13 @@ export class AppHeaderComponent {
     console.log("before",data._routerState.url);
     console.log("after",route);
 
-    
+    // this._location.replaceState(route)
       this.router.navigateByUrl(route)
+      // this.router.navigate([], {
+      //   relativeTo: route,
+      //   // queryParams: { id: this.Id, step: this.selectedStepIndex },
+      //   queryParamsHandling: 'merge',
+      // });
     }
     
   }

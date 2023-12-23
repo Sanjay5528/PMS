@@ -8,6 +8,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { validate } from 'uuid';
 import { HelperService } from 'src/app/services/helper.service';
 import { environment } from 'src/environments/environment';
+import { Location } from '@angular/common';
 interface SideNavToggle {
   screenwidth: number
   collapsed: boolean
@@ -32,10 +33,11 @@ export class SideNavbarComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    // private httpClient: HttpClient,
+     private _location: Location,
     private dataservice: DataService,
     public dialogService: DialogService,
     private zone: NgZone,
+
     private helperServices:HelperService,
    public dataservices:DataService,
   //  private cfr :ChangeDetectorRef
@@ -136,8 +138,17 @@ routeToDestination(data:any){
 
   let route=data+this.selectProject._id
   console.log(route);
+  // this._location.replaceState(route)
+  // this.route.params.subscribe(params=>{
+  //   console.warn(params);
+  // })
+  // let routes:any=this.router
+  // console.warn("this.router",routes.currentUrlTree.root);
+  // console.warn("this.route",this.route);
   
-  this.router.navigateByUrl(route)  
+  // this.router.events.subscribe((event) => console.warn(event));
+
+  this.router.navigate([route])  
 }  
 
 }

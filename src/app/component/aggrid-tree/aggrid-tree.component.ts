@@ -3,13 +3,10 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, SimpleCha
 import {
   CellClassParams,
   ColDef,
-  ColGroupDef,
-  ColumnApi,
-  GetDataPath,
+  ColGroupDef, 
   GridApi,
   GridOptions,
-  GridReadyEvent,
-  SideBarDef,
+  GridReadyEvent, 
 } from "ag-grid-community";
 import { v4 as uuidv4 } from "uuid";
 
@@ -92,7 +89,7 @@ animateRows:true,paginationPageSize:10
     private helperServices:HelperService,
     public dataService: DataService,
     public formservice: FormService,
-    public cfg:ChangeDetectorRef,
+    // public cfg:ChangeDetectorRef,
     public formBuilder: FormBuilder) 
     {
     this.components = {
@@ -102,113 +99,124 @@ animateRows:true,paginationPageSize:10
     // this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   } 
 parms:any
-  ngOnInit() {
-    // if(this?.gridApi != null || this?.gridApi != undefined){
-    //   this.gridApi.destroy()
-    // }
-      console.warn("Component Loaded" , "Agtree");
-      
-  if(this?.gridApi != null || this?.gridApi != undefined){
-   const data =this.gridApi.updateGridOptions({columnDefs:[]})
-   console.log("Delte the old Column def",data);
-   
-  //  const result:any= this.gridApi.applyTransaction({remove:[this.listData]})
-  //  console.log("Delete the Old Record",result);
-   
-    // this.gridApi.setColumnDefs(this.columnDefs)
-   this.gridApi.setSideBarVisible(false);
-    // this.gridApi.refreshClientSideRowModel('group')
-  }
-    this.route.params.subscribe(params => {
-      this.addbutton=false;
-        this.id = params['id'];
-      this.parms=params['id']
-      
-      // this.cfg.detectChanges()
-            this.formName=params['component']
-      let collection:any
-            if(this.formName == "module"){
-      this.pageHeading= "Module"
-      collection="project"
-            }else if(this.formName=="Requirement"){
-              this.pageHeading= "Requirement"
-              collection="project"
-      
-            }else if(this.formName=="projectteam"){
-              this.pageHeading= "Team Member"
-              collection="project"
-      
-            }else if(this.formName=="test_result"){
-              this.pageHeading="Test Result"
-      
-              collection="regression"
-              this.addbutton=true;
-            }else if(this.formName=="bug_list"){
-              this.pageHeading="Bug List"
-      
-              collection="project"
-              this.addbutton=true;
-            } else if(this.formName=="regression"){
-              this.pageHeading="Bug List"
-      
-              collection="project"
-              this.addbutton=true;
-              this.id=sessionStorage.getItem("project_id")
-            } else if(this.formName=="team_member"){
-              this.pageHeading="Task Assign"
-              collection="project"
-              this.addbutton=true;
-            }
-          // this.routing(component.route._futureSnapshot._routerState.url, display_Name)
-      
-          //  let breadCrums:any =  this.breadCrums.routing(this,this.pageHeading)
-          //  console.log(breadCrums);
-           
-        //  this.breadCrums.routing(this, this.pageHeading).then((breadCrumbs:any) => {
-        //   console.log(breadCrumbs);
-        // });
-            this.columnDefs=[];
-            this.listData=[];
-              // this.cfg.detectChanges()
-            
-            this.loadScreen(this.formName)
-            this.dataService.getDataById(collection, this.id).subscribe((res: any) => {
-              this.response = res?.data[0]
-              if(this?.response?.startdate){
-                this.response.startdate=moment(this.response?.startdate).format('D/M/ YYYY')
-              }
-              if(this?.response?.enddate){
-                this.response.enddate=moment(this.response?.enddate).format("D/M/ YYYY")
-              }
-              if(this.formName=="Requirement"){
-                this.sprintCellEditorParams('')
-                this.moduleCellEditorParams('')
-                this.ValueToCompareRequriementSprint == undefined || isEmpty(this.ValueToCompareRequriementSprint) ? this.sprintCellEditorParams(true) : this.ValueToCompareRequriementSprint;            
-      
-                this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
-              }
-              if(this.formName=="team_member"){
-                // this.sprintCellEditorParams('')
-                this.ValueToCompareEmployee == undefined || isEmpty(this.ValueToCompareEmployee) ? this.AssignTOCellEditorParams(true) : this.ValueToCompareEmployee;            
-      
-                // this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
-              }
-              sessionStorage.setItem("project_id", this.response.project_id)
-      
-              // if(this.formName=="projectteam"){
-              //   this.getList()
-              // }else{
-                
-                this.getTreeData()
-              // }
-            
-             
-            })
-            //  // this.cfg.detectChanges()
-      
-          });
-  }
+  ngOnInit() { 
+      console.warn("Component Loaded" , "Agtree"); 
  
+      this.ComponentInit()
+  
+    }
+    ComponentInit(){
+      if(this?.gridApi != null || this?.gridApi != undefined){
+        const data =this.gridApi.updateGridOptions({columnDefs:[]})
+        console.log("Delte the old Column def",data);
+        
+       //  const result:any= this.gridApi.applyTransaction({remove:[this.listData]})
+       //  console.log("Delete the Old Record",result);
+        
+         // this.gridApi.setColumnDefs(this.columnDefs)
+        this.gridApi.setSideBarVisible(false);
+         // this.gridApi.refreshClientSideRowModel('group')
+       }
+         this.route.params.subscribe(params => {
+           this.addbutton=false;
+      
+             this.id = params['id'];
+           this.parms=params['id']
+           console.log(params);
+           // this._location.replaceState()
+           // this.cfg.detectChanges()
+                 this.formName=params['Action']
+           let collection:any
+                 if(this.formName == "module"){
+           this.pageHeading= "Module"
+           collection="project"
+                 }else if(this.formName=="Requirement"){
+                   this.pageHeading= "Requirement"
+                   collection="project"
+           
+                 }else if(this.formName=="projectteam"){
+                   this.pageHeading= "Team Member"
+                   collection="project"
+           
+                 }else if(this.formName=="test_result"){
+                   this.pageHeading="Test Result"
+           
+                   collection="regression"
+                   this.addbutton=true;
+                 }else if(this.formName=="bug_list"){
+                   this.pageHeading="Bug List"
+           
+                   collection="project"
+                   this.addbutton=true;
+                 } else if(this.formName=="regression"){
+                   this.pageHeading="Bug List"
+           
+                   collection="project"
+                   this.addbutton=true;
+                   this.id=sessionStorage.getItem("project_id")
+                 } else if(this.formName=="team_member"){
+                   this.pageHeading="Task Assign"
+                   collection="project"
+                   this.addbutton=true;
+                 }
+               // this.routing(component.route._futureSnapshot._routerState.url, display_Name)
+           
+               //  let breadCrums:any =  this.breadCrums.routing(this,this.pageHeading)
+               //  console.log(breadCrums);
+                
+             //  this.breadCrums.routing(this, this.pageHeading).then((breadCrumbs:any) => {
+             //   console.log(breadCrumbs);
+             // });
+                 this.columnDefs=[];
+                 this.listData=[];
+                   // this.cfg.detectChanges()
+
+                 this.loadScreen(this.formName)
+                
+                 this.dataService.getDataById(collection, this.id).subscribe((res: any) => {
+                   this.response = res?.data[0]
+                   if(this?.response?.startdate){
+                     this.response.startdate=moment(this.response?.startdate).format('D/M/ YYYY')
+                   }
+                   if(this?.response?.enddate){
+                     this.response.enddate=moment(this.response?.enddate).format("D/M/ YYYY")
+                   }
+                   if(this.formName=="Requirement"){
+                     this.sprintCellEditorParams('')
+                     this.moduleCellEditorParams('')
+                     this.ValueToCompareRequriementSprint == undefined || isEmpty(this.ValueToCompareRequriementSprint) ? this.sprintCellEditorParams(true) : this.ValueToCompareRequriementSprint;            
+           
+                     this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
+                   }
+                   if(this.formName=="team_member"){
+                     // this.sprintCellEditorParams('')
+                     this.ValueToCompareEmployee == undefined || isEmpty(this.ValueToCompareEmployee) ? this.AssignTOCellEditorParams(true) : this.ValueToCompareEmployee;            
+           
+                     // this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;            
+                   }
+                   sessionStorage.setItem("project_id", this.response.project_id)
+           
+                   // if(this.formName=="projectteam"){
+                   //   this.getList()
+                   // }else{
+                    // this.formservice.LoadDefaultTreeComponent(this)
+                     
+                     this.getTreeData()
+                   // }
+                 
+                  
+                 })
+                 //  // this.cfg.detectChanges()
+           
+               });
+    }
+
+
+
+ ngOnChanges(changes: SimpleChanges): void { 
+  this.ComponentInit()
+ }
+
   formlyformdata(data:any){
   console.log('work');
   this.form = new FormGroup ({})
@@ -1252,6 +1260,7 @@ this.gridApi.updateGridOptions({rowData:this.listData})
       
     }]
   }
+  let listData:any[]=[]
 // this.response.project_id
     this.dataService.getDataByFilter("modules", Projectfiler).subscribe((res: any) => {
       this.listData = [] 
@@ -1261,7 +1270,7 @@ this.gridApi.updateGridOptions({rowData:this.listData})
         if (row.parentmodulename == "" || !row.parentmodulename) {
           row.treePath = [row.modulename];
         } else {
-          var parentNode = this.listData.find((d) => d.modulename == row.parentmodulename);
+          var parentNode = listData.find((d) => d.modulename == row.parentmodulename);
           if (
             parentNode &&
             parentNode.treePath &&
@@ -1271,22 +1280,26 @@ this.gridApi.updateGridOptions({rowData:this.listData})
             row.treePath.push(row.modulename);
           }
         }
-        this.listData.push(row);
+        listData.push(row);
 // this.cfg.detectChanges()
-console.log(this.listData);
+console.log(listData);
 
         // this.getmodules()
       }
+      this.listData=listData
+
       if (this.gridApi) {
         // this.gridApi.applyTransaction({add:[this.listData]})
         this.gridApi.updateGridOptions({rowData:this.listData})
       }
+      // this.cfg.detectChanges()
     });
     // this.updateGrid();
     
 }
 
  fetchRequirementData() {
+  // let listData:any[]=[]
   this.dataService.lookupTreeData("requriment",this.response.project_id).subscribe((res:any) =>{
     const data = res.data.response; 
     if(data !=null){
@@ -1327,11 +1340,12 @@ console.log(this.listData);
     // this.cfg.detectChanges()
     
       this.listData = parentTreeData;
-      // this.updateGrid()
+      
       if (this.gridApi) {
         // this.gridApi.applyTransaction({add:[this.listData]})
         this.gridApi.updateGridOptions({rowData:this.listData})
       }
+      // this.cfg.detectChanges()
     }
     
       
@@ -1351,7 +1365,7 @@ console.log(this.listData);
       
     }]
   }
-  // let allvalues:any=[]
+  let allvalues:any[]=[]
   // this.dataService.getDataByFilter("team_specificationList",Projectfiler )
   this.dataService.lookupTreeData("team_specificationList",this.response.project_id ).subscribe((res: any) => {
     this.listData = [] 
@@ -1364,7 +1378,7 @@ console.log(this.listData);
         if (row.parentmodulename == "" || !row.parentmodulename) {
           row.treePath = [row._id];
         } else {
-          var parentNode = this.listData.find((d) => d._id == row.parentmodulename);
+          var parentNode = allvalues.find((d:any) => d._id == row.parentmodulename);
           if (
             parentNode &&
             parentNode.treePath &&
@@ -1376,15 +1390,15 @@ console.log(this.listData);
         } 
         // allvalues.push(res);
         
-        this.listData.push(row);
+        allvalues.push(row);
     }
 // this.updateGrid()
+this.listData=allvalues
 if (this.gridApi) {
   // this.gridApi.applyTransaction({add:[this.listData]})
   this.gridApi.updateGridOptions({rowData:this.listData})
-
 }
-
+// this.cfg.detectChanges()
     }
   });
   // console.log(allvalues);
@@ -1444,6 +1458,7 @@ if (this.gridApi) {
     if (this.gridApi) {
       // this.gridApi.applyTransaction({add:[this.listData]})
       this.gridApi.updateGridOptions({rowData:this.listData})
+      // this.cfg.detectChanges()
     }
     }
   })
@@ -1543,12 +1558,12 @@ existTasks.forEach((element: any) => {
     taskData.push(element);
   }
 });
-// this.cfg.detectChanges()
 this.listData = concat(parentTreeData,taskData);
 if (this.gridApi) {
   // this.gridApi.applyTransaction({add:[this.listData]})
   this.gridApi.updateGridOptions({rowData:this.listData})
 }   
+// this.cfg.detectChanges()
 // this.updateGrid()
 
 

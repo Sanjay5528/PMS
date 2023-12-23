@@ -12,6 +12,8 @@ export class CardComponent {
   @Input() iconColor: any;
   @Input() altText: any;
   @Input() height: any;
+  @Input() type: any= 'Single' ;
+
   // @Input() height: any;
 
   @Input() width: any;
