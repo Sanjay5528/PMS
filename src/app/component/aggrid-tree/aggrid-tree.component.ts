@@ -1414,8 +1414,9 @@ if(res.data.response!=null){
   this.listData=data
   if (this.gridApi) {
 console.log("Grid Load Alderady",this.listData);
-this.gridApi.setGridOption('rowData',this.listData)
-    this.gridApi.updateGridOptions({rowData:this.listData})
+// this.gridApi.setGridOption('rowData',this.listData)
+// this.gridApi.redrawRows()    
+this.gridApi.updateGridOptions({rowData:this.listData})
     this.gridApi.refreshClientSideRowModel();
   }
 } 
@@ -1431,7 +1432,8 @@ if(res.data.response!=null){
   if (this.gridApi) {
 console.log("Grid Load Alderady",this.listData);
 
-    this.gridApi.updateGridOptions({rowData:this.listData});
+// this.gridApi.redrawRows()    
+this.gridApi.updateGridOptions({rowData:this.listData});
     this.gridApi.refreshClientSideRowModel()
   }
 }
@@ -1472,7 +1474,8 @@ console.log("Grid Load Alderady",this.listData);
             if (this.gridApi) {
 console.log("Grid Load Alderady",this.listData);
 this.gridApi.setGridOption('rowData',this.listData)
-              this.gridApi.updateGridOptions({rowData:this.listData})
+// this.gridApi.redrawRows()              
+this.gridApi.updateGridOptions({rowData:this.listData})
               this.gridApi.refreshClientSideRowModel()
             }
           } 
@@ -1487,7 +1490,8 @@ this.gridApi.setGridOption('rowData',this.listData)
             if (this.gridApi) {
 console.log("Grid Load Alderady",this.listData);
 this.gridApi.setGridOption('rowData',this.listData)
-              this.gridApi.updateGridOptions({rowData:this.listData})
+// this.gridApi.redrawRows()              
+this.gridApi.updateGridOptions({rowData:this.listData})
               this.gridApi.refreshClientSideRowModel()
             }
           } 
@@ -1502,7 +1506,8 @@ this.gridApi.setGridOption('rowData',this.listData)
           if (this.gridApi) {
 console.log("Grid Load Alderady",this.listData);
 this.gridApi.setGridOption('rowData',this.listData)
-            this.gridApi.updateGridOptions({rowData:this.listData})
+// this.gridApi.redrawRows()            
+this.gridApi.updateGridOptions({rowData:this.listData})
             this.gridApi.refreshClientSideRowModel()
           }
         } 
@@ -1552,8 +1557,9 @@ console.log(listData);
       if (this.gridApi) {
         // this.gridApi.applyTransaction({add:[this.listData]})
 console.log("Grid Load Alderady",this.listData);
-this.gridApi.setGridOption('rowData',this.listData)
-        this.gridApi.updateGridOptions({rowData:this.listData})
+// this.gridApi.setGridOption('rowData',this.listData)
+// this.gridApi.redrawRows()        
+this.gridApi.updateGridOptions({rowData:this.listData})
         // this.gridApi.setGridOption("rowData",this.listData)
 
         this.gridApi.refreshClientSideRowModel()
@@ -1610,8 +1616,9 @@ this.gridApi.setGridOption('rowData',this.listData)
       if (this.gridApi) {
         // this.gridApi.applyTransaction({add:[this.listData]})
 console.log("Grid Load Alderady",this.listData);
-this.gridApi.setGridOption('rowData',this.listData)
-        this.gridApi.updateGridOptions({rowData:this.listData})
+// this.gridApi.setGridOption('rowData',this.listData)
+// this.gridApi.redrawRows()        
+this.gridApi.updateGridOptions({rowData:this.listData})
   // this.gridApi.setGridOption("rowData",this.listData)
 
         this.gridApi.refreshClientSideRowModel()
@@ -1668,8 +1675,9 @@ this.listData=allvalues
 if (this.gridApi) {
   // this.gridApi.applyTransaction({add:[this.listData]})
 console.log("Grid Load Alderady",this.listData);
-this.gridApi.setGridOption('rowData',this.listData)
-  this.gridApi.updateGridOptions({rowData:this.listData})
+// this.gridApi.setGridOption('rowData',this.listData)
+// this.gridApi.redrawRows()  
+this.gridApi.updateGridOptions({rowData:this.listData})
   // this.gridApi.setGridOption("rowData",this.listData)
 
   this.gridApi.refreshClientSideRowModel()
@@ -1734,8 +1742,9 @@ this.gridApi.setGridOption('rowData',this.listData)
     if (this.gridApi) {
       // this.gridApi.applyTransaction({add:[this.listData]})
 console.log("Grid Load Alderady",this.listData);
-this.gridApi.setGridOption('rowData',this.listData)
-      this.gridApi.updateGridOptions({rowData:this.listData})
+// this.gridApi.setGridOption('rowData',this.listData)
+// this.gridApi.redrawRows()      
+this.gridApi.updateGridOptions({rowData:this.listData})
   // this.gridApi.setGridOption("rowData",this.listData)
 
       this.gridApi.refreshClientSideRowModel()
@@ -1829,8 +1838,9 @@ this.listData = concat(parentTreeData,taskData);
 if (this.gridApi) {
   // this.gridApi.applyTransaction({add:[this.listData]})
 console.log("Grid Load Alderady",this.listData);
-this.gridApi.setGridOption('rowData',this.listData)
-  this.gridApi.updateGridOptions({rowData:this.listData})
+// this.gridApi.setGridOption('rowData',this.listData)
+// this.gridApi.redrawRows()  
+this.gridApi.updateGridOptions({rowData:this.listData})
   this.gridApi.refreshClientSideRowModel()
 }   
 // this.cfg.detectChanges()
