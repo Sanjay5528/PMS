@@ -138,12 +138,20 @@ export class DashboardComponent {
 
   data: any[] = []
   ngOnInit() {
+    this.route.params.subscribe((params:any)=>{
+      console.log(params['Type']);
+      // :Type/:Id
+      console.log(params);
+      
+      console.log(params['id']);
+      
+    })
     this.data = [
-      { count: '8', text: "Task Count", icon: 'fingerprint', type:'icon',iconColor: '', altText: 'altText', height: '300', width: '300', backgroundColor: '' }, 
-      { count: '5', text: "Test Case Count", icon: 'donut_small', iconColor: '', altText: 'altText', height: '300', width: '300', backgroundColor: '' }, 
-      { count: '55', text: "Bug List", icon: 'bug_report', iconColor: 'black', altText: 'altText', height: '300', width: '300', backgroundColor: '' }, 
-      { count: '44', text: "Requriement Count", icon: 'assignment', iconColor: '', altText: 'altText', height: '300', width: '300', backgroundColor: '' }, 
-      { count: '44', text: "Task Count", icon: 'note_add', iconColor: '', altText: 'altText', height: '300', width: '300', backgroundColor: '' },
+      { count: '8', text: "Task Count", icon: 'fingerprint', type:'icon',iconColor: '', altText: 'altText', height: '300', width: 'auto', backgroundColor: '' }, 
+      { count: '5', text: "Test Case Count", icon: 'donut_small', iconColor: '', altText: 'altText', height: '300', width: 'auto', backgroundColor: '' }, 
+      { count: '55', text: "Bug List", icon: 'bug_report', iconColor: 'black', altText: 'altText', height: '300', width: 'auto', backgroundColor: '' }, 
+      { count: '44', text: "Requriement Count", icon: 'assignment', iconColor: '', altText: 'altText', height: '300', width: 'auto', backgroundColor: '' }, 
+      { count: '44', text: "Task Count", icon: 'note_add', iconColor: '', altText: 'altText', height: '300', width: 'auto', backgroundColor: '' },
       // { count: '', text: "", icon: '', iconColor: '', altText: 'altText', height: '', width: '', backgroundColor: '' },
     ]
     // this.route.params.subscribe((params) => {

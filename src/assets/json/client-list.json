@@ -5,7 +5,9 @@
 		{
 		  "displayName": "Requirement",
 		  "iconName": "../../../../assets/images/requriement.svg",
-		  "route": "project/Requirement/"
+		  "route": "project/Requirement/",
+		  "first": "project/",
+		  "last":"/Requirement"
 		}
 	  ]
 	},
@@ -50,7 +52,7 @@
 		  "iconName": "../../../../assets/images/requriement.svg",
 		  "route": "data/edit/project_sprint/",
 		  "first": "project/",
-		  "last":"/project_sprint"
+		  "last":"/sprint"
 		}
 	  ]
 	},

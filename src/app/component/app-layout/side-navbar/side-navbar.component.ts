@@ -117,7 +117,9 @@ export class SideNavbarComponent implements OnInit {
 
 
 
- 
+ close(){
+  this.helperServices.getProjectmenu(false)
+ }
 
   logout() {
     // if (confirm("Are you sure you want to Logout?")) {
@@ -135,8 +137,9 @@ export class SideNavbarComponent implements OnInit {
   }
 
 routeToDestination(data:any){
+console.log(data);
 
-  let route=data+this.selectProject._id
+  let route=data.first+this.selectProject._id+data.last
   console.log(route);
   // this._location.replaceState(route)
   // this.route.params.subscribe(params=>{

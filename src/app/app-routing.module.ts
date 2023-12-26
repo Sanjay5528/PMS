@@ -91,12 +91,12 @@ const routes: Routes = [
   // },
 
   {
-    path: "home",
+    path: "Dashboard",
     component: DefaultLayoutComponent,
    canActivate: [AuthGuardService],
     children: [
       {
-        path: "",
+        path: ":Type/:Id",
         component:DashboardComponent
         // component: GantchartComponent
 
@@ -187,7 +187,7 @@ const routes: Routes = [
       //   component:AggridTreeComponent
       // },
       {
-        path: ":Action/:id",
+        path: ":id/:Action",
         component: AggridTreeComponent,
       },
       // {
@@ -196,16 +196,16 @@ const routes: Routes = [
       // }
     ],
   },
-  {
-    path: "client/:cid",
-   component: DefaultLayoutComponent,
-   children: [
-     {
-       path:"Project/:id/:Action",
-       component:AggridTreeComponent
-     }, 
-   ],
- }, 
+//   {
+//     path: "client/:cid",
+//    component: DefaultLayoutComponent,
+//    children: [
+//      {
+//        path:"Project/:id/:Action",
+//        component:AggridTreeComponent
+//      }, 
+//    ],
+//  }, 
   {
     path: "profile",
     component: DefaultLayoutComponent,

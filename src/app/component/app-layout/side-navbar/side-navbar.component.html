@@ -7,11 +7,11 @@
   </mat-select> 
 </mat-form-field>
   </div> -->
-
-  
-  
+ 
   <div class="logo-container">
     <!-- <button class="logo" (click)="togglecollapse()"><mat-icon>menu</mat-icon></button> -->
+    <mat-icon [ngClass]="collapsed ?'expand_icon_collapsed':'expand_icon_non_collapsed'" (click)="close()">close</mat-icon>
+    
     <div class="image"   *ngIf="collapsed">
         <img *ngIf="this.logo_image"  style="object-fit:contain;   width: 100%;padding: 15px 20px 15px 20px;height: 150px;"   src={{this.logo_image}} />
     </div>
@@ -25,7 +25,7 @@
     <ul *ngFor="let data of navItems" class="sidenav-nav">
       <li class="sidenav-nav-item">
         <a *ngIf="!data.children"  class="sidenav-nav-link"
-        (click)="routeToDestination(data.route)"
+        (click)="routeToDestination(data)"
         >
         <!-- [routerLink]="[data.route]" -->
 
@@ -58,7 +58,7 @@
       <li *ngIf="subsectionExpanded[data.displayName] && data.children && collapsed == true" class="submenu-item">
         <!--         [routerLink]="subsection.route + selectProject._id"-->
         <a class="sidenav-nav-link" mat-list-item 
-        (click)="routeToDestination(subsection.route)"
+        (click)="routeToDestination(subsection)"
           *ngFor="let subsection of data.children">
           <div style="display: flex;flex-direction: row;">
             <!-- <mat-icon class="sidenav-link" style="margin-top: 3px;gap: 5px;font-size: 22px;">{{ subsection.iconName

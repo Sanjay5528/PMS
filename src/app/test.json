@@ -1,264 +1,79 @@
-{
-	"pageHeading": "Release",
-	"formType": "master-detail",
-	"localSet":true,
-	"mapColumnDiff":true,
-	"mapColumnfield":"project_id",
-    "diffApi":true,
-    "endPoint":"RealseSpirntList",
-    "idToSend":"project_id",
-
-	"localSetField":"project_id",
-	"form": {
-		"collectionName": "project",
-		"fields": [
-			{
-				"type": "label-view",
-				"key": "project_name",
-				"props": {
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": true,
-					"label": "Project Name",
-					"placeholder": "Project Name",
-					"required": true
-				}
-			}, 
-			{
-				"type": "label-view",
-				"key": "status",
-				"props": {
-					"label_width": 100,
-					"value_width": 200,
-					"value_in_next_row": true,
-					"label": "Project Status",
-					"placeholder": "Project Status",
-					"required": true
-				}
-			}
-		],
-		"buttons": {
-			"start": false,
-			"newEntry": false
+[
+	{
+	  "displayName": "Requirement Management",
+	  "children": [
+		{
+		  "displayName": "Requirement",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "project/Requirement/",
+		  "first": "project/",
+		  "last":"/Requirement"
 		}
+	  ]
 	},
-	"detailForm": {
-        "customfilter":true,
-        "customkey":"project_id",
-		"collectionName": "release",
-		"mapColumn": "project_id",
-		"keyColumn": "_id",
-		"isPopupEdit": true,
-		"fields": [
-			{
-				"fieldGroupClassName": "display-flex",
-				"fieldGroup": [
-                    {
-                        "type": "label-view",
-                        "key": "_id","className": "flex-6",
-                        "props": {
-                            "label": "Release Id",
-                            "label_width": 100,
-                            "value_width": 200,
-                            "value_in_next_row": false,
-                            "placeholder": "Release Id"
-                        },"hideExpression": "!model.isEdit"
-                    }, 
-                    {
-                        "type": "label-view",
-                        "key": "name","className": "flex-6",
-                        "props": {
-                            "label_width": 100,
-                            "value_width": 200,
-                            "value_in_next_row": true,
-                            "label": "Release Name",
-                            "placeholder": "Release Name"
-                        },"hideExpression": "!model.isEdit"
-                    },
-				{
-					"type": "input",
-					"key": "name",
-					"className": "flex-8",
-					"props": {
-						"label": "Release Name",
-						"placeholder": "Release Name",
-						"pattern": "^[a-zA-Z0-9-_]*$",
-						"required": true
-					},
-					"hideExpression": "model.isEdit"
-				}
-				
-				]
-			},
-			{
-				"fieldGroupClassName": "display-flex",
-			"fieldGroup": [
-					{
-						"key": "start_date",
-						"type": "date-input", 
-						"className": "flex-6",
-						"props": {
-						"label": "Scheduled Start Date",
-						"placeholder": "Scheduled Start Date",
-						"type": "date",
-						"required": true
-						}
-					},
-					{
-						"key": "end_date",
-						"type": "date-input",
-						"className": "flex-6",
-						"parentKey": "start_date",
-						"props": {
-						"label": "Scheduled End Date",
-						"placeholder": "Scheduled End Date",
-						"type": "date",
-						"required": true
-						}
-					},
-					{
-						"type": "select",
-						"key": "status",
-						"className": "flex-6",
-						"props": {
-							"label": "Status",
-							"options": [
-								{
-									"label": "Active",
-									"value": "A"
-								},
-								{
-									"label": "Inactive",
-									"value": "I"
-								}
-								
-								
-							],
-							"placeholder": "Status",
-							"required": true
-						},
-					
-						"expressions": {
-							"hide": "!model.isEdit"
-						}
-						}
-				]
-			},
-			{
-				"type": "html-input",
-				"key": "description",
-				"className": "flex-6",
-				"props": {
-					"label": "Release Description"
-				},
-				
-				"maxlength": 500
-			}
-		],
-        "defaultValues": [
-            {
-              "colName": "status",
-              "type": "string",
-              "value": "A"
-            },
-            {
-                "colName": "_id",
-                "type": "prefix",
-                "source": "project_id"
-              }
-            ]
-		 
+	{
+	  "displayName": "Project Management",
+	  "children": [
+		{
+		  "displayName": "Modules",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "project/module/",
+		  "first": "project/",
+		  "last":"/module"
+		},
+		{
+		  "displayName": "Team",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "project/projectteam/",
+		  "first": "project/",
+		  "last":"/projectteam"
+		},
+		{
+		  "displayName": "Task",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "project/team_member/",
+		  "first": "project/",
+		  "last":"/team_member"
+		}
+	  ]
 	},
-	"detailListConfig": {
-		"sectionHeading": "Project Team",
-		"actions": [
-			
-      {
-				"label": "Add Sprint",
-				"icon": "add",
-				"formName": "release_sprint",
-				"formAction":"listpopup",
-                "type":"local",
-                "add":true,
-                "local_label":"release_id",
-
-                "field":"_id"
-			},{
-				"label": "Edit",
-				"icon": "edit",
-				"formName": "project"
-			},
-			{
-				"label": "Delete",
-				"icon": "delete",
-                "formAction":"delete"
-
-			}
-		],
-		"fields": [
-            {
-                "headerName": "Id",
-                "field": "_id",
-                "filter": "agTextColumnFilter",
-                "sortable": true
-            },
-            {
-                "headerName": "Name",
-                "field": "name",
-                "filter": "agTextColumnFilter",
-                "sortable": true
-            },            {
-                "headerName": "Sprint",
-                "field": "sprint_ids",			  
-                "filter":false,
-                "set":"arraytostring",
-                "valueType":"plainArray"
-              
-            },
-
-            {
-              "headerName": "Start Date",
-              "field": "start_date",
-              "width": 40,
-              "sortable": true,
-              "filter": "agDateColumnFilter",
-              "type":"date"
-            },
-            {
-              "headerName": "End Date",
-              "field": "end_date",
-              "width": 40,
-              "editable": true,
-              "filter": "agDateColumnFilter",
-              "type":"date"
-            },  {
-                    "headerName": "Status",
-                    "field": "status",   "maxWidth":100,
-                    "filter": "agTextColumnFilter",
-                    "sortable": true
-                }, 
-			{
-				"type": "rightAligned",
-				"headerName": "Actions",
-                "menuTabs": [],    "maxWidth":85,
-
-                "lockPosition": "right",
-                "lockPinned": true,
-                 "pinned":"right",
-				"cellRenderer": "buttonRenderer",
-				"cellRendererParams": {
-					"onClick": "this.onBtnClick1.bind(this)",
-					"label": "Click 1"
-				},
-				"filter":false,"sortable":false
-			}
-		],
-		"filterOptions": [],
-		"defaultFilter": []
+	{
+	  "displayName": "Release Management",
+	  "children": [
+		{
+		  "displayName": "Release",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "data/edit/release/",
+		  "first": "project/",
+		  "last":"/release"
+		},
+		{
+		  "displayName": "Sprint",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "data/edit/project_sprint/",
+		  "first": "project/",
+		  "last":"/sprint"
+		}
+	  ]
 	},
-
-	
-	"designConfig": {
-		"leftPanelWidth": "320px"
+	{
+	  "displayName": "QA",
+	  "children": [
+		{
+		  "displayName": "Test Case",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "data/edit/regression/",
+		  "first": "project/",
+		  "last":"/functionaltesting"
+		},
+		{
+		  "displayName": "Bug List",
+		  "iconName": "../../../../assets/images/requriement.svg",
+		  "route": "project/bug_list/",
+		  "first": "project/",
+		  "last":"/bug_list"
+		}
+	  ]
 	}
-  }
+  ]
+  

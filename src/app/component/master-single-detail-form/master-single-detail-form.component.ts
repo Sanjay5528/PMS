@@ -390,7 +390,7 @@ return
       // console.log(this);
        if (item.route_type == "CustomRoute") {
         // ! item.Custom_Route To another Component
-        if(item.Custom_Key_filed&&item.Custom_Route)
+        // if(item.Custom_Key_filed&&item.Custom_Route)
         // todo if this filed is missing it should take the _id
         // let field = data[item.Custom_Key_filed] ? data[item.Custom_Key_filed] : data[_id];
       //   "SaveType":"local",

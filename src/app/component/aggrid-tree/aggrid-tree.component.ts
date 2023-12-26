@@ -128,8 +128,8 @@ parms:any
                  this.formName=params['Action']
            let collection:any
                  if(this.formName == "module"){
-           this.pageHeading= "Module"
-           collection="project"
+                  this.pageHeading= "Module"
+                  collection="project"
                  }else if(this.formName=="Requirement"){
                    this.pageHeading= "Requirement"
                    collection="project"
@@ -158,7 +158,20 @@ parms:any
                    this.pageHeading="Task Assign"
                    collection="project"
                    this.addbutton=true;
-                 }
+                 }else if(this.formName=="sprint"){
+                   this.pageHeading="Sprint List"
+           
+                   collection="project"
+                   this.addbutton=false; 
+                 } else if(this.formName=="release"){
+                   this.pageHeading="Release"
+                   collection="project"
+                   this.addbutton=false;
+                 } else if(this.formName=="functionaltesting"){
+                  this.pageHeading="Functional Testing"
+                  collection="project"
+                  this.addbutton=false;
+                }
                // this.routing(component.route._futureSnapshot._routerState.url, display_Name)
            
                //  let breadCrums:any =  this.breadCrums.routing(this,this.pageHeading)
@@ -168,9 +181,7 @@ parms:any
              //   console.log(breadCrumbs);
              // });
                  this.columnDefs=[];
-                 this.listData=[];
-                   // this.cfg.detectChanges()
-
+                 this.listData=[]; 
                  this.loadScreen(this.formName)
                 
                  this.dataService.getDataById(collection, this.id).subscribe((res: any) => {
@@ -293,7 +304,7 @@ this.gridOptions.groupDefaultExpanded=-1
     valueFormatter: function (params) {
       if(params.value){
 
-        return moment(params.value).format('D/M/ YYYY');
+        return moment(params.value).format('DD/MM/YYYY')
       }
       return ''
         },
@@ -308,7 +319,7 @@ this.gridOptions.groupDefaultExpanded=-1
     valueFormatter: function (params) {
       if(params.value){
 
-        return moment(params.value).format('D/M/ YYYY');
+        return moment(params.value).format('DD/MM/YYYY')
       }
       return ''  
       },
@@ -476,7 +487,7 @@ this.gridOptions.groupDefaultExpanded=-1
     valueFormatter: function (params) {
       if(params.value){
 
-        return moment(params.value).format('D/M/ YYYY');
+        return moment(params.value).format('DD/MM/YYYY');
       }
       return ''
     },
@@ -491,7 +502,7 @@ this.gridOptions.groupDefaultExpanded=-1
     valueFormatter: function (params) {
       if(params.value){
 
-        return moment(params.value).format('D/M/ YYYY');
+        return moment(params.value).format('DD/MM/YYYY');
       }
       return ''    
     },
@@ -547,7 +558,6 @@ this.gridOptions.paginationPageSize=100
     this.gridOptions.autoGroupColumnDef={
       headerName: "Requirement Name",
       field:"requirement_name",
-      cellRendererParams: { suppressCount: true },
       sortable: false,
       resizable: true,
       filter: false
@@ -585,6 +595,8 @@ this.gridOptions.treeData=false;
       width: 40,       
       showRowGroup:false,
       resizable:true, 
+      rowGroup:true,
+      rowGroupIndex:0,
       enableRowGroup:true,
       filter: 'agTextColumnFilter',
     },
@@ -598,6 +610,8 @@ this.gridOptions.treeData=false;
       headerName: 'Test Case Type',
       field: 'test_case_scenario',
       width: 40,
+    enableRowGroup:true,
+      rowGroupIndex:1,
       editable: false,
       filter: 'agTextColumnFilter',
     }, 
@@ -613,6 +627,8 @@ this.gridOptions.treeData=false;
       field: 'test_result_stauts',
       width: 40,
       editable: false,
+      enableRowGroup:true,
+        rowGroupIndex:2,
       filter: 'agTextColumnFilter',
     },{
       headerName: 'Bug Count',
@@ -846,21 +862,8 @@ if (params.value === "high") {
 
       editable: false,
       filter: 'agTextColumnFilter',
-    }
-    // ,
-    //   {
-  
-    //   field: 'Action',
-    //   sortable:false,
-    //   filter:false,
-    //   resizable:false,
-    //   maxWidth: 110,
-    //   cellRenderer: 'buttonRenderer'
-  
-    // }
-  ]
-    // )
-// this.cfg.detectChanges()
+    } 
+  ] 
 this.gridOptions.columnDefs=this.columnDefs
 if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
   this.gridApi.updateGridOptions(this.gridOptions)
@@ -1031,6 +1034,253 @@ if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != u
   this.gridApi.updateGridOptions(this.gridOptions)
   this.gridApi.setSideBarVisible(false);
 }
+  }else if(this.formName=="release"){
+    // this.pageHeading="Team Member"
+    // const Assigned:any=this.AssignTOCellEditorParams
+// this.gridOptions.getRowId=function (params:any) { return params.data._id }
+
+    this.gridOptions.treeData=false
+
+this.gridOptions.pagination=true
+this.gridOptions.paginationPageSize=50 
+this.gridOptions.rowSelection='single'
+this.gridOptions.groupSuppressBlankHeader=true; 
+this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
+    this.columnDefs =[ 
+              {
+            "headerName": "Id",
+            "field": "_id",
+            "filter": "agTextColumnFilter",
+            "sortable": true
+        },
+        {
+            "headerName": "Name",
+            "field": "name",
+            "filter": "agTextColumnFilter",
+            "sortable": true
+        },            {
+            "headerName": "Sprint",
+            "field": "sprint_ids",			  
+            "filter":false,
+        },
+
+        {
+          "headerName": "Start Date",
+          "field": "start_date",
+          "width": 40,
+          "sortable": true,
+          "filter": "agDateColumnFilter",
+          valueFormatter: function (params) {
+            if(params.value){
+      
+              return moment(params.value).format('DD/MM/YYYY')
+            }
+            return ''    
+          },
+        },
+        {
+          "headerName": "End Date",
+          "field": "end_date",
+          "width": 40,
+          "editable": true,
+          "filter": "agDateColumnFilter" ,
+          valueFormatter: function (params) {
+            if(params.value){
+      
+              return moment(params.value).format('DD/MM/YYYY')
+            }
+            return ''    
+          },
+        },  {
+                "headerName": "Status",
+                "field": "status",   "maxWidth":100,
+                "filter": "agTextColumnFilter",
+                "sortable": true
+            }, 
+  {
+    "type": "rightAligned",
+    "headerName": "Actions",
+            "menuTabs": [],    "maxWidth":85,
+
+            "lockPosition": "right",
+            "lockPinned": true,
+             "pinned":"right",
+    "cellRenderer": "buttonRenderer",
+    "cellRendererParams": {
+      "onClick": "this.onBtnClick1.bind(this)",
+      "label": "Click 1"
+    },
+    "filter":false,"sortable":false
+  }
+  
+    ]
+    // )
+// this.cfg.detectChanges()
+this.gridOptions.columnDefs=this.columnDefs
+if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+  this.gridApi.updateGridOptions(this.gridOptions)
+  this.gridApi.setSideBarVisible(false);
+}
+  }else if(this.formName=="sprint"){
+    // this.pageHeading="Team Member"
+ this.gridOptions.getRowId=function (params:any) { return params.data._id }
+
+    this.gridOptions.treeData=false
+ 
+this.gridOptions.pagination=true
+this.gridOptions.paginationPageSize= 50 
+
+this.gridOptions.rowSelection='single'
+this.gridOptions.groupSuppressBlankHeader=true; 
+
+this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
+  this.columnDefs=[
+    {
+        "headerName": "Id",
+        "field": "_id",
+        "filter": "agTextColumnFilter",
+        "sortable": true
+    },
+    {
+        "headerName": "Name",
+        "field": "name",
+        "filter": "agTextColumnFilter",
+        "sortable": true
+    },
+    {
+        "headerName": "Release Version",
+        "field": "release_id",
+        "filter": "agTextColumnFilter",
+        "sortable": true
+    },
+    {
+        "headerName": "Start Data",
+        "field": "start_date",
+"sortable": true,
+"filter": "agDateColumnFilter",
+valueFormatter: function (params) {
+  if(params.value){
+
+    return moment(params.value).format('DD/MM/YYYY')
+  }
+  return ''    
+},
+    },
+    {
+        "headerName": "End Data",
+        "field": "end_date",
+"sortable": true,
+"filter": "agDateColumnFilter",
+
+    valueFormatter: function (params) {
+      if(params.value){
+
+        return moment(params.value).format('DD/MM/YYYY')
+      }
+      return ''    
+    },    },
+{
+        "headerName": "Status",
+        "field": "status",   "maxWidth":100,
+        "filter": "agTextColumnFilter",
+        "sortable": true
+    }, 
+{
+    "type": "rightAligned",
+    "headerName": "Actions",
+    "menuTabs": [],    "maxWidth":85,
+
+    "lockPosition": "right",
+    "lockPinned": true,
+     "pinned":"right",
+    "cellRenderer": "buttonRenderer",
+    "cellRendererParams": {
+        "onClick": "this.onBtnClick1.bind(this)",
+        "label": "Click 1"
+    },
+    "filter":false,"sortable":false
+}
+]
+
+this.gridOptions.columnDefs=this.columnDefs
+if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+  this.gridApi.updateGridOptions(this.gridOptions)
+  this.gridApi.setSideBarVisible(false);
+}
+  }else if(this.formName=="functionaltesting"){
+    // this.pageHeading="Team Member"
+ this.gridOptions.getRowId=function (params:any) { return params.data._id }
+
+    this.gridOptions.treeData=false
+ 
+this.gridOptions.pagination=true
+this.gridOptions.paginationPageSize= 50 
+
+this.gridOptions.rowSelection='single'
+this.gridOptions.groupSuppressBlankHeader=true; 
+
+this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
+  this.columnDefs= [
+		{
+		  "headerName": "Regression Id",
+		  "field": "regression_id",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Sprint Id",
+		  "field": "sprint_id",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+  
+		 
+		{
+		  "headerName": "Test Case Count",
+		  "field": "ResultCount",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Test Case Positive",
+		  "field": "ResultPassCount",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+		  "headerName": "Test Case Negative",
+		  "field": "ResultFailCount",
+		  "sortable": true,
+		  "filter": "agTextColumnFilter"
+		},
+		{
+            "headerName": "Status",
+            "field": "status",   "maxWidth":100,
+            "filter": "agTextColumnFilter",
+            "sortable": true
+          }, 
+          {
+          "type": "rightAligned",
+          "headerName": "Actions",
+          "menuTabs": [],    "maxWidth":85,
+          
+          "lockPosition": "right",
+          "lockPinned": true,
+          "pinned":"right",
+          "cellRenderer": "buttonRenderer",
+          "cellRendererParams": {
+          "onClick": "this.onBtnClick1.bind(this)",
+          "label": "Click 1"
+          },
+          "filter":false,"sortable":false
+          }
+	  ]
+
+this.gridOptions.columnDefs=this.columnDefs
+if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+  this.gridApi.updateGridOptions(this.gridOptions)
+  this.gridApi.setSideBarVisible(false);
+}
   }
  
 }
@@ -1143,6 +1393,7 @@ if(params==true){
 
   getTreeData() {
 // ! UNDO
+debugger
 if (this.gridApi) { this.gridApi.updateGridOptions({rowData:[]}) }
 
 if(this.formName=="module"){
@@ -1157,26 +1408,35 @@ this.fetchModuleData()
     
     this.dataService.lookUpBug(this.response.project_id,'').subscribe((res:any)=>{
 // this.cfg.detectChanges()
-this.listData=res.data.response
-// this.gridApi.applyTransaction({add:[this.listData]})
-this.gridApi.updateGridOptions({rowData:this.listData})
-      // this.gridApi.setSideBarVisible(true);
-      // this.updateGrid()
-
-      // if(this.formName=="bug_list"){this.gridApi.setSideBarVisible(true)}
-
+// this.listData=res.data.response
+if(res.data.response!=null){
+  let data:any=res.data.response
+  this.listData=data
+  if (this.gridApi) {
+console.log("Grid Load Alderady",this.listData);
+this.gridApi.setGridOption('rowData',this.listData)
+    this.gridApi.updateGridOptions({rowData:this.listData})
+    this.gridApi.refreshClientSideRowModel();
+  }
+} 
     })
    }else if(this.formName=="regression"){
         this.dataService.getDataById("regression",this.parms ).subscribe((res:any)=>{
           
           this.dataService.lookUpBug(this.response.project_id,res.data[0].regression_id).subscribe((res:any)=>{
-            let data:any=res.data.response
 // this.cfg.detectChanges()
+if(res.data.response!=null){
+  let data:any=res.data.response
+  this.listData=data
+  if (this.gridApi) {
+console.log("Grid Load Alderady",this.listData);
 
-            this.listData=data
+    this.gridApi.updateGridOptions({rowData:this.listData});
+    this.gridApi.refreshClientSideRowModel()
+  }
+}
             // this.updateGrid()
             // this.gridApi.applyTransaction({add:[this.listData]})
-            this.gridApi.updateGridOptions({rowData:this.listData})
           })
         })
       }     else if(this.formName=="team_member"){
@@ -1200,54 +1460,55 @@ this.gridApi.updateGridOptions({rowData:this.listData})
       // .subscribe((data: any) => {
       //   console.log(data);
       let Projectfiler:any={
-        start:0,end:1000,filter:[{
-          
-            clause: "AND",
-            conditions: [
-              {column: "project_id",operator: "EQUALS",type: "string",value: this.response.project_id},
-            ],
-          
-        }]
+        start:0,end:1000,
+        "filter":[{"clause":"AND","conditions":[{"column":"project_id","operator":"EQUALS","value": this.response.project_id}]}]
       }
         this.dataService
           .getDataByFilter("sprint", Projectfiler)
           .subscribe((res: any) => {
-            // this.listData = res.data.response;
-            // if(res.data.response!=null){
-            //   this.GroupRow(res.data.response);
-            // }
-          });
-        
-      // });
+            console.log(res);
+            if(res && res.data[0].response){
+            this.listData = res.data[0].response;
+            if (this.gridApi) {
+console.log("Grid Load Alderady",this.listData);
+this.gridApi.setGridOption('rowData',this.listData)
+              this.gridApi.updateGridOptions({rowData:this.listData})
+              this.gridApi.refreshClientSideRowModel()
+            }
+          } 
+        }); 
   }  else if(this.formName=="release"){
-    // this.dataService
-    // .getDataById("project", "6554bb7e052126c9587741a5")
-    // .subscribe((data: any) => {
-    //   console.log(data);
       this.dataService
-        .lookupTreeData("task_requriment", this.response.project_id)
+        .lookupTreeData("RealseSpirntList", this.response.project_id)
         .subscribe((res: any) => {
-          // this.listData = res.data.response;
-          // if(res.data.response!=null){
-          //   this.GroupRow(res.data.response);
-          // }
+          console.log(res);
+          if(res && res.data.response){
+            this.listData=res.data.response
+            if (this.gridApi) {
+console.log("Grid Load Alderady",this.listData);
+this.gridApi.setGridOption('rowData',this.listData)
+              this.gridApi.updateGridOptions({rowData:this.listData})
+              this.gridApi.refreshClientSideRowModel()
+            }
+          } 
         });
-      
-    // });
+  } else if(this.formName=="functionaltesting"){
+    this.dataService
+      .lookupTreeData("testing", this.response.project_id)
+      .subscribe((res: any) => {
+        console.log(res);
+        if(res && res.data.response){
+          this.listData=res.data.response
+          if (this.gridApi) {
+console.log("Grid Load Alderady",this.listData);
+this.gridApi.setGridOption('rowData',this.listData)
+            this.gridApi.updateGridOptions({rowData:this.listData})
+            this.gridApi.refreshClientSideRowModel()
+          }
+        } 
+      });
 }
-   
-  // if(this?.gridApi != null || this?.gridApi != undefined){
-  //   this.gridApi.updateGridOptions({rowData:this.listData})
-  //   // this.gridApi.setColumnDefs(this.columnDefs)
-  //  this.gridApi.setSideBarVisible(false);
-  //   this.gridApi.refreshClientSideRowModel('group')
-  //   // this.gridApi.refreshClientSideRowModel()
-  // }
-  // if(this.formName=="bug_list"){this.gridApi.setSideBarVisible(true)}
-
-
-}
-// taskdount:any=1
+    }
 
  fetchModuleData() {
   let Projectfiler:any={
@@ -1290,7 +1551,12 @@ console.log(listData);
 
       if (this.gridApi) {
         // this.gridApi.applyTransaction({add:[this.listData]})
+console.log("Grid Load Alderady",this.listData);
+this.gridApi.setGridOption('rowData',this.listData)
         this.gridApi.updateGridOptions({rowData:this.listData})
+        // this.gridApi.setGridOption("rowData",this.listData)
+
+        this.gridApi.refreshClientSideRowModel()
       }
       // this.cfg.detectChanges()
     });
@@ -1343,7 +1609,12 @@ console.log(listData);
       
       if (this.gridApi) {
         // this.gridApi.applyTransaction({add:[this.listData]})
+console.log("Grid Load Alderady",this.listData);
+this.gridApi.setGridOption('rowData',this.listData)
         this.gridApi.updateGridOptions({rowData:this.listData})
+  // this.gridApi.setGridOption("rowData",this.listData)
+
+        this.gridApi.refreshClientSideRowModel()
       }
       // this.cfg.detectChanges()
     }
@@ -1396,7 +1667,12 @@ console.log(listData);
 this.listData=allvalues
 if (this.gridApi) {
   // this.gridApi.applyTransaction({add:[this.listData]})
+console.log("Grid Load Alderady",this.listData);
+this.gridApi.setGridOption('rowData',this.listData)
   this.gridApi.updateGridOptions({rowData:this.listData})
+  // this.gridApi.setGridOption("rowData",this.listData)
+
+  this.gridApi.refreshClientSideRowModel()
 }
 // this.cfg.detectChanges()
     }
@@ -1457,27 +1733,18 @@ if (this.gridApi) {
     // this.updateGrid()
     if (this.gridApi) {
       // this.gridApi.applyTransaction({add:[this.listData]})
+console.log("Grid Load Alderady",this.listData);
+this.gridApi.setGridOption('rowData',this.listData)
       this.gridApi.updateGridOptions({rowData:this.listData})
+  // this.gridApi.setGridOption("rowData",this.listData)
+
+      this.gridApi.refreshClientSideRowModel()
       // this.cfg.detectChanges()
     }
     }
   })
-}
- 
-// updateGrid() {
-//   if (this.gridApi) {
-//     // this.gridApi.applyTransaction({remove:[this.listData]})
-//     // this.gridApi.updateGridOptions({ rowData: this.listData });
-//     // this.gridApi.applyTransaction({add:[this.listData]})
-//     this.gridApi.updateGridOptions({rowData:this.listData})
-//     this.gridApi.setSideBarVisible(false);
-//     this.gridApi.refreshClientSideRowModel('group');
-//   if (this.formName === "bug_list") {
-//     this.gridApi.setSideBarVisible(true);
-//   }
-// }
-// }
-
+} 
+  
 GroupRow(data: any) {
 this.listData = [];
 let plainRequirements: any[] = [];
@@ -1561,7 +1828,10 @@ existTasks.forEach((element: any) => {
 this.listData = concat(parentTreeData,taskData);
 if (this.gridApi) {
   // this.gridApi.applyTransaction({add:[this.listData]})
+console.log("Grid Load Alderady",this.listData);
+this.gridApi.setGridOption('rowData',this.listData)
   this.gridApi.updateGridOptions({rowData:this.listData})
+  this.gridApi.refreshClientSideRowModel()
 }   
 // this.cfg.detectChanges()
 // this.updateGrid()
@@ -1818,7 +2088,11 @@ if(fieldName=="assigned_to"){
   }
 
   onAddButonClick(ctrl: any) { 
-    this.dataService.loadConfig(this.formName.toLowerCase()).subscribe(async (config: any) => {
+    let addformName= this.formName.toLowerCase()
+    if(addformName=="release"){
+      addformName='realse'
+    }
+    this.dataService.loadConfig(addformName).subscribe(async (config: any) => {
       console.log(config);      
       this.formAction='Add' 
       this.config = config
@@ -1886,7 +2160,17 @@ if(values._id==undefined|| values._id ==null){
   values._id=`SEQ|${values.project_id}`
 
 }
+values.status='A'
+
   values.parentmodulename= ""
+  if(this.formName=="release"||this.formName=="sprint"){
+    delete values.parentmodulename
+  }
+  if(this.formName=="sprint"){
+    // values.release_id=prefix          
+    values._id=values.release_id+"-"+values._id
+  }
+  values.status='A'
   this.dataService.save(this.config.form.collectionName,values).subscribe((data:any)=>{
     console.log(data);
     this.form.reset()

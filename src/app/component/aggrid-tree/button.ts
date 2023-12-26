@@ -24,6 +24,7 @@ import { v4 as uuidv4 } from "uuid";
   selector: "app-button-renderer",
   template: `
     <!-- Modules Action Buttons -->
+
     <div *ngIf="parentRouteName=='module'" >
       <button mat-icon-button [matMenuTriggerFor]="modulemenu" aria-label="Example icon-button with a menu">
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
@@ -51,10 +52,8 @@ import { v4 as uuidv4 } from "uuid";
           <span>Testcase</span>
         </button> -->
       </mat-menu>
-    </div>
-    
-    <!-- Requirement Action Buttons -->
-    <!--  -->
+    </div> 
+
     <div  *ngIf="parentRouteName=='Requirement'">
       <button mat-icon-button [matMenuTriggerFor]="Requirementmenu" aria-label="Example icon-button with a menu">
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
@@ -102,6 +101,7 @@ import { v4 as uuidv4 } from "uuid";
         </button>
       </mat-menu>
     </div>
+
     <div *ngIf="parentRouteName=='test_result'" >
       <button mat-icon-button *ngIf="params?.data?._id" [matMenuTriggerFor]="test_resultmenu" aria-label="Example icon-button with a menu">
         <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
@@ -153,6 +153,66 @@ import { v4 as uuidv4 } from "uuid";
           <span>Task</span>
         </button>
         <button mat-menu-item *ngIf="params?.data?.task_id!==undefined" (click)="onclickTask('delete', params)">
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+    </div>
+      
+    <div  *ngIf="parentRouteName=='release'">
+      <button mat-icon-button  [matMenuTriggerFor]="Taskmenu" >
+        <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
+      </button>
+      <mat-menu #Taskmenu="matMenu">
+      <button  mat-menu-item  (click)="onclicktestRelease('release_sprint', params)">
+      <mat-icon>add</mat-icon>
+          <span>Add Sprint</span>
+        </button>
+    <button  mat-menu-item (click)="onclicktestRelease('edit', params)">
+      <mat-icon>edit</mat-icon>
+          <span>Edit Release</span>
+        </button>
+        <button mat-menu-item (click)="onclicktestRelease('delete', params)">
+          <mat-icon>delete</mat-icon>
+          <span>Delete Release </span>
+        </button>
+      </mat-menu>
+    </div>
+
+    <div  *ngIf="parentRouteName=='sprint'">
+      <button mat-icon-button  [matMenuTriggerFor]="sprint" >
+        <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
+      </button>
+      <mat-menu #sprint="matMenu">
+    <button  mat-menu-item (click)="onclicktestSprint('edit', params)">
+      <mat-icon>edit</mat-icon>
+          <span>Edit </span>
+        </button>
+        <button mat-menu-item  (click)="onclicktestSprint('delete', params)">
+          <mat-icon>delete</mat-icon>
+          <span>Delete  </span>
+        </button>
+      </mat-menu>
+    </div>
+
+    <div  *ngIf="parentRouteName=='functionaltesting'">
+      <button mat-icon-button  [matMenuTriggerFor]="Taskmenu" >
+        <mat-icon style="padding-bottom:50px">more_vert</mat-icon>
+      </button>
+      <mat-menu #Taskmenu="matMenu">
+      <button  mat-menu-item  (click)="onclicktesttesting('CustomRoute', 'test_result')">
+      <mat-icon>view_module</mat-icon>
+          <span>Test Result</span>
+        </button>
+        <button  mat-menu-item  (click)="onclicktesttesting('CustomRoute', 'individual_report')">
+      <mat-icon>view_module</mat-icon>
+          <span>Bug Report</span>
+        </button>
+    <button  mat-menu-item (click)="onclicktesttesting('edit', params)">
+      <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-menu-item (click)="onclicktesttesting('delete', params)">
           <mat-icon>delete</mat-icon>
           <span>Delete</span>
         </button>
@@ -247,7 +307,9 @@ export class ButtonComponent implements ICellRendererAngularComp {
   // private formservice: FormService
 
   { }
+
 parentRouteName:any
+
   agInit(params: any): void {
     this.gridData = params.data;
     this.form.reset();
@@ -260,6 +322,7 @@ parentRouteName:any
   refresh(_params?: any): boolean {
     return true;
   }
+  
   closedia() {
     localStorage.removeItem("projectmembers");
     this.continue_Save=false
@@ -338,6 +401,7 @@ parentRouteName:any
       // this.router.navigate(["/list/testcase/" + `${this.data.moduleid}`]);
     }
   }
+
   onClickRequirementMenuItem(formAction: any, params?: any) { 
     let data:any=params.data
     if (formAction == "addsubchild") {
@@ -542,23 +606,133 @@ parentRouteName:any
   
  }
 
-  // if (ctrl.config.form.collectionName == "modules") {
-  //   if (ctrl.autoGroupColumnDef?.headerName == "Parent Modules") {
-  //     Object.assign(data, {
-  //       parentmodulename: "",
-  //       projectid: ctrl.response?.projectid || ctrl.grid.response.projectid,
-  //     });
-  //   } else if (
-  //     ctrl.aggrid.autoGroupColumnDef.headerName == "Parent Modules"
-  //   ) {
-  //     Object.assign(data, {
-  //       projectid: ctrl.response?.projectid || ctrl.grid.response.projectid,
-  //       parentmodulename: ctrl.gridData.modulename,
-  //     });
-  //   } else {
-  //     console.log("Object Assign isn't working");
-  //   }
-  // }
+ realseAdd:any=false
+
+ onclicktestRelease(formAction:any,params?:any){
+  let data:any=params.data
+
+  if (formAction == "release_sprint") {
+    this.dataService.loadConfig("release_sprint").subscribe((frmConfig: any) => {
+      this.formAction = "Add";
+      this.butText="Save" 
+      this.model={}
+      this.realseAdd=true
+      sessionStorage.setItem("release_id",this.gridData._id)
+      this.model_heading="Sprint - Add"
+      this.config = frmConfig;     
+      this.fields = frmConfig.form.fields;
+      this.dialogService.openDialog(this.taskViewPopup,null, null, {});
+    });
+  } 
+  else if (formAction == "edit" ) {
+      this.dataService.loadConfig("realse").subscribe((frmConfig: any) => {
+        this.formAction = "Edit";
+        this.butText="Update"   
+        this.id=data._id;
+
+        this.config = frmConfig;   
+        this.model_heading="Release - Edit"
+        data.isEdit=true;
+        this.fields = frmConfig.form.fields;
+        this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
+      });
+    
+  }  else if (formAction == "delete") {
+    if (confirm("Do you wish to delete this record?")) {
+      // !Look Up delete
+      this.dataService
+        .deleteDataById("release", data._id)
+        .subscribe((res: any) => {
+          console.log(res);
+          this.dialogService.openSnackBar(res.message, "OK");
+          const transaction: any = {
+            remove: [data],
+          };
+          const result = params.api.applyTransaction(transaction);
+          console.log(transaction, result);
+        // });
+        });
+    }
+  } 
+  
+ }
+ 
+ onclicktestSprint(formAction:any,params?:any){
+  let data:any=params.data
+ if (formAction == "edit" ) {
+      this.dataService.loadConfig("sprint").subscribe((frmConfig: any) => {
+        this.formAction = "Edit";
+        this.butText="Update"   
+        this.id=data._id;
+
+        this.config = frmConfig;   
+        this.model_heading="Release - Edit"
+        data.isEdit=true;
+        this.fields = frmConfig.form.fields;
+        this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
+      });
+    
+  }  else if (formAction == "delete") {
+    if (confirm("Do you wish to delete this record?")) {
+      // !Look Up delete
+      this.dataService
+        .deleteDataById("sprint", data._id)
+        .subscribe((res: any) => {
+          console.log(res);
+          this.dialogService.openSnackBar(res.message, "OK");
+          const transaction: any = {
+            remove: [data],
+          };
+          const result = params.api.applyTransaction(transaction);
+          console.log(transaction, result);
+        // });
+        });
+    }
+  } 
+  
+ }
+ onclicktesttesting(formAction:any,params?:any){
+  let data:any=params.data
+ if (formAction == "edit" ) {
+      this.dataService.loadConfig("functionaltesting").subscribe((frmConfig: any) => {
+        this.formAction = "Edit";
+        this.butText="Update"   
+        this.id=data._id;
+
+        this.config = frmConfig;   
+        this.model_heading="Functional Testing - Edit"
+        data.isEdit=true;
+        this.fields = frmConfig.form.fields;
+        this.dialogService.openDialog(this.modulesViewPopup,null, null, data);
+      });
+    
+  } else if (formAction == "CustomRoute" ) {
+    if(params=="test_result"){
+      console.log(this.gridData);
+      
+      this.router.navigate(["project",this.gridData._id,'test_result'])
+    }else if(params=="individual_report"){
+      this.router.navigate(["project",this.gridData._id,'regression'])
+    } 
+}   else if (formAction == "delete") {
+    if (confirm("Do you wish to delete this record?")) {
+      // !Look Up delete
+      this.dataService
+        .deleteDataById("regression", data._id)
+        .subscribe((res: any) => {
+          console.log(res);
+          this.dialogService.openSnackBar(res.message, "OK");
+          const transaction: any = {
+            remove: [data],
+          };
+          const result = params.api.applyTransaction(transaction);
+          console.log(transaction, result);
+        // });
+        });
+    }
+  } 
+  
+ }
 
  onclickBug(formAction:any,params:any){
   let data:any=params.data
@@ -812,10 +986,18 @@ console.log(this.form.valid);
 
         });
       }}else  {
-     
+        values.project_id = this.ParentComponent.response?.project_id;
+        
+        if(formName=='release'&&this.realseAdd==true){
+          // if(values._id==undefined|| values._id ==null){
+            let prefix=sessionStorage.getItem("release_id")
+            values.release_id=prefix          
+            values._id=prefix+"-"+values._id
+          // }
+        }
+
        // values.project_name=this.gridData.project_name
         // values.client_name = this.ParentComponent.response?.client_name;
-        values.project_id = this.ParentComponent.response?.project_id;
         // values.project_name = this.ParentComponent.response?.project_name;
         if (this.gridData.modulename &&this.model_heading!="Module - Edit" ) {
           values.parentmodulename = this.gridData.modulename;
@@ -828,39 +1010,16 @@ console.log(this.form.valid);
       if(this.model_heading=="Test Case - Add"){
         values.project_id = this.ParentComponent.response?.project_id;
         values.requirement_id = this.gridData._id;  
-              values._id = "SEQ|"+values.project_id ;
-              // values._id = "SEQ|Test_Case|"+values.project_id ;
+              values._id = "SEQ|"+values.project_id ; 
 
-
-      }
-      values.status='A'
-        // values.project_id=this.gridData.project_id
-      // if (val == "modulesViewPopup") {
-      //   // values.project_name=this.gridData.project_name
-      //   // values.client_name = this.ParentComponent.response?.client_name;
-      //   values.project_id = this.ParentComponent.response?.project_id;
-      //   // values.project_name = this.ParentComponent.response?.project_name;
-  
-      //   values.parentmodulename = this.gridData.modulename;
-      //   // values.project_id=this.gridData.project_id
-      // } else if (val == "taskViewPopup") {
-      //   values.moduleid = this.gridData.moduleid;
-      //   // values.project_name=this.gridData.project_name
-      //   // values.project_id=this.gridData.project_id
-      //   // values.client_name = this.ParentComponent.response?.client_name;
-      //   values.project_id = this.ParentComponent.response?.project_id;
-      //   // values.project_name = this.ParentComponent.response?.project_name;
-      // } 
-      // this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
-      //   console.log(data);
-      //   this.dialogService.closeModal();
-      //   this.form.reset();
-      // });
+      } 
       if(this.id==undefined&&this.butText=="Save"|| this.formAction == 'Add'){
         console.log('save');
         if (this.gridData._id && this.parentRouteName=="projectteam") {
           values.parentmodulename = this.gridData._id;
       } 
+      values.status='A'
+
         this.dataService.save(this.config.form.collectionName, values).subscribe((data: any) => {
           console.log(data);
           if(this.continue_Save!==true){
@@ -894,6 +1053,7 @@ console.log(this.form.valid);
     this.formAction = this.model.id ? "Edit" : "Add";
     this.butText = this.model.id ? "Update" : "Save";
   }
+
   InsertBug(formData:any,refId:any){
 console.log(formData);
 console.warn(refId);

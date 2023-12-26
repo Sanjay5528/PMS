@@ -337,50 +337,39 @@ export class AppHeaderComponent {
     this.router.navigate(['/home']);
   }
 
-  projectmenu(data:any){
-    // if(this.project_menu==false){
-    //   sessionStorage.removeItem("selectedProjectID")
-    // }
-  //   this.route.params.forEach((params) => {
-  //  console.log(params);
-   
-  //   });
-    // this.project.emit(data)
-    
-    // sessionStorage.getItem("selectedProjectID")
-
-    // sessionStorage.setItem("selectedProjectID",data) 
+  projectmenu(data:any){ 
     this.helperService.getProjectmenu(data)
     this.routechange(data)
 
   }
 
   routechange(projectDetails:any){
-    let data:any=this.route.snapshot
-    console.log(this.route);
-    let valueSplit=data._routerState.url.split("/")
-    valueSplit= valueSplit.splice(1,)
-    console.log(valueSplit);
-    let valueSplitlength = valueSplit[(valueSplit.length)-1].length
-    let projectlength =projectDetails._id.length
-    console.log(projectlength,valueSplitlength);
-    
-    if ( projectDetails._id != valueSplit[(valueSplit.length)-1] && (valueSplitlength == projectlength) ){
-      valueSplit=valueSplit.splice(0,(valueSplit.length)-1)
-      valueSplit.push(projectDetails._id)
-    let route =valueSplit.join("/")
-    console.log("before",data._routerState.url);
-    console.log("after",route);
 
-    // this._location.replaceState(route)
-      this.router.navigateByUrl(route)
-      // this.router.navigate([], {
-      //   relativeTo: route,
-      //   // queryParams: { id: this.Id, step: this.selectedStepIndex },
-      //   queryParamsHandling: 'merge',
-      // });
-    }
+    // let data:any=this.route.snapshot
+    // let valueSplit=data._routerState.url.split("/")
+    // valueSplit= valueSplit.splice(1,)
+    // console.log(valueSplit);
+    // let valueSplitlength = valueSplit[(valueSplit.length)-2].length
+    // let projectlength =projectDetails._id.length
+    // console.log(projectlength,valueSplitlength);
     
+    // if ( projectDetails._id != valueSplit[(valueSplit.length)-2] && (valueSplitlength == projectlength) ){
+    //   valueSplit=valueSplit.splice(0,(valueSplit.length)-2)
+    //   valueSplit.push(projectDetails._id)
+    // let route =valueSplit.join("/") 
+    //   this.router.navigateByUrl(route) 
+    // }
+    
+    // this.router.navigate(["Dashboard","Project",projectDetails._id])
+
+    // let route_Project_Id=this.route.children[0].snapshot.params["id"]
+    // let selected_Project_Id=projectDetails._id
+
+    // if(route_Project_Id != selected_Project_Id && (route_Project_Id.length == selected_Project_Id.length)){
+    //   let route="project/"+selected_Project_Id+"/"+this.route.children[0].snapshot.params["Action"]
+    //   this.router.navigateByUrl(route);
+    // }
+
   }
 
   navigate(item:any){

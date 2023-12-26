@@ -1,118 +1,116 @@
 {
-	"pageHeading": "Task",
-	"formType": "simple",
-	"editMode": "page",
-	"keyField": "_id",
-	"form": {
-	  "collectionName": "task",
-	  "fields": [
-		{
-		  "type": "input",
-		  "key": "task_name",
-		  "props": {
-			"label": "Task Name",
-			"placeholder": "Task Name",
-			"pattern": "^[a-zA-Z0-9&>/;,:-_/]+( [a-zA-Z0-9&>/;,:-_/!@-]+)*$",
-			"required": true
-		  },
-		  "expressions": {
-			"props.readonly": "model.isEdit"
-		  }
-		},
-		{
-		  "fieldGroupClassName": "display-flex",
-		  "fieldGroup": [
-			{
-			  "key": "scheduled_start_date",
-			  "type": "date-input",
-			  "className": "flex-6",
-  
-			  "props": {
-				"label": "Scheduled Start Date",
-				"placeholder": "Scheduled Start Date",
-				"required": true
-			  }
-			},
-			{
-			  "key": "scheduled_end_date",
-			  "type": "date-input",
-			  "className": "flex-6",
-  
-			  "parentKey": "scheduled_start_date",
-			  "parentCollectionName": "task",
-			  "props": {
-				"label": "Scheduled End Date",
-				"placeholder": "Scheduled End Date",
-				"required": true
-			  }
-			}
-		  ]
-		},
-		{
-		  "fieldGroupClassName": "display-flex",
-		  "fieldGroup": [
-			{
-			  "type": "number",
-			  "key": "allocated_hours",
-			  "className": "flex-6",
-  
-			  "props": {
-				"label": "Allocated Hours",
-				"placeholder": "Allocated Hours",
-				"pattern": "^(?:|[1-9][0-9]*)$",
-				"required": true
-			  }
-			},
-  
-			{
-			  "type": "select-input",
-			  "key": "assigned_to",
-			  "className": "flex-6",
-  
-			  "props": {
-				"label": "Assigned To",
-				"placeholder": "Assigned To",
-				"multifilter": true,
-				"Collections": "project_team",
-				"multifiltertype": "local",
-				"specification": "teammember",
-				"labelField": "employee_nmae",
-				"valueField": "employee_id",
-				"innerArray": "employee_id",
-				"local_name": "project_id",
-				"multifilter_condition": {
-				  "clause": "AND",
-				  "conditions": [
-					{
-					  "column": "project_id",
-					  "operator": "EQUALS",
-					  "type": "string",
-					  "value": ""
-					}
-				  ]
-				},
-				"labelProp": "label",
-				"valueProp": "value",
-				"required": true
-			  },
-			  "expressions": {
-				"hide": "model.isEdit"
-			  }
-			}
-		  ]
-		},
-		{
-		  "type": "html-input",
-		  "key": "description",
-		  "className": "flex-6",
-		  "props": {
-			"label": "Task Description",
-			"required": true
-		  },
-  
-		  "maxlength": 2000
-		}
-	  ]
-	}
+  "pageHeading": "Realse",
+  "formType": "simple",
+  "editMode": "popup",
+  "keyField": "_id",
+  "form": {
+    "collectionName": "release",
+    "fields": [
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "type": "label-view",
+            "key": "_id",
+            "className": "flex-6",
+            "props": {
+              "label": "Release Id",
+              "label_width": 100,
+              "value_width": 200,
+              "value_in_next_row": false,
+              "placeholder": "Release Id"
+            },
+            "hideExpression": "!model.isEdit"
+          },
+          {
+            "type": "label-view",
+            "key": "name",
+            "className": "flex-6",
+            "props": {
+              "label_width": 100,
+              "value_width": 200,
+              "value_in_next_row": true,
+              "label": "Release Name",
+              "placeholder": "Release Name"
+            },
+            "hideExpression": "!model.isEdit"
+          },
+          {
+            "type": "input",
+            "key": "name",
+            "className": "flex-8",
+            "props": {
+              "label": "Release Name",
+              "placeholder": "Release Name",
+              "pattern": "^[a-zA-Z0-9-_]*$",
+              "required": true
+            },
+            "hideExpression": "model.isEdit"
+          }
+        ]
+      },
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "key": "start_date",
+            "type": "date-input",
+            "className": "flex-6",
+            "props": {
+              "label": "Scheduled Start Date",
+              "placeholder": "Scheduled Start Date",
+              "type": "date",
+              "required": true
+            }
+          },
+          {
+            "key": "end_date",
+            "type": "date-input",
+            "className": "flex-6",
+            "parentKey": "start_date",
+            "props": {
+              "label": "Scheduled End Date",
+              "placeholder": "Scheduled End Date",
+              "type": "date",
+              "required": true
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "className": "flex-6",
+            "props": {
+              "label": "Status",
+              "options": [
+                {
+                  "label": "Active",
+                  "value": "A"
+                },
+                {
+                  "label": "Inactive",
+                  "value": "I"
+                }
+              ],
+              "placeholder": "Status",
+              "required": true
+            },
+
+            "expressions": {
+              "hide": "!model.isEdit"
+            }
+          }
+        ]
+      },
+      {
+        "type": "html-input",
+        "key": "description",
+        "className": "flex-6",
+        "props": {
+          "label": "Release Description"
+        },
+
+        "maxlength": 500
+      }
+    ]
   }
-  
+}

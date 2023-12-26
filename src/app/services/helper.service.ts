@@ -9,6 +9,7 @@ import { DataService } from './data.service';
 import { DialogService } from './dialog.service';
 import { HttpClient } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class HelperService implements OnInit {
     public dataService: DataService,
     private dialogService: DialogService,
     public loc: PlatformLocation,
+    public router:Router,
     private datepipe: DatePipe,
     private jwtService:JwtHelperService,
     private httpClient: HttpClient) {
@@ -268,6 +270,7 @@ export class HelperService implements OnInit {
   private project: BehaviorSubject<any> = new BehaviorSubject<any>(false);
 
   getProjectmenu(data: any) {
+    this.router.navigate(["Dashboard","Project",data._id])
     this.project.next(data);
   }
   getProjectObservable(): Observable<any> {
