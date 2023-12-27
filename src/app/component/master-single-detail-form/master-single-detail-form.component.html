@@ -7,15 +7,23 @@
       <mat-icon style="font-size:35px;margin-top: 30px;" (click)="goBack()">keyboard_backspace</mat-icon>
     </div>
     <div fxLayout="column" fxFlex="95%" fxLayoutAlign="center center" style="margin-top: 10px;">
-      <h2 class="page-title">{{config['pageHeading']}}</h2>
-      <!-- <h2 class="page-title">{{config['pageHeading']}} - {{formAction}}</h2> -->
-      
+      <h2 class="page-title" *ngIf="config.includeInTitle;"> {{model[config.includeInTitleKey]}} - {{config['pageHeading']}}</h2>
+
+      <h2 class="page-title" *ngIf="!config.includeInTitle;">{{config['pageHeading']}}</h2> 
     </div>
   </div>
 
   <div fxLayout="row" *ngIf="!isDataError" class="form-container">
-      <!-- Left Panel-->
-      <div [ngStyle]="{'width': config.designConfig ? config.designConfig.leftPanelWidth : '20%' }" fxLayout="column" *ngIf="leftsideShow">
+    
+      <!-- Left Panel End -->
+      <!-- Dynamic Data Table-->
+      <div class="table-container" style="width:80%" *ngIf="config && config?.detailListConfig">
+        <div fxLayout="column">
+          <div fxFlex="auto">
+            <!-- Column filter-->
+            <div fxLayout="row">
+                <!-- Left Panel-->
+      <div [ngStyle]="{'width': config.designConfig ? config.designConfig.leftPanelWidth : '20%' }" fxLayout="column" *ngIf="leftsideShow && !config.includeInTitle">
         <!-- Master/Parent Form -->
         <div>
           <form [formGroup]="form" *ngIf="formName">
@@ -26,7 +34,7 @@
             </div>
           </form>
         </div>
-      <!-- Detail / Child Form -->
+      <!-- Detail / Child Form Edit/Add Work -->
         <div *ngIf="!isPopupEdit">
             <form [formGroup]="detailForm" *ngIf="formName && isFormDataLoaded">
               <formly-form [model]="detailModel" [fields]="detailFields" [options]="options" [form]="detailForm"></formly-form>
@@ -38,13 +46,6 @@
        </div>
 
       </div>
-      <!-- Left Panel End -->
-      <!-- Dynamic Data Table-->
-      <div class="table-container" style="width:80%" *ngIf="config && config?.detailListConfig">
-        <div fxLayout="column">
-          <div fxFlex="auto">
-            <!-- Column filter-->
-            <div fxLayout="row">
               <div fxFlex="1 0 auto">
                 <app-dynamic-filter  [showdefaultFilter]="showdefaultFilter" (filterValue)=" ' ' "></app-dynamic-filter>
               </div>
@@ -70,7 +71,7 @@
             [gridOptions]="gridOptions" -->
 <ag-grid-angular
       #agGrid
-      style="width: 100%; height: calc(100vh - 250px); flex: 1 1 auto"
+      style="width: 100%; height: calc(100vh - 270px); flex: 1 1 auto"
       class="ag-theme-alpine"
       [defaultColDef]="defaultColDef"
       [columnDefs]="detailListFields"
@@ -78,6 +79,7 @@
       [rowSelection]="'single'"
       [pagination]="true"
       [getRowId]="getRowId"
+      (cellClicked)='onCellClicked($event)'
       [paginationPageSize]="20"
       (gridReady)="onGridReady($event)"[paginationPageSizeSelector]='false'
       [components]="components"

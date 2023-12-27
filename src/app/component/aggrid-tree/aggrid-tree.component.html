@@ -296,10 +296,8 @@
    <!-- <div style="display: flex;align-items: start;justify-items: center;">
      {{selectedRows?.taskemploye_name}} 
     </div> -->
-    <span  *ngIf="selectedRows?.taskemploye_name" style="float: right;font-style: italic;">Task Done By
-      <!-- <mat-icon style=" font-size: 20px;margin-top: 3px;">person</mat-icon> -->
-      {{selectedRows?.taskemploye_name}} </span>
-   <div  fxLayout="row" fxFlex="100%"  fxLayoutAlign="start center">
+    <span  *ngIf="selectedRows?.taskemploye_name" style="float: right;font-style: italic;">Task Done By  {{selectedRows?.taskemploye_name}} </span>
+   <div  fxLayout="row" fxFlex="100%"  fxLayoutAlign="start center" *ngIf="bugNotUpdate==true">
      <label for="is_bug"> Issue Acceptance Status</label>
     <mat-radio-group id="is_bug" [(ngModel)]="is_bug">
       <mat-radio-button [value]='true' (click)="formlyformdata(true)" >Yes</mat-radio-button>
@@ -321,7 +319,7 @@
  
             </mat-card-header>
               <!-- <span style="font-size: small;font-family: cursive;margin-left: 20px;color: grey;">  {{  datefunction(selectedRows?.task?.scheduled_start_date)}} to {{  datefunction(selectedRows?.task?.scheduled_end_date)}}  <span style="font-size: small;margin-left: 10px;font-weight: bold;">  ( {{selectedRows?.task?.allocated_hours}}  <span style="font-size: xx-small;font-weight: bold;">Hr</span> )  </span>  </span> -->
-            <mat-card-content style="margin-left: 30px;" *ngIf="is_bug == true|| is_bug==false">
+            <mat-card-content style="margin-left: 30px;" *ngIf="(is_bug == true|| is_bug==false)&&bugNotUpdate==true">
               <formly-form [model]="selectedModel" [fields]="fields" [form]="form"></formly-form>
             </mat-card-content>
             <mat-card-actions style="display: flex;justify-content: space-between;">
@@ -347,8 +345,9 @@
           <mat-icon style="font-size:35px;margin-top: 30px;margin-left: 10px;" (click)="goBack()">keyboard_backspace</mat-icon>
         </div>
         <div fxLayout="column" fxFlex="95%" fxLayoutAlign="center center" style="margin-top: 10px;">
-          <h2 class="page-title">{{pageHeading}}</h2>
-          
+          <h2 class="page-title" *ngIf="!breadcrumsShow;"> {{response["project_name"]}} - {{pageHeading}}</h2>
+
+          <h2 class="page-title" *ngIf="breadcrumsShow;">{{pageHeading}}</h2> 
         </div>
       </div>
       <div fxLayout="row" class="form-container">
@@ -375,7 +374,7 @@
             <div fxLayout="column">
               <div fxFlex="auto">
                 <div fxLayout="row">
-                  <div [ngStyle]="{'width': '48%' }" fxLayout="column">
+                  <div [ngStyle]="{'width': '48%' }" fxLayout="column" *ngIf="this.breadcrumsShow">
                     <div style="margin-top: 10px; margin-left: 20px;">
                       <div style="display: flex; margin-bottom: 2px; font-size: larger; color: black;">
                         <span>
@@ -472,7 +471,7 @@
       <mat-card-actions>
         <div style="text-align-last: end; width: 100%">
           <button style="margin: 5px" mat-button (click)='this.dialogService.closeModal();this.form.reset()' >Cancel</button>
-          <button style="margin: 5px" mat-button (click)="this.form.reset()" >Reset</button>
+          <button style="margin: 5px" mat-button (click)="this.form.reset()" *ngIf="(butText|lowercase )!=='update' " >Reset</button>
           <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button color="warn" (click)="saveChild()">
             {{ butText }}
           </button>

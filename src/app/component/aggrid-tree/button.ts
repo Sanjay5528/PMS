@@ -224,6 +224,7 @@ import { v4 as uuidv4 } from "uuid";
         <mat-card-header style="flex: 1 1 auto;">
         <div style="width: 100%">
           <h2 style="text-align: center;" class="page-title">{{model_heading}} </h2>
+         
           </div>
           <div style="text-align-last: end">
             <mat-icon mat-dialog-close (click)="closedia()">close</mat-icon>
@@ -240,7 +241,9 @@ import { v4 as uuidv4 } from "uuid";
         <mat-card-actions>
           <div style="text-align-last: end; width: 100%">
             <button style="margin: 5px" mat-button mat-dialog-close (click)="closedia()">  Cancel </button>
-            <button style="margin: 5px" mat-button (click)="resetBtn('reset')">  Reset </button>
+            <!-- <button style="margin: 5px" mat-button (click)="resetBtn('reset')">  Reset </button> -->
+            <button style="margin: 5px" mat-button (click)="resetBtn('reset')" *ngIf="(butText|lowercase )!=='update' " >Reset</button>
+
             <button  style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn"  (click)="saveForm(this.parentRouteName, 'taskViewPopup')" *ngIf="continue_Save==true"> Continue & Save</button> 
             <button style="margin: 5px;  background:rgb(59,146,155)" mat-raised-button color="warn" (click)="this.continue_Save=false;saveForm(this.parentRouteName, 'taskViewPopup')" >   {{continue_Save==true?"Save & Close":butText}}  </button>
           </div>
@@ -251,13 +254,13 @@ import { v4 as uuidv4 } from "uuid";
     <ng-template #modulesViewPopup class="example-sidenav" mode="over" let-data>
       <mat-card>
         <mat-card-header style="flex: 1 1 auto;">
-          <div style="width: 100%">
+          <div style="width: 100%">      
             <h2 style="text-align: center;" class="page-title">{{model_heading}} </h2>
           </div>
           <div style="text-align-last: end">
             <mat-icon mat-dialog-close (click)="closedia()">close</mat-icon>
           </div>
-        </mat-card-header>
+         </mat-card-header>
         <mat-card-content style="padding-top: 10px">
           <form [formGroup]="form">
             <formly-form [fields]="fields"[form]="form" [model]="data"></formly-form>
@@ -267,7 +270,9 @@ import { v4 as uuidv4 } from "uuid";
         <mat-card-actions>
           <div style="text-align-last: end; width: 100%">
             <button style="margin: 5px" mat-button  mat-dialog-close (click)="closedia()" > Cancel </button>
-            <button style="margin: 5px" mat-button (click)="this.form.reset();resetBtn()"> Reset </button> 
+            <!-- <button style="margin: 5px" mat-button (click)="this.form.reset();resetBtn()"> Reset </button>  -->
+            <button style="margin: 5px" mat-button (click)="resetBtn('reset')" *ngIf="(butText|lowercase )!=='update' " >Reset</button>
+
             <button style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn"  mat-button (click)="saveForm(this.parentRouteName, 'modulesViewPopup')" *ngIf="continue_Save==true"> Continue & Save</button> 
             <button  style="margin: 5px;  background:rgb(59,146,155)"  mat-raised-button color="warn" (click)="this.continue_Save=false;saveForm(this.parentRouteName, 'modulesViewPopup')" > {{butText}}   </button>
           </div>

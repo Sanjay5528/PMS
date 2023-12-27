@@ -5,6 +5,7 @@ import { DataService } from 'src/app/services/data.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { DialogService } from 'src/app/services/dialog.service';
 import { environment } from 'src/environments/environment';
+import { HelperService } from 'src/app/services/helper.service';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private dataService: DataService,
     private jwtService:JwtHelperService,
+    private helpService:HelperService,
     private dialogService:DialogService
   ) {
 
@@ -43,7 +45,8 @@ export class LoginComponent implements OnInit {
         sessionStorage.setItem('token', res.data.LoginResponse.token);
         sessionStorage.setItem('auth', JSON.stringify(res));
         this.dialogService.openSnackBar(res.data.Message  ,"OK");
-        this.router.navigate(['/home']);
+        let employee_id:any = this.helpService.getEmp_id();
+        this.router.navigate(['/Dashboard',"User",employee_id]);
     }
   })
   }

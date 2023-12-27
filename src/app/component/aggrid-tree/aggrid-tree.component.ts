@@ -99,15 +99,21 @@ animateRows:true,paginationPageSize:10
     // this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   } 
 parms:any
+breadcrumsShow:boolean=true
   ngOnInit() { 
       console.warn("Component Loaded" , "Agtree"); 
  
       this.ComponentInit()
-  
+    this.helperServices.getProjectObservable().subscribe((res:any)=>{
+      this.breadcrumsShow=!res
+      console.log(res);
+      
+    })
     }
+
     ComponentInit(){
       if(this?.gridApi != null || this?.gridApi != undefined){
-        const data =this.gridApi.updateGridOptions({columnDefs:[]})
+        const data =this.gridApi.setGridOption("columnDefs",[])
         console.log("Delte the old Column def",data);
         
        //  const result:any= this.gridApi.applyTransaction({remove:[this.listData]})
@@ -151,9 +157,10 @@ parms:any
                  } else if(this.formName=="regression"){
                    this.pageHeading="Bug List"
            
+                  //  collection="regression"
                    collection="project"
                    this.addbutton=true;
-                   this.id=sessionStorage.getItem("project_id")
+                  //  this.id=sessionStorage.getItem("project_id")
                  } else if(this.formName=="team_member"){
                    this.pageHeading="Task Assign"
                    collection="project"
@@ -183,7 +190,31 @@ parms:any
                  this.columnDefs=[];
                  this.listData=[]; 
                  this.loadScreen(this.formName)
-                
+                if(this.formName=="regression"){
+                  this.dataService.getDataById("regression",this.id).subscribe((res:any)=>{
+                    console.log(res);
+                    
+                    let Projectfiler:any={
+                      start:0,end:1000,
+                      "filter":[{"clause":"AND","conditions":[{"column":"project_id","operator":"EQUALS","value": res.data[0].project_id}]}]
+                    }
+                    this.dataService.getDataByFilter("project", Projectfiler).subscribe((res:any)=>{
+                      console.log(res);
+                      if(res && res.data[0].response[0]){
+                      this.response = res.data[0].response[0];
+                      if(this?.response?.startdate){
+                        this.response.startdate=moment(this.response?.startdate).format('D/M/ YYYY')
+                      }
+                      if(this?.response?.enddate){
+                        this.response.enddate=moment(this.response?.enddate).format("D/M/ YYYY")
+                      }
+                      this.getTreeData()
+                    }
+                    
+                   })
+                  })
+                  return
+                }
                  this.dataService.getDataById(collection, this.id).subscribe((res: any) => {
                    this.response = res?.data[0]
                    if(this?.response?.startdate){
@@ -232,6 +263,7 @@ parms:any
   console.log('work');
   this.form = new FormGroup ({})
   this.fields=[]
+  this.bugNotUpdate=true
   this.config=''
   if(data==true){
     this.dataService.loadConfig("task").subscribe((res:any)=>{
@@ -340,7 +372,15 @@ this.gridOptions.groupDefaultExpanded=-1
 this.gridOptions.columnDefs=this.columnDefs
   // )
    if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
-  this.gridApi.updateGridOptions(this.gridOptions)
+// this.gridApi.setGridOption('autoGroupColumnDef',this.gridOptions.autoGroupColumnDef)
+this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
+  this.gridApi.setGetRowId(this.gridOptions.getRowId)
+  delete this.gridOptions.autoGroupColumnDef;
+  delete this.gridOptions.getRowId;
+this.gridApi.setGridOption('treeData',true)
+this.gridApi.setGridOption('getDataPath',this.gridOptions.getDataPath)
+
+    this.gridApi.updateGridOptions(this.gridOptions)
   this.gridApi.setSideBarVisible(false);
 
 }
@@ -439,6 +479,13 @@ this.gridOptions.groupDefaultExpanded=-1
   ] 
   this.gridOptions.columnDefs=this.columnDefs
   if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+    this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
+  this.gridApi.setGetRowId(this.gridOptions.getRowId)
+  delete this.gridOptions.autoGroupColumnDef;
+  delete this.gridOptions.getRowId;
+this.gridApi.setGridOption('treeData',true)
+this.gridApi.setGridOption('getDataPath',this.gridOptions.getDataPath)
+
     this.gridApi.updateGridOptions(this.gridOptions)
     this.gridApi.setSideBarVisible(false);
   }
@@ -544,6 +591,13 @@ this.gridOptions.groupDefaultExpanded=-1
 // this.cfg.detectChanges()
 this.gridOptions.columnDefs=this.columnDefs
 if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+  this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
+  this.gridApi.setGetRowId(this.gridOptions.getRowId)
+  delete this.gridOptions.autoGroupColumnDef;
+  delete this.gridOptions.getRowId;
+this.gridApi.setGridOption('treeData',true)
+this.gridApi.setGridOption('getDataPath',this.gridOptions.getDataPath)
+
   this.gridApi.updateGridOptions(this.gridOptions)
   this.gridApi.setSideBarVisible(false);
 }
@@ -610,8 +664,7 @@ this.gridOptions.treeData=false;
       headerName: 'Test Case Type',
       field: 'test_case_scenario',
       width: 40,
-    enableRowGroup:true,
-      rowGroupIndex:1,
+    enableRowGroup:true, 
       editable: false,
       filter: 'agTextColumnFilter',
     }, 
@@ -627,8 +680,7 @@ this.gridOptions.treeData=false;
       field: 'test_result_stauts',
       width: 40,
       editable: false,
-      enableRowGroup:true,
-        rowGroupIndex:2,
+      enableRowGroup:true, 
       filter: 'agTextColumnFilter',
     },{
       headerName: 'Bug Count',
@@ -671,6 +723,13 @@ this.gridOptions.treeData=false;
 // this.cfg.detectChanges()
 this.gridOptions.columnDefs=this.columnDefs
 if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+  this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
+  this.gridApi.setGetRowId(this.gridOptions.getRowId)
+  delete this.gridOptions.autoGroupColumnDef;
+  delete this.gridOptions.getRowId;
+this.gridApi.setGridOption('treeData',false)
+// this.gridApi.setGridOption('getDataPath',this.gridOptions.getDataPath)
+
   this.gridApi.updateGridOptions(this.gridOptions)
   this.gridApi.setSideBarVisible(false);
 }
@@ -1410,7 +1469,11 @@ this.fetchModuleData()
 // this.cfg.detectChanges()
 // this.listData=res.data.response
 if(res.data.response!=null){
-  let data:any=res.data.response
+  let data:any[]=[]
+  res.data.response.forEach((element:any) => {
+    element.unique=uuidv4()
+    data.push(element)
+  });
   this.listData=data
   if (this.gridApi) {
 console.log("Grid Load Alderady",this.listData);
@@ -1422,7 +1485,7 @@ this.gridApi.updateGridOptions({rowData:this.listData})
 } 
     })
    }else if(this.formName=="regression"){
-        this.dataService.getDataById("regression",this.parms ).subscribe((res:any)=>{
+        this.dataService.getDataById("regression",this.id).subscribe((res:any)=>{
           
           this.dataService.lookUpBug(this.response.project_id,res.data[0].regression_id).subscribe((res:any)=>{
 // this.cfg.detectChanges()
@@ -1569,7 +1632,7 @@ this.gridApi.updateGridOptions({rowData:this.listData})
     // this.updateGrid();
     
 }
-
+// ! 0
  fetchRequirementData() {
   // let listData:any[]=[]
   this.dataService.lookupTreeData("requriment",this.response.project_id).subscribe((res:any) =>{
@@ -1591,7 +1654,7 @@ this.gridApi.updateGridOptions({rowData:this.listData})
           row.treePath = [row.requirement_name];
           row.index = parentIndex.toString();
           row.CheckIndex=row.index+' ' +row.requirement_name
-          row.parentIndex = null; // Use null for top-level elements
+          row.parentIndex = null;   
           parentTreeData.push(row);
         } else {
           const parent = parentTreeData.find((d) => d._id === row.parentmodulename);
@@ -1602,25 +1665,21 @@ this.gridApi.updateGridOptions({rowData:this.listData})
             row.index = `${row.parentIndex}.${childIndex[row.parentmodulename]}`;
             row.CheckIndex=row.index+' ' +row.requirement_name
             parentTreeData.push(row);
-          }
+          } 
         }
       
         if (!row.parentmodulename) {
           parentIndex++;
         }
-      });
-    // this.cfg.detectChanges()
-    
-      this.listData = parentTreeData;
-      
-      if (this.gridApi) {
+      }); 
+    this.listData = parentTreeData;
+    if (this.gridApi) {
         // this.gridApi.applyTransaction({add:[this.listData]})
-console.log("Grid Load Alderady",this.listData);
-// this.gridApi.setGridOption('rowData',this.listData)
-// this.gridApi.redrawRows()        
-this.gridApi.updateGridOptions({rowData:this.listData})
-  // this.gridApi.setGridOption("rowData",this.listData)
-
+        console.log("Grid Load Alderady",this.listData);
+        // this.gridApi.setGridOption('rowData',this.listData)
+        // this.gridApi.redrawRows()        
+        this.gridApi.updateGridOptions({rowData:this.listData})
+        // this.gridApi.setGridOption("rowData",this.listData)
         this.gridApi.refreshClientSideRowModel()
       }
       // this.cfg.detectChanges()
@@ -1631,7 +1690,238 @@ this.gridApi.updateGridOptions({rowData:this.listData})
     
           })
 }
+// convertToHierarchicalData(data: any[]): any[] {
+//   let parentTreeData: any[] = [];
+//   let childIndex: { [key: string]: number } = {};
+//   let parentIndex: number = 1; // Initialize parentIndex
+//   let parentNotFound: any[] = [];
+ 
+//   if (!isEmpty(data)) {
+//      data.forEach((row: any) => {
+//        if (row && row.module_id) {
+//          let datafound = this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;
+//          let findValue: any = datafound.find((val: any) => val.value == row.module_id);
+//          row.module_id = findValue?.label;
+//        }
+ 
+//        if (row.parentmodulename == "" || !row.parentmodulename) {
+//          row.treePath = [row.requirement_name];
+//          row.index = parentIndex.toString();
+//          row.CheckIndex = row.index + ' ' + row.requirement_name;
+//          row.parentIndex = null; // Use null for top-level elements
+//          parentTreeData.push(row);
+//        } else {
+//          const parent = parentTreeData.find((d) => d._id === row.parentmodulename);
+//          if (parent) {
+//            childIndex[row.parentmodulename] = (childIndex[row.parentmodulename] || 0) + 1;
+//            row.treePath = [...parent.treePath, row.requirement_name];
+//            row.parentIndex = parent.index;
+//            row.index = `${row.parentIndex}.${childIndex[row.parentmodulename]}`;
+//            row.CheckIndex = row.index + ' ' + row.requirement_name;
+//            parentTreeData.push(row);
+//          } else {
+//            parentNotFound.push(row);
+//          }
+//        }
+ 
+//        if (!row.parentmodulename) {
+//          parentIndex++;
+//        }
+//      });
+ 
+//      parentNotFound.forEach((res: any) => {
+//        if (res && res.module_id) {
+//          let datafound = this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;
+//          let findValue: any = datafound.find((val: any) => val.value == res.module_id);
+//          res.module_id = findValue?.label;
+//        }
+ 
+//        if (res.parentmodulename == "" || !res.parentmodulename) {
+//          res.treePath = [res.requirement_name];
+//          res.index = parentIndex.toString();
+//          res.CheckIndex = res.index + ' ' + res.requirement_name;
+//          res.parentIndex = null; // Use null for top-level elements
+//          parentTreeData.push(res);
+//        } else {
+//          const parent = parentTreeData.find((d) => d._id === res.parentmodulename);
+//          if (parent) {
+//            childIndex[res.parentmodulename] = (childIndex[res.parentmodulename] || 0) + 1;
+//            res.treePath = [...parent.treePath, res.requirement_name];
+//            res.parentIndex = parent.index;
+//            res.index = `${res.parentIndex}.${childIndex[res.parentmodulename]}`;
+//            res.CheckIndex = res.index + ' ' + res.requirement_name;
+//            parentTreeData.push(res);
+//          } else {
+//            parentNotFound.push(res);
+//          }
+//        }
+ 
+//        if (!res.parentmodulename) {
+//          parentIndex++;
+//        }
+//      });
+//   }
+ 
+//   return parentTreeData;
+//  }
 
+// ! 1
+// fetchRequirementData() {
+// this.dataService.lookupTreeData("requriment", this.response.project_id).subscribe((res: any) => {
+//   const data = res.data.response;
+//   if (data != null) {
+//     function getRequirement(data: any,ctrl:any):any {
+//       console.log("Inside","GetRequirement");
+      
+//       let requrimentdata :any[]= ctrl.hirecalData(data);
+//       console.log(requrimentdata.length==data.length,requrimentdata.length,data.length);
+      
+//       if(requrimentdata.length==data.length){
+//         console.log("Data Length Match");
+        
+//           return requrimentdata
+//       }else{
+//         console.warn("Data Length Miss Match");
+
+//       return getRequirement(data,ctrl)
+//       }
+//     }
+//      this.listData=getRequirement(data,this)
+//     console.log(this.listData);
+    
+//      if (this.gridApi) {
+//        this.gridApi.updateGridOptions({ rowData: this.listData });
+//        this.gridApi.refreshClientSideRowModel();
+//      }
+//   }
+//  });
+// }
+//   hirecalData(data:any){
+//     debugger
+//     if (data != null) {
+//       let parentTreeData: any[] = [];
+//       let childIndex: { [key: string]: number } = {};
+//       let parentIndex: number = 1;
+//       let parentNotFound: any[] = [];
+    
+//       const processRow = (row: any) => {
+//         if (row && row.module_id) {
+//           let datafound = this.ValueToCompareRequriementModules == undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;
+//           let findValue: any = datafound.find((val: any) => val.value == row.module_id);
+//           row.module_id = findValue?.label;
+//         }
+    
+//         if (row.parentmodulename == "" || !row.parentmodulename) {
+//           row.treePath = [row.requirement_name];
+//           row.index = parentIndex.toString();
+//           row.CheckIndex = row.index + ' ' + row.requirement_name;
+//           row.parentIndex = null;
+//           parentTreeData.push(row);
+//         } else {
+//           const parent = parentTreeData.find((d) => d._id === row.parentmodulename);
+//           if (parent) {
+//             childIndex[row.parentmodulename] = (childIndex[row.parentmodulename] || 0) + 1;
+//             row.treePath = [...parent.treePath, row.requirement_name];
+//             row.parentIndex = parent.index;
+//             row.index = `${row.parentIndex}.${childIndex[row.parentmodulename]}`;
+//             row.CheckIndex = row.index + ' ' + row.requirement_name;
+//             parentTreeData.push(row);
+//           } else {
+//             parentNotFound.push(row);
+//           }
+//         }
+    
+//         if (!row.parentmodulename) {
+//           parentIndex++;
+//         }
+//       };
+    
+//       if (!isEmpty(data)) {
+//         data.forEach(processRow);
+//       }
+
+//       if (!isEmpty(parentNotFound)) {
+//         parentNotFound.forEach(processRow);
+//       }
+    
+//       return parentTreeData
+//     }
+//     return []
+    
+//   }
+
+ // ! 2
+//  fetchRequirementData() {
+//   this.dataService.lookupTreeData("requriment", this.response.project_id).subscribe((res: any) => {
+//     const data = res.data.response;
+//     if (data != null) {
+//       this.listData = this.getRequirement(data);
+//       console.log(this.listData);
+
+//       if (this.gridApi) {
+//         this.gridApi.updateGridOptions({ rowData: this.listData });
+//         this.gridApi.refreshClientSideRowModel();
+//       }
+//     }
+//   });
+// }
+
+// getRequirement(data: any): any[] {
+//   console.log("Inside", "GetRequirement");
+//   let requirementData: any[] = this.hirecalData(data);
+  
+//   while (requirementData.length !== data.length) {
+//     console.warn("Data Length Mismatch. Retrying...");
+//     requirementData = this.hirecalData(data);
+//   }
+
+//   console.log("Data Length Match");
+//   return requirementData;
+// }
+
+// hirecalData(data: any): any[] {
+//   if (!data) {
+//     return [];
+//   }
+
+//   const datafound = this.ValueToCompareRequriementModules === undefined || isEmpty(this.ValueToCompareRequriementModules) ? this.moduleCellEditorParams(true) : this.ValueToCompareRequriementModules;
+
+//   let parentTreeData: any[] = [];
+//   let childIndex: { [key: string]: number } = {};
+//   let parentIndex: number = 1;
+
+//   const processRow = (row: any) => {
+//     if (row && row.module_id) {
+//       const findValue: any = datafound.find((val: any) => val.value == row.module_id);
+//       row.module_id = findValue?.label;
+//     }
+
+//     if (!row.parentmodulename) {
+//       row.treePath = [row.requirement_name];
+//       row.index = parentIndex.toString();
+//       row.CheckIndex = `${row.index} ${row.requirement_name}`;
+//       row.parentIndex = null;
+//       parentTreeData.push(row);
+//       parentIndex++;
+//     } else {
+//       const parent = parentTreeData.find((d) => d._id === row.parentmodulename);
+//       if (parent) {
+//         childIndex[row.parentmodulename] = (childIndex[row.parentmodulename] || 0) + 1;
+//         row.treePath = [...parent.treePath, row.requirement_name];
+//         row.parentIndex = parent.index;
+//         row.index = `${row.parentIndex}.${childIndex[row.parentmodulename]}`;
+//         row.CheckIndex = `${row.index} ${row.requirement_name}`;
+//         parentTreeData.push(row);
+//       }
+//     }
+//   };
+
+//   data.forEach(processRow);
+
+//   return parentTreeData;
+// }
+
+ 
  fetchProjectTeamData() {
   let Projectfiler:any={
     start:0,end:1000,filter:[{
@@ -1885,6 +2175,11 @@ if(this.formName=="Requirement"){
 
       // this.drawer.open()
       // if (event.data[clickCell] > 0) {
+        console.log(event.data.status);
+        if((event.data.hasOwnProperty('reftask_id')||event.data.hasOwnProperty('not_bug_justification'))||(event.status=="Not Accepeted"||event.status=="Accepeted")){
+          this.bugNotUpdate=false
+        }
+        this.bugNotUpdate
         this.cellClicked = clickCell;
         this.drawer.open();
       // }
@@ -2115,7 +2410,7 @@ if(fieldName=="assigned_to"){
     })
   
   } 
-
+  bugNotUpdate:boolean=true
   savebugTask(){
     if (!this.form.valid) {
       const invalidLabels:any = this.helperServices.getDataValidatoion(this.form.controls);
@@ -2132,19 +2427,21 @@ if(fieldName=="assigned_to"){
         this.dataService.save(this.config.form.collectionName,values).subscribe((data:any)=>{
           // console.log(data.data["insert ID"]);
           let id =this.selectedRows._id
-          let reftask_id:any={reftask_id:data.data["insert ID"]}
+          let reftask_id:any={reftask_id:data.data["insert ID"] , status:"Accepeted"}
         
           this.dataService.update('bug',id,reftask_id).subscribe((res:any)=>{
             console.log(res);
             this.form.reset()
+            this.bugNotUpdate=false
           })  
         })
       } else if(this.is_bug==false){
         let id =this.selectedRows._id
         let values:any=this.form.value
-      
+      values.status="Not Accepeted"
         this.dataService.update('bug',id,values).subscribe((data:any)=>{
           console.log(data);
+          this.bugNotUpdate=false
           this.form.reset()
         })
       }

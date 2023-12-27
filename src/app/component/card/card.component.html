@@ -1,14 +1,10 @@
- <div class="count-card" *ngIf="type=='Single'">
+ <div class="count-card">
+  {{type=='icon'}}
+  {{icon}}
     <mat-icon *ngIf="type=='icon'" [class]="iconClass" [style.border-color]="iconColor" [style.background-color]="iconColor">{{ icon }}</mat-icon>
     <img src=""  alt="" *ngIf="type=='image'">
     <div class="content">
       <div class="text">{{ text }}</div>
       <div class="count">{{ count }}</div>
-      
     </div>
   </div>
-
-
-
-
-

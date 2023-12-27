@@ -328,7 +328,7 @@ return
   onSelect(event: any) {
     this.selectedRow = event.api.getSelectedRows()[0]
     console.log("selectedRow",this.selectedRow);
-    
+     
     // this.detailModel={}
     // this.detailFields[this.detailDefaultFocusIndex].focus = true
     // let data:any = this.selectedRow
@@ -340,7 +340,40 @@ return
 
   }
 
+  onCellClicked(event:any){
+    console.log(event.column);
+    
+    let clickCell:any=event.column.getColId()
+console.error(clickCell);
 
+ if (this.config.touchDeffer==true && ( clickCell !="Action" && clickCell !="Actions"  )) {
+      
+      let filer:any={
+        start:0,end:1000,filter:[{
+          
+            clause: "AND",
+            conditions: [
+              {column: "client_id",operator: "EQUALS",type: "string",value: event.data.client_id},
+            ],
+          
+        }]
+      }
+       this.dataService.getDataByFilter('client',filer).subscribe((res:any)=>{
+        console.log(res);
+        let data={
+          logo:res.data[0].response[0].logo.storage_name,
+          client_name:res.data[0].response[0].client_name,
+name: event.data.project_name,
+_id: event.data._id
+        }
+        this.helperService.getProjectmenu(data)
+        console.log("Load TO Project DashBoard",data);
+        
+       })
+    } else {
+      return;
+    }
+  }
 
   showDetail(row: any, action: any, $event: any) {               //  new screen opens when clicking the icon
     $event.stopPropagation();
@@ -402,7 +435,11 @@ return
           `${item.Custom_Route}`,
           data[item.Custom_Key_filed],
         ]);
-      }else {
+      }else if(item.route_type=="project"){
+        let route=item.first+data[item.Custom_Key_filed]+item.last 
+        this.router.navigate([route])  
+      }
+      else {
         let type: any = this.route.snapshot.params["form"];
         this.router.navigate([`${item.route}` + "/" + type + "/" + data._id]);
       }

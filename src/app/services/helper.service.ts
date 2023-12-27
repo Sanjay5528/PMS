@@ -270,8 +270,12 @@ export class HelperService implements OnInit {
   private project: BehaviorSubject<any> = new BehaviorSubject<any>(false);
 
   getProjectmenu(data: any) {
-    this.router.navigate(["Dashboard","Project",data._id])
     this.project.next(data);
+    if(data==false){
+      return
+    }
+    this.router.navigate(["Dashboard","Project",data._id])
+    // this.project.next(data);
   }
   getProjectObservable(): Observable<any> {
      return this.project.asObservable();

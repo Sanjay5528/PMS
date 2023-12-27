@@ -1,99 +1,153 @@
 {
-	"pageHeading": "Functional Testing",
-	"formType": "simple",
+	"pageHeading": "Project",
+	"collectionName": "project",
 	"editMode": "popup",
-	"keyField": "_id", 
-	"form": {
-	  "collectionName": "regression",
-    "fields": [
-      {
-        "fieldGroupClassName": "display-flex",
-        "fieldGroup": [
-        {
-          "type": "select-input",
-          "key": "sprint_id",
-          "className": "flex-2",
-          "props": {
-          "label": "Sprint Id",
-          "placeholder": "Sprint Id",
-          "labelPropTemplate": " {{_id}}",
-          "Collections": "sprint",
-          "multifilter":true,
-          "multifiltertype": "local",
-          "local_name":"project_id",
-          "multifilter_condition": {
-            "clause": "AND",
-            "conditions": [
-            {
-              "column": "project_id",
-              "operator": "EQUALS",
-              "type": "string",
-              "value": ""
-            }
-            ]
-          },
-          "required": true,
-          "labelProp": "_id",
-          "valueProp": "_id"
-          }
-        },
-        {
-          "type": "input",
-          "key": "regression_id",
-          "className": "flex-6",
-          "props": {
-          "label": "Regression Name/ID",
-          "placeholder": "Regression Name/ID",
-          "required": true,
-          "maxLength": 10,
-          "pattern": "^[a-zA-Z0-9]+$"
-          }
-        }
-        ]
+	"screenEditMode":"projectdashboard",
+	"screenWidth": "80%",
+	"keyField": "_id",
+	"showbutton": true,
+	"actions": [
+	  {
+		"label": "Edit",
+		"icon": "edit",
+		"formName": "project"
+	  },  {
+        "label": "Requirement",
+        "icon": "view_module",
+        "formAction": "components",
+        "route_type": "project",
+        "first": "project/",
+        "last": "/Requirement",
+        "Custom_Key_filed": "_id"
       },
-    
       {
-        "type": "html-input",
-        "key": "description",
-        "className": "flex-6",
-        "props": {
-        "label": "Regression Description"
-        }
-      },{
-        "type": "select",
-        "key": "status",
-        "className": "flex-6",
-        "props": {
-          "label": "Sprint Status",
-          "options": [
-            {
-              "label": "Active",
-              "value": "A"
-            },
-            {
-              "label": "Inactive",
-              "value": "I"
-            }
-          ]
-        },
-      
-        "expressions": {
-          "hide": "!model.isEdit"
-        }
-        }
-      ], "defaultValues":[
-        {
-           "colName":"status",
-           "value":"A",
-           "type":"string"
-        }, {
-            "colName":"_id",
-            "source":"project_id",
-            "type":"prefix"
-            
-         }
-     ]
-	},
-	"onCancelRoute": "list/functionaltesting"
+        "label": "Modules",
+        "icon": "view_module",
+        "formAction": "components",
+        "route_type": "project",
+        "first": "project/",
+        "last": "/module",
+        "Custom_Key_filed": "_id"
+      },
+      {
+        "label": " Team",
+        "icon": "view_module",
+        "formAction": "components",
+        "route_type": "project",
+        "first": "project/",
+        "last": "/projectteam",
+        "Custom_Key_filed": "_id"
+      },
+      {
+        "label": "Task Creation",
+        "icon": "view_module",
+        "formName": "projectteam",
+        "formAction": "components",
+        "route_type": "project",
+        "first": "project/",
+        "last": "/team_member",
+        "Custom_Key_filed": "_id"
+      },
+      {
+        "label": "Release",
+        "icon": "view_module",
+        "formAction": "components",
+        "route_type": "project",
+        "first": "project/",
+        "last": "/release",
+        "Custom_Key_filed": "_id"
+      },
+      {
+        "label": "Sprint",
+        "icon": "view_module",
+        "formAction": "components",
+        "route_type": "project",
+        "first": "project/",
+        "last": "/sprint",
+        "Custom_Key_filed": "_id"
+      },
+      {
+        "label": "Test Case",
+        "icon": "view_module",
+        "formAction": "components",
+        "route_type": "project",
+        "first": "project/",
+        "last": "/functionaltesting",
+        "Custom_Key_filed": "_id"
+      },
+      {
+        "label": "Bug List",
+        "icon": "view_module",
+        "formName": "buglist",
+        "formAction": "components",
+        "route_type": "project",
+        "first": "project/",
+        "last": "/bug_list",
+        "Custom_Key_filed": "_id"
+      },
+	  {
+		"label": "Delete",
+		"icon": "delete",
+		"formName": "entities/project"
+	  }
+	],
+	"addRoute": "add/project",
+	"editRoute": "edit/project",
+	"columnDefs": [
+	  {
+		"headerName": " Client Name",
+		"field": "client_name",
+		"sortable": true,
+		"hide": true,
+		"filter": "agTextColumnFilter"
+	  },
+	  {
+		"headerName": "Project Id",
+		"field": "project_id",
+		"sortable": true,
+		"filter": "agTextColumnFilter"
+	  },
+	  {
+		"headerName": "Project Name",
+		"field": "project_name",
+		"sortable": true,
+		"filter": "agTextColumnFilter"
+	  },
+	  {
+		"headerName": "Schedule Start Date",
+		"field": "startdate",
+		"sortable": true,
+		"filter": "agDateColumnFilter",
+		"type": "date"
+	  },
+	  {
+		"headerName": "Schedule End Date",
+		"field": "enddate",
+		"sortable": true,
+		"filter": "agDateColumnFilter",
+		"type": "date"
+	  },
+	  {
+		"headerName": "Status",
+		"field": "status",
+		"sortable": true, 
+   "maxWidth": 95,
+		"filter": "agTextColumnFilter"
+	  },
+	  {
+		"type": "rightAligned",
+		"headerName": "Actions",
+		"lockPosition": "right",
+		"maxWidth": 85,
+		 "menuTabs": [],
+		"lockPinned": true,
+		"pinned": "right",
+		 "cellRenderer": "buttonRenderer",
+		"cellRendererParams": {
+		  "onClick": "this.onBtnClick1.bind(this)",
+		  "label": "Click 1"
+		}
+	  }
+	]
   }
   

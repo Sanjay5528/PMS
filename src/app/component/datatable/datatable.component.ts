@@ -442,31 +442,33 @@ export class DatatableComponent implements OnInit {
         this.selectedModel
       );
       
-    } else if (this.config.screenEditMode == "projectdashboard") {
+    } 
+//     else if (this.config.screenEditMode == "projectdashboard") {
       
-      let filer:any={
-        start:0,end:1000,filter:[{
+//       let filer:any={
+//         start:0,end:1000,filter:[{
           
-            clause: "AND",
-            conditions: [
-              {column: "client_id",operator: "EQUALS",type: "string",value: this.selectedModel.client_id},
-            ],
+//             clause: "AND",
+//             conditions: [
+//               {column: "client_id",operator: "EQUALS",type: "string",value: this.selectedModel.client_id},
+//             ],
           
-        }]
-      }
-       this.DataService.getDataByFilter('client',filer).subscribe((res:any)=>{
-        console.log(res);
-        let data={
-          logo:res.data[0].response[0].logo.storage_name,
-          client_name:res.data[0].response[0].client_name,
-name: this.selectedModel.project_name,
-_id: this.selectedModel._id
-        }
-        this.helperService.getProjectmenu(data)
-        console.log("final Data",data);
+//         }]
+//       }
+//        this.DataService.getDataByFilter('client',filer).subscribe((res:any)=>{
+//         console.log(res);
+//         let data={
+//           logo:res.data[0].response[0].logo.storage_name,
+//           client_name:res.data[0].response[0].client_name,
+// name: this.selectedModel.project_name,
+// _id: this.selectedModel._id
+//         }
+//         this.helperService.getProjectmenu(data)
+//         console.log("final Data",data);
         
-       })
-    } else {
+//        })
+//     } 
+    else {
       return;
     }
   }
@@ -511,7 +513,10 @@ _id: this.selectedModel._id
         ]);
       } else if (item.route == "role/acl/") {
         this.router.navigate([`${item.route}` + data.org_id + "/" + data._id]);
-      } else {
+      } else if(item.route_type=="project"){
+        let route=item.first+data[item.Custom_Key_filed]+item.last 
+        this.router.navigate([route])  
+      }else {
         let type: any = this.route.snapshot.params["form"];
         this.router.navigate([`${item.route}` + "/" + type + "/" + data._id]);
       }
@@ -605,6 +610,37 @@ _id: this.selectedModel._id
     }
   }
 
+  onCellClicked(event:any){
+    let clickCell:any=event.column.getColId()
+
+ if (this.config.screenEditMode == "projectdashboard" && clickCell !="Action") {
+      
+      let filer:any={
+        start:0,end:1000,filter:[{
+          
+            clause: "AND",
+            conditions: [
+              {column: "client_id",operator: "EQUALS",type: "string",value: this.selectedModel.client_id},
+            ],
+          
+        }]
+      }
+       this.DataService.getDataByFilter('client',filer).subscribe((res:any)=>{
+        console.log(res);
+        let data={
+          logo:res.data[0].response[0].logo.storage_name,
+          client_name:res.data[0].response[0].client_name,
+name: this.selectedModel.project_name,
+_id: this.selectedModel._id
+        }
+        this.helperService.getProjectmenu(data)
+        console.log("final Data",data);
+        
+       })
+    } else {
+      return;
+    }
+  }
 // Add OR Edit DATA To Change with out api request
   // close(event: any) {
   //   this.dialogService.closeModal();

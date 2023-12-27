@@ -318,7 +318,9 @@ export class AppHeaderComponent {
 
   
 
-
+projectmenuClose(){
+  this.helperService.getProjectmenu(false)
+}
 
 
 

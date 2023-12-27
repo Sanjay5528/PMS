@@ -135,25 +135,69 @@ export class DashboardComponent {
     private jwtService: JwtHelperService,
     private router: Router
   ) {}
-
+DashboardType:any
+id:any
   data: any[] = []
   ngOnInit() {
     this.route.params.subscribe((params:any)=>{
       console.log(params['Type']);
-      // :Type/:Id
-      console.log(params);
-      
-      console.log(params['id']);
-      
+      this.DashboardType=params['Type']
+      this.id=params['id'] 
     })
     this.data = [
-      { count: '8', text: "Task Count", icon: 'fingerprint', type:'icon',iconColor: '', altText: 'altText', height: '300', width: 'auto', backgroundColor: '' }, 
-      { count: '5', text: "Test Case Count", icon: 'donut_small', iconColor: '', altText: 'altText', height: '300', width: 'auto', backgroundColor: '' }, 
-      { count: '55', text: "Bug List", icon: 'bug_report', iconColor: 'black', altText: 'altText', height: '300', width: 'auto', backgroundColor: '' }, 
-      { count: '44', text: "Requriement Count", icon: 'assignment', iconColor: '', altText: 'altText', height: '300', width: 'auto', backgroundColor: '' }, 
-      { count: '44', text: "Task Count", icon: 'note_add', iconColor: '', altText: 'altText', height: '300', width: 'auto', backgroundColor: '' },
+      {
+        count: "8",
+        text: "Task Count",
+        icon: "folder",
+        type: "icon",
+        iconColor: "",
+        altText: "altText",
+        height: "300",
+        width: "auto",
+        backgroundColor: "transparent",
+      },
+      {
+        count: "5",
+        text: "Test Case Count",
+        icon: "cloud_upload",
+        iconColor: "",
+        altText: "altText",
+        height: "300",
+        width: "auto",
+        backgroundColor: "transparent",
+      },
+      {
+        count: "55",
+        text: "Bug List",
+        icon: "bug_report",
+        iconColor: "black",
+        altText: "altText",
+        height: "300",
+        width: "auto",
+        backgroundColor: "transparent",
+      },
+      {
+        count: "44",
+        text: "Requriement Count",
+        icon: "developer_board",
+        iconColor: "",
+        altText: "altText",
+        height: "300",
+        width: "auto",
+        backgroundColor: "transparent",
+      },
+      {
+        count: "44",
+        text: "Task Count",
+        icon: "headset_mic",
+        iconColor: "",
+        altText: "altText",
+        height: "300",
+        width: "auto",
+        backgroundColor: "transparent",
+      },
       // { count: '', text: "", icon: '', iconColor: '', altText: 'altText', height: '', width: '', backgroundColor: '' },
-    ]
+    ];
     // this.route.params.subscribe((params) => {
     //   this.id = params["id"];
     // });

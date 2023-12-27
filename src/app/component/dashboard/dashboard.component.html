@@ -1,4 +1,10 @@
 <ng-container>
+
+<div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px" class="page-Heading">
+  {{DashboardType=='Project'? "Project Dashboard" : "User Dashboard"}}
+  
+</div>
+ 
     <!-- <div style="margin: auto; width: 100%" #cardContainer>
        <ngx-charts-number-card
         [view]="[cardContainer.offsetWidth, 170]"
@@ -12,16 +18,17 @@
 
 <!-- fxLayoutAlign="space-evenly"  -->
     <div fxLayout="row" fxLayoutGap="20px" >
-      <div  *ngFor="let i of data"  fxLayout="column">
+      <div  *ngFor="let cardData of data"  fxLayout="column">
           <app-card
-              [count]="10"
-              [text]="'das'"
-              [icon]="'add'"
-              [iconColor]="'blue'"
-              [altText]="'ddd'"
-              [height]="200"
-              [width]="200"
-              [backgroundColor]="'black'"
+              [count]="cardData.count"
+              [text]="cardData.text"
+              [icon]="cardData.icon"
+              [iconColor]="cardData.iconColor"
+              [altText]="cardData.altText"
+              [height]="cardData.height"
+              [width]="cardData.width"
+              [backgroundColor]="cardData.iconColor"
+              [type]="cardData.type"
           >
           </app-card>
       </div>
