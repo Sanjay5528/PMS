@@ -1101,6 +1101,104 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 		return shared.BadRequest("Invalid Org Id")
 	}
 
+	// filter :=
+	// 	bson.A{
+	// 		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
+	// 		bson.D{
+	// 			{"$lookup",
+	// 				bson.D{
+	// 					{"from", "task"},
+	// 					{"localField", "_id"},
+	// 					{"foreignField", "requirement_id"},
+	// 					{"as", "taskresult"},
+	// 				},
+	// 			},
+	// 		},
+	// 		bson.D{
+	// 			{"$lookup",
+	// 				bson.D{
+	// 					{"from", "testcase"},
+	// 					{"localField", "_id"},
+	// 					{"foreignField", "requirement_id"},
+	// 					{"as", "tasecaseresult"},
+	// 				},
+	// 			},
+	// 		},
+	// 		bson.D{
+	// 			{"$lookup",
+	// 				bson.D{
+	// 					{"from", "employee"},
+	// 					{"localField", "taskresult.assigned_to"},
+	// 					{"foreignField", "employee_id"},
+	// 					{"as", "employeeResult"},
+	// 				},
+	// 			},
+	// 		},
+	// 		bson.D{
+	// 			{"$addFields",
+	// 				bson.D{
+	// 					{"number_of_Task_count", bson.D{{"$size", "$taskresult"}}},
+	// 					{"number_of_TestCase_count", bson.D{{"$size", "$tasecaseresult"}}},
+	// 				},
+	// 			},
+	// 		},
+	// 		bson.D{
+	// 			{"$unwind",
+	// 				bson.D{
+	// 					{"path", "$taskresult"},
+	// 					{"preserveNullAndEmptyArrays", true},
+	// 				},
+	// 			},
+	// 		},
+	// 		bson.D{
+	// 			{"$unwind",
+	// 				bson.D{
+	// 					{"path", "$employeeResult"},
+	// 					{"preserveNullAndEmptyArrays", true},
+	// 				},
+	// 			},
+	// 		},
+	// 		bson.D{
+	// 			{"$addFields",
+	// 				bson.D{
+	// 					{"taskresult.employee_name",
+	// 						bson.D{
+	// 							{"$concat",
+	// 								bson.A{
+	// 									"$employeeResult.first_name",
+	// 									" ",
+	// 									"$employeeResult.last_name",
+	// 								},
+	// 							},
+	// 						},
+	// 					},
+	// 				},
+	// 			},
+	// 		},
+	// 		bson.D{{"$unset", "employeeResult"}},
+	// 		bson.D{
+	// 			{"$group",
+	// 				bson.D{
+	// 					{"_id", "$_id"},
+	// 					{"taskresult", bson.D{{"$push", "$taskresult"}}},
+	// 					{"tasecaseresult", bson.D{{"$addToSet", "$tasecaseresult"}}},
+	// 					{"requirement_name", bson.D{{"$first", "$requirement_name"}}},
+	// 					{"requirement_description", bson.D{{"$first", "$requirement_description"}}},
+	// 					{"project_id", bson.D{{"$first", "$project_id"}}},
+	// 					{"parentmodulename", bson.D{{"$first", "$parentmodulename"}}},
+	// 					{"created_on", bson.D{{"$first", "$created_on"}}},
+	// 					{"created_by", bson.D{{"$first", "$created_by"}}},
+	// 					{"sprint_id", bson.D{{"$first", "$sprint_id"}}},
+	// 					{"update_by", bson.D{{"$first", "$update_by"}}},
+	// 					{"module_id", bson.D{{"$first", "$module_id"}}},
+	// 					{"number_of_Task_count", bson.D{{"$first", "$number_of_Task_count"}}},
+	// 					{"number_of_TestCase_count", bson.D{{"$first", "$number_of_TestCase_count"}}},
+	// 					{"taskresult", bson.D{{"$first", "$taskresult"}}},
+	// 					{"tasecaseresult", bson.D{{"$first", "$tasecaseresult"}}},
+	// 				},
+	// 			},
+	// 		},
+	// 	}
 	filter :=
 		bson.A{
 			bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
@@ -1124,6 +1222,7 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 					},
 				},
 			},
+			// bson.D{{"$match", bson.D{{"taskresult.status", bson.D{{"$ne", "Completed"}}}}}},
 			bson.D{
 				{"$lookup",
 					bson.D{
@@ -1143,31 +1242,42 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 				},
 			},
 			bson.D{
-				{"$unwind",
-					bson.D{
-						{"path", "$taskresult"},
-						{"preserveNullAndEmptyArrays", true},
-					},
-				},
-			},
-			bson.D{
-				{"$unwind",
-					bson.D{
-						{"path", "$employeeResult"},
-						{"preserveNullAndEmptyArrays", true},
-					},
-				},
-			},
-			bson.D{
 				{"$addFields",
 					bson.D{
 						{"taskresult.employee_name",
 							bson.D{
-								{"$concat",
-									bson.A{
-										"$employeeResult.first_name",
-										" ",
-										"$employeeResult.last_name",
+								{"$reduce",
+									bson.D{
+										{"input", "$employeeResult"},
+										{"initialValue", ""},
+										{"in",
+											bson.D{
+												{"$concat",
+													bson.A{
+														"$$value",
+														bson.D{
+															{"$cond",
+																bson.A{
+																	bson.D{
+																		{"$eq",
+																			bson.A{
+																				"$$value",
+																				"",
+																			},
+																		},
+																	},
+																	"",
+																	" ",
+																},
+															},
+														},
+														"$$this.first_name",
+														" ",
+														"$$this.last_name",
+													},
+												},
+											},
+										},
 									},
 								},
 							},
@@ -1176,28 +1286,6 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 				},
 			},
 			bson.D{{"$unset", "employeeResult"}},
-			bson.D{
-				{"$group",
-					bson.D{
-						{"_id", "$_id"},
-						{"taskresult", bson.D{{"$push", "$taskresult"}}},
-						{"tasecaseresult", bson.D{{"$addToSet", "$tasecaseresult"}}},
-						{"requirement_name", bson.D{{"$first", "$requirement_name"}}},
-						{"requirement_description", bson.D{{"$first", "$requirement_description"}}},
-						{"project_id", bson.D{{"$first", "$project_id"}}},
-						{"parentmodulename", bson.D{{"$first", "$parentmodulename"}}},
-						{"created_on", bson.D{{"$first", "$created_on"}}},
-						{"created_by", bson.D{{"$first", "$created_by"}}},
-						{"sprint_id", bson.D{{"$first", "$sprint_id"}}},
-						{"update_by", bson.D{{"$first", "$update_by"}}},
-						{"module_id", bson.D{{"$first", "$module_id"}}},
-						{"number_of_Task_count", bson.D{{"$first", "$number_of_Task_count"}}},
-						{"number_of_TestCase_count", bson.D{{"$first", "$number_of_TestCase_count"}}},
-						{"taskresult", bson.D{{"$first", "$taskresult"}}},
-						{"tasecaseresult", bson.D{{"$first", "$tasecaseresult"}}},
-					},
-				},
-			},
 		}
 	response, err := helper.GetAggregateQueryResult(org.Id, "requirement", filter)
 	if err != nil {
@@ -1381,59 +1469,59 @@ func HandlerBugReport(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "task"},
-					{"localField", "requirement._id"},
-					{"foreignField", "requirement_id"},
-					{"as", "task"},
-				},
-			},
-		},
-		bson.D{
-			{"$unwind",
-				bson.D{
-					{"path", "$task"},
-					{"preserveNullAndEmptyArrays", true},
-				},
-			},
-		},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "employee"},
-					{"localField", "task.assigned_to"},
-					{"foreignField", "employee_id"},
-					{"as", "taskemployee"},
-				},
-			},
-		},
-		bson.D{
-			{"$unwind",
-				bson.D{
-					{"path", "$taskemployee"},
-					{"preserveNullAndEmptyArrays", true},
-				},
-			},
-		},
-		bson.D{
-			{"$addFields",
-				bson.D{
-					{"taskemploye_name",
-						bson.D{
-							{"$concat",
-								bson.A{
-									"$taskemployee.first_name",
-									" ",
-									"$taskemployee.first_name",
-								},
-							},
-						},
-					},
-				},
-			},
-		},
+		// bson.D{
+		// 	{"$lookup",
+		// 		bson.D{
+		// 			{"from", "task"},
+		// 			{"localField", "requirement._id"},
+		// 			{"foreignField", "requirement_id"},
+		// 			{"as", "task"},
+		// 		},
+		// 	},
+		// },
+		// bson.D{
+		// 	{"$unwind",
+		// 		bson.D{
+		// 			{"path", "$task"},
+		// 			{"preserveNullAndEmptyArrays", true},
+		// 		},
+		// 	},
+		// },
+		// bson.D{
+		// 	{"$lookup",
+		// 		bson.D{
+		// 			{"from", "employee"},
+		// 			{"localField", "task.assigned_to"},
+		// 			{"foreignField", "employee_id"},
+		// 			{"as", "taskemployee"},
+		// 		},
+		// 	},
+		// },
+		// bson.D{
+		// 	{"$unwind",
+		// 		bson.D{
+		// 			{"path", "$taskemployee"},
+		// 			{"preserveNullAndEmptyArrays", true},
+		// 		},
+		// 	},
+		// },
+		// bson.D{
+		// 	{"$addFields",
+		// 		bson.D{
+		// 			{"taskemploye_name",
+		// 				bson.D{
+		// 					{"$concat",
+		// 						bson.A{
+		// 							"$taskemployee.first_name",
+		// 							" ",
+		// 							"$taskemployee.first_name",
+		// 						},
+		// 					},
+		// 				},
+		// 			},
+		// 		},
+		// 	},
+		// },
 		bson.D{
 			{"$lookup",
 				bson.D{
