@@ -95,6 +95,14 @@ animateRows:true,paginationPageSize:10
     this.components = {
       buttonRenderer: ButtonComponent
     }
+    // npm install --force @ag-grid-community/core@latest\
+    // @ag-grid-community/angular@latest \
+    // @ag-grid-community/core@latest \
+    // ag-grid-angular@latest \
+    // ag-grid-community@latest \
+    // ag-grid-enterprise@latest \
+    // ag-grid-angular-legacy@latest
+
     this.context = { componentParent: this };
     // this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   } 
@@ -729,7 +737,6 @@ if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != u
   delete this.gridOptions.getRowId;
 this.gridApi.setGridOption('treeData',false)
 // this.gridApi.setGridOption('getDataPath',this.gridOptions.getDataPath)
-
   this.gridApi.updateGridOptions(this.gridOptions)
   this.gridApi.setSideBarVisible(false);
 }
@@ -925,7 +932,12 @@ if (params.value === "high") {
   ] 
 this.gridOptions.columnDefs=this.columnDefs
 if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
-  this.gridApi.updateGridOptions(this.gridOptions)
+  this.gridApi.setGetRowId(this.gridOptions.getRowId)
+  delete this.gridOptions.autoGroupColumnDef;
+  delete this.gridOptions.getRowId;
+  
+this.gridApi.setGridOption('treeData',false);
+ this.gridApi.updateGridOptions(this.gridOptions)
 }
   }else if(this.formName=="team_member"){
     // this.pageHeading="Team Member"
@@ -1085,12 +1097,15 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
     
       }
   
-    ]
-    // )
-// this.cfg.detectChanges()
+    ] 
 this.gridOptions.columnDefs=this.columnDefs
 if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
-  this.gridApi.updateGridOptions(this.gridOptions)
+  this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
+  this.gridApi.setGetRowId(this.gridOptions.getRowId)
+  delete this.gridOptions.autoGroupColumnDef;
+  delete this.gridOptions.getRowId;
+this.gridApi.setGridOption('treeData',this.gridOptions.treeData)
+ this.gridApi.updateGridOptions(this.gridOptions)
   this.gridApi.setSideBarVisible(false);
 }
   }else if(this.formName=="release"){
@@ -1177,21 +1192,21 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
 // this.cfg.detectChanges()
 this.gridOptions.columnDefs=this.columnDefs
 if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+  this.gridApi.setAutoGroupColumnDef({})
+  this.gridApi.setGetRowId(this.gridOptions.getRowId)
+  delete this.gridOptions.autoGroupColumnDef;
+  delete this.gridOptions.getRowId;
+this.gridApi.setGridOption('treeData',this.gridOptions.treeData)
+
   this.gridApi.updateGridOptions(this.gridOptions)
   this.gridApi.setSideBarVisible(false);
 }
   }else if(this.formName=="sprint"){
-    // this.pageHeading="Team Member"
- this.gridOptions.getRowId=function (params:any) { return params.data._id }
-
-    this.gridOptions.treeData=false
- 
+  this.gridOptions.treeData=false
 this.gridOptions.pagination=true
 this.gridOptions.paginationPageSize= 50 
-
 this.gridOptions.rowSelection='single'
 this.gridOptions.groupSuppressBlankHeader=true; 
-
 this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
   this.columnDefs=[
     {
@@ -1263,13 +1278,17 @@ valueFormatter: function (params) {
 
 this.gridOptions.columnDefs=this.columnDefs
 if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
-  this.gridApi.updateGridOptions(this.gridOptions)
+  this.gridApi.setAutoGroupColumnDef({})
+  this.gridApi.setGetRowId(this.gridOptions.getRowId)
+  delete this.gridOptions.autoGroupColumnDef;
+  delete this.gridOptions.getRowId;
+this.gridApi.setGridOption('treeData',false)
+this.gridApi.updateGridOptions(this.gridOptions)
   this.gridApi.setSideBarVisible(false);
 }
   }else if(this.formName=="functionaltesting"){
     // this.pageHeading="Team Member"
- this.gridOptions.getRowId=function (params:any) { return params.data._id }
-
+ 
     this.gridOptions.treeData=false
  
 this.gridOptions.pagination=true
@@ -1337,7 +1356,12 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
 
 this.gridOptions.columnDefs=this.columnDefs
 if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
-  this.gridApi.updateGridOptions(this.gridOptions)
+  this.gridApi.setAutoGroupColumnDef({})
+  this.gridApi.setGetRowId(this.gridOptions.getRowId)
+  delete this.gridOptions.autoGroupColumnDef;
+  delete this.gridOptions.getRowId;
+this.gridApi.setGridOption('treeData',false);
+ this.gridApi.updateGridOptions(this.gridOptions)
   this.gridApi.setSideBarVisible(false);
 }
   }
@@ -2444,8 +2468,7 @@ if(fieldName=="assigned_to"){
           this.bugNotUpdate=false
           this.form.reset()
         })
-      }
-    // this.ngOnInit()
+      } 
   }
 
   saveChild() { 
@@ -2484,10 +2507,7 @@ values.status='A'
     this.dialogService.closeModal();
   })
   this.ngOnInit()
-  }
-  
-  
-
+  } 
 
   is_bug:any
 
@@ -2538,14 +2558,11 @@ values.status='A'
       })
   }
    
-  goBack(){
-    // this.router.navigate(['list/project'])
+  goBack(){ 
     this._location.back();
   }
 
-  ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
+  ngOnDestroy(): void { 
     console.warn("Component Destory");
     
   }
