@@ -712,12 +712,22 @@ if (params.value === "P") {
       filter: 'agTextColumnFilter',
     },
     {
-      headerName: 'Test Result Stauts',
+      headerName: 'Over All Test Result Stauts',
       field: 'test_result_stauts',
       width: 40,
       editable: false,
       enableRowGroup:true, 
       filter: 'agTextColumnFilter',
+      cellRenderer: (params:any) => {
+        let maticon :any 
+//      
+if (params.value == "Pass") {
+  maticon = ` <i class="fa-solid fa-square-check fa-2xl"></i>`;
+} else if (params.value == "Fail") {
+  maticon = `<i class="fa-solid fa-square-xmark fa-2xl"></i>`
+}
+  return maticon
+    },tooltipField:"test_result_stauts"
     },{
       headerName: 'Bug Count',
       field: 'bug_count',

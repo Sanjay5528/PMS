@@ -217,7 +217,9 @@
 
 <span style="font-size: medium;font-family: cursive;margin-left: 5px;color: grey;">( {{  datefunction(selectedRows?.test_result?.testcase_date)}} ) </span> -->
 <div style="display: flex; align-items: center;margin-left: 9px;">
-  <mat-icon style="font-size: 20px; margin-top: 3px;">date_range</mat-icon>
+  <!-- <mat-icon style="font-size: 20px; margin-top: 3px;">date_range</mat-icon> -->
+    <span style="font-size: medium;font-weight: bold;margin-left: 10px;" >Issued Created Date</span>        
+
   <span style="font-size: medium; font-family: cursive; margin-left: 5px; color: grey;">
     ({{ datefunction(selectedRows?.test_result?.testcase_date) }})
   </span>
@@ -344,7 +346,6 @@
   </mat-drawer>
   <mat-drawer-content>
     <div fxLayout="column"  style="width:100%">
-  
       <div fxLayout="row" fxLayoutAlign="center center" fxFlex="100%" style="width:100%;">
         <div fxLayout="column" fxFlex="5%" class="back">
           <mat-icon style="font-size:35px;margin-top: 30px;margin-left: 10px;" (click)="goBack()">keyboard_backspace</mat-icon>

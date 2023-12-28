@@ -105,7 +105,7 @@ const routes: Routes = [
     ]
   },
 {
-  path:"Check",
+  path:"check",
   component:ExpansionComponent
 },
 {

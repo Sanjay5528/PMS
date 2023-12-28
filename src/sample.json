@@ -1,153 +1,201 @@
 {
-	"pageHeading": "Project",
-	"collectionName": "project",
-	"editMode": "popup",
-	"screenEditMode":"projectdashboard",
-	"screenWidth": "80%",
-	"keyField": "_id",
-	"showbutton": true,
-	"actions": [
-	  {
-		"label": "Edit",
-		"icon": "edit",
-		"formName": "project"
-	  },  {
-        "label": "Requirement",
-        "icon": "view_module",
-        "formAction": "components",
-        "route_type": "project",
-        "first": "project/",
-        "last": "/Requirement",
-        "Custom_Key_filed": "_id"
+  "pageHeading": "Test Result Name",
+  "formType": "simple",
+  "keyField": "_id",
+  "form": {
+    "collectionName": "test_result",
+    "fields": [
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "type": "label-view",
+            "key": "test_case_name",
+            "className": "flex-6",
+            "props": {
+              "label": "Test Case Name",
+              "label_width": 100,
+              "value_width": 200,
+              "value_in_next_row": false
+            }
+          },
+          {
+            "type": "label-view",
+            "key": "test_case_scenario",
+            "className": "flex-6",
+            "props": {
+              "label": "Test Case Scenario",
+              "label_width": 100,
+              "value_width": 200,
+              "value_in_next_row": false
+            }
+          },
+          {
+            "key": "testcase_date",
+            "type": "date-input",
+            "props": {
+              "label": "Tested Date",
+              "placeholder": "Tested Date",
+              "required": true
+            }
+          }
+        ]
       },
       {
-        "label": "Modules",
-        "icon": "view_module",
-        "formAction": "components",
-        "route_type": "project",
-        "first": "project/",
-        "last": "/module",
-        "Custom_Key_filed": "_id"
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "type": "html-input",
+            "key": "test_data",
+            "className": "flex-6",
+            "props": {
+              "label": "Test Data",
+              "disabled": true
+            }
+          },
+          {
+            "type": "html-input",
+            "key": "expected_result",
+            "className": "flex-6",
+            "props": {
+              "label": "Expected Result",
+              "disabled": true
+            }
+          }
+        ]
       },
       {
-        "label": " Team",
-        "icon": "view_module",
-        "formAction": "components",
-        "route_type": "project",
-        "first": "project/",
-        "last": "/projectteam",
-        "Custom_Key_filed": "_id"
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "key": "result_status",
+            "type": "radio",
+            "className": "flex-6",
+            "props": {
+              "label": "Test Result",
+              "required": true,
+              "options": [
+                {
+                  "label": "Pass",
+                  "value": "P"
+                },
+                {
+                  "label": "Fail",
+                  "value": "F"
+                }
+              ]
+            }
+          },
+          {
+            "type": "select",
+            "key": "error_type",
+            "className": "flex-6",
+            "props": {
+              "label": "Error Type",
+              "options": [
+                {
+                  "label": "Logical Error",
+                  "value": "logical_error"
+                },
+                {
+                  "label": "Cosmatic Error",
+                  "value": "cosmatic_error"
+                }
+              ],
+              "placeholder": "Error Type"
+            },"hide":true,
+            "expressions": {
+              "hide": "model.result_status=='P' || !model.result_status"
+            }
+          },
+          {
+            "type": "select",
+            "key": "error_priority",
+            "className": "flex-6",
+            "props": {
+              "label": "Severity",
+              "options": [
+                {
+                  "label": "High",
+                  "value": "high"
+                },
+                {
+                  "label": "Medium",
+                  "value": "medium"
+                },
+                {
+                  "label": "Low",
+                  "value": "low"
+                },
+                {
+                  "label": "Show Stoper",
+                  "value": "show stoper"
+                }
+              ],
+              "placeholder": "Severity"
+            },
+            "expressions": {
+				"hide": "model.result_status=='P' || !model.result_status"
+
+            }
+          }
+        ]
+      },
+
+      {
+        "type": "muti-image",
+        "key": "result_proof",
+        "className": "flex-4",
+        "bind_key": "test_case_id",
+        "role": "test_case",
+        "props": {
+          "refId": "test_case_id",
+          "label": "Result Proof"
+        },
+        "expressions": {
+          "props.required": "model.result_status=='F'"
+        }
       },
       {
-        "label": "Task Creation",
-        "icon": "view_module",
-        "formName": "projectteam",
-        "formAction": "components",
-        "route_type": "project",
-        "first": "project/",
-        "last": "/team_member",
-        "Custom_Key_filed": "_id"
+        "type": "html-input",
+        "key": "actual_result",
+        "className": "flex-8",
+        "props": {
+          "label": "Actual Result"
+        },
+        "expressions": {
+          "props.required": "model.result_status=='F'"
+        }
       },
+
       {
-        "label": "Release",
-        "icon": "view_module",
-        "formAction": "components",
-        "route_type": "project",
-        "first": "project/",
-        "last": "/release",
-        "Custom_Key_filed": "_id"
-      },
+        "key": "status",
+        "type": "select",
+        "defaultValue": "A",
+        "templateOptions": {
+          "label": "Status",
+          "options": [
+            {
+              "label": "Active",
+              "value": "A"
+            },
+            {
+              "label": "Disable",
+              "value": "D"
+            }
+          ],
+          "required": true
+        },
+        "hideExpression": "!model.isEdit"
+      }
+    ],
+    "defaultValues": [
       {
-        "label": "Sprint",
-        "icon": "view_module",
-        "formAction": "components",
-        "route_type": "project",
-        "first": "project/",
-        "last": "/sprint",
-        "Custom_Key_filed": "_id"
-      },
-      {
-        "label": "Test Case",
-        "icon": "view_module",
-        "formAction": "components",
-        "route_type": "project",
-        "first": "project/",
-        "last": "/functionaltesting",
-        "Custom_Key_filed": "_id"
-      },
-      {
-        "label": "Bug List",
-        "icon": "view_module",
-        "formName": "buglist",
-        "formAction": "components",
-        "route_type": "project",
-        "first": "project/",
-        "last": "/bug_list",
-        "Custom_Key_filed": "_id"
-      },
-	  {
-		"label": "Delete",
-		"icon": "delete",
-		"formName": "entities/project"
-	  }
-	],
-	"addRoute": "add/project",
-	"editRoute": "edit/project",
-	"columnDefs": [
-	  {
-		"headerName": " Client Name",
-		"field": "client_name",
-		"sortable": true,
-		"hide": true,
-		"filter": "agTextColumnFilter"
-	  },
-	  {
-		"headerName": "Project Id",
-		"field": "project_id",
-		"sortable": true,
-		"filter": "agTextColumnFilter"
-	  },
-	  {
-		"headerName": "Project Name",
-		"field": "project_name",
-		"sortable": true,
-		"filter": "agTextColumnFilter"
-	  },
-	  {
-		"headerName": "Schedule Start Date",
-		"field": "startdate",
-		"sortable": true,
-		"filter": "agDateColumnFilter",
-		"type": "date"
-	  },
-	  {
-		"headerName": "Schedule End Date",
-		"field": "enddate",
-		"sortable": true,
-		"filter": "agDateColumnFilter",
-		"type": "date"
-	  },
-	  {
-		"headerName": "Status",
-		"field": "status",
-		"sortable": true, 
-   "maxWidth": 95,
-		"filter": "agTextColumnFilter"
-	  },
-	  {
-		"type": "rightAligned",
-		"headerName": "Actions",
-		"lockPosition": "right",
-		"maxWidth": 85,
-		 "menuTabs": [],
-		"lockPinned": true,
-		"pinned": "right",
-		 "cellRenderer": "buttonRenderer",
-		"cellRendererParams": {
-		  "onClick": "this.onBtnClick1.bind(this)",
-		  "label": "Click 1"
-		}
-	  }
-	]
-  }
-  
+        "colName": "status",
+        "value": "A",
+        "type": "string"
+      }
+    ]
+  },
+  "onCancelRoute": "/list/test_result"
+}
