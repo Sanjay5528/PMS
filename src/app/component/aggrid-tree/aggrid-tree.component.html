@@ -103,8 +103,8 @@
 
            </mat-card-header>
            <mat-card-content style="margin-left: 30px;"  fxLayout="column" >
-            <div style="display: flex;align-items: start;justify-items: center;">
-              <mat-icon *ngIf="testCase.doneBy" style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{testCase.employee_name}} 
+            <div style="display: flex;align-items: start;justify-items: center;" *ngIf="testCase.doneBy" >
+              <mat-icon style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{testCase.employee_name}} 
             </div>
             
              <p [innerHTML]="testCase.actual_result"></p>
@@ -117,9 +117,10 @@
 
    <div fxLayout="row wrap" fxFlex="100%"  >
     <div *ngFor="let image of testCase?.result_proof" fxLayout="row" style="padding:10px 10px 10px 10px;">
+      <!-- (click)="poupimage(testCase?.result_proof)" -->
       <img
         *ngIf="image?.storage_name"
-        (click)="poupimage(testCase?.result_proof)"
+        (click)="poupimage(image)"
         [src]="imageurl + image?.storage_name"
         [alt]="image.file_name"
         height="100px"
@@ -148,8 +149,10 @@
 
           </mat-card-header>
           <mat-card-content style="margin-left: 30px;" fxLayout="column" >
-            <mat-icon *ngIf="buglist?.doneBy" style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{buglist?.employee_name}} 
-
+            <!-- <mat-icon *ngIf="buglist?.doneBy" style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{buglist?.employee_name}}  -->
+            <div style="display: flex;align-items: start;justify-items: center;" *ngIf="buglist.doneBy" >
+              <mat-icon style=" font-size: 20px;margin-top: 3px;">person</mat-icon> {{buglist.employee_name}} 
+            </div>
             <p [innerHTML]="buglist.actual_result"></p>
             <!-- <div fxLayout="row" fxFlex="100%">
               <div   *ngFor="let image of buglist?.result_proof;let bugIndex=index">
@@ -159,9 +162,10 @@
 
             <div fxLayout="row wrap" fxFlex="100%"  >
               <div *ngFor="let image of buglist?.result_proof" fxLayout="row" style="padding:10px 10px 10px 10px;">
+                <!-- (click)="poupimage(buglist?.result_proof)" -->
                 <img
-                  *ngIf="image?.storage_name"
-                  (click)="poupimage(buglist?.result_proof)"
+                *ngIf="image?.storage_name"
+                  (click)="poupimage(image)"
                   [src]="imageurl + image?.storage_name"
                   [alt]="image.file_name"
                   height="100px"
@@ -282,9 +286,10 @@
 
    <div fxLayout="row wrap" fxFlex="100%"  >
     <div *ngFor="let image of selectedRows?.test_result?.result_proof" fxLayout="row" style="padding:2px 2px 2px 2px;">
+      <!-- (click)="poupimage(selectedRows?.test_result?.result_proof)" -->
       <img
         *ngIf="image?.storage_name"
-        (click)="poupimage(selectedRows?.test_result?.result_proof)"
+        (click)="poupimage(image)"
         [src]="imageurl + image?.storage_name"
         [alt]="image.file_name"
         height="100px"
@@ -345,7 +350,7 @@
           <mat-icon style="font-size:35px;margin-top: 30px;margin-left: 10px;" (click)="goBack()">keyboard_backspace</mat-icon>
         </div>
         <div fxLayout="column" fxFlex="95%" fxLayoutAlign="center center" style="margin-top: 10px;">
-          <h2 class="page-title" *ngIf="!breadcrumsShow;"> {{response["project_name"]}} - {{pageHeading}}</h2>
+          <h2 class="page-title" *ngIf="!breadcrumsShow;"> {{response?.project_name}} - {{pageHeading}}</h2>
 
           <h2 class="page-title" *ngIf="breadcrumsShow;">{{pageHeading}}</h2> 
         </div>
@@ -415,7 +420,7 @@
       -->
         <!--   -->
       <!-- <div *ngIf="!gridChange"> -->
-        <ag-grid-angular 
+        <ag-grid-angular    *ngIf="isVisible"
         style="width: 100%; height: calc(100vh - 250px); flex: 1 1 auto"
         class="ag-theme-alpine"
         [defaultColDef]="defaultColDef"
@@ -424,6 +429,7 @@
         [gridOptions]='gridOptions' 
         [context]="context"[paginationPageSizeSelector]='false'
         [components]="components" 
+        [debug]="true"
         [rowSelection]="'single'"
         [animateRows]="true"
         (cellClicked)='onCellClicked($event)'

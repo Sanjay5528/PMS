@@ -620,7 +620,7 @@ export class DatatableComponent implements OnInit {
           
             clause: "AND",
             conditions: [
-              {column: "client_id",operator: "EQUALS",type: "string",value: this.selectedModel.client_id},
+              {column: "client_id",operator: "EQUALS",type: "string",value: event.data.client_id},
             ],
           
         }]
@@ -630,8 +630,8 @@ export class DatatableComponent implements OnInit {
         let data={
           logo:res.data[0].response[0].logo.storage_name,
           client_name:res.data[0].response[0].client_name,
-name: this.selectedModel.project_name,
-_id: this.selectedModel._id
+name: event.data.project_name,
+_id: event.data._id
         }
         this.helperService.getProjectmenu(data)
         console.log("final Data",data);

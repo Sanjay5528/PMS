@@ -61,7 +61,8 @@ export class FormlyMultiImageUpload extends FieldType<any>   {
     refId:any
     res:any[]=[]
     UploadShow: boolean=true
-    showUploadedImages:boolean=false
+dispableTrue:boolean=false
+showUploadedImages:boolean=false
     carsoasl: boolean= false;
     @ViewChild("editViewPopup", { static: true })
     editViewPopup!: TemplateRef<any>;
@@ -97,7 +98,6 @@ export class FormlyMultiImageUpload extends FieldType<any>   {
 
        }
     }
-dispableTrue:boolean=false
   uploadFiles() {
     
     if(!this.image){

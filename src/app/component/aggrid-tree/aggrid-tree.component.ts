@@ -1,15 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
-import {
-  CellClassParams,
-  ColDef,
-  ColGroupDef, 
-  GridApi,
-  GridOptions,
-  GridReadyEvent, 
-} from "ag-grid-community";
+import {  CellClassParams,  ColDef,  ColGroupDef,   GridApi,  GridOptions,  GridReadyEvent, } from "ag-grid-community";
 import { v4 as uuidv4 } from "uuid";
-
 import { DialogService } from 'src/app/services/dialog.service';
 import { ActivatedRoute,Router } from '@angular/router';
 import { DataService } from 'src/app/services/data.service';
@@ -95,14 +87,6 @@ animateRows:true,paginationPageSize:10
     this.components = {
       buttonRenderer: ButtonComponent
     }
-    // npm install --force @ag-grid-community/core@latest\
-    // @ag-grid-community/angular@latest \
-    // @ag-grid-community/core@latest \
-    // ag-grid-angular@latest \
-    // ag-grid-community@latest \
-    // ag-grid-enterprise@latest \
-    // ag-grid-angular-legacy@latest
-
     this.context = { componentParent: this };
     // this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   } 
@@ -110,37 +94,30 @@ parms:any
 breadcrumsShow:boolean=true
   ngOnInit() { 
       console.warn("Component Loaded" , "Agtree"); 
- 
       this.ComponentInit()
     this.helperServices.getProjectObservable().subscribe((res:any)=>{
+      console.warn("Project Nav Result" , res); 
       this.breadcrumsShow=!res
       console.log(res);
-      
     })
     }
 
     ComponentInit(){
-      if(this?.gridApi != null || this?.gridApi != undefined){
-        const data =this.gridApi.setGridOption("columnDefs",[])
-        console.log("Delte the old Column def",data);
-        
-       //  const result:any= this.gridApi.applyTransaction({remove:[this.listData]})
-       //  console.log("Delete the Old Record",result);
-        
-         // this.gridApi.setColumnDefs(this.columnDefs)
-        this.gridApi.setSideBarVisible(false);
-         // this.gridApi.refreshClientSideRowModel('group')
-       }
+    
          this.route.params.subscribe(params => {
            this.addbutton=false;
-      
-             this.id = params['id'];
+           this.id = params['id'];
            this.parms=params['id']
-           console.log(params);
-           // this._location.replaceState()
-           // this.cfg.detectChanges()
-                 this.formName=params['Action']
-           let collection:any
+           this.formName=params['Action']
+           let collection:any ;
+            if(this?.gridApi != null || this?.gridApi != undefined){
+            // console.log("Before Change old Column def",this.gridApi.getColumnDefs());
+            // const data =this.gridApi.setGridOption("columnDefs",[])
+            // console.log("After Change old Column def",this.gridApi.getColumnDefs());
+            // this.gridApi.setSideBarVisible(false);
+           this.reloadGrid()
+    
+           }
                  if(this.formName == "module"){
                   this.pageHeading= "Module"
                   collection="project"
@@ -155,7 +132,7 @@ breadcrumsShow:boolean=true
                  }else if(this.formName=="test_result"){
                    this.pageHeading="Test Result"
            
-                   collection="regression"
+                   collection="regression"  
                    this.addbutton=true;
                  }else if(this.formName=="bug_list"){
                    this.pageHeading="Bug List"
@@ -198,7 +175,9 @@ breadcrumsShow:boolean=true
                  this.columnDefs=[];
                  this.listData=[]; 
                  this.loadScreen(this.formName)
-                if(this.formName=="regression"){
+                if(this.formName=="regression" || this.formName=="test_result"){
+                // if(this.formName=="regression"){
+
                   this.dataService.getDataById("regression",this.id).subscribe((res:any)=>{
                     console.log(res);
                     
@@ -211,10 +190,10 @@ breadcrumsShow:boolean=true
                       if(res && res.data[0].response[0]){
                       this.response = res.data[0].response[0];
                       if(this?.response?.startdate){
-                        this.response.startdate=moment(this.response?.startdate).format('D/M/ YYYY')
+                        this.response.startdate=moment(this.response?.startdate).format('DD/MM/YYYY')
                       }
                       if(this?.response?.enddate){
-                        this.response.enddate=moment(this.response?.enddate).format("D/M/ YYYY")
+                        this.response.enddate=moment(this.response?.enddate).format("DD/MM/YYYY")
                       }
                       this.getTreeData()
                     }
@@ -263,9 +242,7 @@ breadcrumsShow:boolean=true
 
 
 
- ngOnChanges(changes: SimpleChanges): void { 
-  this.ComponentInit()
- }
+ 
 
   formlyformdata(data:any){
   console.log('work');
@@ -305,7 +282,6 @@ breadcrumsShow:boolean=true
 
 loadScreen(formName:any){
 this.columnDefs=[]
-
   if(formName=="module"){
     this.gridOptions.autoGroupColumnDef={
         headerName: "Parent Modules",
@@ -341,7 +317,7 @@ this.gridOptions.groupDefaultExpanded=-1
     width: 40,
     editable: false,
     filter: 'agDateColumnFilter',
-    valueFormatter: function (params) {
+    valueFormatter: function (params:any) {
       if(params.value){
 
         return moment(params.value).format('DD/MM/YYYY')
@@ -356,7 +332,7 @@ this.gridOptions.groupDefaultExpanded=-1
     width: 40,
     editable: false,
     filter: 'agDateColumnFilter',
-    valueFormatter: function (params) {
+    valueFormatter: function (params:any) {
       if(params.value){
 
         return moment(params.value).format('DD/MM/YYYY')
@@ -379,19 +355,24 @@ this.gridOptions.groupDefaultExpanded=-1
 ]
 this.gridOptions.columnDefs=this.columnDefs
   // )
-   if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
-// this.gridApi.setGridOption('autoGroupColumnDef',this.gridOptions.autoGroupColumnDef)
-this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
-  this.gridApi.setGetRowId(this.gridOptions.getRowId)
-  delete this.gridOptions.autoGroupColumnDef;
-  delete this.gridOptions.getRowId;
-this.gridApi.setGridOption('treeData',true)
-this.gridApi.setGridOption('getDataPath',this.gridOptions.getDataPath)
+  
+  // ? Undo
+//    if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+// // this.gridApi.setGridOption('autoGroupColumnDef',this.gridOptions.autoGroupColumnDef)
+// this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
+//   this.gridApi.setGetRowId(this.gridOptions.getRowId)
+//   this.gridApi.setColumnDefs(this.columnDefs)   
+//   delete this.gridOptions.autoGroupColumnDef;
+//   delete this.gridOptions.getRowId;
+// this.gridApi.setGridOption('treeData',true)
+// this.gridApi.setGridOption('getDataPath',this.gridOptions.getDataPath)
 
-    this.gridApi.updateGridOptions(this.gridOptions)
-  this.gridApi.setSideBarVisible(false);
+//     this.gridApi.updateGridOptions(this.gridOptions)
+//   this.gridApi.setSideBarVisible(false);
 
-}
+// }
+
+
   }else if(formName=="Requirement"){
  
 
@@ -486,17 +467,20 @@ this.gridOptions.groupDefaultExpanded=-1
     }
   ] 
   this.gridOptions.columnDefs=this.columnDefs
-  if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
-    this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
-  this.gridApi.setGetRowId(this.gridOptions.getRowId)
-  delete this.gridOptions.autoGroupColumnDef;
-  delete this.gridOptions.getRowId;
-this.gridApi.setGridOption('treeData',true)
-this.gridApi.setGridOption('getDataPath',this.gridOptions.getDataPath)
+ // ? Undo
+//   if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+//     this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
+//   this.gridApi.setColumnDefs(this.columnDefs)   
+//   this.gridApi.setGetRowId(this.gridOptions.getRowId)
+//   delete this.gridOptions.autoGroupColumnDef;
+//   delete this.gridOptions.getRowId;
+// this.gridApi.setGridOption('treeData',true)
+// this.gridApi.setGridOption('getDataPath',this.gridOptions.getDataPath)
 
-    this.gridApi.updateGridOptions(this.gridOptions)
-    this.gridApi.setSideBarVisible(false);
-  }
+//     this.gridApi.updateGridOptions(this.gridOptions)
+//     this.gridApi.setSideBarVisible(false);
+//   }
+
   }else if(formName=="projectteam"){
 this.gridOptions.treeData=true
 this.gridOptions.getDataPath=(data: any) => { return data.treePath };
@@ -539,7 +523,7 @@ this.gridOptions.groupDefaultExpanded=-1
     width: 45,
     editable: false,
     filter: 'agDateColumnFilter',
-    valueFormatter: function (params) {
+    valueFormatter: function (params:any) {
       if(params.value){
 
         return moment(params.value).format('DD/MM/YYYY');
@@ -554,7 +538,7 @@ this.gridOptions.groupDefaultExpanded=-1
     width: 40,
     editable: false,
     filter: 'agDateColumnFilter',
-    valueFormatter: function (params) {
+    valueFormatter: function (params:any) {
       if(params.value){
 
         return moment(params.value).format('DD/MM/YYYY');
@@ -598,17 +582,21 @@ this.gridOptions.groupDefaultExpanded=-1
 ]
 // this.cfg.detectChanges()
 this.gridOptions.columnDefs=this.columnDefs
-if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
-  this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
-  this.gridApi.setGetRowId(this.gridOptions.getRowId)
-  delete this.gridOptions.autoGroupColumnDef;
-  delete this.gridOptions.getRowId;
-this.gridApi.setGridOption('treeData',true)
-this.gridApi.setGridOption('getDataPath',this.gridOptions.getDataPath)
-
-  this.gridApi.updateGridOptions(this.gridOptions)
-  this.gridApi.setSideBarVisible(false);
-}
+// ? Undo
+// if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+//   this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
+  
+//   this.gridApi.setGetRowId(this.gridOptions.getRowId)
+//   delete this.gridOptions.autoGroupColumnDef;
+//   delete this.gridOptions.getRowId;
+//   this.gridApi.setGridOption('treeData',true)
+//   this.gridApi.setGridOption('getDataPath',this.gridOptions.getDataPath)
+  
+//   this.gridApi.setColumnDefs(this.columnDefs)   
+// this.gridApi.setGridOption('columnDefs',this.columnDefs)
+//   this.gridApi.updateGridOptions(this.gridOptions)
+//   this.gridApi.setSideBarVisible(false);
+// }
 
   }else if(this.formName=="test_result"){
     this.gridOptions.groupDefaultExpanded=-1
@@ -636,15 +624,17 @@ this.gridOptions.treeData=false;
 // }
     this.columnDefs=[
     // .push(  
-      {
-        headerName: 'Module id',
-        field: 'module_id',
-        width: 40,
-        enableRowGroup:true,
-        showRowGroup:false,
-        hide:true,
-        filter: 'agTextColumnFilter',
-      },
+      // ? "required"
+      // {
+      //   headerName: 'Module id',
+      //   field: 'module_id',
+      //   width: 40,
+      //   enableRowGroup:true,
+      //   showRowGroup:false,
+      //   hide:true,
+      //   filter: 'agTextColumnFilter'
+      // },
+
     //  {
     //     headerName: 'Requirement Id',
     //     field: 'requriment._id',
@@ -659,8 +649,10 @@ this.gridOptions.treeData=false;
       resizable:true, 
       rowGroup:true,
       rowGroupIndex:0,
+      hide:true,
       enableRowGroup:true,
       filter: 'agTextColumnFilter',
+    
     },
    {
       headerName: 'Test Case Name',
@@ -674,7 +666,43 @@ this.gridOptions.treeData=false;
       width: 40,
     enableRowGroup:true, 
       editable: false,
-      filter: 'agTextColumnFilter',
+      filter: 'agTextColumnFilter', 
+       cellRenderer: (params:any) => {
+        let svg :any 
+//         if( params.value == "P"){
+// svg=`<svg >
+//           <circle cx="52" cy="27" r="11"  stroke-width="2" fill="green" />
+//           Sorry, your browser does not support inline SVG.
+//        </svg> ` 
+//         }else if( params.value == "N"){
+//           svg=`<svg>
+//           <circle cx="52" cy="27" r="11"  stroke-width="2" fill="red" />
+//           Sorry, your browser does not support inline SVG.
+//        </svg> `
+//         }
+if (params.value === "P") {
+  svg = `
+    <svg style="display: block; margin: auto;">
+      <circle cx="52" cy="27" r="11" stroke-width="2" fill="green" />
+    </svg>
+  `;
+} else if (params.value === "N") {
+  svg = `
+    <svg style="display: block; margin: auto;">
+      <circle cx="52" cy="27" r="11" stroke-width="2" fill="red" />
+    </svg>
+  `;
+}
+  
+        return svg
+    },
+    //  tooltipValueGetter: (params: any) => {
+    //   console.log(params);
+    //   if(params.value ! = undefined && params.value !== null){
+    //   return params.value.toUpperCase()
+    // }
+    // return ''
+    // },
     }, 
     {
       headerName: 'Total Test Result ',
@@ -730,16 +758,18 @@ this.gridOptions.treeData=false;
     // )
 // this.cfg.detectChanges()
 this.gridOptions.columnDefs=this.columnDefs
-if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
-  this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
-  this.gridApi.setGetRowId(this.gridOptions.getRowId)
-  delete this.gridOptions.autoGroupColumnDef;
-  delete this.gridOptions.getRowId;
-this.gridApi.setGridOption('treeData',false)
-// this.gridApi.setGridOption('getDataPath',this.gridOptions.getDataPath)
-  this.gridApi.updateGridOptions(this.gridOptions)
-  this.gridApi.setSideBarVisible(false);
-}
+// ? Undo
+// if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+//   this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
+//   this.gridApi.setGetRowId(this.gridOptions.getRowId)
+//   delete this.gridOptions.autoGroupColumnDef;
+//   delete this.gridOptions.getRowId;
+// this.gridApi.setGridOption('treeData',false)
+// // this.gridApi.setGridOption('getDataPath',this.gridOptions.getDataPath)
+//   this.gridApi.updateGridOptions(this.gridOptions);
+//   this.gridApi.setSideBarVisible(false);
+// }
+
   }else if(this.formName=="bug_list"||this.formName=="regression"){
     this.pageHeading="Bug List"
     this.gridOptions.treeData=false
@@ -931,14 +961,18 @@ if (params.value === "high") {
     } 
   ] 
 this.gridOptions.columnDefs=this.columnDefs
-if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
-  this.gridApi.setGetRowId(this.gridOptions.getRowId)
-  delete this.gridOptions.autoGroupColumnDef;
-  delete this.gridOptions.getRowId;
-  
-this.gridApi.setGridOption('treeData',false);
- this.gridApi.updateGridOptions(this.gridOptions)
-}
+// ? Undo
+    // if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+    //   this.gridApi.setGetRowId(this.gridOptions.getRowId)
+    //   delete this.gridOptions.autoGroupColumnDef;
+    //   delete this.gridOptions.getRowId;
+    //   this.gridApi.setColumnDefs(this.columnDefs)   
+    // this.gridApi.setGridOption('columnDefs',this.columnDefs)
+      
+    // this.gridApi.setGridOption('treeData',false);
+    // this.gridApi.updateGridOptions(this.gridOptions)
+    // }
+
   }else if(this.formName=="team_member"){
     // this.pageHeading="Team Member"
     const Assigned:any=this.AssignTOCellEditorParams
@@ -987,7 +1021,7 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
         headerName: "Task Type",
         cellDataType: "text",
         field: "task_type",
-        editable: function(parms) {
+        editable: function(parms:any) {
           return parms.data.taskeditable
         },cellEditor: 'agRichSelectCellEditor',
         cellEditorParams: {
@@ -997,7 +1031,7 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
         headerName: "Task Name",
         cellDataType: "text",
         field: "task_name",
-        editable: function(parms) {
+        editable: function(parms:any) {
           return parms.data.taskeditable
         }
       },
@@ -1021,7 +1055,7 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
         headerName: "Allocated Hours",
         cellDataType: "number",
         field: "allocated_hours",
-        editable: function(parms) {
+        editable: function(parms:any) {
           return parms.data.taskeditable
         } ,cellEditor: "agNumberCellEditor",
         cellEditorParams: {
@@ -1045,7 +1079,7 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
           }
           return '' 
         },
-        editable: function(parms) {
+        editable: function(parms:any) {
           return parms.data.taskeditable
         }
       },
@@ -1060,7 +1094,7 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
           }
           return '' 
         },
-        editable: function(parms) {
+        editable: function(parms:any) {
           return parms.data.taskeditable
         }
       },
@@ -1070,7 +1104,7 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
         cellDataType: "text",
         field: "depend_task",
 
-        editable: function(parms) {
+        editable: function(parms:any) {
           return parms.data.taskeditable
         }      },
       {
@@ -1078,7 +1112,7 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
         field: "assigned_to",
         cellDataType: "text",
 
-        editable: function(parms) {
+        editable: function(parms:any) {
           return parms.data.taskeditable
         } ,     cellEditor: 'agRichSelectCellEditor',
         cellEditorParams: {
@@ -1099,15 +1133,20 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
   
     ] 
 this.gridOptions.columnDefs=this.columnDefs
-if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
-  this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
-  this.gridApi.setGetRowId(this.gridOptions.getRowId)
-  delete this.gridOptions.autoGroupColumnDef;
-  delete this.gridOptions.getRowId;
-this.gridApi.setGridOption('treeData',this.gridOptions.treeData)
- this.gridApi.updateGridOptions(this.gridOptions)
-  this.gridApi.setSideBarVisible(false);
-}
+// ? Undo
+    // if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+    //   this.gridApi.setAutoGroupColumnDef(this.gridOptions.autoGroupColumnDef)
+    //   this.gridApi.setGetRowId(this.gridOptions.getRowId)
+    //   delete this.gridOptions.autoGroupColumnDef;
+    //   this.gridApi.setColumnDefs(this.columnDefs)   
+    //   this.gridApi.setGridOption('columnDefs',this.columnDefs)
+        
+    //   delete this.gridOptions.getRowId;
+    // this.gridApi.setGridOption('treeData',this.gridOptions.treeData)
+    // this.gridApi.updateGridOptions(this.gridOptions)
+    //   this.gridApi.setSideBarVisible(false);
+    // }
+
   }else if(this.formName=="release"){
     // this.pageHeading="Team Member"
     // const Assigned:any=this.AssignTOCellEditorParams
@@ -1144,7 +1183,7 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
           "width": 40,
           "sortable": true,
           "filter": "agDateColumnFilter",
-          valueFormatter: function (params) {
+          valueFormatter: function (params:any) {
             if(params.value){
       
               return moment(params.value).format('DD/MM/YYYY')
@@ -1158,7 +1197,7 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
           "width": 40,
           "editable": true,
           "filter": "agDateColumnFilter" ,
-          valueFormatter: function (params) {
+          valueFormatter: function (params:any) {
             if(params.value){
       
               return moment(params.value).format('DD/MM/YYYY')
@@ -1191,16 +1230,20 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
     // )
 // this.cfg.detectChanges()
 this.gridOptions.columnDefs=this.columnDefs
-if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
-  this.gridApi.setAutoGroupColumnDef({})
-  this.gridApi.setGetRowId(this.gridOptions.getRowId)
-  delete this.gridOptions.autoGroupColumnDef;
-  delete this.gridOptions.getRowId;
-this.gridApi.setGridOption('treeData',this.gridOptions.treeData)
+// ? Undo
+    // if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+    //   this.gridApi.setAutoGroupColumnDef({})
+    //   this.gridApi.setGetRowId(this.gridOptions.getRowId)
+    //   delete this.gridOptions.autoGroupColumnDef;
+    //   delete this.gridOptions.getRowId;
+    //   this.gridApi.setColumnDefs(this.columnDefs)   
+    // this.gridApi.setGridOption('columnDefs',this.columnDefs)
+      
+    // this.gridApi.setGridOption('treeData',this.gridOptions.treeData)
 
-  this.gridApi.updateGridOptions(this.gridOptions)
-  this.gridApi.setSideBarVisible(false);
-}
+    //   this.gridApi.updateGridOptions(this.gridOptions)
+    //   this.gridApi.setSideBarVisible(false);
+    // }
   }else if(this.formName=="sprint"){
   this.gridOptions.treeData=false
 this.gridOptions.pagination=true
@@ -1232,7 +1275,7 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
         "field": "start_date",
 "sortable": true,
 "filter": "agDateColumnFilter",
-valueFormatter: function (params) {
+valueFormatter: function (params:any) {
   if(params.value){
 
     return moment(params.value).format('DD/MM/YYYY')
@@ -1246,7 +1289,7 @@ valueFormatter: function (params) {
 "sortable": true,
 "filter": "agDateColumnFilter",
 
-    valueFormatter: function (params) {
+    valueFormatter: function (params:any) {
       if(params.value){
 
         return moment(params.value).format('DD/MM/YYYY')
@@ -1277,15 +1320,20 @@ valueFormatter: function (params) {
 ]
 
 this.gridOptions.columnDefs=this.columnDefs
-if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
-  this.gridApi.setAutoGroupColumnDef({})
-  this.gridApi.setGetRowId(this.gridOptions.getRowId)
-  delete this.gridOptions.autoGroupColumnDef;
-  delete this.gridOptions.getRowId;
-this.gridApi.setGridOption('treeData',false)
-this.gridApi.updateGridOptions(this.gridOptions)
-  this.gridApi.setSideBarVisible(false);
-}
+// ? Undo
+    // if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+    //   this.gridApi.setAutoGroupColumnDef({})
+    //   this.gridApi.setGetRowId(this.gridOptions.getRowId)
+    //   delete this.gridOptions.autoGroupColumnDef;
+    //   delete this.gridOptions.getRowId;
+    //   this.gridApi.setColumnDefs(this.columnDefs)   
+    //   this.gridApi.setGridOption('columnDefs',this.columnDefs)
+        
+    // this.gridApi.setGridOption('treeData',false)
+    // this.gridApi.updateGridOptions(this.gridOptions)
+    //   this.gridApi.setSideBarVisible(false);
+    // }
+
   }else if(this.formName=="functionaltesting"){
     // this.pageHeading="Team Member"
  
@@ -1355,15 +1403,20 @@ this.gridOptions.getRowId=function(rowData:any){return rowData.data['_id']}
 	  ]
 
 this.gridOptions.columnDefs=this.columnDefs
-if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
-  this.gridApi.setAutoGroupColumnDef({})
-  this.gridApi.setGetRowId(this.gridOptions.getRowId)
-  delete this.gridOptions.autoGroupColumnDef;
-  delete this.gridOptions.getRowId;
-this.gridApi.setGridOption('treeData',false);
- this.gridApi.updateGridOptions(this.gridOptions)
-  this.gridApi.setSideBarVisible(false);
-}
+    // ? Undo
+// if(this.gridaldreadyloaded==true &&  this?.gridApi != null && this?.gridApi != undefined ){
+        //   this.gridApi.setAutoGroupColumnDef({})
+        //   this.gridApi.setGetRowId(this.gridOptions.getRowId)
+        //   delete this.gridOptions.autoGroupColumnDef;
+        //   this.gridApi.setColumnDefs(this.columnDefs)   
+        // this.gridApi.setGridOption('columnDefs',this.columnDefs)
+          
+        //   delete this.gridOptions.getRowId;
+        // this.gridApi.setGridOption('treeData',false);
+        // this.gridApi.updateGridOptions(this.gridOptions)
+        //   this.gridApi.setSideBarVisible(false);
+        // }
+
   }
  
 }
@@ -1499,13 +1552,16 @@ if(res.data.response!=null){
     data.push(element)
   });
   this.listData=data
-  if (this.gridApi) {
-console.log("Grid Load Alderady",this.listData);
+//   if (this.gridApi) {
+// console.log("Grid Load Alderady",this.listData);
 // this.gridApi.setGridOption('rowData',this.listData)
-// this.gridApi.redrawRows()    
-this.gridApi.updateGridOptions({rowData:this.listData})
-    this.gridApi.refreshClientSideRowModel();
-  }
+// // this.gridApi.redrawRows()    
+// this.gridApi.updateGridOptions({rowData:this.listData})
+//     this.gridApi.refreshClientSideRowModel();
+//     this.gridDataPatch()
+//   }
+// this.reloadGrid()
+
 } 
     })
    }else if(this.formName=="regression"){
@@ -1516,33 +1572,26 @@ this.gridApi.updateGridOptions({rowData:this.listData})
 if(res.data.response!=null){
   let data:any=res.data.response
   this.listData=data
-  if (this.gridApi) {
-console.log("Grid Load Alderady",this.listData);
+  // this.reloadGrid()
+//   if (this.gridApi) {
+// console.log("Grid Load Alderady",this.listData);
 
-// this.gridApi.redrawRows()    
-this.gridApi.updateGridOptions({rowData:this.listData});
-    this.gridApi.refreshClientSideRowModel()
-  }
+// // this.gridApi.redrawRows()    
+// this.gridApi.updateGridOptions({rowData:this.listData});
+//     this.gridApi.refreshClientSideRowModel()
+//     this.gridDataPatch()
+//   }
 }
             // this.updateGrid()
             // this.gridApi.applyTransaction({add:[this.listData]})
           })
         })
-      }     else if(this.formName=="team_member"){
-        // this.dataService
-        // .getDataById("project", "6554bb7e052126c9587741a5")
-        // .subscribe((data: any) => {
-        //   console.log(data);
-          this.dataService
-            .lookupTreeData("task_requriment", this.response.project_id)
-            .subscribe((res: any) => {
-              // this.listData = res.data.response;
+      }     else if(this.formName=="team_member"){ 
+          this.dataService.lookupTreeData("task_requriment", this.response.project_id).subscribe((res: any) => {
               if(res.data.response!=null){
                 this.GroupRow(res.data.response);
               }
-            });
-          
-        // });
+            }); 
     }  else if(this.formName=="sprint"){
       // this.dataService
       // .getDataById("project", "6554bb7e052126c9587741a5")
@@ -1552,19 +1601,19 @@ this.gridApi.updateGridOptions({rowData:this.listData});
         start:0,end:1000,
         "filter":[{"clause":"AND","conditions":[{"column":"project_id","operator":"EQUALS","value": this.response.project_id}]}]
       }
-        this.dataService
-          .getDataByFilter("sprint", Projectfiler)
-          .subscribe((res: any) => {
-            console.log(res);
+        this.dataService.getDataByFilter("sprint", Projectfiler).subscribe((res: any) => {
             if(res && res.data[0].response){
             this.listData = res.data[0].response;
-            if (this.gridApi) {
-console.log("Grid Load Alderady",this.listData);
-this.gridApi.setGridOption('rowData',this.listData)
-// this.gridApi.redrawRows()              
-this.gridApi.updateGridOptions({rowData:this.listData})
-              this.gridApi.refreshClientSideRowModel()
-            }
+// this.reloadGrid()
+
+            // if (this.gridApi) {
+            //     console.log("Grid Load Alderady",this.listData);
+            //     this.gridApi.setGridOption('rowData',this.listData)
+            //     // this.gridApi.redrawRows()              
+            //     this.gridApi.updateGridOptions({rowData:this.listData})
+            //   this.gridApi.refreshClientSideRowModel()
+            //   this.gridDataPatch()
+            // }
           } 
         }); 
   }  else if(this.formName=="release"){
@@ -1574,29 +1623,31 @@ this.gridApi.updateGridOptions({rowData:this.listData})
           console.log(res);
           if(res && res.data.response){
             this.listData=res.data.response
-            if (this.gridApi) {
-console.log("Grid Load Alderady",this.listData);
-this.gridApi.setGridOption('rowData',this.listData)
-// this.gridApi.redrawRows()              
-this.gridApi.updateGridOptions({rowData:this.listData})
-              this.gridApi.refreshClientSideRowModel()
-            }
+// this.reloadGrid()
+//             if (this.gridApi) {
+// console.log("Grid Load Alderady",this.listData);
+// this.gridApi.setGridOption('rowData',this.listData)
+// // this.gridApi.redrawRows()              
+// this.gridApi.updateGridOptions({rowData:this.listData})
+//               this.gridApi.refreshClientSideRowModel()
+//               this.gridDataPatch()
+//             }
           } 
         });
   } else if(this.formName=="functionaltesting"){
-    this.dataService
-      .lookupTreeData("testing", this.response.project_id)
-      .subscribe((res: any) => {
-        console.log(res);
+    this.dataService.lookupTreeData("testing", this.response.project_id).subscribe((res: any) => {
         if(res && res.data.response){
           this.listData=res.data.response
-          if (this.gridApi) {
-console.log("Grid Load Alderady",this.listData);
-this.gridApi.setGridOption('rowData',this.listData)
-// this.gridApi.redrawRows()            
-this.gridApi.updateGridOptions({rowData:this.listData})
-            this.gridApi.refreshClientSideRowModel()
-          }
+            // this.reloadGrid()
+
+          // if (this.gridApi) {
+          //       console.log("Grid Load Alderady",this.listData);
+          //       this.gridApi.setGridOption('rowData',this.listData)
+          //       // this.gridApi.redrawRows()            
+          //       this.gridApi.updateGridOptions({rowData:this.listData})
+          //   this.gridApi.refreshClientSideRowModel()
+            // this.gridDataPatch()
+          // }
         } 
       });
 }
@@ -1614,7 +1665,6 @@ this.gridApi.updateGridOptions({rowData:this.listData})
     }]
   }
   let listData:any[]=[]
-// this.response.project_id
     this.dataService.getDataByFilter("modules", Projectfiler).subscribe((res: any) => {
       this.listData = [] 
       let data:any=res.data[0].response
@@ -1632,6 +1682,10 @@ this.gridApi.updateGridOptions({rowData:this.listData})
             row.treePath = [...parentNode.treePath];
             row.treePath.push(row.modulename);
           }
+          // ? Time Purpose
+          else{
+            row.treePath= [row.modulename];
+          }
         }
         listData.push(row);
 // this.cfg.detectChanges()
@@ -1641,16 +1695,19 @@ console.log(listData);
       }
       this.listData=listData
 
-      if (this.gridApi) {
-        // this.gridApi.applyTransaction({add:[this.listData]})
-console.log("Grid Load Alderady",this.listData);
-// this.gridApi.setGridOption('rowData',this.listData)
-// this.gridApi.redrawRows()        
-this.gridApi.updateGridOptions({rowData:this.listData})
-        // this.gridApi.setGridOption("rowData",this.listData)
+//       if (this.gridApi) {
+//         // this.gridApi.applyTransaction({add:[this.listData]})
+// console.log("Grid Load Alderady",this.listData);
+// // this.gridApi.setGridOption('rowData',this.listData)
+// // this.gridApi.redrawRows()        
+// this.gridApi.updateGridOptions({rowData:this.listData})
+//         // this.gridApi.setGridOption("rowData",this.listData)
 
-        this.gridApi.refreshClientSideRowModel()
-      }
+//         this.gridDataPatch()
+//         this.gridApi.refreshClientSideRowModel()
+//       }
+// this.reloadGrid()
+
       // this.cfg.detectChanges()
     });
     // this.updateGrid();
@@ -1697,15 +1754,18 @@ this.gridApi.updateGridOptions({rowData:this.listData})
         }
       }); 
     this.listData = parentTreeData;
-    if (this.gridApi) {
-        // this.gridApi.applyTransaction({add:[this.listData]})
-        console.log("Grid Load Alderady",this.listData);
-        // this.gridApi.setGridOption('rowData',this.listData)
-        // this.gridApi.redrawRows()        
-        this.gridApi.updateGridOptions({rowData:this.listData})
-        // this.gridApi.setGridOption("rowData",this.listData)
-        this.gridApi.refreshClientSideRowModel()
-      }
+    // if (this.gridApi) {
+    //     // this.gridApi.applyTransaction({add:[this.listData]})
+    //     console.log("Grid Load Alderady",this.listData);
+    //     // this.gridApi.setGridOption('rowData',this.listData)
+    //     // this.gridApi.redrawRows()        
+    //     this.gridApi.updateGridOptions({rowData:this.listData})
+    //     // this.gridApi.setGridOption("rowData",this.listData)
+    //     this.gridApi.refreshClientSideRowModel()
+    //     this.gridDataPatch()
+    //   }
+// this.reloadGrid()
+
       // this.cfg.detectChanges()
     }
     
@@ -1986,16 +2046,19 @@ this.gridApi.updateGridOptions({rowData:this.listData})
     }
 // this.updateGrid()
 this.listData=allvalues
-if (this.gridApi) {
-  // this.gridApi.applyTransaction({add:[this.listData]})
-console.log("Grid Load Alderady",this.listData);
-// this.gridApi.setGridOption('rowData',this.listData)
-// this.gridApi.redrawRows()  
-this.gridApi.updateGridOptions({rowData:this.listData})
-  // this.gridApi.setGridOption("rowData",this.listData)
+// if (this.gridApi) {
+//   // this.gridApi.applyTransaction({add:[this.listData]})
+// console.log("Grid Load Alderady",this.listData);
+// // this.gridApi.setGridOption('rowData',this.listData)
+// // this.gridApi.redrawRows()  
+// this.gridApi.updateGridOptions({rowData:this.listData})
+//   // this.gridApi.setGridOption("rowData",this.listData)
 
-  this.gridApi.refreshClientSideRowModel()
-}
+//   this.gridApi.refreshClientSideRowModel()
+//   this.gridDataPatch()
+// }
+// this.reloadGrid()
+
 // this.cfg.detectChanges()
     }
   });
@@ -2003,7 +2066,7 @@ this.gridApi.updateGridOptions({rowData:this.listData})
 }
 
  fetchTestResultData() {
-  this.dataService.lookupTreeData("regression",this.response._id).subscribe((res:any)=>{
+  this.dataService.lookupTreeData("regression",this.id).subscribe((res:any)=>{
     if(res.data.response != null ){
       let test_Case_Details:any[]=[]
       res.data.response.forEach((xyz:any)=>{
@@ -2053,21 +2116,40 @@ this.gridApi.updateGridOptions({rowData:this.listData})
   
     this.listData = overalldata;
     // this.updateGrid()
-    if (this.gridApi) {
-      // this.gridApi.applyTransaction({add:[this.listData]})
-console.log("Grid Load Alderady",this.listData);
-// this.gridApi.setGridOption('rowData',this.listData)
-// this.gridApi.redrawRows()      
-this.gridApi.updateGridOptions({rowData:this.listData})
-  // this.gridApi.setGridOption("rowData",this.listData)
+//     if (this.gridApi) {
+//       // this.gridApi.applyTransaction({add:[this.listData]})
+// console.log("Grid Load Alderady",this.listData);
+// // this.gridApi.setGridOption('rowData',this.listData)
+// // this.gridApi.redrawRows()      
+// this.gridApi.updateGridOptions({rowData:this.listData})
+//   // this.gridApi.setGridOption("rowData",this.listData)
 
-      this.gridApi.refreshClientSideRowModel()
-      // this.cfg.detectChanges()
-    }
+//   this.gridDataPatch()
+//       // this.cfg.detectChanges()
+//     }
+// this.reloadGrid()
+
     }
   })
 } 
-  
+public isVisible = true;
+reloadGrid() {
+  this.isVisible = false;
+  if(this.gridApi){
+    this.gridApi.destroy();
+  }
+  setTimeout(() => (this.isVisible = true), 0.1);
+}
+// gridDataPatch(){
+//     this.gridApi.setColumnDefs(this.columnDefs)   
+//     this.gridApi.setGridOption('columnDefs',this.columnDefs)
+//     this.gridApi.setGridOption('rowData',this.listData)
+//     this.gridApi.updateGridOptions({rowData:this.listData})
+//     this.gridApi.setRowData(this.listData)
+//     this.gridApi.refreshClientSideRowModel()
+//         }
+
+
 GroupRow(data: any) {
 this.listData = [];
 let plainRequirements: any[] = [];
@@ -2149,14 +2231,17 @@ existTasks.forEach((element: any) => {
   }
 });
 this.listData = concat(parentTreeData,taskData);
-if (this.gridApi) {
-  // this.gridApi.applyTransaction({add:[this.listData]})
-console.log("Grid Load Alderady",this.listData);
-// this.gridApi.setGridOption('rowData',this.listData)
-// this.gridApi.redrawRows()  
-this.gridApi.updateGridOptions({rowData:this.listData})
-  this.gridApi.refreshClientSideRowModel()
-}   
+// if (this.gridApi) {
+//   // this.gridApi.applyTransaction({add:[this.listData]})
+// console.log("Grid Load Alderady",this.listData);
+// // this.gridApi.setGridOption('rowData',this.listData)
+// // this.gridApi.redrawRows()  
+// this.gridApi.updateGridOptions({rowData:this.listData})
+//   this.gridApi.refreshClientSideRowModel()
+//   this.gridDataPatch()
+// }   
+// this.reloadGrid()
+
 // this.cfg.detectChanges()
 // this.updateGrid()
 
