@@ -10,8 +10,7 @@
 }
 :root {
   --width: 50%;  
-}
-
+} 
 .example-sidenav {
   width: var(--width); 
 }

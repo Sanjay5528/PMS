@@ -1724,6 +1724,45 @@ console.log(listData);
     
 }
 // ! 0
+
+iconhide(event:any,index:any,key:any,value:any){ 
+this.selectedRows[key][index].show = value;
+}
+
+drawerdelete(collectionName:any,id:any,index:any,key:any,remove:any){
+  if (confirm("Do you wish to delete this record?")) { 
+    this.dataService.deleteDataById(collectionName, id).subscribe((res: any) => {
+        console.log(res);
+        this.selectedRows[key].splice(index, 1);
+        this.selectedRows[remove]=  this.selectedRows[remove] -1
+        this.gridApi.applyTransaction({
+          update:[this.selectedRows]
+        })
+        this.dialogService.openSnackBar(res.message, "OK");
+
+      });
+  }
+}
+editclick(formName:any,index:any,key:any){
+
+  this.dataService.loadConfig(formName).subscribe(async (config: any) => {
+    console.log(config);      
+    this.formAction='Add' 
+    this.config = config
+    this.fields = config.form.fields
+    this.pageHeading = config.pageHeading;
+    this.collectionName = config.form.collectionName
+    this.model=this.selectedRows[key][index]
+    this.formAction = 'Edit';
+    this.butText = 'Update';   //buttons based on the id
+    this.dialogService.openDialog(this.editViewPopup, null, null, {});
+  })
+
+}
+closePopUp(){
+  this.form.reset()
+  this.dialogService.CloseALL()
+}
  fetchRequirementData() {
   // let listData:any[]=[]
   this.dataService.lookupTreeData("requriment",this.response.project_id).subscribe((res:any) =>{
@@ -2577,6 +2616,7 @@ if(fieldName=="assigned_to"){
   values.client_name= this.response?.client_name
   values.project_id= this.response?.project_id
   // values.project_name= this.response?.project_name
+
 if(this.formName=="projectteam"){
   values._id=`SEQ|${values.project_id}`
 }
@@ -2585,22 +2625,28 @@ if(values._id==undefined|| values._id ==null){
   values._id=`SEQ|${values.project_id}`
 
 }
+
 values.status='A'
 
   values.parentmodulename= ""
+
   if(this.formName=="release"||this.formName=="sprint"){
     delete values.parentmodulename
   }
+  
   if(this.formName=="sprint"){
     // values.release_id=prefix          
     values._id=values.release_id+"-"+values._id
   }
+
   values.status='A'
+  if(!this.model._id){
   this.dataService.save(this.config.form.collectionName,values).subscribe((data:any)=>{
     console.log(data);
     this.form.reset()
     this.dialogService.closeModal();
   })
+}else
   this.ngOnInit()
   } 
 
