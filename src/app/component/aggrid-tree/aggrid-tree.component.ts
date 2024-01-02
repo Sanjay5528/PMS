@@ -2645,9 +2645,17 @@ values.status='A'
     console.log(data);
     this.form.reset()
     this.dialogService.closeModal();
+    this.ngOnInit()
   })
-}else
-  this.ngOnInit()
+}else{
+  delete values._id
+  this.dataService.update(this.config.form.collectionName,this.model._id,values).subscribe((data:any)=>{
+    console.log(data);
+    this.form.reset()
+    this.dialogService.closeModal();
+    this.ngOnInit()
+  })
+}
   } 
 
   is_bug:any
