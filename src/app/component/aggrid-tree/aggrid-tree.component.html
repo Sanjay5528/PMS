@@ -27,13 +27,17 @@
                <span [ngStyle]="{'background-color': testCase?.test_case_scenario === 'P' ? 'green' : 'red', 'width': '10px', 'height': '10px', 'border-radius': '50%', 'display': 'inline-block', 'margin-right': '5px','margin-left':'5px'}"></span>
              </mat-card-title>
            </mat-card-header>
-           <mat-card-content style="margin-left: 30px;">
-            <div style="display: block;">
-              <p style="font-size: small;font-weight: bold;"> Test Data     </p>
+           <mat-card-content style="margin-left: 50px;">
+            <div style="display: block;" *ngIf="testCase && testCase.test_description">
+              <p style="font-size: small;font-weight: bold;margin-left: 10px;"> Test Description   </p>
+                  <span style="margin-left: 10px;" [innerHTML]="testCase.test_description"> </span>
+            </div>
+            <div style="display: block;" *ngIf="testCase && testCase.test_data">
+              <p style="font-size: small;font-weight: bold;margin-left: 10px;"> Test Data     </p>
                   <span style="margin-left: 10px;" [innerHTML]="testCase.test_data"> </span>
             </div>
-            <div style="display: block;">
-              <p style="font-size: small;font-weight: bold;"> Expected Result      </p>
+            <div style="display: block;" *ngIf="testCase && testCase.expected_result">
+              <p style="font-size: small;font-weight: bold;margin-left: 10px;"> Expected Result      </p>
                   <span style="margin-left: 10px;" [innerHTML]="testCase.expected_result"> </span>
             </div>
              
