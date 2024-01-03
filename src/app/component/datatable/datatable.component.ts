@@ -68,8 +68,7 @@ export class DatatableComponent implements OnInit {
   selectedModel: any = {};
   showbutton!: boolean;
   dataExist = true;
-  @ViewChild("editViewPopup", { static: true })
-  editViewPopup!: TemplateRef<any>;
+  @ViewChild("editViewPopup", { static: true })  editViewPopup!: TemplateRef<any>;
   @ViewChild("Popup", { static: true }) Popup!: TemplateRef<any>;
   formName!: string;
   model: any;
