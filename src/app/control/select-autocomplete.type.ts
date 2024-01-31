@@ -68,9 +68,6 @@ data:any={}
      })
     }
     this.formControl.valueChanges.subscribe((val:any)=>{
-      console.log(val);
-      console.log(this.opt.options);
-      
         const filterValue = val.toLowerCase();
         // this.filteredOptions = this.opt.options.filter((option:any) => option[this.labelProp].toLowerCase().includes(filterValue));
         this.filteredOptions = this.opt.options.filter((option: any) => {
