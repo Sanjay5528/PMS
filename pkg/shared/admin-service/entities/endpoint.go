@@ -24,7 +24,7 @@ func SetupaccessUser(app *fiber.App) {
 	r.Put("/generate-pwd/:access_key", helper.UpdateUserPasswordandremoveTempData)
 	r.Get("/:access_key", helper.RetrieveTemporaryUserDataByAccessKey)
 }
-
+         
 // SetupCRUDRoutes  --METHOD BaseCud Endpoint
 func SetupCRUDRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/entities/", "REST API")
