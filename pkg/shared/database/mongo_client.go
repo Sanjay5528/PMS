@@ -73,7 +73,7 @@ func CreateDBConnection(host string, port int, dbName string, userid string, pwd
 	if !Ping() {
 		return nil
 	}
-	// fmt.Println(dwbName)
+
 	return MongoClient.Database(dbName)
 
 }

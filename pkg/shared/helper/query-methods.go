@@ -345,8 +345,11 @@ func PagiantionPipeline(start, end int) bson.M {
 	endValue, _ := strconv.Atoi(os.Getenv("DEFAULT_LIMIT_VALUE"))
 
 	//param is empty set the Default value
-	if start == 0 || end == 0 {
+
+	if start == 0 {
 		start = startValue
+	}
+	if end == 0 {
 		end = endValue
 	}
 
@@ -486,7 +489,7 @@ func Generateuniquekey() string {
 
 // HandleSequenceOrder -- METHOD extracts the sequence identifier from a key string.
 func HandleSequenceOrder(key, OrgID string) (string, error) {
-	fmt.Println("dddddddd")
+
 	parts := strings.Split(key, "SEQ|")
 	if len(parts) > 1 {
 		ID := parts[1]

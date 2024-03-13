@@ -38,24 +38,24 @@ func PostDocHandler(c *fiber.Ctx) error {
 	}
 
 	userToken := utils.GetUserTokenValue(c)
-	// modelName := c.Params("model_name")
+	modelName := c.Params("model_name")
 
-	// collectionName, err := helper.CollectionNameGet(modelName, org.Id)
-	// if err != nil {
-	// 	return shared.BadRequest("Invalid CollectionName")
-	// }
+	collectionName, err := helper.CollectionNameGet(modelName, org.Id)
+	if err != nil {
+		return shared.BadRequest("Invalid CollectionName")
+	}
 
-	// inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
-	// if errmsg != nil {
-	// 	// errmsg is map to string
-	// 	for key, value := range errmsg {
-	// 		return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
-	// 	}
-	// }
+	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	if errmsg != nil {
+		// errmsg is map to string
+		for key, value := range errmsg {
+			return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
+		}
+	}
 
-	collectionName := c.Params("model_name")
-	var inputData map[string]interface{}
-	c.BodyParser(&inputData)
+	// collectionName := c.Params("model_name")
+	// var inputData map[string]interface{}
+	// c.BodyParser(&inputData)
 	// to paras the Datatype
 	helper.UpdateDateObject(inputData)
 	handleIDGeneration(inputData, org.Id)
@@ -619,7 +619,6 @@ func getDocsHandler(c *fiber.Ctx) error {
 			return shared.BadRequest(cmdErr.Message)
 		}
 	}
-	fmt.Println(Response)
 	return shared.SuccessResponse(c, Response)
 }
 
@@ -834,7 +833,7 @@ func postTimesheetDocHandler(c *fiber.Ctx) error {
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
-	fmt.Println(len(response))
+
 	//var res []primitive.M
 	//var upfilter primitive.A
 
@@ -889,7 +888,7 @@ func postTimesheetDocHandler(c *fiber.Ctx) error {
 			return shared.BadRequest(err.Error())
 		} else {
 			res, err := timesheetgroup(orgId, response)
-			fmt.Println(res[0]["status"])
+
 			if err != nil {
 				return shared.BadRequest("g" + err.Error())
 			}
@@ -960,7 +959,7 @@ func timesheetgroup(orgId string, response []primitive.M) ([]primitive.M, error)
 	if err != nil {
 		return nil, shared.BadRequest(err.Error())
 	}
-	fmt.Println(res)
+
 	return res, nil
 }
 
@@ -972,7 +971,6 @@ func getUnscheduleIdHandler(c *fiber.Ctx) error {
 	employee_id := c.Params("employee_id")
 	date := c.Params("date")
 	scheduled_date, _ := time.Parse(time.RFC3339, date)
-	fmt.Println(scheduled_date, employee_id)
 
 	filter := bson.A{
 		bson.D{
@@ -1411,7 +1409,7 @@ func HandlerBugReport(c *fiber.Ctx) error {
 	filter := bson.A{}
 	regression_id := c.Params("regression_id")
 	if regression_id != "" {
-		fmt.Println("INSIDE")
+
 		filter = append(filter, bson.D{{"$match", bson.D{{"regression_id", regression_id}}}})
 	}
 	filter = append(filter,
@@ -2427,167 +2425,6 @@ func team_specifcaiton(c *fiber.Ctx) error {
 
 }
 
-// func team_specifcaiton(c *fiber.Ctx) error {
-
-// 	org, exists := helper.GetOrg(c)
-// 	if !exists {
-// 		return shared.BadRequest("Invalid Org Id")
-// 	}
-// 	// approved_by/:startdate/:enddate
-// 	start_date := c.Params("startdate")
-// 	end_date := c.Params("enddate")
-// 	scheduled_start_date, _ := time.Parse(time.RFC3339, start_date)
-// 	scheduled_end_date, _ := time.Parse(time.RFC3339, end_date)
-// 	fmt.Println("Start date: ", scheduled_start_date)
-// 	fmt.Println("End date: ", scheduled_end_date)
-// 	pipeline := bson.A{
-// 		bson.D{{"$match", bson.D{{"approved_by", c.Params("approved_by")}}}},
-// 		bson.D{
-// 			{"$lookup",
-// 				bson.D{
-// 					{"from", "employee"},
-// 					{"localField", "user_id"},
-// 					{"foreignField", "employee_id"},
-// 					{"as", "employee"},
-// 				},
-// 			},
-// 		},
-// 		bson.D{
-// 			{"$unwind",
-// 				bson.D{
-// 					{"path", "$employee"},
-// 					{"preserveNullAndEmptyArrays", true},
-// 				},
-// 			},
-// 		},
-// 		bson.D{
-// 			{"$lookup",
-// 				bson.D{
-// 					{"from", "project"},
-// 					{"localField", "project_id"},
-// 					{"foreignField", "project_id"},
-// 					{"as", "project"},
-// 				},
-// 			},
-// 		},
-// 		bson.D{
-// 			{"$unwind",
-// 				bson.D{
-// 					{"path", "$project"},
-// 					{"preserveNullAndEmptyArrays", true},
-// 				},
-// 			},
-// 		},
-// 		bson.D{
-// 			{"$addFields",
-// 				bson.D{
-// 					{"User_name",
-// 						bson.D{
-// 							{"$concat",
-// 								bson.A{
-// 									"$employee.first_name",
-// 									" ",
-// 									"$employee.last_name",
-// 								},
-// 							},
-// 						},
-// 					},
-// 				},
-// 			},
-// 		},
-// 		bson.D{{"$addFields", bson.D{{"project_name", "$project.project_name"}}}},
-// 		bson.D{
-// 			{"$unset",
-// 				bson.A{
-// 					"employee",
-// 					"project",
-// 				},
-// 			},
-// 		},
-// 		bson.D{
-// 			{"$lookup",
-// 				bson.D{
-// 					{"from", "task"},
-// 					{"localField", "user_id"},
-// 					{"foreignField", "assigned_to"},
-// 					{"as", "task"},
-// 				},
-// 			},
-// 		},
-// 		bson.D{
-// 			{"$unwind",
-// 				bson.D{
-// 					{"path", "$task"},
-// 					{"preserveNullAndEmptyArrays", true},
-// 				},
-// 			},
-// 		},
-// 		bson.D{
-// 			{"$lookup",
-// 				bson.D{
-// 					{"from", "timesheet"},
-// 					{"localField", "task._id"},
-// 					{"foreignField", "task_id"},
-// 					{"as", "timesheet"},
-// 				},
-// 			},
-// 		},
-// 		bson.D{{"$addFields", bson.D{{"totalworkedhours", bson.D{{"$sum", "$timesheet.workedhours"}}}}}},
-// 		bson.D{
-// 			{"$unwind",
-// 				bson.D{
-// 					{"path", "$timesheet"},
-// 					{"preserveNullAndEmptyArrays", true},
-// 				},
-// 			},
-// 		},
-// 		bson.D{
-// 			{"$match",
-// 				bson.D{
-// 					{"task.status", "Completed"},
-// 					{"timesheet.status", "Completed"},
-// 				},
-// 			},
-// 		},
-// 		bson.D{{"$addFields", bson.D{{"end", "$task.scheduled_end_date"}}}},
-// 		bson.D{{"$addFields", bson.D{{"start", "$task.scheduled_start_date"}}}},
-// 		bson.D{
-// 			{"$match",
-// 				bson.D{
-// 					{"$and",
-// 						bson.A{
-// 							bson.D{
-// 								{"start",
-// 									bson.D{
-// 										{"$gte", time.Date(scheduled_start_date.Year(), scheduled_start_date.Month(), scheduled_start_date.Day(), 0, 0, 0, 0, time.UTC)},
-// 										{"$lte", time.Date(scheduled_start_date.Year(), scheduled_start_date.Month(), scheduled_start_date.Day(), 23, 59, 59, 0, time.UTC)},
-// 									},
-// 								},
-// 							},
-// 							bson.D{
-// 								{"end",
-// 									bson.D{
-// 										{"$gte", time.Date(scheduled_end_date.Year(), scheduled_end_date.Month(), scheduled_end_date.Day(), 0, 0, 0, 0, time.UTC)},
-// 										{"$lte", time.Date(scheduled_end_date.Year(), scheduled_end_date.Month(), scheduled_end_date.Day(), 23, 59, 59, 0, time.UTC)},
-// 									},
-// 								},
-// 							},
-// 						},
-// 					},
-// 				},
-// 			},
-// 		},
-// 	}
-
-// 	response, err := helper.GetAggregateQueryResult(org.Id, "team_specification", pipeline)
-// 	if err != nil {
-// 		return shared.BadRequest(err.Error())
-// 	}
-// 	// fmt.Println(response)
-// 	return shared.SuccessResponse(c, response)
-
-// }
-
 // too
 func getFinalTimesheet(c *fiber.Ctx) error {
 	org, exists := helper.GetOrg(c)
@@ -2791,7 +2628,7 @@ func getFinalTimesheet(c *fiber.Ctx) error {
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
-	// fmt.Println(response)
+
 	return shared.SuccessResponse(c, response)
 }
 func sidenav(c *fiber.Ctx) error {
@@ -2880,7 +2717,7 @@ func sidenav(c *fiber.Ctx) error {
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
-	// fmt.Println(response)
+
 	return shared.SuccessResponse(c, response)
 
 }

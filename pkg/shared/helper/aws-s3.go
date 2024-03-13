@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"fmt"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -48,22 +49,6 @@ func ListBuckets() interface{} {
 	//     fmt.Println(aws.StringValue(b.Name))
 	// }
 }
-
-// func UploadFile(bucketName string, fileName string, refId string, remarks string) {
-// 	object := s3.PutObjectInput{
-// 		Bucket: aws.String(bucketName),
-// 		Key:    aws.String(fileName),
-// 		Body:   strings.NewReader(remarks),
-// 		ACL:    aws.String("private"),
-// 		Metadata: map[string]*string{
-// 			"x-amz-meta-my-key": aws.String(refId), //required
-// 		},
-// 	}
-// 	_, err := s3Client.PutObject(&object)
-// 	if err != nil {
-// 		fmt.Println(err.Error())
-// 	}
-// }
 
 func ListBucketFiles(bucketName string) map[string]interface{} {
 	input := &s3.ListObjectsInput{

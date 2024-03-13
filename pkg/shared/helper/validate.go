@@ -466,9 +466,6 @@ func verifyInputStruct(rv reflect.Value, inputMap map[string]interface{}, errMap
 			keyExists := false
 			for i := 0; i < rv.NumField(); i++ {
 				field := rv.Type().Field(i)
-				// fmt.Println(field.Tag.Get("json"))
-				// fieldTag := strings.ToLower(string(field.Tag.Get("json")))
-				// fmt.Println(fieldTag)
 				fieldTag := string(field.Tag.Get("json"))
 				if fieldTag == key {
 					keyExists = true

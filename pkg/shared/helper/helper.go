@@ -52,17 +52,7 @@ func DocIdFilter(id string) bson.M {
 		// fmt.Println("Error decoding:", err)
 	}
 	return bson.M{"_id": id}
-	// // Attempt to convert the ID to a hexadecimal ObjectID.
-	// docId, err := primitive.ObjectIDFromHex(id)
 
-	// // If conversion fails, treat the ID as a string.
-	// if err != nil {
-	// 	return bson.M{"_id": id}
-	// } else {
-	// 	// If conversion is successful, use the ObjectID in the filter.
-
-	// 	return bson.M{"_id": ObjectIdToString(docId)}
-	// }
 }
 
 func ObjectIdToString(id interface{}) string {

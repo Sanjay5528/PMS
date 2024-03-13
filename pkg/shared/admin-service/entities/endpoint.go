@@ -24,7 +24,7 @@ func SetupaccessUser(app *fiber.App) {
 	r.Put("/generate-pwd/:access_key", helper.UpdateUserPasswordandremoveTempData)
 	r.Get("/:access_key", helper.RetrieveTemporaryUserDataByAccessKey)
 }
-         
+
 // SetupCRUDRoutes  --METHOD BaseCud Endpoint
 func SetupCRUDRoutes(app *fiber.App) {
 	r := helper.CreateRouteGroup(app, "/entities/", "REST API")
@@ -34,7 +34,6 @@ func SetupCRUDRoutes(app *fiber.App) {
 	r.Delete("/:collectionName/:id", DeleteById)
 	r.Delete("/:collectionName", DeleteByAll)
 	r.Post("/filter/:collectionName", getDocsHandler)
-
 	//Old pms code endpoint and func
 	r.Get("/filter/:collectionName/:projectid", getDocByIddHandler)
 	r.Get("/filters/:collectionName/:clientname", getDocByClientIdHandler)
