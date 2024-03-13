@@ -2,6 +2,7 @@ package entities
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -39,12 +40,12 @@ func PostDocHandler(c *fiber.Ctx) error {
 
 	userToken := utils.GetUserTokenValue(c)
 	modelName := c.Params("model_name")
-
+	// Get the collection based on Model Name
 	collectionName, err := helper.CollectionNameGet(modelName, org.Id)
 	if err != nil {
 		return shared.BadRequest("Invalid CollectionName")
 	}
-
+	// Validate Fields from body
 	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
 	if errmsg != nil {
 		// errmsg is map to string
@@ -52,14 +53,10 @@ func PostDocHandler(c *fiber.Ctx) error {
 			return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
 		}
 	}
-
-	// collectionName := c.Params("model_name")
-	// var inputData map[string]interface{}
-	// c.BodyParser(&inputData)
 	// to paras the Datatype
 	helper.UpdateDateObject(inputData)
 	handleIDGeneration(inputData, org.Id)
-
+	// if user user collection to send the email
 	if collectionName == "user" {
 		err := OnboardingProcessing(org.Id, inputData["_id"].(string), "Onboarding", "user")
 		if err != nil {
@@ -171,25 +168,22 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 	// to  Get the User Details from Token
 	userToken := utils.GetUserTokenValue(c)
 
-	// collectionName, err := helper.CollectionNameGet(c.Params("model_name"), org.Id)
-	// if err != nil {
-	// return shared.BadRequest("Invalid CollectionName")
-	// }
+	collectionName, err := helper.CollectionNameGet(c.Params("model_name"), org.Id)
+	if err != nil {
+		return shared.BadRequest("Invalid CollectionName")
+	}
 
-	// // Validate the input data based on the data model
-	// inputData, validationErrors := helper.UpdateValidateInDatamodel(collectionName, string(c.Body()), org.Id)
-	// if validationErrors != nil {
-	// 	//Handle validation errors with status code 400 (Bad Request)
-	// 	jsonstring, _ := json.Marshal(validationErrors)
-	// 	return shared.BadRequest(string(jsonstring))
-	// }
+	// Validate the input data based on the data model
+	inputData, validationErrors := helper.UpdateValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	if validationErrors != nil {
+		//Handle validation errors with status code 400 (Bad Request)
+		jsonstring, _ := json.Marshal(validationErrors)
+		return shared.BadRequest(string(jsonstring))
+	}
 
-	// updatedDatas := make(map[string]interface{})
-	// // update for nested fields
-	// UpdateData := helper.UpdateFieldsWithParentKey(inputData, "", updatedDatas)
-	collectionName := c.Params("model_name")
-	var UpdateData map[string]interface{}
-	c.BodyParser(&UpdateData)
+	updatedDatas := make(map[string]interface{})
+	// update for nested fields
+	UpdateData := helper.UpdateFieldsWithParentKey(inputData, "", updatedDatas)
 	helper.UpdateDateObject(UpdateData)
 
 	update := bson.M{
@@ -214,7 +208,6 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, "Updated Successfully")
 }
 
-// Old Pms code
 func getDocByIddHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
 	if orgId == "" {
@@ -258,7 +251,6 @@ func getDocByIddHandler(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, response)
 }
 
-// todo
 func getDocByClientIdHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
 	if orgId == "" {
@@ -296,10 +288,7 @@ func TimeSheetByIdHandler(c *fiber.Ctx) error {
 	employee_id := c.Params("employee_id")
 	scheduledstartdate := c.Params("scheduledstartdate")
 	date, _ := time.Parse(time.RFC3339, scheduledstartdate)
-	day := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
 
-	fmt.Println("Formatted :", day)
-	fmt.Println("employee_id :", employee_id)
 	var collectionName = "task"
 	var filter primitive.A
 
@@ -622,7 +611,6 @@ func getDocsHandler(c *fiber.Ctx) error {
 	return shared.SuccessResponse(c, Response)
 }
 
-// !pending
 // OnboardingProcessing  -- METHOD Onboarding processing for user and send the email
 func OnboardingProcessing(orgId, email, emailtype, category string) error {
 	// Generate the 'decoding' value (replace this with your actual logic)
@@ -742,41 +730,6 @@ func SimpleEmailHandler(recipientEmail string, senderEmail string, subject strin
 
 	return nil
 }
-
-// func sendSimpleEmailHandler(c *fiber.Ctx) error {
-// 	orgId := c.Get("OrgId")
-// 	if orgId == "" {
-// 		return shared.BadRequest("Organization Id missing")
-// 	}
-// 	var requestData map[string]string
-// 	err := c.BodyParser(&requestData)
-// 	if err != nil {
-// 		return shared.BadRequest(err.Error())
-// 	}
-// 	res := helper.SendEmail(orgId, strings.Split(requestData["to"], ","), strings.Split(requestData["cc"], ","), requestData["subject"], requestData["body"])
-// 	if res {
-// 		// return shared.SuccessResponse(c, "Email Sent")
-// 	}
-// 	return shared.BadRequest("Try again")
-// }
-
-// // Search EntitiesHandler - Get Entities
-// func DataLookupDocsHandler(c *fiber.Ctx) error {
-// 	orgId := c.Get("OrgId")
-// 	if orgId == "" {
-// 		return shared.BadRequest("Organization Id missing")
-// 	}
-// 	var lookupQuery helper.LookupQuery
-// 	err := c.BodyParser(&lookupQuery)
-// 	if err != nil {
-// 		return shared.BadRequest(err.Error())
-// 	}
-// 	response, err := helper.ExecuteLookupQuery(orgId, lookupQuery)
-// 	if err != nil {
-// 		return shared.BadRequest(err.Error())
-// 	}
-// 	return shared.SuccessResponse(c, response)
-// }
 
 func postTimesheetDocHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
@@ -1198,94 +1151,7 @@ func RequrimentObjectproject(c *fiber.Ctx) error {
 			},
 			bson.D{{"$sort", bson.D{{"created_on", 1}}}},
 		}
-	// filter :=
-	// 	bson.A{
-	// 		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
-	// 		bson.D{
-	// 			{"$lookup",
-	// 				bson.D{
-	// 					{"from", "task"},
-	// 					{"localField", "_id"},
-	// 					{"foreignField", "requirement_id"},
-	// 					{"as", "taskresult"},
-	// 				},
-	// 			},
-	// 		},
-	// 		bson.D{
-	// 			{"$lookup",
-	// 				bson.D{
-	// 					{"from", "testcase"},
-	// 					{"localField", "_id"},
-	// 					{"foreignField", "requirement_id"},
-	// 					{"as", "tasecaseresult"},
-	// 				},
-	// 			},
-	// 		},
-	// 		// bson.D{{"$match", bson.D{{"taskresult.status", bson.D{{"$ne", "Completed"}}}}}},
-	// 		bson.D{
-	// 			{"$lookup",
-	// 				bson.D{
-	// 					{"from", "employee"},
-	// 					{"localField", "taskresult.assigned_to"},
-	// 					{"foreignField", "employee_id"},
-	// 					{"as", "employeeResult"},
-	// 				},
-	// 			},
-	// 		},
-	// 		bson.D{
-	// 			{"$addFields",
-	// 				bson.D{
-	// 					{"number_of_Task_count", bson.D{{"$size", "$taskresult"}}},
-	// 					{"number_of_TestCase_count", bson.D{{"$size", "$tasecaseresult"}}},
-	// 				},
-	// 			},
-	// 		},
-	// 		bson.D{
-	// 			{"$addFields",
-	// 				bson.D{
-	// 					{"taskresult.employee_name",
-	// 						bson.D{
-	// 							{"$reduce",
-	// 								bson.D{
-	// 									{"input", "$employeeResult"},
-	// 									{"initialValue", ""},
-	// 									{"in",
-	// 										bson.D{
-	// 											{"$concat",
-	// 												bson.A{
-	// 													"$$value",
-	// 													bson.D{
-	// 														{"$cond",
-	// 															bson.A{
-	// 																bson.D{
-	// 																	{"$eq",
-	// 																		bson.A{
-	// 																			"$$value",
-	// 																			"",
-	// 																		},
-	// 																	},
-	// 																},
-	// 																"",
-	// 																" ",
-	// 															},
-	// 														},
-	// 													},
-	// 													"$$this.first_name",
-	// 													" ",
-	// 													"$$this.last_name",
-	// 												},
-	// 											},
-	// 										},
-	// 									},
-	// 								},
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 		bson.D{{"$unset", "employeeResult"}},
-	// 	}
+
 	response, err := helper.GetAggregateQueryResult(org.Id, "requirement", filter)
 	if err != nil {
 		return shared.BadRequest(err.Error())
@@ -1373,31 +1239,6 @@ func regressionproject(c *fiber.Ctx) error {
 		"response": response,
 	})
 }
-
-// filter := bson.A{
-// 		bson.D{{"$match", bson.D{{"_id", c.Params("regression_id")}}}},
-// 		bson.D{
-// 			{"$lookup",
-// 				bson.D{
-// 					{"from", "requirement"},
-// 					{"localField", "sprint_id"},
-// 					{"foreignField", "sprint_id"},
-// 					{"as", "requirement"},
-// 				},
-// 			},
-// 		},
-// 		bson.D{{"$unwind", "$requirement"}},
-// 		bson.D{
-// 			{"$lookup",
-// 				bson.D{
-// 					{"from", "testcase"},
-// 					{"localField", "requirement._id"},
-// 					{"foreignField", "requirement_id"},
-// 					{"as", "testcase"},
-// 				},
-// 			},
-// 		},
-// 	}
 
 func HandlerBugReport(c *fiber.Ctx) error {
 	//Get the orgId from Header
@@ -1568,38 +1409,7 @@ func team_specification(c *fiber.Ctx) error {
 
 		return shared.BadRequest("Invalid Org Id")
 	}
-	// query := bson.A{
-	// 	bson.D{{"$match", bson.D{{"parentmodulename", bson.D{{"$ne", ""}}}}}},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "employee"},
-	// 				{"localField", "user_id"},
-	// 				{"foreignField", "employee_id"},
-	// 				{"as", "employee"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$unwind", bson.D{{"path", "$employee"}}}},
-	// 	bson.D{
-	// 		{"$addFields",
-	// 			bson.D{
-	// 				{"employe_name",
-	// 					bson.D{
-	// 						{"$concat",
-	// 							bson.A{
-	// 								"$employee.first_name",
-	// 								" ",
-	// 								"$employee.first_name",
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$unset", "employee"}},
-	// }
+
 	query := bson.A{
 		bson.D{
 			{"$match",
@@ -1701,115 +1511,7 @@ func team_specificationList(c *fiber.Ctx) error {
 
 		return shared.BadRequest("Invalid Org Id")
 	}
-	// query := bson.A{
-	// 	bson.D{{"$match", bson.D{{"parentmodulename", bson.D{{"$ne", ""}}}}}},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "employee"},
-	// 				{"localField", "user_id"},
-	// 				{"foreignField", "employee_id"},
-	// 				{"as", "employee"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$unwind", bson.D{{"path", "$employee"}}}},
-	// 	bson.D{
-	// 		{"$addFields",
-	// 			bson.D{
-	// 				{"employe_name",
-	// 					bson.D{
-	// 						{"$concat",
-	// 							bson.A{
-	// 								"$employee.first_name",
-	// 								" ",
-	// 								"$employee.first_name",
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$unset", "employee"}},
-	// }
-	// query := bson.A{
-	// 	bson.D{
-	// 		{"$match",
-	// 			bson.D{
-	// 				{"project_id", c.Params("projectid")},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "employee"},
-	// 				{"localField", "user_id"},
-	// 				{"foreignField", "employee_id"},
-	// 				{"as", "employee"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$unwind", "$employee"},{"preserveNullAndEmptyArrays", true},},
-	// 	bson.D{
-	// 		{"$addFields",
-	// 			bson.D{
-	// 				{"employe_name",
-	// 					bson.D{
-	// 						{"$concat",
-	// 							bson.A{
-	// 								"$employee.first_name",
-	// 								" ",
-	// 								"$employee.last_name",
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$unset", "employee"}},
-	// }
-	// query := bson.A{
-	// 	bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "employee"},
-	// 				{"localField", "user_id"},
-	// 				{"foreignField", "employee_id"},
-	// 				{"as", "employee"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$unwind",
-	// 			bson.D{
-	// 				{"path", "$employee"},
-	// 				{"preserveNullAndEmptyArrays", true},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$addFields",
-	// 			bson.D{
-	// 				{"employe_name",
-	// 					bson.D{
-	// 						{"$concat",
-	// 							bson.A{
-	// 								"$employee.first_name",
-	// 								" ",
-	// 								"$employee.last_name",
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$unset", "employee"}},
-	// }
+
 	query := bson.A{
 		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
 		bson.D{
@@ -1905,111 +1607,7 @@ func regressionTestcase(c *fiber.Ctx) error {
 
 		return shared.BadRequest("Invalid Org Id")
 	}
-	// query := bson.A{
-	// 	bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
-	// 	bson.D{
-	// 		{"$lookup",
-	// 			bson.D{
-	// 				{"from", "testcase"},
-	// 				{"localField", "project_id"},
-	// 				{"foreignField", "project_id"},
-	// 				{"as", "testcase"},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{{"$unwind", "$testcase"}},
-	// 	bson.D{
-	// 		{"$group",
-	// 			bson.D{
-	// 				{"_id", "$_id"},
-	// 				{"ResultPassCount",
-	// 					bson.D{
-	// 						{"$sum",
-	// 							bson.D{
-	// 								{"$cond",
-	// 									bson.A{
-	// 										bson.D{
-	// 											{"$eq",
-	// 												bson.A{
-	// 													"$testcase.test_case_scenario",
-	// 													"P",
-	// 												},
-	// 											},
-	// 										},
-	// 										1,
-	// 										0,
-	// 									},
-	// 								},
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 				{"ResultFailCount",
-	// 					bson.D{
-	// 						{"$sum",
-	// 							bson.D{
-	// 								{"$cond",
-	// 									bson.A{
-	// 										bson.D{
-	// 											{"$eq",
-	// 												bson.A{
-	// 													"$testcase.test_case_scenario",
-	// 													"N",
-	// 												},
-	// 											},
-	// 										},
-	// 										1,
-	// 										0,
-	// 									},
-	// 								},
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 				{"regression_id", bson.D{{"$first", "$regression_id"}}},
-	// 				{"status", bson.D{{"$first", "$status"}}},
-	// 				{"description", bson.D{{"$first", "$description"}}},
-	// 				{"project_id", bson.D{{"$first", "$project_id"}}},
-	// 				{"created_on", bson.D{{"$first", "$created_on"}}},
-	// 				{"created_by", bson.D{{"$first", "$created_by"}}},
-	// 				{"sprint_id", bson.D{{"$first", "$sprint_id"}}},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$addFields",
-	// 			bson.D{
-	// 				{"ResultCount",
-	// 					bson.D{
-	// 						{"$sum",
-	// 							bson.A{
-	// 								"$ResultPassCount",
-	// 								"$ResultFailCount",
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$project",
-	// 			bson.D{
-	// 				{"_id", 1},
-	// 				{"regression_id", 1},
-	// 				{"description", 1},
-	// 				{"project_id", 1},
-	// 				{"created_on", 1},
-	// 				{"status", 1},
-	// 				{"created_by", 1},
-	// 				{"sprint_id", 1},
-	// 				{"ResultPassCount", 1},
-	// 				{"ResultFailCount", 1},
-	// 				{"ResultCount", 1},
-	// 			},
-	// 		},
-	// 	},
-	// }c.Params("projectid")
+
 	query := bson.A{
 		bson.D{{"$match", bson.D{{"project_id", c.Params("projectid")}}}},
 		bson.D{
@@ -2640,30 +2238,7 @@ func sidenav(c *fiber.Ctx) error {
 
 	pipeline := bson.A{
 		bson.D{{"$match", bson.D{{"user_id", c.Params("employeeID")}}}},
-		// bson.D{
-		// 	{"$match",
-		// 		bson.D{
-		// 			{"$expr",
-		// 				bson.D{
-		// 					{"$lt",
-		// 						bson.A{
-		// 							bson.D{
-		// 								{"$dateToString",
-		// 									bson.D{
-		// 										{"format", "%Y-%m-%d"},
-		// 										{"date", "$start"},
-		// 										{"timezone", "UTC"},
-		// 									},
-		// 								},
-		// 							},
-		// 							"$scheduled_end_date",
-		// 						},
-		// 					},
-		// 				},
-		// 			},
-		// 		},
-		// 	},
-		// },
+
 		bson.D{{"$group", bson.D{{"_id", "$project_id"}}}},
 		bson.D{
 			{"$lookup",
