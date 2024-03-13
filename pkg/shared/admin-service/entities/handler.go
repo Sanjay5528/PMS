@@ -73,7 +73,7 @@ func PostDocHandler(c *fiber.Ctx) error {
 	if err != nil {
 		return shared.BadRequest("Failed to insert data into the database " + err.Error())
 	}
-
+	//  load the struct if new data is available on data_model collection
 	if collectionName == "data_model" && res.InsertedID != nil {
 		go helper.ServerInitstruct(org.Id)
 	}
@@ -201,8 +201,10 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 
 	if c.Params("model_name") == "data_model" {
 		if res.UpsertedID != nil {
+			go func() {
+				helper.ServerInitstruct(org.Id)
+			}()
 
-			helper.ServerInitstruct(org.Id)
 		}
 	}
 	return shared.SuccessResponse(c, "Updated Successfully")
