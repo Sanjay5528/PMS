@@ -39,12 +39,18 @@ func PostDocHandler(c *fiber.Ctx) error {
 	}
 
 	userToken := utils.GetUserTokenValue(c)
+	if c.Params("model_name") == "organisation" {
+		return CloneAndInsertData(c)
+	} else if c.Params("model_name") == "role" {
+		return Clonedatabasedrolecollection(c)
+	}
 	modelName := c.Params("model_name")
 	// Get the collection based on Model Name
 	collectionName, err := helper.CollectionNameGet(modelName, org.Id)
 	if err != nil {
 		return shared.BadRequest("Invalid CollectionName")
 	}
+
 	// Validate Fields from body
 	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
 	if errmsg != nil {
@@ -2297,4 +2303,152 @@ func sidenav(c *fiber.Ctx) error {
 
 	return shared.SuccessResponse(c, response)
 
+}
+
+func CloneAndInsertData(c *fiber.Ctx) error {
+	orgId := c.Get("OrgId")
+	if orgId == "" {
+		return shared.BadRequest("Organization Id missing")
+	}
+	start := time.Now()
+	dataMap, errmsg := helper.InsertValidateInDatamodel("organisation", string(c.Body()), orgId)
+
+	// var errmsgs []string
+	if errmsg != nil {
+		// for _, values := range errmsg {
+		// 	errmsgs = append(errmsgs, values)
+		// }
+		// var inputData map[string]interface{}
+		// if err := c.BodyParser(&inputData); err != nil {
+		// 	return c.Status(fiber.StatusBadRequest).SendString("Error parsing request body")
+		// }
+
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": errmsg})
+	}
+
+	// Define the aggregation pipeline to match and set data
+	pipeline := bson.A{
+		bson.D{
+			{"$match",
+				bson.D{
+					{"org_type", dataMap["org_type"]},
+					// {"acl", bson.D{{"$ne", "N"}}}, //!undone
+				},
+			},
+		},
+		bson.D{{"$unset", "_id"}},
+		bson.D{{"$set", bson.D{{"org_id", dataMap["_id"]}}}},
+	}
+
+	//check the filter to return the data
+	orgDataArray, err := helper.GetAggregateQueryResult(orgId, "org_type_data_acl", pipeline)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+
+	_, err = database.GetConnection(orgId).Collection("organisation").InsertOne(ctx, dataMap)
+	if err != nil {
+		return shared.BadRequest("Failed to insert data into the database: " + err.Error())
+	}
+
+	//result Came from org_type_data_acl collection
+	_, err = database.GetConnection(orgId).Collection("org_data_acl").InsertOne(ctx, orgDataArray[0])
+	if err != nil {
+		return shared.BadRequest("Failed to insert data into the database: " + err.Error())
+	}
+
+	//Once organisation create by default inisde the role collection
+	var names = fmt.Sprintf("AD-%s", dataMap["_id"])
+
+	var RolecollectionData = map[string]interface{}{
+		"org_id": dataMap["_id"],
+		"_id":    names,
+		"status": "A",
+		"name":   "Admin",
+	}
+
+	//todo inbuild struct
+	_, err = database.GetConnection(orgId).Collection("role").InsertOne(ctx, RolecollectionData)
+	if err != nil {
+
+	}
+	filter :=
+		bson.A{
+			bson.D{
+				{"$lookup",
+					bson.D{
+						{"from", "org_data_acl"},
+						{"localField", "org_id"},
+						{"foreignField", "org_id"},
+						{"as", "result"},
+					},
+				},
+			},
+			bson.D{{"$unwind", bson.D{{"path", "$result"}}}},
+			bson.D{{"$set", bson.D{{"result.role", "$_id"}}}},
+			bson.D{{"$replaceRoot", bson.D{{"newRoot", "$result"}}}},
+			bson.D{{"$unset", "_id"}},
+			bson.D{{"$match", bson.D{{"acl", bson.D{{"$ne", "N"}}}}}}, //only role
+		}
+
+	roleDataArray, err := helper.GetAggregateQueryResult(orgId, "role", filter)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	_, err = database.GetConnection(orgId).Collection("role_data_acl").InsertOne(ctx, roleDataArray[0])
+	if err != nil {
+		return shared.BadRequest("Failed to insert data into the database: " + err.Error())
+	}
+	fmt.Println("End Time", time.Since(start))
+
+	return shared.SuccessResponse(c, "Successfully Data Added")
+}
+
+func Clonedatabasedrolecollection(c *fiber.Ctx) error {
+	orgId := c.Get("OrgId")
+	if orgId == "" {
+		return shared.BadRequest("Organization Id missing")
+	}
+	collectionName := c.Params("collectionName") //role collection
+
+	var inputData map[string]interface{}
+	if err := c.BodyParser(&inputData); err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("Error parsing request body")
+	}
+
+	_, err := database.GetConnection(orgId).Collection(collectionName).InsertOne(ctx, inputData) //first insert the data in the role collection
+	if err != nil {
+		return shared.BadRequest("Failed to insert data into the database: " + err.Error())
+	}
+
+	filter :=
+		bson.A{
+			bson.D{
+				{"$lookup",
+					bson.D{
+						{"from", "org_data_acl"},
+						{"localField", "org_id"},
+						{"foreignField", "org_id"},
+						{"as", "result"},
+					},
+				},
+			},
+			bson.D{{"$unwind", bson.D{{"path", "$result"}}}},
+			bson.D{{"$set", bson.D{{"result.role", "$_id"}}}},
+			bson.D{{"$replaceRoot", bson.D{{"newRoot", "$result"}}}},
+			bson.D{{"$unset", "_id"}},
+			bson.D{{"$match", bson.D{{"acl", bson.D{{"$ne", "N"}}}}}}, //only role
+		}
+
+	data, err := helper.GetAggregateQueryResult(orgId, collectionName, filter)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+
+	_, err = database.GetConnection(orgId).Collection("role_data_acl").InsertOne(ctx, data[0])
+	if err != nil {
+		return shared.BadRequest("Failed to insert data into the database: " + err.Error())
+	}
+
+	return shared.SuccessResponse(c, "Successfully Data Added")
 }
