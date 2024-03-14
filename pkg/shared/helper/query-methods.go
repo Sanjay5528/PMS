@@ -126,9 +126,9 @@ func CollectionNameGet(model_name, orgId string) (string, error) {
 		"is_collection": "Yes",
 	}
 
-	Response, err := FindOneDocument(orgId, "model_config", filter)
-	if err != nil {
-		return "", nil
+	Response, _ := FindOneDocument(orgId, "model_config", filter)
+	if Response == nil {
+		return "", shared.BadRequest("Invalid Model Config")
 	}
 
 	return Response["collection_name"].(string), nil

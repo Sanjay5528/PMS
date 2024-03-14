@@ -32,7 +32,7 @@ var fileUploadPath = ""
 var ctx = context.Background()
 
 // PostDocHandler --METHOD Data insert to mongo Db with Proper Field Validation
-func PostDocHandler(c *fiber.Ctx) error {
+func PostDocHandler1(c *fiber.Ctx) error {
 	org, exists := helper.GetOrg(c)
 	if !exists {
 		return shared.BadRequest("Invalid Org Id")
@@ -80,6 +80,70 @@ func PostDocHandler(c *fiber.Ctx) error {
 		return shared.BadRequest("Failed to insert data into the database " + err.Error())
 	}
 	//  load the struct if new data is available on data_model collection
+	if collectionName == "data_model" && res.InsertedID != nil {
+		go helper.ServerInitstruct(org.Id)
+	}
+
+	return shared.SuccessResponse(c, fiber.Map{
+		"message":   "Insert Successfully",
+		"insert ID": res.InsertedID,
+	})
+}
+func PostDocHandler(c *fiber.Ctx) error {
+	// Get organization
+	org, exists := helper.GetOrg(c)
+	if !exists {
+		return shared.BadRequest("Invalid Org Id")
+	}
+
+	userToken := utils.GetUserTokenValue(c)
+	modelName := c.Params("model_name")
+	var err error
+
+	switch modelName {
+	case "organisation":
+		return CloneAndInsertData(c)
+	case "role":
+		return Clonedatabasedrolecollection(c)
+	}
+
+	// Get collection name based on Model Name
+	collectionName, err := helper.CollectionNameGet(modelName, org.Id)
+	if err != nil {
+		return shared.BadRequest("Invalid CollectionName")
+	}
+
+	// Validate Fields from body
+	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	if errmsg != nil {
+		for key, value := range errmsg {
+			return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
+		}
+	}
+
+	// Update Date Object
+	helper.UpdateDateObject(inputData)
+	handleIDGeneration(inputData, org.Id)
+
+	// If user uses collection to send the email
+	if collectionName == "user" {
+		if err := OnboardingProcessing(org.Id, inputData["_id"].(string), "Onboarding", "user"); err != nil {
+			return shared.BadRequest("Invalid user Id")
+		}
+	} else if collectionName == "data_model" || collectionName == "model_config" {
+		inputData["status"] = "A"
+	}
+
+	inputData["created_on"] = time.Now()
+	inputData["created_by"] = userToken.UserId
+
+	// Insert data into the database
+	res, err := Insert(org.Id, collectionName, inputData)
+	if err != nil {
+		return shared.BadRequest("Failed to insert data into the database " + err.Error())
+	}
+
+	// Load the struct if new data is available on data_model collection
 	if collectionName == "data_model" && res.InsertedID != nil {
 		go helper.ServerInitstruct(org.Id)
 	}
@@ -176,7 +240,7 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 
 	collectionName, err := helper.CollectionNameGet(c.Params("model_name"), org.Id)
 	if err != nil {
-		return shared.BadRequest("Invalid CollectionName")
+		return shared.BadRequest(err.Error())
 	}
 
 	// Validate the input data based on the data model
