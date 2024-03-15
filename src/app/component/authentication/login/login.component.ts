@@ -45,8 +45,15 @@ export class LoginComponent implements OnInit {
         sessionStorage.setItem('token', res.data.LoginResponse.token);
         sessionStorage.setItem('auth', JSON.stringify(res));
         this.dialogService.openSnackBar(res.data.Message  ,"OK");
-        let employee_id:any = this.helpService.getEmp_id();
-        this.router.navigate(['/Dashboard',"User",employee_id]);
+        if (res.data.LoginResponse.role != "SA"){  
+          let employee_id:any = this.helpService.getEmp_id();
+          this.router.navigate(['/Dashboard',"User",employee_id]);
+        }
+        // console.log(res.data.LoginResponse.role );
+        
+        this.router.navigate(['/Dashboard']);
+
+
     }
   })
   }

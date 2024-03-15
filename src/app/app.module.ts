@@ -13,7 +13,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { AuthGuardService } from './services/auth-guard.service';
-import { NgxGanttModule } from '@worktile/gantt';
+import { NgxGanttModule } from '@worktile/gantt'; 
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: 'outline'
@@ -21,7 +21,7 @@ const appearance: MatFormFieldDefaultOptions = {
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent, 
   ],
   imports: [
     BrowserModule,

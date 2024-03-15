@@ -65,18 +65,22 @@ export class AppHeaderComponent {
     // });
 
         let emp_id:any=this.helperService.getEmp_id()
-    this.dataservice.sidenav(emp_id).subscribe((res:any)=>{
-      // this.dataservice.sidenav("E0001").subscribe((res:any)=>{
-  console.log(res);
-  
-          if(res.data != null){
-            this.project_Data=res.data
-            this.helperService.getProjectObservable().subscribe((res:any)=>{
-              this.selectProject.setValue(res._id)
-           })
-           
-          }
-        })
+        if (emp_id != undefined || null){
+          this.dataservice.sidenav(emp_id).subscribe((res:any)=>{
+            // this.dataservice.sidenav("E0001").subscribe((res:any)=>{
+        console.log(res);
+        
+                if(res.data != null){
+                  this.project_Data=res.data
+                  this.helperService.getProjectObservable().subscribe((res:any)=>{
+                    this.selectProject.setValue(res._id)
+                 })
+                 
+                }
+              }
+              )
+        }
+ 
   
 
       //   this.selectProject?.valueChanges.subscribe((change: any) => {
