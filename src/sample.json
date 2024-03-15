@@ -1,71 +1,156 @@
 {
-	"pageHeading": "Test Case Scenario",
-	"formType": "simple",
-	"editMode": "page",
-	"keyField": "_id",
-	"form": {
-		"collectionName": "testcase",
-		"fields": [
-			{
-				"fieldGroupClassName": "display-flex",
-				"fieldGroup": [
-					{
-						"type": "input",
-						"key": "test_case_name",
-						"className": "flex-6",
-						"props": {
-							"label": "Test Case Name",
-							"required": true
-						}
-					},
-					{
-						"key": "test_case_scenario",
-						"type": "select",
-						"className": "flex-6",
-						"props": {
-							"label": "Test Case Scenario",
-							"options": [
-								{
-									"label": "Positive",
-									"value": "P"
-								},
-								{
-									"label": "Negative",
-									"value": "N"
-								}
-							],
-							"required": true
-						}
-					}
-				]
-			},{
-				"type": "html-input",
-				"key": "test_description",
-				"className": "flex-6",
-				"props": {
-					"label": "Test Description",
-					"required": true
-				}
-			},
-			{
-				"type": "html-input",
-				"key": "test_data",
-				"className": "flex-6",
-				"props": {
-					"label": "Test Data",
-					"required": true
-				}
-			},
-			{
-				"type": "html-input",
-				"key": "expected_result",
-				"className": "flex-6",
-				"props": {
-					"label": "Expected Result",
-					"required": true
-				},
-				"maxlength": 500
-			}
-		]
-	}
+  "pageHeading": "Organization",
+  "formType": "simple",
+  "editMode": "page",
+  "user": true,
+  "keyField": "_id",
+  "form": {
+    "collectionName": "organization",
+    "fields": [
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "type": "input",
+            "key": "organization_name",
+            "className": "flex-6",
+            "props": {
+              "label": "Organization Name",
+              "placeholder": "Organization Name",
+              "required": true
+            },
+            "expressions": {
+              "props.readonly": "model.isEdit"
+            }
+          },
+          {
+            "type": "input",
+            "key": "email",
+            "className": "flex-6",
+            "props": {
+              "label": "Email",
+              "placeholder": "Email",
+              "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+              "required": true
+            },
+            "expressions": {
+              "props.readonly": "model.isEdit"
+            }
+          }
+        ]
+      },
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "type": "input",
+            "key": "url",
+            "className": "flex-6",
+            "props": {
+              "label": "Url",
+              "placeholder": "Url",
+              "required": true
+            },
+            "expressions": {
+              "props.readonly": "model.isEdit"
+            }
+          },
+
+          {
+            "type": "input",
+            "key": "db_name",
+            "className": "flex-6",
+            "props": {
+              "label": "Database Name",
+              "placeholder": "Database Name",
+              "required": true
+            },
+            "expressions": {
+              "props.readonly": "model.isEdit"
+            }
+          }
+        ]
+      },
+
+      {
+        "type": "tab-input",
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+       
+          {
+            "props": {
+              "label": "Company Logo"
+            },
+            "fieldGroup": [
+              {
+                "type": "logo",
+                "key": "logo",
+                "refId": "id",
+                "role": "organization",
+                "bind_key": "_id",
+                "details_type": "logo",
+                "props": {
+                  "refId": "_id",
+                  "label": "Organization Logo",
+                  "placeholder": "Organization Logo"
+                }
+              }
+            ]
+          },
+          {
+            "props": {
+              "label": "Default Access Control"
+            },
+            "fieldGroup": [
+              {
+                "type": "checkbox",
+                "key": "default_datamodel",
+                "className": "flex-6",
+                "props": {
+                  "label": "Data Model",
+                  "placeholder": "Data Model",
+                  "required": true
+                },
+                "expressions": {
+                  "props.readonly": "model.isEdit"
+                }
+              },
+              {
+                "type": "select",
+                "key": "status",
+                "className": "flex-6",
+                "props": {
+                  "type": "input",
+                  "label": "Organization Status",
+                  "options": [
+                    {
+                      "label": "Active",
+                      "value": "Active"
+                    },
+                    {
+                      "label": "Inactive",
+                      "value": "Inactive"
+                    }
+                  ],
+                  "placeholder": "Organization Status",
+                  "required": true
+                },
+                "expressions": {
+                  "hide": "!model.isshow"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "defaultValues": [
+    {
+      "colName": "status",
+      "type": "string",
+      "value": "Active"
+    }
+  ],
+  "onCancelRoute": "/list/organization"
 }

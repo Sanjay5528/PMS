@@ -160,8 +160,8 @@ export class DatatableComponent implements OnInit {
         let role_type: any;
         var role_filter: any;
         if (config?.rolebased) { // config . role == true  
-          role_type = this.DataService.getdetails().LoginResponse.role;
-          org_type_id = this.DataService.getdetails().LoginResponse.org_id;
+          role_type = this.DataService.getdetails().data.LoginResponse.role;
+          org_type_id = this.DataService.getdetails().data.LoginResponse.org_id;
           if (role_type !== "SA") {
 
             role_filter = {

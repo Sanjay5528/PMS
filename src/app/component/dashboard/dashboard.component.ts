@@ -139,6 +139,7 @@ DashboardType:any
 id:any
   data: any[] = []
   ngOnInit() {
+    
     this.route.params.subscribe((params:any)=>{
       console.log(params['Type']);
       this.DashboardType=params['Type']
