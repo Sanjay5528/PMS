@@ -104,8 +104,8 @@ func Create() *fiber.App {
 	return app
 }
 
-func Listen(app *fiber.App) error {
-	var url = flag.String("port", os.Getenv("SERVER_LISTEN_URL"), "Port to listen on")
+func Listen(app *fiber.App, port string) error {
+	var url = flag.String("port", port, "Port to listen on")
 	var ssl_cert_file = os.Getenv("SSL_CERT_FILE")
 	var ssl_key_file = os.Getenv("SSL_KEY_FILE")
 	// 404 Handler

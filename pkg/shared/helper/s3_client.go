@@ -2,6 +2,7 @@ package helper
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"log"
 	"mime/multipart"
@@ -126,7 +127,6 @@ func FileUpload(c *fiber.Ctx) error {
 	}
 	return shared.SuccessResponse(c, result)
 }
-
 
 //todo currently not use
 // func GetAllFileDetails(c *fiber.Ctx) error {
@@ -284,4 +284,15 @@ func DeleteByDatamodel(c *fiber.Ctx) error {
 	}
 
 	return shared.SuccessResponse(c, "Delete Successfully")
+}
+func ConfigHandler(c *fiber.Ctx) error {
+
+	fmt.Println("Hello World")
+	var result bson.M
+	err := database.GetConnection("pms").Collection("user").FindOne(context.Background(), bson.D{}).Decode(&result)
+	if err != nil {
+
+	}
+
+	return shared.SuccessResponse(c, result)
 }

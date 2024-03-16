@@ -61,8 +61,9 @@ func SetupBulkUploadRoutes(app *fiber.App) {
 
 // SetupTesting -- METHOD testing function PURPOSE FOR LEARNING don't need for token
 func SetupTesting(app *fiber.App) {
-	r := app.Group("/testing")
-	r.Delete("/:model_name", helper.DeleteByDatamodel)
+	// r := app.Group("/testing")
+	app.Get("/testing", helper.ConfigHandler)
+	// r.Delete("/:model_name", helper.ConfigHandler)
 
 }
 

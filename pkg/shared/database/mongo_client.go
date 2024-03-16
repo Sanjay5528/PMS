@@ -31,8 +31,8 @@ var DBConnections = make(map[string]*mongo.Database)
 var SharedDB *mongo.Database
 
 func Init() {
-
 	SharedDB = CreateDBConnection(GetenvStr("MONGO_SHAREDDB_HOST"), GetenvInt("MONGO_SHAREDDB_PORT"), GetenvStr("MONGO_SHAREDDB_NAME"), GetenvStr("MONGO_SHAREDDB_USER"), GetenvStr("MONGO_SHAREDDB_PASSWORD"))
+
 }
 
 func GetConnection(orgId string) *mongo.Database {
@@ -47,6 +47,7 @@ func GetConnection(orgId string) *mongo.Database {
 		//if there is any problem or specific org config missing, by defualt return shared db
 		return SharedDB
 	}
+
 	DBConnections[orgId] = CreateDBConnection(config.Host, config.Port, config.DbName, config.UserId, config.Pwd) //
 
 	return DBConnections[orgId]

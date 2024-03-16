@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/joho/godotenv"
 
@@ -39,7 +40,7 @@ func main() {
 	go func() {
 		helper.ServerInitstruct(OrgID)
 	}()
-	if err := server.Listen(app); err != nil {
+	if err := server.Listen(app, os.Getenv("ADMIN_SERVER_LISTEN_URL")); err != nil {
 		log.Panic(err)
 	}
 

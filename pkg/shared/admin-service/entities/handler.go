@@ -2,7 +2,6 @@ package entities
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -97,30 +96,32 @@ func PostDocHandler(c *fiber.Ctx) error {
 	}
 
 	userToken := utils.GetUserTokenValue(c)
-	modelName := c.Params("model_name")
+	// modelName := c.Params("model_name")
 	var err error
 
-	switch modelName {
-	case "organisation":
-		return CloneAndInsertData(c)
-	case "role":
-		return Clonedatabasedrolecollection(c)
-	}
+	// switch modelName {
+	// case "organisation":
+	// 	return CloneAndInsertData(c)
+	// case "role":
+	// 	return Clonedatabasedrolecollection(c)
+	// }
 
 	// Get collection name based on Model Name
-	collectionName, err := helper.CollectionNameGet(modelName, org.Id)
-	if err != nil {
-		return shared.BadRequest("Invalid CollectionName")
-	}
+	// collectionName, err := helper.CollectionNameGet(modelName, org.Id)
+	// if err != nil {
+	// 	return shared.BadRequest("Invalid CollectionName")
+	// }
 
 	// Validate Fields from body
-	inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
-	if errmsg != nil {
-		for key, value := range errmsg {
-			return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
-		}
-	}
-
+	// inputData, errmsg := helper.InsertValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	// if errmsg != nil {
+	// 	for key, value := range errmsg {
+	// 		return shared.BadRequest(fmt.Sprintf("%s is a %s", key, value))
+	// 	}
+	// }
+	collectionName := c.Params("model_name")
+	var inputData map[string]interface{}
+	c.BodyParser(&inputData)
 	// Update Date Object
 	helper.UpdateDateObject(inputData)
 	handleIDGeneration(inputData, org.Id)
@@ -238,18 +239,21 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 	// to  Get the User Details from Token
 	userToken := utils.GetUserTokenValue(c)
 
-	collectionName, err := helper.CollectionNameGet(c.Params("model_name"), org.Id)
-	if err != nil {
-		return shared.BadRequest(err.Error())
-	}
+	// collectionName, err := helper.CollectionNameGet(c.Params("model_name"), org.Id)
+	// if err != nil {
+	// 	return shared.BadRequest(err.Error())
+	// }
 
-	// Validate the input data based on the data model
-	inputData, validationErrors := helper.UpdateValidateInDatamodel(collectionName, string(c.Body()), org.Id)
-	if validationErrors != nil {
-		//Handle validation errors with status code 400 (Bad Request)
-		jsonstring, _ := json.Marshal(validationErrors)
-		return shared.BadRequest(string(jsonstring))
-	}
+	// // Validate the input data based on the data model
+	// inputData, validationErrors := helper.UpdateValidateInDatamodel(collectionName, string(c.Body()), org.Id)
+	// if validationErrors != nil {
+	// 	//Handle validation errors with status code 400 (Bad Request)
+	// 	jsonstring, _ := json.Marshal(validationErrors)
+	// 	return shared.BadRequest(string(jsonstring))
+	// }
+	collectionName := c.Params("model_name")
+	var inputData map[string]interface{}
+	c.BodyParser(&inputData)
 
 	updatedDatas := make(map[string]interface{})
 	// update for nested fields
