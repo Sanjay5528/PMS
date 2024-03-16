@@ -122,3 +122,110 @@ func postCollectionsHandler(c *fiber.Ctx) error {
 	}
 	return nil
 }
+
+func GetsharedDBHandler(c *fiber.Ctx) error {
+
+	filter := bson.A{
+		bson.D{{"$project", bson.D{{"name", 1}}}},
+	}
+
+	cur, err := database.SharedDB.Collection("organization").Aggregate(ctx, filter)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return shared.BadRequest(err.Error())
+		}
+
+	}
+
+	var result []bson.M
+	if err = cur.All(ctx, &result); err != nil {
+		return nil
+	}
+
+	return shared.SuccessResponse(c, result)
+}
+
+func SharedDbCOnfig(c *fiber.Ctx) error {
+
+	filter := bson.A{
+		bson.D{{"$match", bson.D{{"db_name", c.Params("dbname")}}}},
+	}
+
+	cur, err := database.SharedDB.Collection("db_config").Aggregate(ctx, filter)
+
+	var result []bson.M
+	if err = cur.All(ctx, &result); err != nil {
+		return shared.BadRequest("invalid db name")
+	}
+	if result == nil {
+		return shared.BadRequest(err.Error())
+	}
+	orgid := result[0]["org_id"].(string)
+
+	pipeline := bson.A{
+		bson.D{{"$match", bson.D{{"status", "A"}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "data_model"},
+					{"localField", "collection_name"},
+					{"foreignField", "model_name"},
+					{"as", "data_model"},
+				},
+			},
+		},
+		bson.D{
+			{"$group",
+				bson.D{
+					{"_id", "$_id"},
+					{"model_config",
+						bson.D{
+							{"$first",
+								bson.D{
+									{"collection_name", "$collection_name"},
+									{"is_collection", "$is_collection"},
+									{"model_name", "$model_name"},
+									{"_id", "$_id"},
+								},
+							},
+						},
+					},
+					{"data_model", bson.D{{"$first", "$data_model"}}},
+				},
+			},
+		},
+		bson.D{{"$unset", "_id"}},
+	}
+
+	cur, err = database.GetConnection(orgid).Collection("model_config").Aggregate(ctx, pipeline)
+	if err != nil {
+		return shared.BadRequest("invalid db name")
+	}
+
+	var res []bson.M
+	if err = cur.All(ctx, &res); err != nil {
+		return nil
+	}
+
+	fmt.Println(res)
+	return shared.SuccessResponse(c, res)
+
+}
+
+func GetsharedDBDefaultHandler(c *fiber.Ctx) error {
+
+	cur, err := database.SharedDB.Collection("model_config").Find(ctx, bson.D{})
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return shared.BadRequest(err.Error())
+		}
+
+	}
+
+	var result []bson.M
+	if err = cur.All(ctx, &result); err != nil {
+		return nil
+	}
+
+	return shared.SuccessResponse(c, result)
+}
