@@ -129,12 +129,23 @@ export class DataService {
   public getDataByFilter(collectionName: any,data:any) {
     return this.http.post(this.getWsBaseUrl() +"entities/filter/"+ collectionName,data);
   }
+ 
+
 
   public login(data: any) {
     return this.http.post(this.getWsBaseUrl() + 'auth/login', data);
   }
 
 
+  public GetDataBySharedDB(){
+    return this.http.get(environment.configBaseUrl  + 'api/shared');
+  }
+  public GetDataByDefaultSharedDB(){
+    return this.http.get(environment.configBaseUrl  + 'api/default');
+  }
+  public GetdataModelData(dbName:any){
+    return this.http.get(environment.configBaseUrl + 'model_config/shared/'+`${dbName}`);
+  }
   
 /**
  * This method Send New Data

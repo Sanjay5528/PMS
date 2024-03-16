@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   apiBaseUrl: 'http://127.0.0.1:8000/',
-  // apiBaseUrl: 'http://10.0.0.143:8080/',
+  configBaseUrl: 'http://127.0.0.1:7000/',
   logoUrl: 'assets/images/logo.png',
   snackBarDuration: 5000,
   OrgId: 'pms',

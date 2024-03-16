@@ -75,7 +75,7 @@ import { CarsoalComponent } from './carsoal.component';
 import { FormlyFieldInputTextEnterKey } from "./inputcheck";
 import { MatStepperModule } from '@angular/material/stepper';
 import { FormlyFieldStepper } from "./stepper";
-import { NumericInput } from "./numeric-input";
+import { NumericInput } from "./numeric-input"; 
 
 
 export function minLengthValidationMessage(err: any, field: FormlyFieldConfig) {
@@ -326,14 +326,14 @@ const formlyConfig = {
     { name: "chips", component: Chips },
     { name: "muti-image", component: FormlyMultiImageUpload },
     {name:"stepper",component:FormlyFieldStepper}, 
-    {name:"numeric-input",component:NumericInput},
+    {name:"numeric-input",component:NumericInput}, 
 
   ],
 }; 
 
 @NgModule({
   declarations: [
-    NumericInput,
+    NumericInput, 
     Tab,
     FileInput,
     HtmlInput,
@@ -416,8 +416,7 @@ const formlyConfig = {
   ],
   exports: [
     Tab,
-    NumericInput,
-
+    NumericInput, 
     FileInput,
     HtmlInput,
     LabelView,

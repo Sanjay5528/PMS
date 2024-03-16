@@ -12,7 +12,7 @@
         "fieldGroup": [
           {
             "type": "input",
-            "key": "organization_name",
+            "key": "name",
             "className": "flex-6",
             "props": {
               "label": "Organization Name",
@@ -71,12 +71,10 @@
           }
         ]
       },
-
       {
         "type": "tab-input",
         "fieldGroupClassName": "display-flex",
         "fieldGroup": [
-       
           {
             "props": {
               "label": "Company Logo"
@@ -85,12 +83,12 @@
               {
                 "type": "logo",
                 "key": "logo",
-                "refId": "id",
+                "refId": "email",
                 "role": "organization",
-                "bind_key": "_id",
+                "bind_key": "email",
                 "details_type": "logo",
                 "props": {
-                  "refId": "_id",
+                  "refId": "email",
                   "label": "Organization Logo",
                   "placeholder": "Organization Logo"
                 }
@@ -99,58 +97,97 @@
           },
           {
             "props": {
-              "label": "Default Access Control"
+              "label": "Default Configuration"
             },
+            "fieldGroupClassName": "display-flex",
             "fieldGroup": [
               {
-                "type": "checkbox",
-                "key": "default_datamodel",
-                "className": "flex-6",
+                "type": "select",
+                "key": "select_field",
+                "className": "flex-2",
+                "defaultValue": "default",
                 "props": {
-                  "label": "Data Model",
-                  "placeholder": "Data Model",
-                  "required": true
-                },
-                "expressions": {
-                  "props.readonly": "model.isEdit"
+                  "label": "Model Configuration",
+                  "placeholder": "Model Configuration",
+                  "options": [
+                    { "label": "Default Model Config", "value": "default" },
+                    {
+                      "label": "Other Organization Model Config",
+                      "value": "other"
+                    }
+                  ]
                 }
               },
               {
-                "type": "select",
-                "key": "status",
-                "className": "flex-6",
+                "type": "multiselect-input",
+                "className": "flex-2",
+                "key": "model_config",
+                "shared": false,
                 "props": {
-                  "type": "input",
-                  "label": "Organization Status",
-                  "options": [
-                    {
-                      "label": "Active",
-                      "value": "Active"
-                    },
-                    {
-                      "label": "Inactive",
-                      "value": "Inactive"
-                    }
-                  ],
-                  "placeholder": "Organization Status",
+                  "label": "Data Model",
+                  "optionsDataSource": { "collectionName": "model_config" },
+                  "labelProp": "collection_name",
+                  "valueProp": "collection_name",
                   "required": true
                 },
-                "expressions": {
-                  "hide": "!model.isshow"
-                }
+                "hideExpression": "model['select_field'] !== 'default'"
+              },
+              {
+                "className": "flex-2",
+                "type": "select-input",
+                "key": "enumerate_validation",
+                "props": {
+                  "label": "Model Config",
+                  "placeholder": "Select Model Config",
+                  "options": []
+                },
+                "hideExpression": "model['select_field'] !== 'other'"
+              },
+              {
+                "type": "multiselect-input",
+                "className": "flex-2",
+                "key": "another_company_model_config",
+                "shared": true,
+                "props": {
+                  "label": "Data Model",
+                  "optionsDataSource": { "collectionName": "model_config" },
+                  "labelProp": "collection_name",
+                  "valueProp": "collection_name",
+                  "required": true
+                },
+                "hideExpression": "!model['enumerate_validation']"
               }
             ]
+          }
+        ]
+      },
+
+      {
+        "fieldGroupClassName": "display-flex",
+        "fieldGroup": [
+          {
+            "key": "status",
+            "type": "select",
+            "defaultValue": "A",
+            "props": {
+              "label": "Status",
+              "options": [
+                {
+                  "label": "Active",
+                  "value": "A"
+                },
+                {
+                  "label": "Inactive",
+                  "value": "I"
+                }
+              ],
+              "required": true
+            },
+            "hideExpression": "!model.isEdit"
           }
         ]
       }
     ]
   },
-  "defaultValues": [
-    {
-      "colName": "status",
-      "type": "string",
-      "value": "Active"
-    }
-  ],
   "onCancelRoute": "/list/organization"
 }

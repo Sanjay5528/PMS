@@ -76,6 +76,7 @@ showUploadedImages:boolean=false
     closeModal(){
       this.matdiolog.afterAllClosed
     }
+    
     carsoasls(){
       this.matdiolog.open(this.editViewPopup);
     }

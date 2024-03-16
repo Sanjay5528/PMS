@@ -522,14 +522,14 @@
 									"required": true
 								}
 							},
-					  
+						
+							  
 									{
 										"type": "select-input",
 										"key": "register.country_name",
 										"className": "flex-6",
 										"props": {                      
-											
-  
+											 
 											"label": "Country",
 											"placeholder": "Country",
 											"labelPropTemplate": " {{country_name}}",

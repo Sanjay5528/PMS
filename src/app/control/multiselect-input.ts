@@ -12,27 +12,8 @@ import { DialogService } from '../services/dialog.service';
   <style>
 
   </style>
-  <div>
-<!--   
-  <ng-select
-  [items]="dropdownList"
-  [clearSearchOnAdd]="true"
-  [multiple]="true"
-  [placeholder]="field.props!['label']"
-  [bindLabel]="labelProp"
-  [closeOnSelect]="true"
-  [bindValue]="valueProp"
-  [formControl]="FormControl"  
-  appearance="outline"
-  [formlyAttributes]="field"            [closeOnSelect]="false"
-
-  >
-  <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-    <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected" [ngModelOptions]="{standalone: true}"/>
-    <span [innerHTML]="item[this.labelProp]"></span>
-</ng-template> 
-</ng-select> -->
-<!-- <div  > -->
+  <div style="height:250px">
+ 
   <ng-select  
   [dropdownPosition]="'bottom'"
   [placeholder]="field.props!['label']"
@@ -52,17 +33,16 @@ import { DialogService } from '../services/dialog.service';
 </ng-template> 
 
 <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
-  <div class="ng-value" *ngFor="let item of items | slice:0:2">
+  <div class="ng-value" *ngFor="let item of items "> 
     <span class="ng-value-label"> {{$any(item)[this.labelProp]}}</span>
     <span class="ng-value-icon right" (click)="clear(item)"  aria-hidden="true">×</span>
 
   </div>
-  <div class="ng-value" *ngIf="items.length > 2">
+  <!-- <div class="ng-value" *ngIf="items.length > 2">
     <span class="ng-value-label">{{items.length - 2}} more...</span>
-  </div>
+  </div> -->
 </ng-template>
-</ng-select>
-<!-- </div> -->
+</ng-select> 
 </div>
   `,
 
@@ -76,7 +56,7 @@ export class MultiSelectInput extends FieldType<any> implements OnInit {
   labelProp :any
   onValueChangeUpdate: any
   label: any
-  dropdownList = []
+  dropdownList:any = []
   currentField:any
 
   constructor(private dataService: DataService,
@@ -91,8 +71,18 @@ export class MultiSelectInput extends FieldType<any> implements OnInit {
   }
 
  
-
-  ngOnInit(): void {
+  value:any 
+  ngOnInit(): void { 
+ 
+    if (this.form.get('enumerate_validation') && this.field.shared ==  true) { 
+    if (this.form.get('enumerate_validation')?.value != undefined || null){ 
+      this.value = this.form.get('enumerate_validation')?.value
+      this.form.get('enumerate_validation')?.valueChanges.subscribe((res:any)=>{ 
+        this.value = res 
+       }) 
+    }  
+    }
+  
     this.label = this.field.props?.label
     this.opt = this.field.props || {};
     this.labelProp = this.opt.labelProp
@@ -101,7 +91,10 @@ export class MultiSelectInput extends FieldType<any> implements OnInit {
     this.onValueChangeUpdate = this.opt.onValueChangeUpdate;
 
 
-    if (this.opt.optionsDataSource.collectionName) {
+ 
+
+    if (this.opt.optionsDataSource.collectionName && this.field.shared ==  false ) {
+    
       let name = this.opt.optionsDataSource.collectionName
       let query:any={}
       if(this.opt.multifilter==true){ 
@@ -120,25 +113,61 @@ export class MultiSelectInput extends FieldType<any> implements OnInit {
         })
         query.filter.push(this.opt.multifilter_condition)
       }
-      this.dataService.getDataByFilter(name,query).subscribe((res: any) => {
-        let values:any=res.data[0].response
-        console.log(res.data);
+
+      this.dataService.GetDataByDefaultSharedDB().subscribe((res:any)=>{
+ 
+        this.dropdownList = res.data 
         
-        if(this.opt.attributes.type=="default"){
+      })
+
+ 
+    }else   if (this.opt.optionsDataSource.collectionName && this.field.shared ==  true) {
+ 
+      let data:any[]=[]
+      this.dataService.GetdataModelData(this.value).subscribe((res:any)=>{ 
+       res.data.map((insideValue:any) => {  
+        data.push(insideValue.model_config); 
+       })  
+      this.dropdownList = data
+      });
+ 
+    }else   if (this.opt.optionsDataSource.collectionName) {
+      let name = this.opt.optionsDataSource.collectionName
+      let query:any={}
+      if(this.opt.multifilter==true){ 
+        query ={
+        start:0,end:1000,filter:[]
+              }
+        this?.opt?.multifilter_condition?.conditions.map((res:any)=>{
+     
+          if(this?.opt?.multifiltertype=="local"){
+           let value = sessionStorage.getItem(this.opt.filtervalueKey)
+            res.value=value
+          }else{
+            res.value=this.model[this.opt.filtervalueKey]
+          }
+        
+        })
+        query.filter.push(this.opt.multifilter_condition)
+      }
+      
+      this.dataService.getDataByFilter(name,{}).subscribe((res: any) => {
+        let values:any=res.data[0].response
+   
+        if(this.opt?.attributes?.type=="default"){
           this.field.props.options = values.map((insideValue: any) => {
             return { label: insideValue[this.opt.attributes.Takenlabelkey], value: insideValue[this.opt.attributes.Takenvaluekey] };
         });
+        
         this.dropdownList = this.field.props.options 
-        }else{
+      }else{ 
 
-          this.dropdownList = res.data
+          this.dropdownList = res.data[0].response
         }
 
 
       });
     }
-
-   
  
       
       if(this.currentField.parentKey!= "") {

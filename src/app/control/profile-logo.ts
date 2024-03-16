@@ -4,6 +4,7 @@ import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
 import { DialogService } from "../services/dialog.service";
 import { DataService } from "../services/data.service";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "formly-field-logo",
@@ -70,7 +71,7 @@ import { DataService } from "../services/data.service";
         style="justify-content: space-between;"
       >
         <label class="hoverable" for="fileInput">
-          <img src="{{ url }}" />
+          <img src="{{ docBasePath+url['storage_name'] }}" />
           <div class="hover-text">{{ label }}</div>
           <div class="background"></div>
           <input
@@ -94,6 +95,7 @@ export class LogoComponent extends FieldType<any> implements OnInit {
   opt: any;
   url: any;
   label: any;
+  docBasePath: string=environment?.ImageBaseUrl
 
   constructor(
     private dataService: DataService,
@@ -108,7 +110,7 @@ export class LogoComponent extends FieldType<any> implements OnInit {
     this.label = this.opt.label || "Upload";
     this.url = "../../assets/image/logo1.png";
     if (this.model.isEdit == true) {
-      this.url = this.model[this.opt.key];
+      this.url = this.model[this.field.key];
     }
   }
 
