@@ -35,7 +35,15 @@ export class AppHeaderComponent {
     private dataservice:DataService,
     private helperService:HelperService,
     public dialogService: DialogService,
-  ) { }
+
+  ) {
+    // sessionStorage.setItem('auth', JSON.stringify(res));
+let user:any = sessionStorage.getItem('auth'); 
+let parsedValue:any=JSON.parse(user)
+    this.role = parsedValue.data.LoginResponse.role
+
+
+   }
   screenId:any
   project_Data:any=[]
   ngOnInit() { 

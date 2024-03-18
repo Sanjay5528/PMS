@@ -832,7 +832,7 @@ console.log(ctrl);
               return error }) ).subscribe((res: any) => {
             if(res){
               
-              if(ctrl?.config?.user){
+              if(ctrl?.config?.user && role_type!=="SA"){
                 this.updateuser(ctrl,res);
               } 
               

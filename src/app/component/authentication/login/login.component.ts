@@ -31,8 +31,8 @@ export class LoginComponent implements OnInit {
     
     sessionStorage.setItem('selectedOrgId', environment.OrgId)
     this.frmLogin = this.formBuilder.group({
-      id: new FormControl('sanjay123sanjay12@gmial.com',Validators.required),
-      password: new FormControl('Sanjay#321',Validators.required)
+      id: new FormControl('parthiban@kriyatec.com',Validators.required),
+      password: new FormControl('parthiban@123',Validators.required)
     });
   }
 

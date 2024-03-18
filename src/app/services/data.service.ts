@@ -16,7 +16,18 @@ export class DataService {
   public getWsBaseUrl() {
     return environment.apiBaseUrl
   }
-
+  public getWsConfigUrl() {
+    return environment.configBaseUrl
+  }
+  getRole() {
+    let value:any= sessionStorage.getItem('auth')
+    let parsedValue:any=JSON.parse(value)
+    console.log(parsedValue);
+    
+    return parsedValue.data.LoginResponse.role
+  }
+ 
+ 
 /**Api
  * @screenApi loadScreenConfigJson,loadListConfigJson,loadReportConfigJson
  * 
@@ -140,8 +151,14 @@ export class DataService {
   public GetDataBySharedDB(){
     return this.http.get(environment.configBaseUrl  + 'api/shared');
   }
-  public GetDataByDefaultSharedDB(){
-    return this.http.get(environment.configBaseUrl  + 'api/default');
+  public GetDataByDefaultSharedDB(type:any,dbName?:string){
+    if (dbName!= undefined){
+
+      return this.http.get(environment.configBaseUrl  + 'api/'+`${type}`+`/${dbName}`);
+    }else{
+      return this.http.get(environment.configBaseUrl  + 'api/'+`${type}`);
+
+    }
   }
   public GetdataModelData(dbName:any){
     return this.http.get(environment.configBaseUrl + 'model_config/shared/'+`${dbName}`);
@@ -153,15 +170,28 @@ export class DataService {
  * @Data Any TYPE of Data
  */
   public save(collectionName: any,data: any,) {
-    return this.http.post(this.getWsBaseUrl()+"entities/"+`${collectionName}`, data);
+    let role:any = this.getRole()
+    if (role   == "SA") {
+      return this.http.post(this.getWsConfigUrl()+"entities/"+`${collectionName}`, data);
+    }else{
+      return this.http.post(this.getWsBaseUrl()+"entities/"+`${collectionName}`, data);
+    }  
   }
-
+ 
+ 
   public dataSetPreview(data:any){
     return this.http.post(this.getWsBaseUrl()+"dataset/config", data);
   }
   public dataSetSave(methodName:any,data:any){
-    return this.http.post(this.getWsBaseUrl()+`dataset/config/${methodName}`, data);
+    // let role:any = this.getRole()
+    // if (role   == "SA") {
+    //   return
+    //   // return this.http.post(this.getWsConfigUrl()+"entities/"+`${methodName}`, data);
+    // }else{
+      return this.http.post(this.getWsBaseUrl()+`dataset/config/${methodName}`, data);
+    // }   
   }
+
   public dataset_Get_Data(dataSetName: string,filterData?:any) {
     return this.http.post(this.getWsBaseUrl() + `data/${dataSetName}`,filterData);
     

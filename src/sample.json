@@ -99,64 +99,115 @@
             "props": {
               "label": "Default Configuration"
             },
-            "fieldGroupClassName": "display-flex",
+
             "fieldGroup": [
               {
-                "type": "select",
-                "key": "select_field",
-                "className": "flex-2",
-                "defaultValue": "default",
-                "props": {
-                  "label": "Model Configuration",
-                  "placeholder": "Model Configuration",
-                  "options": [
-                    { "label": "Default Model Config", "value": "default" },
-                    {
-                      "label": "Other Organization Model Config",
-                      "value": "other"
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                  {
+                    "type": "select",
+                    "key": "config_select",
+                    "className": "flex-2",
+                    "defaultValue": "default1",
+                    "props": {
+                      "label": "Configuration Copy From",
+                      "placeholder": "Configuration Copy From",
+                      "options": [
+                        { "label": "Default", "value": "default" },
+                        {
+                          "label": "Pms",
+                          "value": "pms"
+                        },
+                        {
+                          "label": "Kriyatec",
+                          "value": "Kriyatec"
+                        },
+                        {
+                          "label": "Credopay",
+                          "value": "Credopay"
+                        }
+                      ]
                     }
-                  ]
-                }
+                  },
+                  {
+                    "type": "multiselectconfig-input",
+                    "key": "datamodel_config",
+                    "className": "flex-2",
+                    "defaultValue": "default",
+                    "height":false,
+                    "props": {
+                      "label": "Data Model",
+                      "placeholder": "Data Model",
+                      "labelProp": "collection_name",
+                      "valueProp": "collection_name",
+                      "attributes":{
+                        "Takenlabelkey":"collection_name",
+                        "Takenvaluekey":"collection_name"
+                      },
+                      "options": [ 
+                      
+                      ]
+                    } ,
+                    "hideExpression": "model.config_select === 'default1'"
+                  }
+                ]
               },
+
               {
-                "type": "multiselect-input",
-                "className": "flex-2",
-                "key": "model_config",
-                "shared": false,
-                "props": {
-                  "label": "Data Model",
-                  "optionsDataSource": { "collectionName": "model_config" },
-                  "labelProp": "collection_name",
-                  "valueProp": "collection_name",
-                  "required": true
-                },
-                "hideExpression": "model['select_field'] !== 'default'"
-              },
-              {
-                "className": "flex-2",
-                "type": "select-input",
-                "key": "enumerate_validation",
-                "props": {
-                  "label": "Model Config",
-                  "placeholder": "Select Model Config",
-                  "options": []
-                },
-                "hideExpression": "model['select_field'] !== 'other'"
-              },
-              {
-                "type": "multiselect-input",
-                "className": "flex-2",
-                "key": "another_company_model_config",
-                "shared": true,
-                "props": {
-                  "label": "Data Model",
-                  "optionsDataSource": { "collectionName": "model_config" },
-                  "labelProp": "collection_name",
-                  "valueProp": "collection_name",
-                  "required": true
-                },
-                "hideExpression": "!model['enumerate_validation']"
-              }
+                "fieldGroupClassName": "display-flex",
+                "fieldGroup": [
+                  {
+                    "type": "multiselectconfig-input",
+                    "key": "screen_config",
+                    "className": "flex-6",
+                    "defaultValue": "default",
+                    "props": {
+                      "label": "Screen",
+                      "placeholder": "Screen",
+                      "labelProp": "_id",
+                      "valueProp": "_id",
+                      "options": [ 
+                        
+                      ]
+                    }
+                    ,
+                    "hideExpression": "model.config_select === 'default1'"
+                  },
+                  {
+                    "type": "multiselectconfig-input",
+                    "key": "menu_config",
+                    "className": "flex-6",
+                    "defaultValue": "default",
+                    "props": {
+                      "label": "Menu",
+                      "placeholder": "Menu",
+                      "labelProp": "_id",
+                      "valueProp": "_id",
+                      "options": [
+                         
+                      ]
+                    }
+                    ,
+                    "hideExpression": "model.config_select === 'default1'"
+                  },   {
+                    "type": "multiselectconfig-input",
+                    "key": "dataset_config",
+                    "className": "flex-6",
+                    "defaultValue": "default",
+                    "props": {
+                      "label": "Data set",
+                      "placeholder": "Data set",
+                      "labelProp": "name",
+                      "valueProp": "name",
+                      "options": [
+                         
+                      ]
+                    }
+                    ,
+                    "hideExpression": "model.config_select === 'default1'"
+                  }
+                ]
+              } 
             ]
           }
         ]

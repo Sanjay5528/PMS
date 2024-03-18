@@ -76,6 +76,7 @@ import { FormlyFieldInputTextEnterKey } from "./inputcheck";
 import { MatStepperModule } from '@angular/material/stepper';
 import { FormlyFieldStepper } from "./stepper";
 import { NumericInput } from "./numeric-input"; 
+import { MultiSelectConfigInput } from "./multiselectconfig-input";
 
 
 export function minLengthValidationMessage(err: any, field: FormlyFieldConfig) {
@@ -327,6 +328,7 @@ const formlyConfig = {
     { name: "muti-image", component: FormlyMultiImageUpload },
     {name:"stepper",component:FormlyFieldStepper}, 
     {name:"numeric-input",component:NumericInput}, 
+    {name:"multiselectconfig-input",component:MultiSelectConfigInput}, 
 
   ],
 }; 
@@ -334,6 +336,7 @@ const formlyConfig = {
 @NgModule({
   declarations: [
     NumericInput, 
+    MultiSelectConfigInput,
     Tab,
     FileInput,
     HtmlInput,
@@ -415,6 +418,7 @@ const formlyConfig = {
     MatStepperModule,
   ],
   exports: [
+    MultiSelectConfigInput,
     Tab,
     NumericInput, 
     FileInput,

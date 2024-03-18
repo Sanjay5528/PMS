@@ -91,47 +91,7 @@ export class MultiSelectInput extends FieldType<any> implements OnInit {
     this.onValueChangeUpdate = this.opt.onValueChangeUpdate;
 
 
- 
-
-    if (this.opt.optionsDataSource.collectionName && this.field.shared ==  false ) {
-    
-      let name = this.opt.optionsDataSource.collectionName
-      let query:any={}
-      if(this.opt.multifilter==true){ 
-        query ={
-        start:0,end:1000,filter:[]
-              }
-        this?.opt?.multifilter_condition?.conditions.map((res:any)=>{
-     
-          if(this?.opt?.multifiltertype=="local"){
-           let value = sessionStorage.getItem(this.opt.filtervalueKey)
-            res.value=value
-          }else{
-            res.value=this.model[this.opt.filtervalueKey]
-          }
-        
-        })
-        query.filter.push(this.opt.multifilter_condition)
-      }
-
-      this.dataService.GetDataByDefaultSharedDB().subscribe((res:any)=>{
- 
-        this.dropdownList = res.data 
-        
-      })
-
- 
-    }else   if (this.opt.optionsDataSource.collectionName && this.field.shared ==  true) {
- 
-      let data:any[]=[]
-      this.dataService.GetdataModelData(this.value).subscribe((res:any)=>{ 
-       res.data.map((insideValue:any) => {  
-        data.push(insideValue.model_config); 
-       })  
-      this.dropdownList = data
-      });
- 
-    }else   if (this.opt.optionsDataSource.collectionName) {
+    if (this.opt.optionsDataSource.collectionName) {
       let name = this.opt.optionsDataSource.collectionName
       let query:any={}
       if(this.opt.multifilter==true){ 

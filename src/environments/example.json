@@ -1,57 +1,247 @@
 {
 	"pageHeading": "Organization",
-	"collectionName": "organization",
+	"formType": "simple",
 	"editMode": "page",
-	"showbutton": true,
+	"user": true,
 	"keyField": "_id",
-	"screenWidth": "40%",
-	"actions": [
-	  {
-		"label": "Edit",
-		"icon": "edit",
-		"formName": "client"
-	  },    {
-		"label": "Delete",
-		"icon": "delete",
-		"formName": "api/organization"
-	  }
-	],
-	"addRoute": "add/organization",
-	"editRoute": "edit/organization",
-	"columnDefs": [
-	 
-	  {
-		"headerName": "Name",
-		"field": "name",
-		"sortable": true,
-		"filter": "agTextColumnFilter"
-	  },
-	  {
-		"headerName": "Email",
-		"field": "email",
-		"sortable": true,
-		"filter": "agTextColumnFilter"
-	  },
-	   
-	  {
-		"headerName": "Status",
-		"field": "status",
-		"sortable": true,
-		"filter": "agTextColumnFilter"
-	  },
-	  {
-		"type": "rightAligned",
-		"headerName": "Actions",
-		"cellRenderer": "buttonRenderer",
-		"lockPosition": "right",     "maxWidth":85,
+	"form": {
+	  "collectionName": "organization",
+	  "fields": [
+		{
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "type": "input",
+			  "key": "name",
+			  "className": "flex-6",
+			  "props": {
+				"label": "Organization Name",
+				"placeholder": "Organization Name",
+				"required": true
+			  },
+			  "expressions": {
+				"props.readonly": "model.isEdit"
+			  }
+			},
+			{
+			  "type": "input",
+			  "key": "email",
+			  "className": "flex-6",
+			  "props": {
+				"label": "Email",
+				"placeholder": "Email",
+				"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+				"required": true
+			  },
+			  "expressions": {
+				"props.readonly": "model.isEdit"
+			  }
+			}
+		  ]
+		},
+		{
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "type": "input",
+			  "key": "url",
+			  "className": "flex-6",
+			  "props": {
+				"label": "Url",
+				"placeholder": "Url",
+				"required": true
+			  },
+			  "expressions": {
+				"props.readonly": "model.isEdit"
+			  }
+			},
+  
+			{
+			  "type": "input",
+			  "key": "db_name",
+			  "className": "flex-6",
+			  "props": {
+				"label": "Database Name",
+				"placeholder": "Database Name",
+				"required": true
+			  },
+			  "expressions": {
+				"props.readonly": "model.isEdit"
+			  }
+			}
+		  ]
+		},
+		{
+		  "type": "tab-input",
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "props": {
+				"label": "Company Logo"
+			  },
+			  "fieldGroup": [
+				{
+				  "type": "logo",
+				  "key": "logo",
+				  "refId": "email",
+				  "role": "organization",
+				  "bind_key": "email",
+				  "details_type": "logo",
+				  "props": {
+					"refId": "email",
+					"label": "Organization Logo",
+					"placeholder": "Organization Logo"
+				  }
+				}
+			  ]
+			},
+			{
+			  "props": {
+				"label": "Default Configuration"
+			  },
+  
+			  "fieldGroup": [
+				{
+				  "fieldGroupClassName": "display-flex",
+				  "fieldGroup": [
+					{
+					  "type": "select",
+					  "key": "config_select",
+					  "className": "flex-2",
+					  "defaultValue": "default1",
+					  "props": {
+						"label": "Configuration Copy From",
+						"placeholder": "Configuration Copy From",
+						"options": [
+						  { "label": "Default", "value": "default" },
+						  {
+							"label": "Pms",
+							"value": "pms"
+						  } 
+						]
+					  }
+					}
+				]
+			},{
+				"fieldGroupClassName": "display-flex",
+				"fieldGroup": [
+					{
+					  "type": "multiselectconfig-input",
+					  "key": "datamodel_config",
+					  "className": "flex-2",
+					  "defaultValue": "default",
+					
+					  "props": {
+						"label": "Data Model",
+						"placeholder": "Data Model",
+						"labelProp": "collection_name",
+						"valueProp": "collection_name",
+					  
+						"options": [ 
+						
+						]
+					  } ,
+					  "hideExpression": "model.config_select === 'default1'"
+					}
+				  ]
+				},
+  
+				{
+				  "fieldGroupClassName": "display-flex",
+				  "fieldGroup": [
+					{
+					  "type": "multiselectconfig-input",
+					  "key": "screen_config",
+					  "className": "flex-6",
+					  "defaultValue": "default",
+					  "props": {
+						"label": "Screen",
+						"placeholder": "Screen",
+						"labelProp": "_id",
+						"valueProp": "_id",
+						"options": [ 
+						  
+						]
+					  }
+					  ,
+					  "hideExpression": "model.config_select === 'default1'"
+					}]},
+					{
+						"fieldGroupClassName": "display-flex",
+						"fieldGroup": [
+					{
+					  "type": "multiselectconfig-input",
+					  "key": "menu_config",
+					  "className": "flex-6",
+					  "defaultValue": "default",
+					  "props": {
+						"label": "Menu",
+						"placeholder": "Menu",
+						"labelProp": "_id",
+						"valueProp": "_id",
+						"options": [
+						   
+						]
+					  }
+					  ,
+					  "hideExpression": "model.config_select === 'default1'"
+					}]}, 
 
-		"menuTabs": [],
-		"lockPinned": true,
-		 "pinned":"right",
-		"cellRendererParams": {
-		  "onClick": "this.onBtnClick1.bind(this)",
-		  "label": "Click 1"
+					{
+						"fieldGroupClassName": "display-flex",
+						"fieldGroup": [
+							{
+								"height":false,
+					  "type": "multiselectconfig-input",
+					  "key": "dataset_config",
+					  "className": "flex-6",
+					  "defaultValue": "default",
+					  "props": {
+						"label": "Data set",
+						"placeholder": "Data set",
+						"labelProp": "_id",
+						"valueProp": "_id",
+						"options": [
+						   
+						]
+					  }
+					  ,
+					  "hideExpression": "model.config_select === 'default1'"
+					}
+				  ]
+				} 
+			  ]
+			}
+		  ]
+		},
+  
+		{
+		  "fieldGroupClassName": "display-flex",
+		  "fieldGroup": [
+			{
+			  "key": "status",
+			  "type": "select",
+			  "defaultValue": "A",
+			  "props": {
+				"label": "Status",
+				"options": [
+				  {
+					"label": "Active",
+					"value": "A"
+				  },
+				  {
+					"label": "Inactive",
+					"value": "I"
+				  }
+				],
+				"required": true
+			  },
+			  "hideExpression": "!model.isEdit"
+			}
+		  ]
 		}
-	  }
-	]
+	  ]
+	},
+	"onCancelRoute": "/list/organization"
   }
+  
