@@ -1,0 +1,73 @@
+{
+    "status": 200,
+    "data": {
+        "dataset": null,
+        "menu_filter": [
+            [
+                {
+                    "Key": "$match",
+                    "Value": [
+                        {
+                            "Key": "_id",
+                            "Value": [
+                                {
+                                    "Key": "$in",
+                                    "Value": [
+                                        [
+                                            "menu",
+                                            "menu-list",
+                                            "COORDR_menu"
+                                        ]
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            [
+                {
+                    "Key": "$group",
+                    "Value": [
+                        {
+                            "Key": "_id",
+                            "Value": {}
+                        },
+                        {
+                            "Key": "menu_config",
+                            "Value": [
+                                {
+                                    "Key": "$addToSet",
+                                    "Value": [
+                                        {
+                                            "Key": "_id",
+                                            "Value": "$_id"
+                                        },
+                                        {
+                                            "Key": "type",
+                                            "Value": "$type"
+                                        },
+                                        {
+                                            "Key": "config",
+                                            "Value": "$config"
+                                        },
+                                        {
+                                            "Key": "status",
+                                            "Value": "$status"
+                                        },
+                                        {
+                                            "Key": "name",
+                                            "Value": "$name"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        ],
+        "screen": null
+    },
+    "error_msg": ""
+}

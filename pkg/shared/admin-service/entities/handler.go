@@ -60,7 +60,7 @@ func PostDocHandler1(c *fiber.Ctx) error {
 	}
 	// to paras the Datatype
 	helper.UpdateDateObject(inputData)
-	handleIDGeneration(inputData, org.Id)
+	helper.HandleIDGeneration(inputData, org.Id)
 	// if user user collection to send the email
 	if collectionName == "user" {
 		err := OnboardingProcessing(org.Id, inputData["_id"].(string), "Onboarding", "user")
@@ -124,7 +124,7 @@ func PostDocHandler(c *fiber.Ctx) error {
 	c.BodyParser(&inputData)
 	// Update Date Object
 	helper.UpdateDateObject(inputData)
-	handleIDGeneration(inputData, org.Id)
+	helper.HandleIDGeneration(inputData, org.Id)
 
 	// If user uses collection to send the email
 	if collectionName == "user" {
@@ -162,17 +162,6 @@ func Insert(orgId string, collectionName string, inputData map[string]interface{
 }
 
 // handleIDGeneration generates or handles the ID in the input data.
-func handleIDGeneration(inputData bson.M, orgID string) {
-	if inputData["_id"] != nil {
-		result, err := helper.HandleSequenceOrder(inputData["_id"].(string), orgID)
-		if err == nil {
-			inputData["_id"] = result
-		}
-	} else {
-		// fmt.Println("sdagsd")
-		inputData["_id"] = helper.Generateuniquekey()
-	}
-}
 
 func GetDocByIdHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
@@ -252,12 +241,12 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 	// 	return shared.BadRequest(string(jsonstring))
 	// }
 	collectionName := c.Params("model_name")
-	var inputData map[string]interface{}
-	c.BodyParser(&inputData)
+	var UpdateData map[string]interface{}
+	c.BodyParser(&UpdateData)
 
-	updatedDatas := make(map[string]interface{})
+	// updatedDatas := make(map[string]interface{})
 	// update for nested fields
-	UpdateData := helper.UpdateFieldsWithParentKey(inputData, "", updatedDatas)
+	// UpdateData := helper.UpdateFieldsWithParentKey(inputData, "", updatedDatas)
 	helper.UpdateDateObject(UpdateData)
 
 	update := bson.M{
@@ -665,6 +654,8 @@ func getDocsHandler(c *fiber.Ctx) error {
 	if orgId == "" {
 		return shared.BadRequest("Organization Id missing")
 	}
+	userToken := utils.GetUserTokenValue(c)
+
 	// collectionName := c.Params("collectionName")
 	var requestBody helper.PaginationRequest
 
@@ -677,14 +668,31 @@ func getDocsHandler(c *fiber.Ctx) error {
 
 	PagiantionPipeline := helper.PagiantionPipeline(requestBody.Start, requestBody.End)
 	pipeline = append(pipeline, PagiantionPipeline)
-	Response, err := helper.GetAggregateQueryResult(orgId, c.Params("collectionName"), pipeline)
 
-	if err != nil {
-		if cmdErr, ok := err.(mongo.CommandError); ok {
-			return shared.BadRequest(cmdErr.Message)
+	if userToken.UserRole == "SA" {
+		cur, err := database.SharedDB.Collection(c.Params("collectionName")).Aggregate(ctx, pipeline)
+		if err != nil {
+			return nil
 		}
+
+		var result []bson.M
+		//var result map[string][]Config
+		if err = cur.All(ctx, &result); err != nil {
+			return nil
+		}
+		return shared.SuccessResponse(c, result)
+
+	} else {
+
+		Response, err := helper.GetAggregateQueryResult(orgId, c.Params("collectionName"), pipeline)
+		if err != nil {
+			if cmdErr, ok := err.(mongo.CommandError); ok {
+				return shared.BadRequest(cmdErr.Message)
+			}
+		}
+		return shared.SuccessResponse(c, Response)
 	}
-	return shared.SuccessResponse(c, Response)
+
 }
 
 // OnboardingProcessing  -- METHOD Onboarding processing for user and send the email

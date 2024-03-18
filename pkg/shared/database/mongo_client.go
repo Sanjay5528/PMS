@@ -78,6 +78,38 @@ func CreateDBConnection(host string, port int, dbName string, userid string, pwd
 	return MongoClient.Database(dbName)
 
 }
+func CreateDb(host string, port int, dbName string, userid string, pwd string, collectionName string) *mongo.Database {
+	dbUrl := fmt.Sprintf("mongodb+srv://%s:%s@%s", userid, pwd, host)
+
+	credential := options.Credential{
+		Username: userid,
+		Password: pwd,
+	}
+
+	MongoClient, DBError = mongo.Connect(
+		ctx,
+		options.Client().ApplyURI(dbUrl).SetAuth(credential),
+	)
+
+	if DBError != nil {
+		log.Fatal(DBError)
+		return nil
+	}
+	if !Ping() {
+		return nil
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10)
+	defer cancel()
+
+	err := MongoClient.Database(dbName).CreateCollection(ctx, collectionName)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	fmt.Println("Database created successfully:", dbName)
+	return MongoClient.Database(dbName)
+}
 
 func Ping() bool {
 	DBError = MongoClient.Ping(context.TODO(), nil)

@@ -578,3 +578,15 @@ func UpdateDataset(c *fiber.Ctx) error {
 
 	return shared.SuccessResponse(c, Response)
 }
+
+func HandleIDGeneration(inputData bson.M, orgID string) {
+	if inputData["_id"] != nil {
+		result, err := HandleSequenceOrder(inputData["_id"].(string), orgID)
+		if err == nil {
+			inputData["_id"] = result
+		}
+	} else {
+		// fmt.Println("sdagsd")
+		inputData["_id"] = Generateuniquekey()
+	}
+}
