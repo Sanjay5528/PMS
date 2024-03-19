@@ -423,7 +423,15 @@ func UpdateDataToDb(orgId string, filter interface{}, Data interface{}, collecti
 	return UpdatetResponse, err
 }
 
-func InsertData(c *fiber.Ctx, orgId string, collectionName string, data interface{}) error {
+func InsertData(c *fiber.Ctx, orgId string, collectionName string, data interface{}, types string) error {
+	if types == "admin" {
+		response, err := database.SharedDB.Collection(collectionName).InsertOne(ctx, data)
+		if err != nil {
+			return shared.BadRequest(err.Error())
+		}
+		return shared.SuccessResponse(c, response)
+
+	}
 	response, err := database.GetConnection(orgId).Collection(collectionName).InsertOne(ctx, data)
 	if err != nil {
 		return shared.BadRequest(err.Error())

@@ -15,7 +15,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"gopkg.in/mail.v2"
 
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"kriyatec.com/pms-api/pkg/shared"
@@ -162,7 +161,6 @@ func Insert(orgId string, collectionName string, inputData map[string]interface{
 }
 
 // handleIDGeneration generates or handles the ID in the input data.
-
 func GetDocByIdHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
 	if orgId == "" {
@@ -170,11 +168,28 @@ func GetDocByIdHandler(c *fiber.Ctx) error {
 	}
 	filter := helper.DocIdFilter(c.Params("id"))
 	collectionName := c.Params("collectionName")
-	response, err := helper.GetQueryResult(orgId, collectionName, filter, int64(0), int64(1), nil)
-	if err != nil {
-		return shared.BadRequest(err.Error())
+	userToken := utils.GetUserTokenValue(c)
+
+	if userToken.UserRole == "SA" {
+		cur, err := database.SharedDB.Collection(collectionName).Find(ctx, filter)
+		// cur, err := database.SharedDB.Collection(c.Params("collectionName")).Aggregate(ctx, filter)
+		if err != nil {
+			return nil
+		}
+
+		var result []bson.M
+		if err = cur.All(ctx, &result); err != nil {
+			return nil
+		}
+		return shared.SuccessResponse(c, result)
+
+	} else {
+		response, err := helper.GetQueryResult(orgId, collectionName, filter, int64(0), int64(1), nil)
+		if err != nil {
+			return shared.BadRequest(err.Error())
+		}
+		return shared.SuccessResponse(c, response)
 	}
-	return shared.SuccessResponse(c, response)
 }
 
 func DeleteById(c *fiber.Ctx) error {
@@ -719,7 +734,7 @@ func OnboardingProcessing(orgId, email, emailtype, category string) error {
 
 	}
 
-	if err := SimpleEmailHandler(email, os.Getenv("CLIENT_EMAIL"), "Welcome to pms Onboarding", replacestring(Response[0]["template"].(string), fmt.Sprintf("%s%s%s", Response[0]["link"].(string), `=`, decoding))); err == nil {
+	if err := helper.SimpleEmailHandler(email, os.Getenv("CLIENT_EMAIL"), "Welcome to pms Onboarding", replacestring(Response[0]["template"].(string), fmt.Sprintf("%s%s%s", Response[0]["link"].(string), `=`, decoding))); err == nil {
 		// If email sending was successful
 		if err := UsertemporaryStoringData(email, decoding); err != nil {
 			log.Println("Failed to insert user junked files:", err)
@@ -797,24 +812,6 @@ func UsertemporaryStoringData(requestMail, appToken string) error {
 	return nil
 }
 
-func SimpleEmailHandler(recipientEmail string, senderEmail string, subject string, body string) error {
-	email := mail.NewMessage()
-	email.SetHeader("From", senderEmail)
-	email.SetHeader("To", recipientEmail)
-
-	email.SetHeader("Subject", subject)
-	email.SetBody("text/html", body)
-
-	sendinmail := mail.NewDialer("smtp.gmail.com", 587, senderEmail, os.Getenv("CLIENT_EMAIL_PASSWORD"))
-
-	err := sendinmail.DialAndSend(email)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func postTimesheetDocHandler(c *fiber.Ctx) error {
 	orgId := c.Get("OrgId")
 	if orgId == "" {
@@ -876,7 +873,7 @@ func postTimesheetDocHandler(c *fiber.Ctx) error {
 
 	if len(response) == 0 {
 
-		helper.InsertData(c, orgId, "timesheet", inputData)
+		helper.InsertData(c, orgId, "timesheet", inputData, "other")
 		if inputData["approval_Status"] == "Approved" || inputData["approval_Status"] == "Rejected" || inputData["approval_Status"] == "Hold" {
 			_, err = database.GetConnection(orgId).Collection("task").UpdateOne(
 				ctx,

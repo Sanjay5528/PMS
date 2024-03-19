@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"os"
 	"reflect"
 	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"gopkg.in/mail.v2"
 
 	"github.com/gofiber/fiber/v2"
 
@@ -589,4 +591,22 @@ func HandleIDGeneration(inputData bson.M, orgID string) {
 		// fmt.Println("sdagsd")
 		inputData["_id"] = Generateuniquekey()
 	}
+}
+
+func SimpleEmailHandler(recipientEmail string, senderEmail string, subject string, body string) error {
+	email := mail.NewMessage()
+	email.SetHeader("From", senderEmail)
+	email.SetHeader("To", recipientEmail)
+
+	email.SetHeader("Subject", subject)
+	email.SetBody("text/html", body)
+
+	sendinmail := mail.NewDialer("smtp.gmail.com", 587, senderEmail, os.Getenv("CLIENT_EMAIL_PASSWORD"))
+
+	err := sendinmail.DialAndSend(email)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

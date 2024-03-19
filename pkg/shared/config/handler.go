@@ -219,7 +219,7 @@ func GetsharedDBDefaultHandler(c *fiber.Ctx) error {
 			{"$group",
 				bson.D{
 					{"_id", "null"},
-					{"model_config",
+					{"datamodel_config",
 						bson.D{
 							{"$addToSet",
 								bson.D{
@@ -242,7 +242,7 @@ func GetsharedDBDefaultHandler(c *fiber.Ctx) error {
 					{"from", "data_set"},
 					{"localField", "field"},
 					{"foreignField", "field"},
-					{"as", "data_set"},
+					{"as", "dataset_config"},
 				},
 			},
 		},
@@ -252,7 +252,7 @@ func GetsharedDBDefaultHandler(c *fiber.Ctx) error {
 					{"from", "screen"},
 					{"localField", "field"},
 					{"foreignField", "field"},
-					{"as", "screen"},
+					{"as", "screen_config"},
 				},
 			},
 		},
@@ -262,7 +262,7 @@ func GetsharedDBDefaultHandler(c *fiber.Ctx) error {
 					{"from", "menu"},
 					{"localField", "field"},
 					{"foreignField", "field"},
-					{"as", "menu"},
+					{"as", "menu_config"},
 				},
 			},
 		},
@@ -309,118 +309,22 @@ func GetsharedDBDefaultHandler(c *fiber.Ctx) error {
 
 }
 
-func generatePipeline(fieldName string, values []interface{}, fields ...string) bson.A {
-	matchStage := bson.D{
-		{"$match", bson.D{
-			{fieldName, bson.D{{"$in", values}}},
-		}},
-	}
-
-	groupFields := bson.D{{"_id", primitive.Null{}}}
-	for _, field := range fields {
-		groupFields = append(groupFields, bson.E{field, bson.D{{"$addToSet", bson.D{{field, "$" + field}}}}})
-	}
-
-	groupStage := bson.D{{"$group", groupFields}}
-
-	return bson.A{matchStage, groupStage}
-}
-
-func aggregateCollection(ctx context.Context, collectionName string, pipeline bson.A, result interface{}) error {
-	cursor, err := database.SharedDB.Collection(collectionName).Aggregate(ctx, pipeline)
-	if err != nil {
-		return err
-	}
-	defer cursor.Close(ctx)
-	return cursor.All(ctx, result)
-}
-
-// func PostHandler(c *fiber.Ctx) error {
-// 	var data map[string]interface{}
-// 	c.BodyParser(&data)
-// 	data["_id"] = helper.Generateuniquekey()
-
-// 	ctx := c.Context()
-
-// 	screenPipeline := generatePipeline("_id", data["screen_config"].([]interface{}), "screen_config")
-// 	menuPipeline := generatePipeline("_id", data["menu_config"].([]interface{}), "menu_config")
-// 	dataSetPipeline := generatePipeline("_id", data["dataset_config"].([]interface{}), "dataset_config")
-
-// 	var screen, menu, dataSet []bson.M
-// 	errChan := make(chan error)
-
-// 	go func() {
-// 		errChan <- aggregateCollection(ctx, "screen", screenPipeline, &screen)
-// 	}()
-// 	go func() {
-// 		errChan <- aggregateCollection(ctx, "menu", menuPipeline, &menu)
-// 	}()
-// 	go func() {
-// 		errChan <- aggregateCollection(ctx, "data_set", dataSetPipeline, &dataSet)
-// 	}()
-
-// 	for i := 0; i < 3; i++ {
-// 		if err := <-errChan; err != nil {
-// 			return shared.BadRequest("invalid db name")
-// 		}
-// 	}
-
-// 	return shared.SuccessResponse(c, fiber.Map{
-// 		"dataset":     dataSet,
-// 		"screen":      screen,
-// 		"menu_filter": menu,
-// 	})
-// }
-
 func PostHandler(c *fiber.Ctx) error {
 	var data map[string]interface{}
 	c.BodyParser(&data)
-	data["_id"] = helper.Generateuniquekey()
 
-	// cur, err := database.SharedDB.Collection("db_config").Aggregate(ctx, db_config_filter)
+	var dbconfig bson.M
+	database.SharedDB.Collection("db_config").FindOne(ctx, bson.D{{"db_name", data["db_name"].(string)}}).Decode(&dbconfig)
+	if dbconfig != nil {
+		return shared.BadRequest("Already Exist in DB Name")
+	}
 
-	// var result []bson.M
-	// if err = cur.All(ctx, &result); err != nil {
-	// 	return shared.BadRequest("invalid db name")
-	// }
-
-	// screen_filter := bson.A{
-	// 	bson.D{
-	// 		{"$match",
-	// 			bson.D{
-	// 				{"_id",
-	// 					bson.D{
-	// 						{"$in",
-	// 							bson.A{
-	// 								data["screen_config"],
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$group",
-	// 			bson.D{
-	// 				{"_id", primitive.Null{}},
-	// 				{"screen_config",
-	// 					bson.D{
-	// 						{"$addToSet",
-	// 							bson.D{
-	// 								{"_id", "$_id"},
-	// 								{"type", "$type"},
-	// 								{"config", "$config"},
-	// 								{"status", "$status"},
-	// 								{"name", "$name"},
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// }
+	var bsonscreenConfig bson.A
+	for _, menu := range data["screen_config"].([]interface{}) {
+		if menuStr, ok := menu.(string); ok {
+			bsonscreenConfig = append(bsonscreenConfig, menuStr)
+		}
+	}
 
 	screen_filter := bson.A{
 		bson.D{
@@ -428,7 +332,9 @@ func PostHandler(c *fiber.Ctx) error {
 				bson.D{
 					{"_id",
 						bson.D{
-							{"$in"},
+							{"$in",
+								bsonscreenConfig,
+							},
 						},
 					},
 				},
@@ -463,44 +369,6 @@ func PostHandler(c *fiber.Ctx) error {
 		return shared.BadRequest("invalid db name")
 	}
 
-	// menu_filter := bson.A{
-	// 	bson.D{
-	// 		{"$match",
-	// 			bson.D{
-	// 				{"_id",
-	// 					bson.D{
-	// 						{"$in",
-	// 							bson.A{
-	// 								data["menu_config"],
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.D{
-	// 		{"$group",
-	// 			bson.D{
-	// 				{"_id", primitive.Null{}},
-	// 				{"menu_config",
-	// 					bson.D{
-	// 						{"$addToSet",
-	// 							bson.D{
-	// 								{"_id", "$_id"},
-	// 								{"type", "$type"},
-	// 								{"config", "$config"},
-	// 								{"status", "$status"},
-	// 								{"name", "$name"},
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// }
-
 	menuConfigRaw := data["menu_config"].([]interface{})
 	var bsonMenuConfig bson.A
 	for _, menu := range menuConfigRaw {
@@ -508,8 +376,6 @@ func PostHandler(c *fiber.Ctx) error {
 			bsonMenuConfig = append(bsonMenuConfig, menuStr)
 		}
 	}
-
-	fmt.Println(bsonMenuConfig)
 
 	menu_filter :=
 		bson.A{
@@ -554,6 +420,13 @@ func PostHandler(c *fiber.Ctx) error {
 		return shared.BadRequest("invalid db name")
 	}
 
+	var bsondatasetConfig bson.A
+	for _, menu := range data["dataset_config"].([]interface{}) {
+		if menuStr, ok := menu.(string); ok {
+			bsondatasetConfig = append(bsondatasetConfig, menuStr)
+		}
+	}
+
 	data_set_filter := bson.A{
 		bson.D{
 			{"$match",
@@ -561,10 +434,7 @@ func PostHandler(c *fiber.Ctx) error {
 					{"_id",
 						bson.D{
 							{"$in",
-								bson.A{
-									"journal",
-									"journal1",
-								},
+								bsondatasetConfig,
 							},
 						},
 					},
@@ -605,44 +475,132 @@ func PostHandler(c *fiber.Ctx) error {
 		return shared.BadRequest("invalid db name")
 	}
 
-	// if c.Params("model_name") == "organization" {
-	// 	fmt.Println(data["datamodel_config"])
+	var bsonmodelConfig bson.A
+	for _, menu := range data["datamodel_config"].([]interface{}) {
+		if menuStr, ok := menu.(string); ok {
+			bsonmodelConfig = append(bsonmodelConfig, menuStr)
+		}
+	}
 
-	// }
-	// res, err := database.SharedDB.Collection(c.Params("model_name")).InsertOne(ctx, data)
-	// if err != nil {
-	// 	if err == mongo.ErrNoDocuments {
-	// 		return shared.BadRequest(err.Error())
-	// 	}
+	modelconfigFilter := bson.A{
+		bson.D{
+			{"$match",
+				bson.D{
+					{"model_name",
+						bson.D{
+							{"$in",
+								bsonmodelConfig,
+							},
+						},
+					},
+				},
+			},
+		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "data_model"},
+					{"localField", "collection_name"},
+					{"foreignField", "model_name"},
+					{"as", "data_model"},
+				},
+			},
+		},
+		bson.D{{"$unwind", "$data_model"}},
+		bson.D{
+			{"$group",
+				bson.D{
+					{"_id", primitive.Null{}},
+					{"model_config",
+						bson.D{
+							{"$addToSet",
+								bson.D{
+									{"_id", "$_id"},
+									{"model_name", "$model_name"},
+									{"collection_name", "$collection_name"},
+									{"is_collection", "$is_collection"},
+									{"status", "$status"},
+								},
+							},
+						},
+					},
+					{"data_model", bson.D{{"$addToSet", "$data_model"}}},
+				},
+			},
+		},
+	}
 
-	// }
+	modelconfigs, err := database.SharedDB.Collection("model_config").Aggregate(ctx, modelconfigFilter)
 
-	// fmt.Println(screen[0])
-	// fmt.Println("......>")
-	// fmt.Println(menu_filter[0])
-	// fmt.Println("......>")
+	var modelconfig []bson.M
+	if err = modelconfigs.All(ctx, &modelconfig); err != nil {
+		return shared.BadRequest("invalid db name")
+	}
 
-	// fmt.Println(data_set[0])
-	// fmt.Println("......>")
+	db := database.CreateDb(GetenvStr("MONGO_SHAREDDB_HOST"), GetenvInt("MONGO_SHAREDDB_PORT"), data["db_name"].(string), GetenvStr("MONGO_SHAREDDB_USER"), GetenvStr("MONGO_SHAREDDB_PASSWORD"), "user")
+	if len(menu) > 0 {
+		for _, data := range menu[0]["menu_config"].(primitive.A) {
+			go db.Collection("menu").InsertOne(ctx, data)
+		}
+	}
 
-	// fmt.Println(data["dataset_config"])
-	// fmt.Println(data["db_name"])
+	if len(data_set) > 0 {
+		for _, data := range data_set[0]["dataset_config"].(primitive.A) {
+			go db.Collection("data_set").InsertOne(ctx, data)
+		}
+	}
 
-	// return nil
-	// return shared.SuccessResponse(c, fiber.Map{
-	// 	"message":   "Insert Successfully",
-	// 	"insert ID": res.InsertedID,
-	// })
+	if len(screen) > 0 {
+		for _, data := range screen[0]["screen_config"].(primitive.A) {
+			go db.Collection("screen").InsertOne(ctx, data)
+		}
+
+	}
+	if len(modelconfig) > 0 {
+
+		for _, data := range modelconfig[0]["data_model"].(primitive.A) {
+			go db.Collection("data_model").InsertOne(ctx, data)
+		}
+		for _, data := range modelconfig[0]["model_config"].(primitive.A) {
+			go db.Collection("model_config").InsertOne(ctx, data)
+		}
+	}
+
+	var DbConfig map[string]interface{}
+
+	orgId := data["db_name"].(string) + helper.Generateuniquekey()
+	fmt.Println(orgId)
+	DbConfig["_id"] = helper.Generateuniquekey()
+	DbConfig["org_id"] = orgId
+	DbConfig["host"] = GetenvStr("MONGO_SHAREDDB_HOST")
+	DbConfig["pwd"] = GetenvStr("MONGO_SHAREDDB_PASSWORD")
+	DbConfig["user_id"] = GetenvStr("MONGO_SHAREDDB_USER")
+	DbConfig["db_name"] = data["db_name"].(string)
+
+	var Organization map[string]interface{}
+
+	Organization["_id"] = orgId
+	Organization["name"] = data["name"].(string)
+	Organization["url"] = data["url"].(string)
+
+	logoPath := data["logo"].(map[string]interface{})["storage_name"].(string)
+	if logoPath != "" {
+		Organization["logo"] = GetenvStr("S3_ENDPOINT") + logoPath
+	}
+	if data["group"] != "" || data["group"] != nil {
+		Organization["group"] = data["group"].(string)
+	}
+
+	go SendEmail()
+
+	// helper.SendEmail("organization", email_template, Organization)
 	return shared.SuccessResponse(c, fiber.Map{
-		// "message":     "Insert Successfully",
-		"dataset":     data_set,
-		"screen":      screen,
-		"menu_filter": menu,
+		"message":          "Insert Successfully",
+		"datamodel_config": modelconfig,
+		"dataset_config":   data_set,
+		"screen_config":    screen,
+		"menu_config":      menu,
 	})
-}
-
-func RefenceCollectionDum() {
-
 }
 
 func GetenvStr(key string) string {
@@ -657,11 +615,39 @@ func GetenvInt(key string) int {
 	}
 	return v
 }
+func SendEmail() error {
+	var email_template bson.M
+	err := database.SharedDB.Collection("email_template").FindOne(ctx, bson.D{{"title", "organization"}}).Decode(&email_template)
+	if err != nil {
+		return shared.BadRequest(err.Error())
+	}
+	return nil
+}
 
-// db := database.CreateDb(GetenvStr("MONGO_SHAREDDB_HOST"), GetenvInt("MONGO_SHAREDDB_PORT"), data["db_name"].(string), GetenvStr("MONGO_SHAREDDB_USER"), GetenvStr("MONGO_SHAREDDB_PASSWORD"), "user")
-// 	fmt.Println(menu)
-// 	res, err := db.Collection("menu").InsertOne(ctx, menu[0])
-// 	if err != nil {
-// 		return shared.BadRequest(err.Error())
-// 	}
-// 	fmt.Println(res)
+// {
+// 	"_id": {
+// 	  "$oid": "6545c57e0fa0da031b66fc78"
+// 	},
+// 	"org_id": "pms",
+// 	"host": "dataset.tf3gxwl.mongodb.net/",
+// 	"user_id": "sanjay",
+// 	"pwd": "mecwym4256hOdi3L",
+// 	"db_name": "pms"
+//   }
+
+// fmt.Println(screen[0])
+// fmt.Println("......>")
+// fmt.Println(menu_filter[0])
+// fmt.Println("......>")
+
+// fmt.Println(data_set[0])
+// fmt.Println("......>")
+
+// fmt.Println(data["dataset_config"])
+// fmt.Println(data["db_name"])
+
+// return nil
+// return shared.SuccessResponse(c, fiber.Map{
+// 	"message":   "Insert Successfully",
+// 	"insert ID": res.InsertedID,
+// })
