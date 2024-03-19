@@ -27,7 +27,8 @@ import {
         position: relative !important;
       }
     </style>
-    <h4>{{field.props!['label']}}</h4>
+
+  <h4>{{field.props!['label']}}</h4>
     <ng-multiselect-dropdown
       #multiSelect
       [placeholder]="field.props!['label']"
@@ -40,6 +41,8 @@ import {
       appearance="outline"
     >
     </ng-multiselect-dropdown>
+    <div style="height: 30px;">
+  </div>
     <!--  (onFilterChange)="onFilterChange($event)" -->
   `,
 })
@@ -97,7 +100,7 @@ export class MultiSelectConfigInput extends FieldType<any> implements OnInit {
 
     this.values = this.form.get("config_select")?.value.toLowerCase();
     this.DefaultDataInit(this.values); 
-    this.cf.detectChanges();
+   
 
   }
   public setForm() {
@@ -127,6 +130,7 @@ export class MultiSelectConfigInput extends FieldType<any> implements OnInit {
       );
       this.FormControl.setValue(allValues);
       this.selectedItems = allValues;
+      this.cf.detectChanges();
     });
   }
 
