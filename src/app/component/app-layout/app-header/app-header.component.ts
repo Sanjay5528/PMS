@@ -321,7 +321,7 @@ let parsedValue:any=JSON.parse(user)
 //   console.log(xyz);
   
 // })
-      this.dataservice.loadScreenConfigJson(this.screenId).subscribe((config:any)=>{
+      this.dataservice.loadScreenConfigJson(this.screenId,"menu").subscribe((config:any)=>{
 
          this.navItems = config
         

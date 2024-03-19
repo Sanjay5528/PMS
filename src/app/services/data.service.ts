@@ -48,8 +48,8 @@ export class DataService {
  * @screenId Screen Name
  * @data must be in (Screen-Json-name-list) (or) (form-Json-name) (or) (menujosnname) && etc...
  */
-  public loadScreenConfigJson(screenId: string): Observable<any> {
-    return this.loadConfig(screenId)
+  public loadScreenConfigJson( screenId: string,collectionName?:any): Observable<any> {
+    return this.loadConfig(screenId,collectionName)
   }
 
 
@@ -79,13 +79,14 @@ export class DataService {
       return this.loadConfig(screenViewId+'-view')
       }
 
-  public loadConfig(screenId:any):Observable<any> {
+  public loadConfig(screenId:any,collectionName?:any):Observable<any> {
     //let config = sessionStorage.getItem(screenId)
+    let collection_name = collectionName || 'screen';
     return new Observable((observer) => {
       // if (config) {
       //   observer.next(JSON.parse(config))
       // }
-      this.getDataById('screen',screenId).subscribe((result:any)=>{       
+      this.getDataById(collection_name,screenId).subscribe((result:any)=>{       
         let config =  result.data ? result.data[0].config : []
         observer.next(JSON.parse(config))
        

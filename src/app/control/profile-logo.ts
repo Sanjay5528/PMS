@@ -71,7 +71,7 @@ import { environment } from "src/environments/environment";
         style="justify-content: space-between;"
       >
         <label class="hoverable" for="fileInput">
-          <img src="{{ docBasePath+url['storage_name'] }}" />
+          <img src="{{ url }}" />
           <div class="hover-text">{{ label }}</div>
           <div class="background"></div>
           <input

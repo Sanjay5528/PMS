@@ -76,6 +76,7 @@ import { FormlyFieldInputTextEnterKey } from "./inputcheck";
 import { MatStepperModule } from '@angular/material/stepper';
 import { FormlyFieldStepper } from "./stepper";
 import { NumericInput } from "./numeric-input"; 
+import { NgMultiSelectDropDownModule } from "ng-multiselect-dropdown";
 import { MultiSelectConfigInput } from "./multiselectconfig-input";
 
 
@@ -120,7 +121,7 @@ export function required(err: any, field: FormlyFieldConfig) {
 }
 
 const lang = "en-US";
-const formlyConfig = {
+const formlyConfig:any = {
   wrappers: [{ name: "addons", component: PrefixInput }],
   extensions: [{ name: "addons", extension: { onPopulate: addonsExtension } }],
 
@@ -389,6 +390,7 @@ const formlyConfig = {
     ReactiveFormsModule,
     FormlyMatDatepickerModule,
     FormlyModule.forRoot(formlyConfig),
+    NgMultiSelectDropDownModule.forRoot(),
     FormsModule,
     MatChipsModule,
     AngularEditorModule,

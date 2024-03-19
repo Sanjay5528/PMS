@@ -1,8 +1,7 @@
 {
 	"pageHeading": "Organization",
 	"formType": "simple",
-	"editMode": "page",
-	"user": true,
+	"editMode": "page", 
 	"keyField": "_id",
 	"form": {
 	  "collectionName": "organization",
@@ -105,43 +104,50 @@
 				  "fieldGroupClassName": "display-flex",
 				  "fieldGroup": [
 					{
-					  "type": "select",
+					  "type": "select-input",
 					  "key": "config_select",
 					  "className": "flex-2",
-					  "defaultValue": "default1",
+					  "defaultValue": "test",
+					  "access":true,
 					  "props": {
+						"labelProp": "name",
+						"valueProp": "name",
 						"label": "Configuration Copy From",
 						"placeholder": "Configuration Copy From",
 						"options": [
-						  { "label": "Default", "value": "default" },
+						  
+						],
+						"options1":[
 						  {
-							"label": "Pms",
-							"value": "pms"
-						  } 
-						]
+							  "_id": "default",
+							  "name": "Default" 
+						  }
+						],
+						"optionsDataSource": {
+						  "collectionName": "organization" 
+						}
 					  }
 					}
-				]
-			},{
-				"fieldGroupClassName": "display-flex",
-				"fieldGroup": [
+				  ]
+				},
+				{
+				  "fieldGroupClassName": "display-flex",
+				  "fieldGroup": [
 					{
 					  "type": "multiselectconfig-input",
 					  "key": "datamodel_config",
 					  "className": "flex-2",
 					  "defaultValue": "default",
-					
+  
 					  "props": {
 						"label": "Data Model",
 						"placeholder": "Data Model",
 						"labelProp": "collection_name",
 						"valueProp": "collection_name",
-					  
-						"options": [ 
-						
-						]
-					  } ,
-					  "hideExpression": "model.config_select === 'default1'"
+  
+						"options": []
+					  },
+					  "hideExpression": "model.config_select === 'test'"
 					}
 				  ]
 				},
@@ -159,16 +165,15 @@
 						"placeholder": "Screen",
 						"labelProp": "_id",
 						"valueProp": "_id",
-						"options": [ 
-						  
-						]
-					  }
-					  ,
-					  "hideExpression": "model.config_select === 'default1'"
-					}]},
-					{
-						"fieldGroupClassName": "display-flex",
-						"fieldGroup": [
+						"options": []
+					  },
+					  "hideExpression": "model.config_select === 'test'"
+					}
+				  ]
+				},
+				{
+				  "fieldGroupClassName": "display-flex",
+				  "fieldGroup": [
 					{
 					  "type": "multiselectconfig-input",
 					  "key": "menu_config",
@@ -179,19 +184,18 @@
 						"placeholder": "Menu",
 						"labelProp": "_id",
 						"valueProp": "_id",
-						"options": [
-						   
-						]
-					  }
-					  ,
-					  "hideExpression": "model.config_select === 'default1'"
-					}]}, 
-
+						"options": []
+					  },
+					  "hideExpression": "model.config_select === 'test'"
+					}
+				  ]
+				},
+  
+				{
+				  "fieldGroupClassName": "display-flex",
+				  "fieldGroup": [
 					{
-						"fieldGroupClassName": "display-flex",
-						"fieldGroup": [
-							{
-								"height":false,
+					  "height": false,
 					  "type": "multiselectconfig-input",
 					  "key": "dataset_config",
 					  "className": "flex-6",
@@ -201,15 +205,12 @@
 						"placeholder": "Data set",
 						"labelProp": "_id",
 						"valueProp": "_id",
-						"options": [
-						   
-						]
-					  }
-					  ,
-					  "hideExpression": "model.config_select === 'default1'"
+						"options": []
+					  },
+					  "hideExpression": "model.config_select === 'test'"
 					}
 				  ]
-				} 
+				}
 			  ]
 			}
 		  ]
