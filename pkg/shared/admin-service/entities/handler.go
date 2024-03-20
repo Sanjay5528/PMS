@@ -184,6 +184,7 @@ func GetDocByIdHandler(c *fiber.Ctx) error {
 		return shared.SuccessResponse(c, result)
 
 	} else {
+		fmt.Println(orgId)
 		response, err := helper.GetQueryResult(orgId, collectionName, filter, int64(0), int64(1), nil)
 		if err != nil {
 			return shared.BadRequest(err.Error())

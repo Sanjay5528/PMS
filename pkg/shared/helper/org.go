@@ -2,39 +2,53 @@ package helper
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 	"go.mongodb.org/mongo-driver/bson"
-
 	"kriyatec.com/pms-api/pkg/shared/database"
-	"kriyatec.com/pms-api/pkg/shared/utils"
 )
 
-func GetOrg(c *fiber.Ctx) (utils.Organization, bool) {
+func GetOrg(c *fiber.Ctx) (Organization, bool) {
 	orgId := c.Get("OrgId")
 
 	if orgId == "" || orgId == "null" {
-		orgId = c.Subdomains(1)[0]
+		org := GetOrgIdFromDomainName(c.Get("origin"))
+		orgId = org.Id
 	}
+
 	if orgId == "" {
-		return utils.Organization{}, false
+		return Organization{}, false
 	}
-	if org, exists := utils.OrgList[orgId]; exists {
+	// s := organizations
+	fmt.Println(orgId)
+	if org, exists := OrgList[orgId]; exists {
 		return org, true
 	}
+
 	LoadOrgConfig()
-	if _, exists := utils.OrgList[orgId]; !exists {
-		return utils.OrgList["dev"], true
+	if _, exists := OrgList[orgId]; !exists {
+		return Organization{}, false
 	}
-	return utils.OrgList[orgId], true
+	return OrgList[orgId], true
 }
 
-func GetOrgIdFromDomainName(c *fiber.Ctx) string {
-	org, exists := GetOrg(c)
-	if !exists {
-		return ""
+func GetOrgIdFromDomainName(host string) Organization {
+	host = strings.ReplaceAll(host, "www.", "")
+	domainParts := strings.Split(host, ".")
+	if len(domainParts) < 3 {
+		// return nil
 	}
-	return org.Id
+	domainName := domainParts[0]
+	if strings.Index(domainParts[0], "//") > 0 {
+		domainName = strings.Split(domainParts[0], "//")[1]
+	}
+	ctx := context.Background()
+	var org Organization
+	database.SharedDB.Collection("organization").FindOne(ctx, bson.M{"url": domainName}).Decode(&org)
+	return org
 }
 
 func GetOrgIdFromHeader(c *fiber.Ctx) string {
@@ -42,19 +56,18 @@ func GetOrgIdFromHeader(c *fiber.Ctx) string {
 }
 
 func LoadOrgConfig() {
-
 	ctx := context.Background()
 	cur, err := database.SharedDB.Collection("organization").Find(ctx, bson.D{})
 	if err != nil {
-		//log.Errorf("Organization Configuration Error %s", err.Error())
+		log.Errorf("Organization Configuration Error %s", err.Error())
 		defer cur.Close(ctx)
 		return
 	}
-	var result []utils.Organization
+	var result []Organization
 	if err = cur.All(ctx, &result); err != nil {
 		return
 	}
 	for _, o := range result {
-		utils.OrgList[o.Id] = o
+		OrgList[o.Id] = o
 	}
 }

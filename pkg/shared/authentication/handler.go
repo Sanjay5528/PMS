@@ -54,7 +54,7 @@ func LoginHandler(c *fiber.Ctx) error {
 	claims["id"] = user["_id"]
 	claims["role"] = user["role"]
 	claims["uo_id"] = org.Id
-	claims["uo_type"] = org.Type
+	// claims["uo_type"] = org.Type
 
 	userName := user["name"]
 	if userName == nil {
@@ -69,11 +69,10 @@ func LoginHandler(c *fiber.Ctx) error {
 		UserOrg:  org,
 		Token:    token,
 	}
-	
+
 	if user["employee_id"] != nil {
 		response.EmployeeID = user["employee_id"].(string)
 	}
-	
 
 	return shared.SuccessResponse(c, fiber.Map{
 		"Message":       "Login Successfully",
@@ -277,7 +276,6 @@ func postResetPasswordHandler(c *fiber.Ctx) error {
 func OrgConfigHandler(c *fiber.Ctx) error {
 	org, exists := helper.GetOrg(c)
 	if !exists {
-		//send error
 		return shared.BadRequest("Org not found")
 	}
 	return shared.SuccessResponse(c, org)

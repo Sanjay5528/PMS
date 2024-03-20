@@ -3,8 +3,11 @@ package config
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"os"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -55,8 +58,43 @@ func postConfigHandler(c *fiber.Ctx) error {
 		return shared.BadRequest(err.Error())
 	}
 
+	var Organization = make(map[string]interface{})
+
+	Organization["_id"] = ""
+	Organization["name"] = "Kriyatec"
+	Organization["url"] = "admin"
+
+	// {
+	// 	"_id": "test_612a59ccdd66dbe880796ffd",
+	// 	"name": "javi infratech",
+	// 	"style": {
+	// 	  "primary_color": "#dddddd",
+	// 	  "primary_text_color": "#a9a9a9",
+	// 	  "secondary_color": "#00717b",
+	// 	  "secondary_text_color": "#a9a9a9",
+	// 	  "side_nav_bgcolor": "#cdecf1",
+	// 	  "nav_list_active": "#000",
+	// 	  "button_color": "#FFA500",
+	// 	  "button_text_color": "#000",
+	// 	  "footer_bgcolor": "#ecf1f2",
+	// 	  "footer_text_color": "#FFA500",
+	// 	  "side_nav_text_color": "#000"
+	// 	},
+	// 	"sub_domain": "kt",
+	// 	"type": "PO",
+	// 	"key": "DE31FC",
+	// 	"logo": "/static/logo/kt.png",
+	// 	"group": "test",
+	// 	"app_name": "javi infratech ",
+	// 	"loc": false
+	//   }
+
 	return shared.SuccessResponse(c, "successfully created ")
 }
+
+// organization
+// dbconfig
+//
 
 // THis Api only for Super Admin
 func postLoginHandler(c *fiber.Ctx) error {
@@ -112,16 +150,15 @@ func postCollectionsHandler(c *fiber.Ctx) error {
 
 	// userToken := utils.GetUserTokenValue(c)
 	// fmt.Println(userToken)
-	if c.Params("model_name") == "organization" {
-		var data map[string]interface{}
-		_, err := database.SharedDB.Collection("organization").InsertOne(ctx, data)
-		if err != nil {
-			if err == mongo.ErrNoDocuments {
-				return shared.BadRequest(err.Error())
-			}
-
+	var data map[string]interface{}
+	_, err := database.SharedDB.Collection(c.Params("model_name")).InsertOne(ctx, data)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return shared.BadRequest(err.Error())
 		}
+
 	}
+
 	return nil
 }
 
@@ -268,7 +305,7 @@ func GetsharedDBDefaultHandler(c *fiber.Ctx) error {
 		},
 	}
 
-	if c.Params("type") == "default" {
+	if c.Params("type") == "shared" {
 
 		cur, err := database.SharedDB.Collection("model_config").Aggregate(ctx, pipeline)
 		if err != nil {
@@ -281,6 +318,7 @@ func GetsharedDBDefaultHandler(c *fiber.Ctx) error {
 		return shared.SuccessResponse(c, res)
 
 	} else {
+		fmt.Println(c.Params("dbname"))
 		filter := bson.A{
 			bson.D{{"$match", bson.D{{"db_name", c.Params("dbname")}}}},
 		}
@@ -295,7 +333,7 @@ func GetsharedDBDefaultHandler(c *fiber.Ctx) error {
 			return shared.BadRequest(err.Error())
 		}
 		orgid := result[0]["org_id"].(string)
-
+		fmt.Println(orgid)
 		cur1, err := database.GetConnection(orgid).Collection("model_config").Aggregate(ctx, pipeline)
 		if err != nil {
 			return shared.BadRequest("invalid db name")
@@ -319,73 +357,23 @@ func PostHandler(c *fiber.Ctx) error {
 		return shared.BadRequest("Already Exist in DB Name")
 	}
 
-	var bsonscreenConfig bson.A
-	for _, menu := range data["screen_config"].([]interface{}) {
-		if menuStr, ok := menu.(string); ok {
-			bsonscreenConfig = append(bsonscreenConfig, menuStr)
-		}
-	}
-
-	screen_filter := bson.A{
-		bson.D{
-			{"$match",
-				bson.D{
-					{"_id",
-						bson.D{
-							{"$in",
-								bsonscreenConfig,
-							},
-						},
-					},
-				},
-			},
-		},
-		bson.D{
-			{"$group",
-				bson.D{
-					{"_id", primitive.Null{}},
-					{"screen_config",
-						bson.D{
-							{"$addToSet",
-								bson.D{
-									{"_id", "$_id"},
-									{"type", "$type"},
-									{"config", "$config"},
-									{"status", "$status"},
-									{"name", "$name"},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-	}
-
-	screens, err := database.SharedDB.Collection("screen").Aggregate(ctx, screen_filter)
-
 	var screen []bson.M
-	if err = screens.All(ctx, &screen); err != nil {
-		return shared.BadRequest("invalid db name")
-	}
-
-	menuConfigRaw := data["menu_config"].([]interface{})
-	var bsonMenuConfig bson.A
-	for _, menu := range menuConfigRaw {
-		if menuStr, ok := menu.(string); ok {
-			bsonMenuConfig = append(bsonMenuConfig, menuStr)
+	if data["screen_config"] != nil {
+		var bsonscreenConfig bson.A
+		for _, menu := range data["screen_config"].([]interface{}) {
+			if menuStr, ok := menu.(string); ok {
+				bsonscreenConfig = append(bsonscreenConfig, menuStr)
+			}
 		}
-	}
 
-	menu_filter :=
-		bson.A{
+		screen_filter := bson.A{
 			bson.D{
 				{"$match",
 					bson.D{
 						{"_id",
 							bson.D{
 								{"$in",
-									bsonMenuConfig,
+									bsonscreenConfig,
 								},
 							},
 						},
@@ -396,7 +384,7 @@ func PostHandler(c *fiber.Ctx) error {
 				{"$group",
 					bson.D{
 						{"_id", primitive.Null{}},
-						{"menu_config",
+						{"screen_config",
 							bson.D{
 								{"$addToSet",
 									bson.D{
@@ -413,128 +401,187 @@ func PostHandler(c *fiber.Ctx) error {
 				},
 			},
 		}
-	menus, err := database.SharedDB.Collection("menu").Aggregate(ctx, menu_filter)
+
+		screens, err := database.SharedDB.Collection("screen").Aggregate(ctx, screen_filter)
+
+		if err = screens.All(ctx, &screen); err != nil {
+			return shared.BadRequest("invalid db name")
+		}
+	}
 
 	var menu []bson.M
-	if err = menus.All(ctx, &menu); err != nil {
-		return shared.BadRequest("invalid db name")
-	}
-
-	var bsondatasetConfig bson.A
-	for _, menu := range data["dataset_config"].([]interface{}) {
-		if menuStr, ok := menu.(string); ok {
-			bsondatasetConfig = append(bsondatasetConfig, menuStr)
+	if data["menu_config"] != nil {
+		menuConfigRaw := data["menu_config"].([]interface{})
+		var bsonMenuConfig bson.A
+		for _, menu := range menuConfigRaw {
+			if menuStr, ok := menu.(string); ok {
+				bsonMenuConfig = append(bsonMenuConfig, menuStr)
+			}
 		}
-	}
 
-	data_set_filter := bson.A{
-		bson.D{
-			{"$match",
+		menu_filter :=
+			bson.A{
 				bson.D{
-					{"_id",
+					{"$match",
 						bson.D{
-							{"$in",
-								bsondatasetConfig,
-							},
-						},
-					},
-				},
-			},
-		},
-		bson.D{
-			{"$group",
-				bson.D{
-					{"_id", primitive.Null{}},
-					{"dataset_config",
-						bson.D{
-							{"$addToSet",
+							{"_id",
 								bson.D{
-									{"_id", "$_id"},
-									{"dataSetName", "$dataSetName"},
-									{"dataSetDescription", "$dataSetDescription"},
-									{"dataSetJoinCollection", "$dataSetJoinCollection"},
-									{"CustomColumn", "$CustomColumn"},
-									{"FilterParams", "$FilterParams"},
-									{"Aggregation", "$Aggregation"},
-									{"dataSetBaseCollection", "$dataSetBaseCollection"},
-									{"datasetbasecollectionfilter", "$datasetbasecollectionfilter"},
-									{"Reference_pipeline", "$Reference_pipeline"},
-									{"pipeline", "$pipeline"},
+									{"$in",
+										bsonMenuConfig,
+									},
 								},
 							},
 						},
 					},
 				},
-			},
-		},
+				bson.D{
+					{"$group",
+						bson.D{
+							{"_id", primitive.Null{}},
+							{"menu_config",
+								bson.D{
+									{"$addToSet",
+										bson.D{
+											{"_id", "$_id"},
+											{"type", "$type"},
+											{"config", "$config"},
+											{"status", "$status"},
+											{"name", "$name"},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+		menus, err := database.SharedDB.Collection("menu").Aggregate(ctx, menu_filter)
+
+		if err = menus.All(ctx, &menu); err != nil {
+			return shared.BadRequest("invalid db name")
+		}
 	}
-	data_sets, err := database.SharedDB.Collection("data_set").Aggregate(ctx, data_set_filter)
 
 	var data_set []bson.M
-	if err = data_sets.All(ctx, &data_set); err != nil {
-		return shared.BadRequest("invalid db name")
-	}
-
-	var bsonmodelConfig bson.A
-	for _, menu := range data["datamodel_config"].([]interface{}) {
-		if menuStr, ok := menu.(string); ok {
-			bsonmodelConfig = append(bsonmodelConfig, menuStr)
+	if data["dataset_config"] != nil {
+		var bsondatasetConfig bson.A
+		for _, menu := range data["dataset_config"].([]interface{}) {
+			if menuStr, ok := menu.(string); ok {
+				bsondatasetConfig = append(bsondatasetConfig, menuStr)
+			}
 		}
-	}
 
-	modelconfigFilter := bson.A{
-		bson.D{
-			{"$match",
-				bson.D{
-					{"model_name",
-						bson.D{
-							{"$in",
-								bsonmodelConfig,
-							},
-						},
-					},
-				},
-			},
-		},
-		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "data_model"},
-					{"localField", "collection_name"},
-					{"foreignField", "model_name"},
-					{"as", "data_model"},
-				},
-			},
-		},
-		bson.D{{"$unwind", "$data_model"}},
-		bson.D{
-			{"$group",
-				bson.D{
-					{"_id", primitive.Null{}},
-					{"model_config",
-						bson.D{
-							{"$addToSet",
-								bson.D{
-									{"_id", "$_id"},
-									{"model_name", "$model_name"},
-									{"collection_name", "$collection_name"},
-									{"is_collection", "$is_collection"},
-									{"status", "$status"},
+		data_set_filter := bson.A{
+			bson.D{
+				{"$match",
+					bson.D{
+						{"_id",
+							bson.D{
+								{"$in",
+									bsondatasetConfig,
 								},
 							},
 						},
 					},
-					{"data_model", bson.D{{"$addToSet", "$data_model"}}},
 				},
 			},
-		},
+			bson.D{
+				{"$group",
+					bson.D{
+						{"_id", primitive.Null{}},
+						{"dataset_config",
+							bson.D{
+								{"$addToSet",
+									bson.D{
+										{"_id", "$_id"},
+										{"dataSetName", "$dataSetName"},
+										{"dataSetDescription", "$dataSetDescription"},
+										{"dataSetJoinCollection", "$dataSetJoinCollection"},
+										{"CustomColumn", "$CustomColumn"},
+										{"FilterParams", "$FilterParams"},
+										{"Aggregation", "$Aggregation"},
+										{"dataSetBaseCollection", "$dataSetBaseCollection"},
+										{"datasetbasecollectionfilter", "$datasetbasecollectionfilter"},
+										{"Reference_pipeline", "$Reference_pipeline"},
+										{"pipeline", "$pipeline"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		data_sets, err := database.SharedDB.Collection("data_set").Aggregate(ctx, data_set_filter)
+
+		if err = data_sets.All(ctx, &data_set); err != nil {
+			return shared.BadRequest("invalid db name")
+		}
 	}
 
-	modelconfigs, err := database.SharedDB.Collection("model_config").Aggregate(ctx, modelconfigFilter)
-
 	var modelconfig []bson.M
-	if err = modelconfigs.All(ctx, &modelconfig); err != nil {
-		return shared.BadRequest("invalid db name")
+	if data["datamodel_config"] != nil {
+
+		var bsonmodelConfig bson.A
+		for _, menu := range data["datamodel_config"].([]interface{}) {
+			if menuStr, ok := menu.(string); ok {
+				bsonmodelConfig = append(bsonmodelConfig, menuStr)
+			}
+		}
+
+		modelconfigFilter := bson.A{
+			bson.D{
+				{"$match",
+					bson.D{
+						{"model_name",
+							bson.D{
+								{"$in",
+									bsonmodelConfig,
+								},
+							},
+						},
+					},
+				},
+			},
+			bson.D{
+				{"$lookup",
+					bson.D{
+						{"from", "data_model"},
+						{"localField", "collection_name"},
+						{"foreignField", "model_name"},
+						{"as", "data_model"},
+					},
+				},
+			},
+			bson.D{{"$unwind", "$data_model"}},
+			bson.D{
+				{"$group",
+					bson.D{
+						{"_id", primitive.Null{}},
+						{"model_config",
+							bson.D{
+								{"$addToSet",
+									bson.D{
+										{"_id", "$_id"},
+										{"model_name", "$model_name"},
+										{"collection_name", "$collection_name"},
+										{"is_collection", "$is_collection"},
+										{"status", "$status"},
+									},
+								},
+							},
+						},
+						{"data_model", bson.D{{"$addToSet", "$data_model"}}},
+					},
+				},
+			},
+		}
+
+		modelconfigs, err := database.SharedDB.Collection("model_config").Aggregate(ctx, modelconfigFilter)
+
+		if err = modelconfigs.All(ctx, &modelconfig); err != nil {
+			return shared.BadRequest("invalid db name")
+		}
 	}
 
 	db := database.CreateDb(GetenvStr("MONGO_SHAREDDB_HOST"), GetenvInt("MONGO_SHAREDDB_PORT"), data["db_name"].(string), GetenvStr("MONGO_SHAREDDB_USER"), GetenvStr("MONGO_SHAREDDB_PASSWORD"), "user")
@@ -566,10 +613,9 @@ func PostHandler(c *fiber.Ctx) error {
 		}
 	}
 
-	var DbConfig map[string]interface{}
+	var DbConfig = make(map[string]interface{})
 
 	orgId := data["db_name"].(string) + helper.Generateuniquekey()
-	fmt.Println(orgId)
 	DbConfig["_id"] = helper.Generateuniquekey()
 	DbConfig["org_id"] = orgId
 	DbConfig["host"] = GetenvStr("MONGO_SHAREDDB_HOST")
@@ -577,29 +623,24 @@ func PostHandler(c *fiber.Ctx) error {
 	DbConfig["user_id"] = GetenvStr("MONGO_SHAREDDB_USER")
 	DbConfig["db_name"] = data["db_name"].(string)
 
-	var Organization map[string]interface{}
+	go database.SharedDB.Collection("db_config").InsertOne(ctx, DbConfig)
 
+	var Organization = make(map[string]interface{})
 	Organization["_id"] = orgId
 	Organization["name"] = data["name"].(string)
 	Organization["url"] = data["url"].(string)
+	Organization["email"] = data["email"].(string)
 
 	logoPath := data["logo"].(map[string]interface{})["storage_name"].(string)
 	if logoPath != "" {
 		Organization["logo"] = GetenvStr("S3_ENDPOINT") + logoPath
 	}
-	if data["group"] != "" || data["group"] != nil {
-		Organization["group"] = data["group"].(string)
-	}
+	data["_id"] = orgId
+	go database.SharedDB.Collection("organization").InsertOne(ctx, data)
 
-	go SendEmail()
-
-	// helper.SendEmail("organization", email_template, Organization)
+	go SendEmail(data, db)
 	return shared.SuccessResponse(c, fiber.Map{
-		"message":          "Insert Successfully",
-		"datamodel_config": modelconfig,
-		"dataset_config":   data_set,
-		"screen_config":    screen,
-		"menu_config":      menu,
+		"message": "Insert Successfully",
 	})
 }
 
@@ -615,39 +656,53 @@ func GetenvInt(key string) int {
 	}
 	return v
 }
-func SendEmail() error {
+
+func replacestring(original, placeholder, replacement string) string {
+	return strings.Replace(original, placeholder, replacement, -1)
+}
+
+func SendEmail(Data map[string]interface{}, db *mongo.Database) error {
 	var email_template bson.M
 	err := database.SharedDB.Collection("email_template").FindOne(ctx, bson.D{{"title", "organization"}}).Decode(&email_template)
 	if err != nil {
 		return shared.BadRequest(err.Error())
 	}
+	templates := email_template["template"].(string)
+	link := email_template["link"].(string)
+	password := generatePassword()
+	passwordHash, _ := helper.GeneratePasswordHash(password)
+	final := strings.ReplaceAll(templates, "{{username}}", Data["email"].(string))
+	final = strings.ReplaceAll(final, "{{password}}", password)
+	final = strings.ReplaceAll(final, "{{link}}", fmt.Sprintf(link, Data["db_name"].(string)))
+
+	var user = make(map[string]interface{})
+	user["_id"] = Data["email"].(string)
+	user["email"] = Data["email"].(string)
+	user["pwd"] = passwordHash
+	user["name"] = Data["name"].(string)
+	user["role"] = "admin"
+	email, ok := Data["email"].(string)
+
+	if ok == false {
+		return shared.BadRequest("check your Email")
+	}
+	db.Collection("user").InsertOne(ctx, user)
+	go helper.SimpleEmailHandler(email, os.Getenv("CLIENT_EMAIL"), "Welcome to Kriyatec", final)
+
 	return nil
 }
+func generatePassword() string {
+	rand.Seed(time.Now().UnixNano())
 
-// {
-// 	"_id": {
-// 	  "$oid": "6545c57e0fa0da031b66fc78"
-// 	},
-// 	"org_id": "pms",
-// 	"host": "dataset.tf3gxwl.mongodb.net/",
-// 	"user_id": "sanjay",
-// 	"pwd": "mecwym4256hOdi3L",
-// 	"db_name": "pms"
-//   }
+	// Define the character set for the password
+	charSet := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-// fmt.Println(screen[0])
-// fmt.Println("......>")
-// fmt.Println(menu_filter[0])
-// fmt.Println("......>")
+	// Initialize a variable to store the password
+	password := make([]byte, 6)
 
-// fmt.Println(data_set[0])
-// fmt.Println("......>")
-
-// fmt.Println(data["dataset_config"])
-// fmt.Println(data["db_name"])
-
-// return nil
-// return shared.SuccessResponse(c, fiber.Map{
-// 	"message":   "Insert Successfully",
-// 	"insert ID": res.InsertedID,
-// })
+	// Generate the password
+	for i := range password {
+		password[i] = charSet[rand.Intn(len(charSet))]
+	}
+	return string(password)
+}

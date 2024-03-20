@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"github.com/sirupsen/logrus"
+	"kriyatec.com/pms-api/pkg/shared/helper"
 	"kriyatec.com/pms-api/pkg/shared/utils"
 )
 
@@ -16,11 +17,11 @@ type LoginRequest struct {
 
 // LoginResponse - for Login Response
 type LoginResponse struct {
-	Name       string             `json:"name"`
-	UserRole   interface{}        `json:"role"`
-	UserOrg    utils.Organization `json:"org" bson:"org"`
-	Token      string             `json:"token"`
-	EmployeeID interface{}             `json:"employee_id,omitempty"`
+	Name       string              `json:"name"`
+	UserRole   interface{}         `json:"role"`
+	UserOrg    helper.Organization `json:"org" bson:"org"`
+	Token      string              `json:"token"`
+	EmployeeID interface{}         `json:"employee_id,omitempty"`
 }
 
 // ResetPasswordRequestDto - Dto for reset password Request

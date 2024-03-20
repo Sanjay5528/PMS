@@ -10,7 +10,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "cmd/config-service/main.go"
+            "program": "/home/ic-002/Desktop/pms/api/cmd/admin-service/main.go"
         }
     ]
 }

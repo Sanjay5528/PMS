@@ -2,6 +2,19 @@ package helper
 
 import "time"
 
+var OrgList = make(map[string]Organization)
+
+type Organization struct {
+	Id   string `json:"_id" bson:"_id"`
+	Name string `json:"name" bson:"name"`
+	// Type      string      `json:"type" bson:"type"`
+	Url string `json:"url" bson:"url"`
+	// Style     interface{} `json:"style" bson:"style"`
+	// Logo      string      `json:"logo" bson:"logo"`
+	// Group     string      `json:"group" bson:"group"`
+	// AppName   string      `json:"app_name" bson:"app_name"`
+	// LocOption bool        `json:"loc" bson:"loc"`
+}
 type PaginationRequest struct {
 	Start         int               `json:"start,omitempty" bson:"start,omitempty" validate:"omitempty"`
 	End           int               `json:"end,omitempty" bson:"end,omitempty" validate:"omitempty"`

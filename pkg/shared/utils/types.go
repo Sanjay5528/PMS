@@ -1,18 +1,18 @@
 package utils
 
-var OrgList = make(map[string]Organization)
+// var OrgList = make(map[string]Organization)
 
-type Organization struct {
-	Id        string `json:"_id" bson:"_id"`
-	Name      string `json:"name" bson:"name"`
-	Type      string `json:"type" bson:"type"`
-	SubDomain string `json:"sub_domain" bson:"sub_domain"`
-	// Style     interface{} `json:"style" bson:"style"`
-	// Logo      string      `json:"logo" bson:"logo"`
-	// Group string `json:"group" bson:"group"`
-	// AppName   string      `json:"app_name" bson:"app_name"`
-	// LocOption bool        `json:"loc" bson:"loc"`
-}
+// type Organization struct {
+// 	Id        string      `json:"_id" bson:"_id"`
+// 	Name      string      `json:"name" bson:"name"`
+// 	Type      string      `json:"type" bson:"type"`
+// 	SubDomain string      `json:"sub_domain" bson:"sub_domain"`
+// 	Style     interface{} `json:"style" bson:"style"`
+// 	Logo      string      `json:"logo" bson:"logo"`
+// 	Group     string      `json:"group" bson:"group"`
+// 	AppName   string      `json:"app_name" bson:"app_name"`
+// 	LocOption bool        `json:"loc" bson:"loc"`
+// }
 
 type UserToken struct {
 	UserId   string `json:"user_id" bson:"user_id"`
