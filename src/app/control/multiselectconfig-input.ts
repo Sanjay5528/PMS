@@ -39,6 +39,10 @@ import {
       [required]="to.required || false"
       [disabled]="false"
       appearance="outline"
+      (onSelect)="onItemSelectController($event)"
+      (onSelectAll)="onItemSelectController($event)"
+      (onDeSelect)="onItemSelectController($event)"  
+      (onDeSelectAll)="onItemSelectController($event)"
     >
     </ng-multiselect-dropdown>
     <div style="height: 30px;">
@@ -88,21 +92,30 @@ export class MultiSelectConfigInput extends FieldType<any> implements OnInit {
       selectAllText: "Select All",
       unSelectAllText: "UnSelect All",
       enableCheckAll: true,
-      // itemsShowLimit: 3,
+      // itemsShowLimit: 3, 
       allowSearchFilter: true,
       noDataAvailablePlaceholderText: "No data available",
     };
-    this.form.get("config_select")?.valueChanges.subscribe((data: any) => {
-      this.values = data.toLowerCase();
-
-      this.DefaultDataInit(this.values);
-    });
-
-    this.values = this.form.get("config_select")?.value.toLowerCase();
-    this.DefaultDataInit(this.values); 
+    this.form.get("config_select")?.valueChanges.subscribe((data: any) => {  
+      this.DefaultDataInit(this.removeSpecialCharacters(data.toLowerCase()));
+    });  
+    this.DefaultDataInit(this.removeSpecialCharacters(this.form.get("config_select")?.value.toLowerCase())); 
    
 
   }
+
+  removeSpecialCharacters(input: string): string {
+    // Define a regular expression to match special characters
+    const regex = /[!@#$%^&*(),.?":{}|<>]/g;
+    // Replace all special characters with an empty string
+    return input.replace(regex, '');
+}
+
+
+
+
+
+
   public setForm() {
     const formControlName = this.field.key;  
     this.formGroup = new FormGroup({
@@ -114,15 +127,16 @@ export class MultiSelectConfigInput extends FieldType<any> implements OnInit {
     return this.formGroup.controls;
   }
   DefaultDataInit(type: any) {
-    let observable$;
-    if (type === "default") {
+    let observable$; 
+    if (type === "shared") {
       observable$ = this.dataService.GetDataByDefaultSharedDB(type);
     } else {
       observable$ = this.dataService.GetDataByDefaultSharedDB(
         "other",
-        this.values
+        type
       );
     }
+
     observable$.subscribe((res: any) => {
       this.dropdownList = res.data[0][this.field.key];
       const allValues = this.dropdownList.map(
@@ -134,55 +148,55 @@ export class MultiSelectConfigInput extends FieldType<any> implements OnInit {
     });
   }
 
-  //   onItemSelectController(event:any){
-  //     console.log(this.selectedValue,event);
-  //   if(_.isEmpty(this.selectedValue)){
-  //     this.formControl.setValue(undefined)
-  //   }else{
-  //     // Change arr of object into arr string
-  //     let data:any[]=this.selectedValue
-  //     let arrayValue:any[]=[]
-  //     data.map((result:any) => {
-  //       arrayValue.push(result[this.opt.valueProp])
-  //     })
-  //     console.log(this.selectedValue,arrayValue);
-  //     this.formControl.setValue(arrayValue)
-  //   }
-  //  }
+    onItemSelectController(event:any){
+      console.log(this.selectedValue,event);
+    if(_.isEmpty(this.selectedValue)){
+      this.formControl.setValue(undefined)
+    }else{
+      // Change arr of object into arr string
+      let data:any[]=this.selectedValue
+      let arrayValue:any[]=[]
+      data.map((result:any) => {
+        arrayValue.push(result[this.opt.valueProp])
+      })
+      console.log(this.selectedValue,arrayValue);
+      this.formControl.setValue(arrayValue)
+    }
+   }
 
-  //  selectedValue:any[]=[]
-  //   valueSlected(){
-  //     let arr:any[]=this.model[this.field.key];
-  //     this.selectedValue=[]
-  //     console.log(arr);
+   selectedValue:any[]=[]
+    valueSlected(){
+      let arr:any[]=this.model[this.field.key];
+      this.selectedValue=[]
+      console.log(arr);
 
-  //     arr.map((result:any) => {
-  //       let arrayValue:any={}
-  //         arrayValue[this.to.valueProp] =result
-  //         this.selectedValue.push(arrayValue)
-  //       })
-  //       console.error(this.selectedValue);
-  //       // this.thisFormControl.setValue(this.selectedValue)
-  //       // this.cdr.detectChanges()
-  //   }
+      arr.map((result:any) => {
+        let arrayValue:any={}
+          arrayValue[this.to.valueProp] =result
+          this.selectedValue.push(arrayValue)
+        })
+        console.error(this.selectedValue);
+        // this.thisFormControl.setValue(this.selectedValue)
+        // this.cdr.detectChanges()
+    }
 
-  //   onFilterChange(event:any){
-  //     if(this.opt.serverSide){
-  //         if (this.opt.optionsDataSource.methodName) {
-  //             let queryParams:any = this.opt.optionsDataSource.defaultQueryParams;
-  //             queryParams[this.opt.labelProp]=event
-  //             console.log(queryParams);
-  //         //  (this.dataService[this.opt.optionsDataSource.methodName](this.opt.optionsDataSource.params,queryParams) as Observable<any>)
-  //         //   .subscribe((res:any)=>{
-  //         //      if(!_.isEmpty(res.data)){
-  //         //          this.dropdownList = res.data
-  //         //          if (this.model.isEdit||this.model.isView) {
-  //         //           this.valueSlected()
-  //         //           }
-  //         //          this.cdr.detectChanges();
-  //         //      }
-  //         //   })
-  //         }
-  //     }
-  //   }
+    onFilterChange(event:any){
+      if(this.opt.serverSide){
+          if (this.opt.optionsDataSource.methodName) {
+              let queryParams:any = this.opt.optionsDataSource.defaultQueryParams;
+              queryParams[this.opt.labelProp]=event
+              console.log(queryParams);
+          //  (this.dataService[this.opt.optionsDataSource.methodName](this.opt.optionsDataSource.params,queryParams) as Observable<any>)
+          //   .subscribe((res:any)=>{
+          //      if(!_.isEmpty(res.data)){
+          //          this.dropdownList = res.data
+          //          if (this.model.isEdit||this.model.isView) {
+          //           this.valueSlected()
+          //           }
+          //          this.cdr.detectChanges();
+          //      }
+          //   })
+          }
+      }
+    }
 }

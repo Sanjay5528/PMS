@@ -8,15 +8,13 @@ import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 
 @Injectable()
-export class TokenInterceptor implements HttpInterceptor {
-  //  selectedOrgId: string = 'amsort'
+export class TokenInterceptor implements HttpInterceptor { 
 
-  selectedOrgId: string = sessionStorage.getItem("selectedOrgId") || environment.OrgId
+  selectedOrgId: any = localStorage.getItem("selectedOrgId")
 
   constructor(public helperService: HelperService, private dialogService: DialogService,public router:Router) {
     this.helperService.selectedOrgId.subscribe((id:any)=>{
-      this.selectedOrgId = id
-      // this.selectedOrgId = 'amsort'
+      this.selectedOrgId = id 
     })
   }
 

@@ -107,11 +107,11 @@
 					  "type": "select-input",
 					  "key": "config_select",
 					  "className": "flex-2",
-					  "defaultValue": "test",
+					  "defaultValue": "testingvalue1",
 					  "access":true,
 					  "props": {
 						"labelProp": "name",
-						"valueProp": "name",
+						"valueProp": "db_name",
 						"label": "Configuration Copy From",
 						"placeholder": "Configuration Copy From",
 						"options": [
@@ -120,7 +120,8 @@
 						"options1":[
 						  {
 							  "_id": "default",
-							  "name": "Default" 
+							  "name": "Default" ,
+							  "db_name":"shared"
 						  }
 						],
 						"optionsDataSource": {
@@ -147,7 +148,7 @@
   
 						"options": []
 					  },
-					  "hideExpression": "model.config_select === 'test'"
+					  "hideExpression": "model.config_select === 'testingvalue1'"
 					}
 				  ]
 				},
@@ -167,7 +168,7 @@
 						"valueProp": "_id",
 						"options": []
 					  },
-					  "hideExpression": "model.config_select === 'test'"
+					  "hideExpression": "model.config_select === 'testingvalue1'"
 					}
 				  ]
 				},
@@ -186,7 +187,7 @@
 						"valueProp": "_id",
 						"options": []
 					  },
-					  "hideExpression": "model.config_select === 'test'"
+					  "hideExpression": "model.config_select === 'testingvalue1'"
 					}
 				  ]
 				},
@@ -207,7 +208,7 @@
 						"valueProp": "_id",
 						"options": []
 					  },
-					  "hideExpression": "model.config_select === 'test'"
+					  "hideExpression": "model.config_select === 'testingvalue1'"
 					}
 				  ]
 				}

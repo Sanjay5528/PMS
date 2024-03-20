@@ -204,7 +204,12 @@ export class HelperService implements OnInit {
   getSelectedOrgId() {
     return sessionStorage.getItem("selectedOrgId")
   }
-
+  
+  public setSelectedOrgId(orgId:string) {
+    this.selectedOrgId.next(orgId)
+    localStorage.setItem('selectedOrgId',orgId)
+  }
+  
   getSubDomainName() {
     var hostName = this.loc.hostname.replace("www.", "").split(".")
     // return environment?.OrgId  //hostName[0]

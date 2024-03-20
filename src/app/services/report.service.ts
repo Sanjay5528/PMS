@@ -11,7 +11,7 @@ import { DialogService } from './dialog.service';
 })
 
 export class ReportService {
-  selectedOrgId = sessionStorage.getItem('selectedOrgId');
+  selectedOrgId = localStorage.getItem('selectedOrgId');
   additionalData: any;
   config:any
   previousDataRow:any = {}

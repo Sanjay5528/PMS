@@ -23,14 +23,12 @@ export class LoginComponent implements OnInit {
     private dataService: DataService,
     private jwtService:JwtHelperService,
     private helpService:HelperService,
-    private dialogService:DialogService
+    private dialogService:DialogService,
+    private helperService:HelperService
   ) {
-
   }
-  ngOnInit(): void {
-    
-    sessionStorage.setItem('selectedOrgId', environment.OrgId)
-    this.frmLogin = this.formBuilder.group({
+  ngOnInit(): void { 
+        this.frmLogin = this.formBuilder.group({
       id: new FormControl('parthiban@kriyatec.com',Validators.required),
       password: new FormControl('parthiban@123',Validators.required)
     });
@@ -40,17 +38,21 @@ export class LoginComponent implements OnInit {
     let user_data = this.frmLogin.value
     this.dataService.login(user_data).subscribe((res: any) => {
       if (res) {
-        this.user_data = this.jwtService.decodeToken(res.data.LoginResponse.token)
-        sessionStorage.setItem('selectedOrgId', environment?.OrgId)
+        this.user_data = this.jwtService.decodeToken(res.data.LoginResponse.token) 
+        localStorage.setItem('selectedOrgId', res.data.LoginResponse?.org?._id)
         sessionStorage.setItem('token', res.data.LoginResponse.token);
         sessionStorage.setItem('auth', JSON.stringify(res));
         this.dialogService.openSnackBar(res.data.Message  ,"OK");
-        if (res.data.LoginResponse.role != "SA"){  
+// console.log(res.data.LoginResponse.role);
+// res.data.LoginResponse.role !== "SA" ||
+        if ( res.data.LoginResponse.role !== "admin"){  
+          console.log("insert if");
+          
           let employee_id:any = this.helpService.getEmp_id();
           this.router.navigate(['/Dashboard',"User",employee_id]);
-        }
-        // console.log(res.data.LoginResponse.role );
-        
+        } 
+        console.log("insert else");
+
         this.router.navigate(['/Dashboard']);
 
 
@@ -63,3 +65,4 @@ export class LoginComponent implements OnInit {
 
 
 }
+ 
