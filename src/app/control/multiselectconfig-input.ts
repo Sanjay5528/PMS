@@ -96,6 +96,8 @@ export class MultiSelectConfigInput extends FieldType<any> implements OnInit {
       allowSearchFilter: true,
       noDataAvailablePlaceholderText: "No data available",
     };
+    console.log(this.model);
+    
     this.form.get("config_select")?.valueChanges.subscribe((data: any) => {  
       this.DefaultDataInit(this.removeSpecialCharacters(data.toLowerCase()));
     });  
@@ -104,10 +106,8 @@ export class MultiSelectConfigInput extends FieldType<any> implements OnInit {
 
   }
 
-  removeSpecialCharacters(input: string): string {
-    // Define a regular expression to match special characters
-    const regex = /[!@#$%^&*(),.?":{}|<>]/g;
-    // Replace all special characters with an empty string
+  removeSpecialCharacters(input: string): string { 
+    const regex = /[!@#$%^&*(),.?":{}|<>]/g; 
     return input.replace(regex, '');
 }
 

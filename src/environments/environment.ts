@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://127.0.0.1:8000/',
-  configBaseUrl: 'http://127.0.0.1:7000/',
+  apiBaseUrl: 'http://127.0.0.1:8800/',
+  configBaseUrl: 'http://127.0.0.1:7700/',
   logoUrl: 'assets/images/logo.png',
   snackBarDuration: 5000, 
   cacheBlockSize:20,
