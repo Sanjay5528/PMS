@@ -13,8 +13,6 @@ import (
 	"kriyatec.com/pms-api/server"
 )
 
-var OrgID = "pms"
-
 func main() {
 	// Load environment variables from the .env file.
 	err := godotenv.Load()
@@ -37,9 +35,6 @@ func main() {
 	// Initialize custom validators for data validation.
 	helper.InitCustomValidator()
 
-	go func() {
-		helper.ServerInitstruct(OrgID)
-	}()
 	if err := server.Listen(app, os.Getenv("ADMIN_SERVER_LISTEN_URL")); err != nil {
 		log.Panic(err)
 	}

@@ -2,7 +2,6 @@ package helper
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -22,8 +21,6 @@ func GetOrg(c *fiber.Ctx) (Organization, bool) {
 	if orgId == "" {
 		return Organization{}, false
 	}
-	// s := organizations
-	fmt.Println(orgId)
 	if org, exists := OrgList[orgId]; exists {
 		return org, true
 	}
@@ -32,6 +29,7 @@ func GetOrg(c *fiber.Ctx) (Organization, bool) {
 	if _, exists := OrgList[orgId]; !exists {
 		return Organization{}, false
 	}
+	ServerInitstruct(orgId)
 	return OrgList[orgId], true
 }
 
