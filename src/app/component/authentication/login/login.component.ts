@@ -27,11 +27,15 @@ export class LoginComponent implements OnInit {
     private helperService:HelperService
   ) {
   }
+  
   ngOnInit(): void { 
         this.frmLogin = this.formBuilder.group({
-      id: new FormControl('parthiban@kriyatec.com',Validators.required),
-      password: new FormControl('parthiban@123',Validators.required)
-    });
+        //   id: new FormControl('sanjay123sanjay12@gmial.com',Validators.required),
+        //   password: new FormControl('Sanjay#321',Validators.required)
+        // });
+        id: new FormControl('sanjay123sanjay12@gmial.com',Validators.required),
+        password: new FormControl('Sanjay#321',Validators.required)
+      });
   }
 
   login() {
@@ -42,17 +46,11 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('selectedOrgId', res.data.LoginResponse?.org?._id)
         sessionStorage.setItem('token', res.data.LoginResponse.token);
         sessionStorage.setItem('auth', JSON.stringify(res));
-        this.dialogService.openSnackBar(res.data.Message  ,"OK");
-// console.log(res.data.LoginResponse.role);
-// res.data.LoginResponse.role !== "SA" ||
-        if ( res.data.LoginResponse.role !== "admin"){  
-          console.log("insert if");
-          
-          let employee_id:any = this.helpService.getEmp_id();
-          this.router.navigate(['/Dashboard',"User",employee_id]);
-        } 
-        console.log("insert else");
-
+        this.dialogService.openSnackBar(res.data.Message  ,"OK"); 
+          if (res.data.LoginResponse?.org?._id == "pms"){
+            let employee_id:any = this.helpService.getEmp_id();
+            this.router.navigate(['/Dashboard',"User",employee_id]);
+          }
         this.router.navigate(['/Dashboard']);
 
 

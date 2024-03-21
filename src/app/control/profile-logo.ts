@@ -110,7 +110,7 @@ export class LogoComponent extends FieldType<any> implements OnInit {
     this.label = this.opt.label || "Upload";
     this.url = "../../assets/image/logo1.png";
     if (this.model.isEdit == true) {
-      this.url = this.model[this.field.key];
+      this.url = this.docBasePath +this.model[this.field.key].storage_name  
     }
   }
 

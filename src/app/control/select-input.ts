@@ -139,11 +139,11 @@ export class SelectInput extends FieldType<any> implements OnInit {
     if (this?.opt?.optionsDataSource?.collectionName != undefined) {
       let name = this.opt.optionsDataSource.collectionName;
       this.dataService.getDataByFilter(name, {}).subscribe((res: any) => {
-        let data: any[] = [];
-        data.push(res.data[0].response);
-        if (this?.field?.access) {
-          data[0].push(this.opt.options1[0]);
-        }
+        // let data: any[] = [];
+        // data.push(res.data[0].response);
+        // if (this?.field?.access) {
+        //   data[0].push(this.opt.options1[0]);
+        // }
 
         this.dataService.buildOptions(res.data[0].response, this.opt); 
         this.currentField.formControl.setValue(this.formControl.value);
@@ -164,8 +164,7 @@ export class SelectInput extends FieldType<any> implements OnInit {
         console.log(res);
         let totalvalue: any[] = [];
 
-        res.data.response.forEach((data: any) => {
-          console.log(data);
+        res.data.response.forEach((data: any) => { 
           let datas: any = {};
           datas[this.labelProp] = data[this.labelProp];
           datas[this.valueProp] = data[this.valueProp];
@@ -189,8 +188,7 @@ export class SelectInput extends FieldType<any> implements OnInit {
       let id: any;
       if (this.opt.type == "local") {
         id = sessionStorage.getItem(this.opt.local_name);
-      }
-      console.log(id);
+      } 
       this.dataService.getDataById(name, id).subscribe((res: any) => {
         this.dataService.buildOptions(res, this.opt);
         if (this.model.isEdit) {

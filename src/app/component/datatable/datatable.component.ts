@@ -156,6 +156,8 @@ export class DatatableComponent implements OnInit {
   loadConfig() {
     this.DataService.loadListConfigJson(this.listName).subscribe(
       (config: any) => {
+        console.log(config);
+        
         let org_type_id: any;
         let role_type: any;
         var role_filter: any;

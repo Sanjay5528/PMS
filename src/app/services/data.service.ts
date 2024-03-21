@@ -86,8 +86,9 @@ export class DataService {
       // if (config) {
       //   observer.next(JSON.parse(config))
       // }
+      
       this.getDataById(collection_name,screenId).subscribe((result:any)=>{       
-        let config =  result.data ? result.data[0].config : []
+        let config =  result.data ? result.data[0].config : [] 
         observer.next(JSON.parse(config))
        
       })
