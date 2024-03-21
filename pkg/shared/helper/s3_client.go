@@ -116,13 +116,8 @@ func FileUpload(c *fiber.Ctx) error {
 			id := Generateuniquekey()
 			storageName := folderName + "/" + fileName
 			apiResponse := bson.M{"_id": id, "ref_id": refId, "uploaded_by": token.UserId, "folder": fileCategory, "file_name": pathOfFile.Filename, "storage_name": storageName, "size": pathOfFile.Size} // "extn": filepath.Ext(fileName),
-			if token.UserRole == "SA" {
 
-				InsertData(c, orgId, "user_files", apiResponse, "admin")
-			} else {
-				InsertData(c, orgId, "user_files", apiResponse, "other")
-
-			}
+			InsertData(c, orgId, "user_files", apiResponse)
 
 			result = append(result, apiResponse)
 

@@ -35,7 +35,7 @@ func main() {
 	entities.SetupAllRoutes(app)
 
 	// Initialize custom validators for data validation.
-	helper.InitCustomValidator() //testing
+	helper.InitCustomValidator()
 
 	go func() {
 		helper.ServerInitstruct(OrgID)

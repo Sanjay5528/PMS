@@ -168,29 +168,13 @@ func GetDocByIdHandler(c *fiber.Ctx) error {
 	}
 	filter := helper.DocIdFilter(c.Params("id"))
 	collectionName := c.Params("collectionName")
-	userToken := utils.GetUserTokenValue(c)
 
-	if userToken.UserRole == "SA" {
-		cur, err := database.SharedDB.Collection(collectionName).Find(ctx, filter)
-		// cur, err := database.SharedDB.Collection(c.Params("collectionName")).Aggregate(ctx, filter)
-		if err != nil {
-			return nil
-		}
-
-		var result []bson.M
-		if err = cur.All(ctx, &result); err != nil {
-			return nil
-		}
-		return shared.SuccessResponse(c, result)
-
-	} else {
-		fmt.Println(orgId)
-		response, err := helper.GetQueryResult(orgId, collectionName, filter, int64(0), int64(1), nil)
-		if err != nil {
-			return shared.BadRequest(err.Error())
-		}
-		return shared.SuccessResponse(c, response)
+	response, err := helper.GetQueryResult(orgId, collectionName, filter, int64(0), int64(1), nil)
+	if err != nil {
+		return shared.BadRequest(err.Error())
 	}
+	return shared.SuccessResponse(c, response)
+
 }
 
 func DeleteById(c *fiber.Ctx) error {
@@ -256,6 +240,7 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 	// 	jsonstring, _ := json.Marshal(validationErrors)
 	// 	return shared.BadRequest(string(jsonstring))
 	// }
+
 	collectionName := c.Params("model_name")
 	var UpdateData map[string]interface{}
 	c.BodyParser(&UpdateData)
@@ -271,7 +256,9 @@ func putDocByIDHandlers(c *fiber.Ctx) error {
 
 	UpdateData["update_on"] = time.Now()
 	UpdateData["update_by"] = userToken.UserId
+
 	// Update data in the collection
+	//collectionName
 	res, err := database.GetConnection(org.Id).Collection(collectionName).UpdateOne(ctx, helper.DocIdFilter(c.Params("id")), update, updateOpts)
 	if err != nil {
 		// Handle database update error with status code 500 (Internal Server Error)
@@ -647,8 +634,6 @@ func TimeSheetByiiIdHandler(c *fiber.Ctx) error {
 		},
 	}
 
-	fmt.Println(date)
-
 	if employee_id == "SA" {
 
 		filter = filter
@@ -670,7 +655,7 @@ func getDocsHandler(c *fiber.Ctx) error {
 	if orgId == "" {
 		return shared.BadRequest("Organization Id missing")
 	}
-	userToken := utils.GetUserTokenValue(c)
+	// userToken := utils.GetUserTokenValue(c)
 
 	// collectionName := c.Params("collectionName")
 	var requestBody helper.PaginationRequest
@@ -685,29 +670,13 @@ func getDocsHandler(c *fiber.Ctx) error {
 	PagiantionPipeline := helper.PagiantionPipeline(requestBody.Start, requestBody.End)
 	pipeline = append(pipeline, PagiantionPipeline)
 
-	if userToken.UserRole == "SA" {
-		cur, err := database.SharedDB.Collection(c.Params("collectionName")).Aggregate(ctx, pipeline)
-		if err != nil {
-			return nil
+	Response, err := helper.GetAggregateQueryResult(orgId, c.Params("collectionName"), pipeline)
+	if err != nil {
+		if cmdErr, ok := err.(mongo.CommandError); ok {
+			return shared.BadRequest(cmdErr.Message)
 		}
-
-		var result []bson.M
-		//var result map[string][]Config
-		if err = cur.All(ctx, &result); err != nil {
-			return nil
-		}
-		return shared.SuccessResponse(c, result)
-
-	} else {
-
-		Response, err := helper.GetAggregateQueryResult(orgId, c.Params("collectionName"), pipeline)
-		if err != nil {
-			if cmdErr, ok := err.(mongo.CommandError); ok {
-				return shared.BadRequest(cmdErr.Message)
-			}
-		}
-		return shared.SuccessResponse(c, Response)
 	}
+	return shared.SuccessResponse(c, Response)
 
 }
 
@@ -874,7 +843,7 @@ func postTimesheetDocHandler(c *fiber.Ctx) error {
 
 	if len(response) == 0 {
 
-		helper.InsertData(c, orgId, "timesheet", inputData, "other")
+		helper.InsertData(c, orgId, "timesheet", inputData)
 		if inputData["approval_Status"] == "Approved" || inputData["approval_Status"] == "Rejected" || inputData["approval_Status"] == "Hold" {
 			_, err = database.GetConnection(orgId).Collection("task").UpdateOne(
 				ctx,

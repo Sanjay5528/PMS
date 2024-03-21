@@ -64,37 +64,8 @@ func postConfigHandler(c *fiber.Ctx) error {
 	Organization["name"] = "Kriyatec"
 	Organization["url"] = "admin"
 
-	// {
-	// 	"_id": "test_612a59ccdd66dbe880796ffd",
-	// 	"name": "javi infratech",
-	// 	"style": {
-	// 	  "primary_color": "#dddddd",
-	// 	  "primary_text_color": "#a9a9a9",
-	// 	  "secondary_color": "#00717b",
-	// 	  "secondary_text_color": "#a9a9a9",
-	// 	  "side_nav_bgcolor": "#cdecf1",
-	// 	  "nav_list_active": "#000",
-	// 	  "button_color": "#FFA500",
-	// 	  "button_text_color": "#000",
-	// 	  "footer_bgcolor": "#ecf1f2",
-	// 	  "footer_text_color": "#FFA500",
-	// 	  "side_nav_text_color": "#000"
-	// 	},
-	// 	"sub_domain": "kt",
-	// 	"type": "PO",
-	// 	"key": "DE31FC",
-	// 	"logo": "/static/logo/kt.png",
-	// 	"group": "test",
-	// 	"app_name": "javi infratech ",
-	// 	"loc": false
-	//   }
-
 	return shared.SuccessResponse(c, "successfully created ")
 }
-
-// organization
-// dbconfig
-//
 
 // THis Api only for Super Admin
 func postLoginHandler(c *fiber.Ctx) error {
@@ -620,6 +591,7 @@ func PostHandler(c *fiber.Ctx) error {
 	DbConfig["org_id"] = orgId
 	DbConfig["host"] = GetenvStr("MONGO_SHAREDDB_HOST")
 	DbConfig["pwd"] = GetenvStr("MONGO_SHAREDDB_PASSWORD")
+	dbconfig["port"] = GetenvInt("MONGO_SHAREDDB_PORT")
 	DbConfig["user_id"] = GetenvStr("MONGO_SHAREDDB_USER")
 	DbConfig["db_name"] = data["db_name"].(string)
 
@@ -630,12 +602,15 @@ func PostHandler(c *fiber.Ctx) error {
 	Organization["name"] = data["name"].(string)
 	Organization["url"] = data["url"].(string)
 	Organization["email"] = data["email"].(string)
+	if data["logo"] != nil {
 
-	logoPath := data["logo"].(map[string]interface{})["storage_name"].(string)
-	if logoPath != "" {
-		Organization["logo"] = GetenvStr("S3_ENDPOINT") + logoPath
+		logoPath := data["logo"].(map[string]interface{})["storage_name"].(string)
+		if logoPath != "" {
+			Organization["logo"] = GetenvStr("S3_ENDPOINT") + logoPath
+		}
 	}
 	data["_id"] = orgId
+	data["status"] = "A"
 	go database.SharedDB.Collection("organization").InsertOne(ctx, data)
 
 	go SendEmail(data, db)

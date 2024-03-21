@@ -21,7 +21,6 @@ func SetupConfig(app *fiber.App) {
 
 	// r.Use(utils.JWTMiddleware())
 	r.Post("/:model_name", postCollectionsHandler)
-	// r.Get("/shared", GetsharedDBHandler)
 	r.Get("/:type/:dbname?", GetsharedDBDefaultHandler)
 }
 
