@@ -147,7 +147,7 @@ export class MultiSelectConfigInput extends FieldType<any> implements OnInit {
       selectAllText: "Select All",
       unSelectAllText: "UnSelect All",
       enableCheckAll: true,
-      itemsShowLimit: 15,
+      // itemsShowLimit: 15,
       allowSearchFilter: true,
       noDataAvailablePlaceholderText: "No data available",
     };
@@ -177,31 +177,30 @@ export class MultiSelectConfigInput extends FieldType<any> implements OnInit {
 
  
   DefaultDataInit(DbName: any) { 
-    this.dataService.GetDataByDefaultSharedDB(DbName).subscribe((res: any) => {
+    this.dataService.GetDataByDefaultSharedDB(DbName).subscribe((res: any) => { 
       this.dropdownList = res.data[0][this.field.key];
       const allValues = this.dropdownList.map(
-        (item: any) => item[this.valueProp]
+        (item: any) => item[this.field.props?.valueProp]
       );
       this.FormControl.setValue(allValues);
- 
       this.selectedValue =this.dropdownList
-      // if(this.model[this.opt.key]){
-        // this.valueSlected()
-      // } 
       this.cf.detectChanges();
     });
   }
 
   onItemSelectController(event: any) { 
-    if (_.isEmpty(this.dropdownList)) {
+    console.log(this.field.props);
+    
+    if (_.isEmpty(this.selectedValue)) {
       this.formControl.setValue(undefined);
-    } else {  
-      let data: any[] = this.dropdownList;
-      let arrayValue: any[] = [];
-      data.map((result: any) => {
-        arrayValue.push(result[this.opt.valueProp]);
-      });
-      this.formControl.setValue(arrayValue); 
+    } else {    
+        
+      const allValues =    this.selectedValue.map(
+        (item: any) => item[this.field.props?.valueProp]
+      ); 
+      console.log(allValues);
+      
+      this.formControl.setValue(allValues); 
     }
   }
 

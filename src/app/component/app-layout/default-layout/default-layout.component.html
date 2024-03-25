@@ -1,14 +1,4 @@
-<!-- <div class="page">
-  <div class="page-header">
-    <app-app-header></app-app-header>
-  </div>
-  <div class="page-content">
-    <router-outlet></router-outlet>
-  </div>
-  <div class="page-footer">
-    <app-app-footer></app-app-footer>
-  </div>
-</div> -->
+ 
 
   <div class="page-sidebar" *ngIf="sidenavedshow">
   <app-side-navbar (onToggleSidenav)="onToggleSidenav($event)"  ></app-side-navbar>
@@ -16,11 +6,10 @@
   <div class="body page-style" [ngClass]="class()">
     <!-- <app-app-header (project)="project($event)"></app-app-header> -->
     <app-app-header></app-app-header>
-
-    <!-- <router-outlet></router-outlet> -->
-    <div class="page-content">
+ 
+    <!-- <div class="page-content"> -->
       <router-outlet></router-outlet>
-    </div>
+    <!-- </div> -->
     
     <div class="page-footer">
       <app-app-footer></app-app-footer>

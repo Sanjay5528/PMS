@@ -117,6 +117,10 @@ export class DataService {
  * @ID Dynamic pass of _id or any Primary key 
  */
   public deleteDataById(collectionName: any, id: any) {
+    let role:any = this.getRole() 
+    if (role   == "SA") {
+      return this.http.delete(this.getWsConfigUrl()+"entities/"+`${collectionName}`, id);
+    }
     return this.http.delete(this.getWsBaseUrl()+ "entities/"+ collectionName + '/' + id);
   }
 
@@ -153,14 +157,8 @@ export class DataService {
   public GetDataBySharedDB(){
     return this.http.get(environment.configBaseUrl  + 'api/shared');
   }
-  public GetDataByDefaultSharedDB(dbName:string){
-    // if (dbName!= undefined){
-
-    //   return this.http.get(environment.configBaseUrl  + 'api/'+`${type}`+`/${dbName}`);
-    // }else{
-      return this.http.get(environment.configBaseUrl  + 'api/'+`${dbName}`); //
-
-    // }
+  public GetDataByDefaultSharedDB(dbName:string){ 
+      return this.http.get(environment.configBaseUrl  + 'api/'+`${dbName}`);  
   }
 
 
@@ -177,7 +175,7 @@ export class DataService {
  * @Data Any TYPE of Data
  */
   public save(collectionName: any,data: any,) {
-    let role:any = this.getRole()
+    let role:any = this.getRole() 
     if (role   == "SA") {
       return this.http.post(this.getWsConfigUrl()+"entities/"+`${collectionName}`, data);
     }else{
