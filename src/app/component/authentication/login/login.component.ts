@@ -33,8 +33,8 @@ export class LoginComponent implements OnInit {
         //   id: new FormControl('sanjay123sanjay12@gmial.com',Validators.required),
         //   password: new FormControl('Sanjay#321',Validators.required)
         // });
-        id: new FormControl('sanjay123sanjay12@gmial.com',Validators.required),
-        password: new FormControl('Sanjay#321',Validators.required)
+        id: new FormControl(null,Validators.required),
+        password: new FormControl(null,Validators.required)
       });
   }
 

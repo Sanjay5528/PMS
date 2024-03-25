@@ -153,15 +153,20 @@ export class DataService {
   public GetDataBySharedDB(){
     return this.http.get(environment.configBaseUrl  + 'api/shared');
   }
-  public GetDataByDefaultSharedDB(type:any,dbName?:string){
-    if (dbName!= undefined){
+  public GetDataByDefaultSharedDB(dbName:string){
+    // if (dbName!= undefined){
 
-      return this.http.get(environment.configBaseUrl  + 'api/'+`${type}`+`/${dbName}`);
-    }else{
-      return this.http.get(environment.configBaseUrl  + 'api/'+`${type}`);
+    //   return this.http.get(environment.configBaseUrl  + 'api/'+`${type}`+`/${dbName}`);
+    // }else{
+      return this.http.get(environment.configBaseUrl  + 'api/'+`${dbName}`); //
 
-    }
+    // }
   }
+
+
+
+
+
   public GetdataModelData(dbName:any){
     return this.http.get(environment.configBaseUrl + 'model_config/shared/'+`${dbName}`);
   }

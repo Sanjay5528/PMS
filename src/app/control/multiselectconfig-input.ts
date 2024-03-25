@@ -26,27 +26,83 @@ import {
       ::ng-deep .dropdown-list {
         position: relative !important;
       }
-    </style>
 
-    <h4>{{ field.props!["label"] }}</h4>
-    <ng-multiselect-dropdown
-      #multiSelect
-      [placeholder]="field.props!['label']"
-      [data]="dropdownList || []"
+      ::ng-deep
+        .multiselect-dropdown
+        .dropdown-btn
+        .selected-item-container
+        .selected-item {
+        border: 1px solid #337ab7 !important;
+        margin-right: 4px !important;
+        background: #337ab7 !important;
+        padding-right: auto !important;
+        color: #fff !important;
+        border-radius: 2px !important;
+        float: left !important;
+        max-width: 250px !important;
+      }
+      ::ng-deep
+        .multiselect-dropdown[_ngcontent-ng-c1411523848]
+        .dropdown-btn[_ngcontent-ng-c1411523848]
+        .selected-item-container[_ngcontent-ng-c1411523848]
+        .selected-item[_ngcontent-ng-c1411523848]
+        a[_ngcontent-ng-c1411523848] {
+        cursor: pointer;
+        text-decoration: none;
+      }
+      ::ng-deep
+        .multiselect-dropdown[_ngcontent-ng-c1411523848]
+        .dropdown-btn[_ngcontent-ng-c1411523848] {
+        display: inline-block !important;
+        border: 1px solid #adadad !important;
+        width: 100% !important;
+        padding: 15px 9px !important;
+        margin-bottom: 0 !important;
+        font-weight: 400 !important;
+        vertical-align: middle !important;
+        cursor: pointer !important;
+        background-image: none !important;
+        border-radius: 4px !important;
+      }
+      ::ng-deep
+        .multiselect-dropdown[_ngcontent-ng-c1411523848]
+        .dropdown-btn[_ngcontent-ng-c1411523848]
+        .selected-item-container[_ngcontent-ng-c1411523848]
+        .selected-item[_ngcontent-ng-c1411523848] {
+        padding: 0 5px !important;
+        margin-top: 7px !important;
+      }
+    </style> 
+    <h4 style="font-weight: 100;" > {{ field.props!["label"] }}</h4>  
+    <ng-multiselect-dropdown    
       [settings]="settings"
-      [formlyAttributes]="field"
-      [(ngModel)]="dropdownList"
+      [data]="dropdownList"
+      [placeholder]="to.label  " 
+      [(ngModel)]="selectedValue" 
       [required]="to.required || false"
+      [formlyAttributes]="field" 
       [disabled]="false"
       (onSelect)="onItemSelectController($event)"
       (onSelectAll)="onItemSelectController($event)"
-      (onDeSelect)="onItemSelectController($event)"
+      (onDeSelect)="onItemSelectController($event)"  
       (onDeSelectAll)="onItemSelectController($event)"
+      >  
+  </ng-multiselect-dropdown>
+
+  <mat-error *ngIf="this?.formControl?.touched && this?.formControl?.errors?.required">
+  This {{ this.field.props?.label  }} is required
+</mat-error>
+
+<mat-error *ngIf="this?.formControl?.touched && this?.formControl?.errors?.pattern">
+  This {{ this.field.props?.label  }} does not match the pattern
+</mat-error>
+<div style="height: 15px;">
  
-    >
-    </ng-multiselect-dropdown>
-    <div style="height: 30px;"></div>
-    <!--  (onFilterChange)="onFilterChange($event)" -->
+  </div>
+
+
+
+
   `,
 })
 export class MultiSelectConfigInput extends FieldType<any> implements OnInit {
@@ -70,56 +126,42 @@ export class MultiSelectConfigInput extends FieldType<any> implements OnInit {
   opt: any;
   onValueChangeUpdate: any;
   currentField: any;
+  selectedValue: any[] = [];
 
   public get FormControl() {
     return this.formControl as FormControl;
-  }
+  } 
 
   ngOnInit() {
     this.label = this.field.props?.label;
     this.opt = this.field.props || {};
-    this.labelProp = this.opt.labelProp;
-    this.valueProp = this.opt.valueProp;
     this.currentField = this.field;
-    this.onValueChangeUpdate = this.opt.onValueChangeUpdate;
+    this.onValueChangeUpdate = this.opt.onValueChangeUpdate; 
+    const { labelProp, valueProp } = this.opt;
 
     this.settings = {
       singleSelection: false,
       defaultOpen: false,
-      idField: this.opt.valueProp,
-      textField: this.opt.labelProp,
+      idField: valueProp,
+      textField: labelProp,
       selectAllText: "Select All",
       unSelectAllText: "UnSelect All",
       enableCheckAll: true,
-      itemsShowLimit: 7,
+      itemsShowLimit: 15,
       allowSearchFilter: true,
       noDataAvailablePlaceholderText: "No data available",
     };
 
-    if (this.model.isEdit == true) {
-      this.formControl.setValue(this.model[this.field.key]); 
-      this.selectedItems = this.formControl?.value;  
-      this.dropdownList =  this.formControl?.value 
-      // this.form.get("config_select")?.valueChanges.subscribe((data: any) => {
-      //   this.DefaultDataInit(this.removeSpecialCharacters(data.toLowerCase()));
-      // });
-      this.DefaultDataInit(
-        this.removeSpecialCharacters(
-          this.form.get("config_select")?.value.toLowerCase()
-        )
-      );
-    } else {
-      this.form.get("config_select")?.valueChanges.subscribe((data: any) => {
-        this.DefaultDataInit(this.removeSpecialCharacters(data.toLowerCase()));
-      });
-      this.DefaultDataInit(
-        this.removeSpecialCharacters(
-          this.form.get("config_select")?.value.toLowerCase()
-        )
-      );
-    }
+    const transformValue = (value: string | undefined) =>
+      this.removeSpecialCharacters(value?.toLowerCase() ?? "");
+
+    this.form.get("config_select")?.valueChanges.subscribe((data: any) => {
+      this.DefaultDataInit(transformValue(data));
+    });
+
+    this.DefaultDataInit(transformValue(this.form.get("config_select")?.value));
   }
- 
+
   removeSpecialCharacters(input: string): string {
     const regex = /[!@#$%^&*(),.?":{}|<>]/g;
     return input.replace(regex, "");
@@ -133,67 +175,57 @@ export class MultiSelectConfigInput extends FieldType<any> implements OnInit {
     this.loadContent = true;
   }
 
-  get f() {
-    return this.formGroup.controls;
-  }
-
-  DefaultDataInit(type: any) {
-    let observable$;
-    if (type === "shared") {
-      observable$ = this.dataService.GetDataByDefaultSharedDB(type);
-    } else {
-      observable$ = this.dataService.GetDataByDefaultSharedDB("other", type);
-    }
-
-    observable$.subscribe((res: any) => {
+ 
+  DefaultDataInit(DbName: any) { 
+    this.dataService.GetDataByDefaultSharedDB(DbName).subscribe((res: any) => {
       this.dropdownList = res.data[0][this.field.key];
       const allValues = this.dropdownList.map(
         (item: any) => item[this.valueProp]
       );
       this.FormControl.setValue(allValues);
-      this.selectedItems = allValues;
+ 
+      this.selectedValue =this.dropdownList
+      // if(this.model[this.opt.key]){
+        // this.valueSlected()
+      // } 
       this.cf.detectChanges();
     });
   }
 
-  onItemSelectController(event: any) {
-    console.log(this.selectedValue, event);
-    if (_.isEmpty(this.selectedValue)) {
+  onItemSelectController(event: any) { 
+    if (_.isEmpty(this.dropdownList)) {
       this.formControl.setValue(undefined);
-    } else {
-      // Change arr of object into arr string
-      let data: any[] = this.selectedValue;
+    } else {  
+      let data: any[] = this.dropdownList;
       let arrayValue: any[] = [];
       data.map((result: any) => {
         arrayValue.push(result[this.opt.valueProp]);
       });
-      console.log(this.selectedValue, arrayValue);
-      this.formControl.setValue(arrayValue);
+      this.formControl.setValue(arrayValue); 
     }
   }
 
-  selectedValue: any[] = [];
-  valueSlected() {
-    let arr: any[] = this.model[this.field.key];
-    this.selectedValue = [];
-    console.log(arr);
+  valueSlected(){
+    let arr:any[]=this.model[this.field.key];
+    this.selectedValue=[] 
+   
+    arr.map((result:any) => {
+      let arrayValue:any={}
+        arrayValue[this.to.valueProp] =result
 
-    arr.map((result: any) => {
-      let arrayValue: any = {};
-      arrayValue[this.to.valueProp] = result;
-      this.selectedValue.push(arrayValue);
-    });
-    console.error(this.selectedValue);
-    // this.thisFormControl.setValue(this.selectedValue)
-    // this.cdr.detectChanges()
+        this.selectedValue.push(arrayValue)
+      }) 
+      // this.thisFormControl.setValue(this.selectedValue)
+      // this.cdr.detectChanges()
   }
+
+
 
   onFilterChange(event: any) {
     if (this.opt.serverSide) {
       if (this.opt.optionsDataSource.methodName) {
         let queryParams: any = this.opt.optionsDataSource.defaultQueryParams;
-        queryParams[this.opt.labelProp] = event;
-        console.log(queryParams);
+        queryParams[this.opt.labelProp] = event; 
         //  (this.dataService[this.opt.optionsDataSource.methodName](this.opt.optionsDataSource.params,queryParams) as Observable<any>)
         //   .subscribe((res:any)=>{
         //      if(!_.isEmpty(res.data)){
